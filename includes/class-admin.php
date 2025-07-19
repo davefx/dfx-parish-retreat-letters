@@ -49,6 +49,38 @@ class DFX_Parish_Retreat_Letters_Admin {
 	private $attendant_model;
 
 	/**
+	 * The confidential message model instance.
+	 *
+	 * @since 1.2.0
+	 * @var DFX_Parish_Retreat_Letters_ConfidentialMessage
+	 */
+	private $message_model;
+
+	/**
+	 * The message file model instance.
+	 *
+	 * @since 1.2.0
+	 * @var DFX_Parish_Retreat_Letters_MessageFile
+	 */
+	private $file_model;
+
+	/**
+	 * The print log model instance.
+	 *
+	 * @since 1.2.0
+	 * @var DFX_Parish_Retreat_Letters_PrintLog
+	 */
+	private $print_log_model;
+
+	/**
+	 * The security instance.
+	 *
+	 * @since 1.2.0
+	 * @var DFX_Parish_Retreat_Letters_Security
+	 */
+	private $security;
+
+	/**
 	 * Get the single instance of the class.
 	 *
 	 * @since 1.0.0
@@ -69,6 +101,10 @@ class DFX_Parish_Retreat_Letters_Admin {
 	private function __construct() {
 		$this->retreat_model = new DFX_Parish_Retreat_Letters_Retreat();
 		$this->attendant_model = new DFX_Parish_Retreat_Letters_Attendant();
+		$this->message_model = new DFX_Parish_Retreat_Letters_ConfidentialMessage();
+		$this->file_model = new DFX_Parish_Retreat_Letters_MessageFile();
+		$this->print_log_model = new DFX_Parish_Retreat_Letters_PrintLog();
+		$this->security = DFX_Parish_Retreat_Letters_Security::get_instance();
 		$this->init_hooks();
 	}
 
@@ -83,6 +119,10 @@ class DFX_Parish_Retreat_Letters_Admin {
 		add_action( 'wp_ajax_dfx_delete_retreat', array( $this, 'ajax_delete_retreat' ) );
 		add_action( 'wp_ajax_dfx_delete_attendant', array( $this, 'ajax_delete_attendant' ) );
 		add_action( 'wp_ajax_dfx_export_attendants_csv', array( $this, 'ajax_export_attendants_csv' ) );
+		add_action( 'wp_ajax_dfx_generate_message_url', array( $this, 'ajax_generate_message_url' ) );
+		add_action( 'wp_ajax_dfx_print_message', array( $this, 'ajax_print_message' ) );
+		add_action( 'wp_ajax_dfx_download_file', array( $this, 'ajax_download_file' ) );
+		add_action( 'wp_ajax_dfx_delete_message', array( $this, 'ajax_delete_message' ) );
 	}
 
 	/**
@@ -118,6 +158,15 @@ class DFX_Parish_Retreat_Letters_Admin {
 			'dfx-retreats-add',
 			array( $this, 'retreat_add_page' )
 		);
+
+		add_submenu_page(
+			'dfx-retreats',
+			__( 'Confidential Messages', 'dfx-parish-retreat-letters' ),
+			__( 'Messages', 'dfx-parish-retreat-letters' ),
+			'manage_options',
+			'dfx-messages',
+			array( $this, 'messages_list_page' )
+		);
 	}
 
 	/**
@@ -127,7 +176,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 	 * @param string $hook_suffix The current admin page.
 	 */
 	public function enqueue_admin_scripts( $hook_suffix ) {
-		if ( strpos( $hook_suffix, 'dfx-retreats' ) === false ) {
+		if ( strpos( $hook_suffix, 'dfx-retreats' ) === false && strpos( $hook_suffix, 'dfx-messages' ) === false ) {
 			return;
 		}
 
@@ -149,6 +198,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 				'messages' => array(
 					'confirmDelete' => __( 'Are you sure you want to delete this retreat?', 'dfx-parish-retreat-letters' ),
 					'confirmDeleteAttendant' => __( 'Are you sure you want to delete this attendant?', 'dfx-parish-retreat-letters' ),
+					'confirmDeleteMessage' => __( 'Are you sure you want to delete this message? This action cannot be undone.', 'dfx-parish-retreat-letters' ),
 					'deleteRetreatTitle' => __( 'Delete Retreat - Confirmation Required', 'dfx-parish-retreat-letters' ),
 					'deleteWarning' => __( 'WARNING: This action cannot be undone!', 'dfx-parish-retreat-letters' ),
 					'deleteWarningAttendants' => __( 'All attendants for this retreat will be permanently deleted', 'dfx-parish-retreat-letters' ),
@@ -160,6 +210,16 @@ class DFX_Parish_Retreat_Letters_Admin {
 					'cancelButton' => __( 'Cancel', 'dfx-parish-retreat-letters' ),
 					'deleting' => __( 'Deleting...', 'dfx-parish-retreat-letters' ),
 					'deleteError' => __( 'Error deleting retreat. Please try again.', 'dfx-parish-retreat-letters' ),
+					'generating' => __( 'Generating URL...', 'dfx-parish-retreat-letters' ),
+					'generateError' => __( 'Error generating message URL. Please try again.', 'dfx-parish-retreat-letters' ),
+					'urlGenerated' => __( 'Message URL generated successfully!', 'dfx-parish-retreat-letters' ),
+					'urlCopied' => __( 'URL copied to clipboard!', 'dfx-parish-retreat-letters' ),
+					'copyError' => __( 'Failed to copy URL. Please copy it manually.', 'dfx-parish-retreat-letters' ),
+					'printing' => __( 'Preparing for print...', 'dfx-parish-retreat-letters' ),
+					'printError' => __( 'Error preparing message for print. Please try again.', 'dfx-parish-retreat-letters' ),
+					'downloading' => __( 'Downloading...', 'dfx-parish-retreat-letters' ),
+					'downloadError' => __( 'Error downloading file. Please try again.', 'dfx-parish-retreat-letters' ),
+					'messageDeleted' => __( 'Message deleted successfully.', 'dfx-parish-retreat-letters' ),
 				),
 			)
 		);
@@ -1368,12 +1428,17 @@ class DFX_Parish_Retreat_Letters_Admin {
 							<th scope="col" class="manage-column"><?php esc_html_e( 'Surnames', 'dfx-parish-retreat-letters' ); ?></th>
 							<th scope="col" class="manage-column"><?php esc_html_e( 'Date of Birth', 'dfx-parish-retreat-letters' ); ?></th>
 							<th scope="col" class="manage-column"><?php esc_html_e( 'Emergency Contact', 'dfx-parish-retreat-letters' ); ?></th>
+							<th scope="col" class="manage-column"><?php esc_html_e( 'Messages', 'dfx-parish-retreat-letters' ); ?></th>
 							<th scope="col" class="manage-column"><?php esc_html_e( 'Actions', 'dfx-parish-retreat-letters' ); ?></th>
 						</tr>
 					</thead>
 					<tbody>
 						<?php if ( ! empty( $attendants ) ) : ?>
 							<?php foreach ( $attendants as $attendant ) : ?>
+								<?php
+								// Get message count for this attendant
+								$message_count = $this->message_model->get_count_by_attendant( $attendant->id );
+								?>
 								<tr>
 									<td>
 										<strong>
@@ -1389,9 +1454,35 @@ class DFX_Parish_Retreat_Letters_Admin {
 										<small><?php echo esc_html( $attendant->emergency_contact_phone ); ?></small>
 									</td>
 									<td>
+										<?php if ( $message_count > 0 ) : ?>
+											<a href="<?php echo esc_url( admin_url( 'admin.php?page=dfx-messages&attendant_id=' . $attendant->id ) ); ?>">
+												<?php
+												printf(
+													/* translators: %d: Number of messages */
+													esc_html( _n( '%d message', '%d messages', $message_count, 'dfx-parish-retreat-letters' ) ),
+													$message_count
+												);
+												?>
+											</a>
+										<?php else : ?>
+											<span class="description"><?php esc_html_e( 'No messages', 'dfx-parish-retreat-letters' ); ?></span>
+										<?php endif; ?>
+									</td>
+									<td>
 										<a href="<?php echo esc_url( admin_url( 'admin.php?page=dfx-retreats&action=edit_attendant&retreat_id=' . $retreat->id . '&attendant_id=' . $attendant->id ) ); ?>" class="button button-small">
 											<?php esc_html_e( 'Edit', 'dfx-parish-retreat-letters' ); ?>
 										</a>
+										
+										<?php if ( empty( $attendant->message_url_token ) ) : ?>
+											<button type="button" class="button button-small dfx-generate-url" data-attendant-id="<?php echo esc_attr( $attendant->id ); ?>">
+												<?php esc_html_e( 'Generate Message URL', 'dfx-parish-retreat-letters' ); ?>
+											</button>
+										<?php else : ?>
+											<button type="button" class="button button-small button-primary dfx-copy-url" data-url="<?php echo esc_url( home_url( '/messages/' . $attendant->message_url_token ) ); ?>">
+												<?php esc_html_e( 'Copy Message URL', 'dfx-parish-retreat-letters' ); ?>
+											</button>
+										<?php endif; ?>
+										
 										<button type="button" class="button button-small button-link-delete dfx-delete-attendant" data-attendant-id="<?php echo esc_attr( $attendant->id ); ?>">
 											<?php esc_html_e( 'Delete', 'dfx-parish-retreat-letters' ); ?>
 										</button>
@@ -1400,7 +1491,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 							<?php endforeach; ?>
 						<?php else : ?>
 							<tr>
-								<td colspan="5">
+								<td colspan="6">
 									<?php if ( $search ) : ?>
 										<?php esc_html_e( 'No attendants found for your search.', 'dfx-parish-retreat-letters' ); ?>
 									<?php else : ?>
@@ -1602,5 +1693,578 @@ class DFX_Parish_Retreat_Letters_Admin {
 			</form>
 		</div>
 		<?php
+	}
+
+	/**
+	 * AJAX handler for generating message URLs.
+	 *
+	 * @since 1.2.0
+	 */
+	public function ajax_generate_message_url() {
+		if ( ! wp_verify_nonce( $_POST['nonce'] ?? '', 'dfx_retreats_nonce' ) ) {
+			wp_die( __( 'Security check failed.', 'dfx-parish-retreat-letters' ) );
+		}
+
+		$attendant_id = absint( $_POST['attendant_id'] ?? 0 );
+		if ( ! $attendant_id ) {
+			wp_send_json_error( array( 'message' => __( 'Invalid attendant ID.', 'dfx-parish-retreat-letters' ) ) );
+		}
+
+		// Check if attendant exists
+		$attendant = $this->attendant_model->get( $attendant_id );
+		if ( ! $attendant ) {
+			wp_send_json_error( array( 'message' => __( 'Attendant not found.', 'dfx-parish-retreat-letters' ) ) );
+		}
+
+		// Generate unique token
+		$token = $this->security->generate_unique_message_token();
+
+		// Update attendant with token
+		global $wpdb;
+		$database = DFX_Parish_Retreat_Letters_Database::get_instance();
+		
+		$result = $wpdb->update(
+			$database->get_attendants_table(),
+			array( 'message_url_token' => $token ),
+			array( 'id' => $attendant_id ),
+			array( '%s' ),
+			array( '%d' )
+		);
+
+		if ( $result === false ) {
+			wp_send_json_error( array( 'message' => __( 'Failed to generate message URL.', 'dfx-parish-retreat-letters' ) ) );
+		}
+
+		$message_url = home_url( '/messages/' . $token );
+
+		wp_send_json_success( array( 
+			'message' => __( 'Message URL generated successfully.', 'dfx-parish-retreat-letters' ),
+			'url' => $message_url
+		) );
+	}
+
+	/**
+	 * Display the messages list page.
+	 *
+	 * @since 1.2.0
+	 */
+	public function messages_list_page() {
+		// Handle form submissions
+		if ( $_SERVER['REQUEST_METHOD'] === 'POST' ) {
+			$this->handle_message_list_actions();
+		}
+
+		// Get query parameters
+		$search = sanitize_text_field( $_GET['s'] ?? '' );
+		$retreat_id = absint( $_GET['retreat_id'] ?? 0 );
+		$attendant_id = absint( $_GET['attendant_id'] ?? 0 );
+		$message_type = sanitize_text_field( $_GET['message_type'] ?? '' );
+		$page_num = max( 1, absint( $_GET['paged'] ?? 1 ) );
+		$per_page = 20;
+
+		// Get messages with metadata
+		$args = array(
+			'search'       => $search,
+			'retreat_id'   => $retreat_id,
+			'message_type' => $message_type,
+			'per_page'     => $per_page,
+			'page'         => $page_num,
+		);
+
+		// If viewing messages for specific attendant, filter by attendant
+		if ( $attendant_id ) {
+			// Get attendant info for breadcrumb
+			$attendant = $this->attendant_model->get( $attendant_id );
+			if ( $attendant ) {
+				$messages = $this->message_model->get_by_attendant( $attendant_id, $args );
+				$total_items = $this->message_model->get_count_by_attendant( $attendant_id );
+			} else {
+				$messages = array();
+				$total_items = 0;
+			}
+		} else {
+			$messages = $this->message_model->get_all_with_metadata( $args );
+			$total_items = $this->message_model->get_total_count( $args );
+		}
+
+		$total_pages = ceil( $total_items / $per_page );
+
+		// Get retreats for filter dropdown
+		$retreats = $this->retreat_model->get_all( array( 'per_page' => -1 ) );
+
+		$this->render_messages_list_page( $messages, $retreats, $search, $retreat_id, $attendant_id, $message_type, $page_num, $total_pages, $total_items, $attendant ?? null );
+	}
+
+	/**
+	 * Render the messages list page.
+	 *
+	 * @since 1.2.0
+	 * @param array  $messages     Array of message objects.
+	 * @param array  $retreats     Array of retreat objects for filter.
+	 * @param string $search       Current search term.
+	 * @param int    $retreat_id   Current retreat filter.
+	 * @param int    $attendant_id Current attendant filter.
+	 * @param string $message_type Current message type filter.
+	 * @param int    $page_num     Current page number.
+	 * @param int    $total_pages  Total number of pages.
+	 * @param int    $total_items  Total number of items.
+	 * @param object $attendant    Attendant object if filtering by attendant.
+	 */
+	private function render_messages_list_page( $messages, $retreats, $search, $retreat_id, $attendant_id, $message_type, $page_num, $total_pages, $total_items, $attendant = null ) {
+		?>
+		<div class="wrap">
+			<h1 class="wp-heading-inline">
+				<?php 
+				if ( $attendant ) {
+					printf(
+						/* translators: %s: Attendant name */
+						esc_html__( 'Messages for %s', 'dfx-parish-retreat-letters' ),
+						esc_html( $attendant->name . ' ' . $attendant->surnames )
+					);
+				} else {
+					esc_html_e( 'Confidential Messages', 'dfx-parish-retreat-letters' );
+				}
+				?>
+			</h1>
+			<hr class="wp-header-end">
+
+			<?php if ( $attendant ) : ?>
+				<!-- Breadcrumb -->
+				<p class="description">
+					<a href="<?php echo esc_url( admin_url( 'admin.php?page=dfx-retreats' ) ); ?>"><?php esc_html_e( 'Retreats', 'dfx-parish-retreat-letters' ); ?></a>
+					&gt; <a href="<?php echo esc_url( admin_url( 'admin.php?page=dfx-messages' ) ); ?>"><?php esc_html_e( 'Messages', 'dfx-parish-retreat-letters' ); ?></a>
+					&gt; <?php echo esc_html( $attendant->name . ' ' . $attendant->surnames ); ?>
+				</p>
+			<?php endif; ?>
+
+			<?php $this->display_admin_notices(); ?>
+
+			<!-- Security Notice -->
+			<div class="notice notice-warning">
+				<p><strong><?php esc_html_e( 'Security Notice:', 'dfx-parish-retreat-letters' ); ?></strong> <?php esc_html_e( 'Message content is encrypted and can only be viewed when printed. This page shows metadata only for privacy and security compliance.', 'dfx-parish-retreat-letters' ); ?></p>
+			</div>
+
+			<!-- Filters -->
+			<form method="get" action="">
+				<input type="hidden" name="page" value="dfx-messages">
+				<?php if ( $attendant_id ) : ?>
+					<input type="hidden" name="attendant_id" value="<?php echo esc_attr( $attendant_id ); ?>">
+				<?php endif; ?>
+				
+				<div class="tablenav top">
+					<div class="alignleft actions">
+						<?php if ( ! $attendant_id ) : ?>
+							<select name="retreat_id">
+								<option value=""><?php esc_html_e( 'All Retreats', 'dfx-parish-retreat-letters' ); ?></option>
+								<?php foreach ( $retreats as $retreat ) : ?>
+									<option value="<?php echo esc_attr( $retreat->id ); ?>" <?php selected( $retreat_id, $retreat->id ); ?>>
+										<?php echo esc_html( $retreat->name ); ?>
+									</option>
+								<?php endforeach; ?>
+							</select>
+						<?php endif; ?>
+
+						<select name="message_type">
+							<option value=""><?php esc_html_e( 'All Types', 'dfx-parish-retreat-letters' ); ?></option>
+							<option value="text" <?php selected( $message_type, 'text' ); ?>><?php esc_html_e( 'Text Messages', 'dfx-parish-retreat-letters' ); ?></option>
+							<option value="file" <?php selected( $message_type, 'file' ); ?>><?php esc_html_e( 'Messages with Files', 'dfx-parish-retreat-letters' ); ?></option>
+						</select>
+
+						<input type="submit" class="button" value="<?php esc_attr_e( 'Filter', 'dfx-parish-retreat-letters' ); ?>">
+					</div>
+
+					<p class="search-box">
+						<label class="screen-reader-text" for="message-search-input"><?php esc_html_e( 'Search Messages:', 'dfx-parish-retreat-letters' ); ?></label>
+						<input type="search" id="message-search-input" name="s" value="<?php echo esc_attr( $search ); ?>" placeholder="<?php esc_attr_e( 'Search by attendant name or sender...', 'dfx-parish-retreat-letters' ); ?>">
+						<input type="submit" id="search-submit" class="button" value="<?php esc_attr_e( 'Search Messages', 'dfx-parish-retreat-letters' ); ?>">
+					</p>
+				</div>
+			</form>
+
+			<form method="post" action="">
+				<?php wp_nonce_field( 'dfx_messages_action' ); ?>
+				<div class="tablenav top">
+					<div class="alignleft actions">
+						<p><?php printf( esc_html__( 'Total messages: %d', 'dfx-parish-retreat-letters' ), $total_items ); ?></p>
+					</div>
+					<?php if ( $total_pages > 1 ) : ?>
+						<div class="tablenav-pages">
+							<?php
+							echo paginate_links( array( // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+								'base'    => add_query_arg( 'paged', '%#%' ),
+								'format'  => '',
+								'current' => $page_num,
+								'total'   => $total_pages,
+							) );
+							?>
+						</div>
+					<?php endif; ?>
+				</div>
+
+				<table class="wp-list-table widefat fixed striped">
+					<thead>
+						<tr>
+							<th scope="col" class="manage-column"><?php esc_html_e( 'Attendant', 'dfx-parish-retreat-letters' ); ?></th>
+							<th scope="col" class="manage-column"><?php esc_html_e( 'Retreat', 'dfx-parish-retreat-letters' ); ?></th>
+							<th scope="col" class="manage-column"><?php esc_html_e( 'From', 'dfx-parish-retreat-letters' ); ?></th>
+							<th scope="col" class="manage-column"><?php esc_html_e( 'Type', 'dfx-parish-retreat-letters' ); ?></th>
+							<th scope="col" class="manage-column"><?php esc_html_e( 'Submitted', 'dfx-parish-retreat-letters' ); ?></th>
+							<th scope="col" class="manage-column"><?php esc_html_e( 'Print Status', 'dfx-parish-retreat-letters' ); ?></th>
+							<th scope="col" class="manage-column"><?php esc_html_e( 'Actions', 'dfx-parish-retreat-letters' ); ?></th>
+						</tr>
+					</thead>
+					<tbody>
+						<?php if ( ! empty( $messages ) ) : ?>
+							<?php foreach ( $messages as $message ) : ?>
+								<tr>
+									<td>
+										<strong><?php echo esc_html( $message->attendant_name . ' ' . $message->attendant_surnames ); ?></strong>
+									</td>
+									<td><?php echo esc_html( $message->retreat_name ); ?></td>
+									<td><?php echo esc_html( $message->sender_name ?: __( 'Anonymous', 'dfx-parish-retreat-letters' ) ); ?></td>
+									<td>
+										<?php if ( $message->message_type === 'text' ) : ?>
+											<span class="dashicons dashicons-text" title="<?php esc_attr_e( 'Text Message', 'dfx-parish-retreat-letters' ); ?>"></span>
+											<?php esc_html_e( 'Text', 'dfx-parish-retreat-letters' ); ?>
+										<?php else : ?>
+											<span class="dashicons dashicons-paperclip" title="<?php esc_attr_e( 'Message with Files', 'dfx-parish-retreat-letters' ); ?>"></span>
+											<?php esc_html_e( 'Files', 'dfx-parish-retreat-letters' ); ?>
+											<?php if ( $message->file_count > 0 ) : ?>
+												(<?php echo esc_html( $message->file_count ); ?>)
+											<?php endif; ?>
+										<?php endif; ?>
+									</td>
+									<td>
+										<?php echo esc_html( date_i18n( get_option( 'date_format' ) . ' ' . get_option( 'time_format' ), strtotime( $message->submitted_at ) ) ); ?>
+									</td>
+									<td>
+										<?php if ( $message->print_count > 0 ) : ?>
+											<span class="dashicons dashicons-yes-alt" style="color: #46b450;" title="<?php esc_attr_e( 'Printed', 'dfx-parish-retreat-letters' ); ?>"></span>
+											<?php
+											printf(
+												/* translators: %1$d: Print count, %2$s: First print date */
+												esc_html__( 'Printed %1$d time(s), first: %2$s', 'dfx-parish-retreat-letters' ),
+												$message->print_count,
+												date_i18n( get_option( 'date_format' ), strtotime( $message->first_printed_at ) )
+											);
+											?>
+										<?php else : ?>
+											<span class="dashicons dashicons-warning" style="color: #dba617;" title="<?php esc_attr_e( 'Not Printed', 'dfx-parish-retreat-letters' ); ?>"></span>
+											<?php esc_html_e( 'Not printed', 'dfx-parish-retreat-letters' ); ?>
+										<?php endif; ?>
+									</td>
+									<td>
+										<button type="button" class="button button-small button-primary dfx-print-message" data-message-id="<?php echo esc_attr( $message->id ); ?>">
+											<?php esc_html_e( 'Print', 'dfx-parish-retreat-letters' ); ?>
+										</button>
+
+										<?php if ( $message->file_count > 0 ) : ?>
+											<a href="<?php echo esc_url( admin_url( 'admin.php?page=dfx-messages&action=view_files&message_id=' . $message->id ) ); ?>" class="button button-small">
+												<?php esc_html_e( 'Files', 'dfx-parish-retreat-letters' ); ?>
+											</a>
+										<?php endif; ?>
+
+										<button type="button" class="button button-small button-link-delete dfx-delete-message" data-message-id="<?php echo esc_attr( $message->id ); ?>">
+											<?php esc_html_e( 'Delete', 'dfx-parish-retreat-letters' ); ?>
+										</button>
+									</td>
+								</tr>
+							<?php endforeach; ?>
+						<?php else : ?>
+							<tr>
+								<td colspan="7">
+									<?php if ( $search || $retreat_id || $message_type ) : ?>
+										<?php esc_html_e( 'No messages found for your search/filter criteria.', 'dfx-parish-retreat-letters' ); ?>
+									<?php else : ?>
+										<?php esc_html_e( 'No confidential messages have been received yet.', 'dfx-parish-retreat-letters' ); ?>
+									<?php endif; ?>
+								</td>
+							</tr>
+						<?php endif; ?>
+					</tbody>
+				</table>
+			</form>
+		</div>
+
+		<!-- Print Modal -->
+		<div id="dfx-print-modal" style="display: none;">
+			<div id="dfx-print-content"></div>
+		</div>
+
+		<style>
+		#dfx-print-modal {
+			position: fixed;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			background: rgba(0,0,0,0.8);
+			z-index: 999999;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+		}
+
+		#dfx-print-content {
+			background: white;
+			padding: 20px;
+			border-radius: 8px;
+			max-width: 90%;
+			max-height: 90%;
+			overflow: auto;
+			position: relative;
+		}
+
+		.dfx-print-actions {
+			position: fixed;
+			top: 20px;
+			right: 20px;
+			z-index: 1000000;
+		}
+
+		.dfx-print-actions button {
+			margin-left: 10px;
+			padding: 10px 20px;
+			font-size: 14px;
+		}
+
+		@media print {
+			#dfx-print-modal {
+				position: static;
+				background: none;
+			}
+			
+			#dfx-print-content {
+				max-width: none;
+				max-height: none;
+				padding: 0;
+				border-radius: 0;
+			}
+			
+			.dfx-print-actions {
+				display: none;
+			}
+		}
+		</style>
+		<?php
+	}
+
+	/**
+	 * Handle message list page actions.
+	 *
+	 * @since 1.2.0
+	 */
+	private function handle_message_list_actions() {
+		if ( ! wp_verify_nonce( $_POST['_wpnonce'] ?? '', 'dfx_messages_action' ) ) {
+			wp_die( __( 'Security check failed.', 'dfx-parish-retreat-letters' ) );
+		}
+
+		$action = sanitize_text_field( $_POST['action'] ?? '' );
+		$message_id = absint( $_POST['message_id'] ?? 0 );
+
+		if ( $action === 'delete' && $message_id ) {
+			if ( $this->message_model->delete( $message_id ) ) {
+				$this->add_admin_notice( __( 'Message deleted successfully.', 'dfx-parish-retreat-letters' ), 'success' );
+			} else {
+				$this->add_admin_notice( __( 'Error deleting message.', 'dfx-parish-retreat-letters' ), 'error' );
+			}
+		}
+	}
+
+	/**
+	 * AJAX handler for printing messages.
+	 *
+	 * @since 1.2.0
+	 */
+	public function ajax_print_message() {
+		if ( ! wp_verify_nonce( $_POST['nonce'] ?? '', 'dfx_retreats_nonce' ) ) {
+			wp_die( __( 'Security check failed.', 'dfx-parish-retreat-letters' ) );
+		}
+
+		$message_id = absint( $_POST['message_id'] ?? 0 );
+		if ( ! $message_id ) {
+			wp_send_json_error( array( 'message' => __( 'Invalid message ID.', 'dfx-parish-retreat-letters' ) ) );
+		}
+
+		// Get message with decrypted content
+		$message = $this->message_model->get_with_decrypted_content( $message_id );
+		if ( ! $message ) {
+			wp_send_json_error( array( 'message' => __( 'Message not found.', 'dfx-parish-retreat-letters' ) ) );
+		}
+
+		// Get attendant info
+		$attendant = $this->attendant_model->get( $message->attendant_id );
+		if ( ! $attendant ) {
+			wp_send_json_error( array( 'message' => __( 'Attendant not found.', 'dfx-parish-retreat-letters' ) ) );
+		}
+
+		// Get retreat info
+		$retreat = $this->retreat_model->get( $attendant->retreat_id );
+
+		// Get attached files
+		$files = $this->file_model->get_by_message( $message_id );
+
+		// Log the print operation
+		$this->print_log_model->log_print( $message_id, get_current_user_id() );
+
+		// Generate print-friendly HTML
+		$print_html = $this->generate_print_html( $message, $attendant, $retreat, $files );
+
+		wp_send_json_success( array( 'html' => $print_html ) );
+	}
+
+	/**
+	 * Generate print-friendly HTML for a message.
+	 *
+	 * @since 1.2.0
+	 * @param object $message   Message object with decrypted content.
+	 * @param object $attendant Attendant object.
+	 * @param object $retreat   Retreat object.
+	 * @param array  $files     Array of file objects.
+	 * @return string Print HTML.
+	 */
+	private function generate_print_html( $message, $attendant, $retreat, $files ) {
+		ob_start();
+		?>
+		<!DOCTYPE html>
+		<html>
+		<head>
+			<meta charset="UTF-8">
+			<title><?php esc_html_e( 'Confidential Message', 'dfx-parish-retreat-letters' ); ?></title>
+			<style>
+				body { font-family: Arial, sans-serif; margin: 20px; line-height: 1.6; }
+				.header { border-bottom: 2px solid #333; margin-bottom: 20px; padding-bottom: 10px; }
+				.header h1 { margin: 0; color: #333; }
+				.meta-info { background: #f9f9f9; padding: 15px; border-radius: 5px; margin-bottom: 20px; }
+				.meta-info h2 { margin-top: 0; color: #555; }
+				.meta-table { width: 100%; border-collapse: collapse; }
+				.meta-table th, .meta-table td { padding: 8px; text-align: left; border-bottom: 1px solid #ddd; }
+				.meta-table th { background-color: #f2f2f2; font-weight: bold; }
+				.message-content { background: #fff; padding: 20px; border: 1px solid #ddd; border-radius: 5px; margin-bottom: 20px; }
+				.message-content h3 { margin-top: 0; color: #333; }
+				.files-section { margin-top: 20px; }
+				.files-section h3 { color: #333; }
+				.file-list { list-style: none; padding: 0; }
+				.file-list li { background: #f9f9f9; padding: 10px; margin-bottom: 5px; border-radius: 3px; }
+				.print-info { margin-top: 30px; font-size: 12px; color: #666; border-top: 1px solid #ddd; padding-top: 10px; }
+				@media print {
+					body { margin: 0; }
+					.no-print { display: none; }
+				}
+			</style>
+		</head>
+		<body>
+			<div class="header">
+				<h1><?php esc_html_e( 'CONFIDENTIAL MESSAGE', 'dfx-parish-retreat-letters' ); ?></h1>
+			</div>
+
+			<div class="meta-info">
+				<h2><?php esc_html_e( 'Message Details', 'dfx-parish-retreat-letters' ); ?></h2>
+				<table class="meta-table">
+					<tr>
+						<th><?php esc_html_e( 'For Attendant', 'dfx-parish-retreat-letters' ); ?></th>
+						<td><?php echo esc_html( $attendant->name . ' ' . $attendant->surnames ); ?></td>
+					</tr>
+					<tr>
+						<th><?php esc_html_e( 'Retreat', 'dfx-parish-retreat-letters' ); ?></th>
+						<td><?php echo esc_html( $retreat->name ); ?> - <?php echo esc_html( $retreat->location ); ?></td>
+					</tr>
+					<tr>
+						<th><?php esc_html_e( 'Retreat Dates', 'dfx-parish-retreat-letters' ); ?></th>
+						<td><?php echo esc_html( date_i18n( get_option( 'date_format' ), strtotime( $retreat->start_date ) ) ); ?> - <?php echo esc_html( date_i18n( get_option( 'date_format' ), strtotime( $retreat->end_date ) ) ); ?></td>
+					</tr>
+					<tr>
+						<th><?php esc_html_e( 'From', 'dfx-parish-retreat-letters' ); ?></th>
+						<td><?php echo esc_html( $message->sender_name ?: __( 'Anonymous', 'dfx-parish-retreat-letters' ) ); ?></td>
+					</tr>
+					<tr>
+						<th><?php esc_html_e( 'Submitted', 'dfx-parish-retreat-letters' ); ?></th>
+						<td><?php echo esc_html( date_i18n( get_option( 'date_format' ) . ' ' . get_option( 'time_format' ), strtotime( $message->submitted_at ) ) ); ?></td>
+					</tr>
+					<tr>
+						<th><?php esc_html_e( 'Message ID', 'dfx-parish-retreat-letters' ); ?></th>
+						<td><?php echo esc_html( $message->id ); ?></td>
+					</tr>
+				</table>
+			</div>
+
+			<div class="message-content">
+				<h3><?php esc_html_e( 'Message Content', 'dfx-parish-retreat-letters' ); ?></h3>
+				<div><?php echo wp_kses_post( $message->decrypted_content ); ?></div>
+			</div>
+
+			<?php if ( ! empty( $files ) ) : ?>
+				<div class="files-section">
+					<h3><?php esc_html_e( 'Attached Files', 'dfx-parish-retreat-letters' ); ?></h3>
+					<ul class="file-list">
+						<?php foreach ( $files as $file ) : ?>
+							<li>
+								<strong><?php echo esc_html( $file->original_filename ); ?></strong>
+								(<?php echo esc_html( $file->file_type ); ?>, <?php echo esc_html( size_format( $file->file_size ) ); ?>)
+								<br>
+								<small><?php esc_html_e( 'Uploaded:', 'dfx-parish-retreat-letters' ); ?> <?php echo esc_html( date_i18n( get_option( 'date_format' ) . ' ' . get_option( 'time_format' ), strtotime( $file->uploaded_at ) ) ); ?></small>
+							</li>
+						<?php endforeach; ?>
+					</ul>
+					<p><em><?php esc_html_e( 'Note: Files are encrypted and stored separately. Contact system administrator to access file contents.', 'dfx-parish-retreat-letters' ); ?></em></p>
+				</div>
+			<?php endif; ?>
+
+			<div class="print-info">
+				<p>
+					<strong><?php esc_html_e( 'Print Information:', 'dfx-parish-retreat-letters' ); ?></strong><br>
+					<?php esc_html_e( 'Printed by:', 'dfx-parish-retreat-letters' ); ?> <?php echo esc_html( wp_get_current_user()->display_name ); ?><br>
+					<?php esc_html_e( 'Print date:', 'dfx-parish-retreat-letters' ); ?> <?php echo esc_html( date_i18n( get_option( 'date_format' ) . ' ' . get_option( 'time_format' ) ) ); ?><br>
+					<?php esc_html_e( 'This document contains confidential information and should be handled accordingly.', 'dfx-parish-retreat-letters' ); ?>
+				</p>
+			</div>
+		</body>
+		</html>
+		<?php
+		return ob_get_clean();
+	}
+
+	/**
+	 * AJAX handler for downloading files.
+	 *
+	 * @since 1.2.0
+	 */
+	public function ajax_download_file() {
+		if ( ! wp_verify_nonce( $_POST['nonce'] ?? '', 'dfx_retreats_nonce' ) ) {
+			wp_die( __( 'Security check failed.', 'dfx-parish-retreat-letters' ) );
+		}
+
+		$file_id = absint( $_POST['file_id'] ?? 0 );
+		if ( ! $file_id ) {
+			wp_send_json_error( array( 'message' => __( 'Invalid file ID.', 'dfx-parish-retreat-letters' ) ) );
+		}
+
+		// Serve the file (this will exit)
+		$this->file_model->serve_file( $file_id, get_current_user_id() );
+
+		// If we get here, file serving failed
+		wp_send_json_error( array( 'message' => __( 'File not found or access denied.', 'dfx-parish-retreat-letters' ) ) );
+	}
+
+	/**
+	 * AJAX handler for deleting messages.
+	 *
+	 * @since 1.2.0
+	 */
+	public function ajax_delete_message() {
+		if ( ! wp_verify_nonce( $_POST['nonce'] ?? '', 'dfx_retreats_nonce' ) ) {
+			wp_die( __( 'Security check failed.', 'dfx-parish-retreat-letters' ) );
+		}
+
+		$message_id = absint( $_POST['message_id'] ?? 0 );
+		if ( ! $message_id ) {
+			wp_send_json_error( array( 'message' => __( 'Invalid message ID.', 'dfx-parish-retreat-letters' ) ) );
+		}
+
+		if ( $this->message_model->delete( $message_id ) ) {
+			wp_send_json_success( array( 'message' => __( 'Message deleted successfully.', 'dfx-parish-retreat-letters' ) ) );
+		} else {
+			wp_send_json_error( array( 'message' => __( 'Error deleting message.', 'dfx-parish-retreat-letters' ) ) );
+		}
 	}
 }

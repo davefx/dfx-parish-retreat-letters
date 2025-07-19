@@ -212,6 +212,233 @@
         
         // Auto-dismiss notices
         $('.notice.is-dismissible').delay(5000).fadeOut();
+
+        // Handle generate message URL button clicks
+        $('.dfx-generate-url').on('click', function(e) {
+            e.preventDefault();
+            
+            var attendantId = $(this).data('attendant-id');
+            var $button = $(this);
+            
+            // Disable button and show loading state
+            $button.prop('disabled', true).text(dfxRetreatsAdmin.messages.generating);
+            
+            $.ajax({
+                url: dfxRetreatsAdmin.ajaxurl,
+                type: 'POST',
+                data: {
+                    action: 'dfx_generate_message_url',
+                    attendant_id: attendantId,
+                    nonce: dfxRetreatsAdmin.nonce
+                },
+                success: function(response) {
+                    if (response.success) {
+                        // Replace button with copy URL button
+                        var newButton = '<button type="button" class="button button-small button-primary dfx-copy-url" data-url="' + response.data.url + '">' +
+                                       'Copy Message URL</button>';
+                        $button.replaceWith(newButton);
+                        
+                        // Show success message
+                        $('<div class="notice notice-success is-dismissible"><p>' + dfxRetreatsAdmin.messages.urlGenerated + '</p></div>')
+                            .insertAfter('.wp-header-end')
+                            .delay(3000)
+                            .fadeOut();
+                            
+                        // Auto-copy URL to clipboard
+                        copyToClipboard(response.data.url);
+                    } else {
+                        alert(response.data.message || dfxRetreatsAdmin.messages.generateError);
+                        // Re-enable button
+                        $button.prop('disabled', false).text('Generate Message URL');
+                    }
+                },
+                error: function() {
+                    alert(dfxRetreatsAdmin.messages.generateError);
+                    // Re-enable button
+                    $button.prop('disabled', false).text('Generate Message URL');
+                }
+            });
+        });
+
+        // Handle copy URL button clicks (using event delegation for dynamically added buttons)
+        $(document).on('click', '.dfx-copy-url', function(e) {
+            e.preventDefault();
+            
+            var url = $(this).data('url');
+            var $button = $(this);
+            
+            if (copyToClipboard(url)) {
+                // Temporarily change button text
+                var originalText = $button.text();
+                $button.text(dfxRetreatsAdmin.messages.urlCopied);
+                setTimeout(function() {
+                    $button.text(originalText);
+                }, 2000);
+            }
+        });
+
+        // Handle print message button clicks
+        $('.dfx-print-message').on('click', function(e) {
+            e.preventDefault();
+            
+            var messageId = $(this).data('message-id');
+            var $button = $(this);
+            
+            // Disable button and show loading state
+            $button.prop('disabled', true).text(dfxRetreatsAdmin.messages.printing);
+            
+            $.ajax({
+                url: dfxRetreatsAdmin.ajaxurl,
+                type: 'POST',
+                data: {
+                    action: 'dfx_print_message',
+                    message_id: messageId,
+                    nonce: dfxRetreatsAdmin.nonce
+                },
+                success: function(response) {
+                    if (response.success) {
+                        showPrintModal(response.data.html);
+                    } else {
+                        alert(response.data.message || dfxRetreatsAdmin.messages.printError);
+                    }
+                    // Re-enable button
+                    $button.prop('disabled', false).text('Print');
+                },
+                error: function() {
+                    alert(dfxRetreatsAdmin.messages.printError);
+                    // Re-enable button
+                    $button.prop('disabled', false).text('Print');
+                }
+            });
+        });
+
+        // Handle delete message button clicks
+        $('.dfx-delete-message').on('click', function(e) {
+            e.preventDefault();
+            
+            var messageId = $(this).data('message-id');
+            var $row = $(this).closest('tr');
+            
+            if (!confirm(dfxRetreatsAdmin.messages.confirmDeleteMessage)) {
+                return;
+            }
+            
+            // Disable button and show loading state
+            $(this).prop('disabled', true).text('Deleting...');
+            
+            $.ajax({
+                url: dfxRetreatsAdmin.ajaxurl,
+                type: 'POST',
+                data: {
+                    action: 'dfx_delete_message',
+                    message_id: messageId,
+                    nonce: dfxRetreatsAdmin.nonce
+                },
+                success: function(response) {
+                    if (response.success) {
+                        // Remove the row with animation
+                        $row.fadeOut(300, function() {
+                            $(this).remove();
+                            
+                            // Show success message
+                            $('<div class="notice notice-success is-dismissible"><p>' + dfxRetreatsAdmin.messages.messageDeleted + '</p></div>')
+                                .insertAfter('.wp-header-end')
+                                .delay(3000)
+                                .fadeOut();
+                        });
+                    } else {
+                        alert(response.data.message || 'Error deleting message.');
+                        // Re-enable button
+                        $('.dfx-delete-message[data-message-id="' + messageId + '"]')
+                            .prop('disabled', false)
+                            .text('Delete');
+                    }
+                },
+                error: function() {
+                    alert('Error deleting message. Please try again.');
+                    // Re-enable button
+                    $('.dfx-delete-message[data-message-id="' + messageId + '"]')
+                        .prop('disabled', false)
+                        .text('Delete');
+                }
+            });
+        });
+
+        // Function to copy text to clipboard
+        function copyToClipboard(text) {
+            if (navigator.clipboard && window.isSecureContext) {
+                // Use the Clipboard API if available
+                navigator.clipboard.writeText(text).then(function() {
+                    return true;
+                }).catch(function() {
+                    return fallbackCopyToClipboard(text);
+                });
+                return true;
+            } else {
+                // Fallback for older browsers
+                return fallbackCopyToClipboard(text);
+            }
+        }
+
+        // Fallback copy method for older browsers
+        function fallbackCopyToClipboard(text) {
+            var textArea = document.createElement('textarea');
+            textArea.value = text;
+            textArea.style.position = 'fixed';
+            textArea.style.left = '-999999px';
+            textArea.style.top = '-999999px';
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            
+            try {
+                var successful = document.execCommand('copy');
+                document.body.removeChild(textArea);
+                return successful;
+            } catch (err) {
+                document.body.removeChild(textArea);
+                return false;
+            }
+        }
+
+        // Function to show print modal
+        function showPrintModal(html) {
+            // Remove any existing modal
+            $('#dfx-print-modal').remove();
+            
+            // Create modal HTML
+            var modalHtml = '<div id="dfx-print-modal">' +
+                           '<div class="dfx-print-actions no-print">' +
+                           '<button type="button" id="dfx-print-btn" class="button button-primary">Print</button>' +
+                           '<button type="button" id="dfx-close-print" class="button">Close</button>' +
+                           '</div>' +
+                           '<div id="dfx-print-content">' + html + '</div>' +
+                           '</div>';
+            
+            // Add modal to body
+            $('body').append(modalHtml);
+            
+            // Show modal
+            $('#dfx-print-modal').show();
+            
+            // Handle print button
+            $('#dfx-print-btn').on('click', function() {
+                window.print();
+            });
+            
+            // Handle close button
+            $('#dfx-close-print').on('click', function() {
+                $('#dfx-print-modal').remove();
+            });
+            
+            // Handle escape key
+            $(document).on('keyup.printModal', function(e) {
+                if (e.keyCode === 27) { // Escape key
+                    $('#dfx-print-modal').remove();
+                    $(document).off('keyup.printModal');
+                }
+            });
+        }
     });
 
 })(jQuery);
