@@ -370,3 +370,46 @@ msgstr "Los nombres de las columnas pueden estar en inglés o español"
 
 msgid "The first row must contain column headers"
 msgstr "La primera fila debe contener los encabezados de las columnas"
+
+msgid "Date Format Preference"
+msgstr "Preferencia de Formato de Fecha"
+
+msgid "Auto-detect (recommended)"
+msgstr "Auto-detectar (recomendado)"
+
+msgid "DD/MM/YYYY (Day/Month/Year)"
+msgstr "DD/MM/AAAA (Día/Mes/Año)"
+
+msgid "MM/DD/YYYY (Month/Day/Year)"
+msgstr "MM/DD/AAAA (Mes/Día/Año)"
+
+msgid "This preference helps interpret ambiguous dates like \"01/10/2025\". Auto-detect works best with unambiguous dates."
+msgstr "Esta preferencia ayuda a interpretar fechas ambiguas como \"01/10/2025\". La auto-detección funciona mejor con fechas no ambiguas."
+
+msgid "Important Note about Date Formats:"
+msgstr "Nota Importante sobre Formatos de Fecha:"
+
+msgid "For ambiguous dates like \"01/10/2025\", the system cannot determine if this means \"January 10th\" or \"October 1st\". To avoid confusion:"
+msgstr "Para fechas ambiguas como \"01/10/2025\", el sistema no puede determinar si esto significa \"10 de enero\" o \"1 de octubre\". Para evitar confusión:"
+
+msgid "Use unambiguous formats like YYYY-MM-DD (2025-01-10)"
+msgstr "Use formatos no ambiguos como AAAA-MM-DD (2025-01-10)"
+
+msgid "Use dates where day > 12 (e.g., 15/01/2025 is clearly January 15th)"
+msgstr "Use fechas donde día > 12 (ej., 15/01/2025 es claramente 15 de enero)"
+
+msgid "Set your preferred date format below to ensure consistent interpretation"
+msgstr "Configure su formato de fecha preferido abajo para asegurar una interpretación consistente"
+
+msgid "Auto-detect"
+msgstr "Auto-detectar"
+
+#, php-format
+msgid "Warning: %1$d ambiguous date(s) were interpreted using your current preference (%2$s)."
+msgstr "Advertencia: %1$d fecha(s) ambigua(s) fueron interpretadas usando su preferencia actual (%2$s)."
+
+msgid "Ambiguous dates found:"
+msgstr "Fechas ambiguas encontradas:"
+
+msgid "To avoid ambiguity in future imports, consider using YYYY-MM-DD format or dates where day > 12."
+msgstr "Para evitar ambigüedad en futuras importaciones, considere usar el formato AAAA-MM-DD o fechas donde día > 12."

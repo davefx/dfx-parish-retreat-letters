@@ -762,6 +762,12 @@ class DFX_Parish_Retreat_Letters_Admin {
 			wp_die( __( 'Security check failed.', 'dfx-parish-retreat-letters' ) );
 		}
 
+		// Save the date format preference
+		$date_format_preference = sanitize_text_field( $_POST['date_format_preference'] ?? 'auto' );
+		if ( in_array( $date_format_preference, array( 'auto', 'dmy', 'mdy' ), true ) ) {
+			update_option( 'dfx_retreat_letters_date_format', $date_format_preference );
+		}
+
 		if ( ! isset( $_FILES['csv_file'] ) || $_FILES['csv_file']['error'] !== UPLOAD_ERR_OK ) {
 			$this->add_admin_notice( __( 'Please select a valid CSV file.', 'dfx-parish-retreat-letters' ), 'error' );
 			return;
@@ -786,6 +792,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 		$errors = 0;
 		$line_number = 0;
 		$error_details = array();
+		$ambiguous_dates = array();
 
 		// Read header row for field mapping
 		$headers = fgetcsv( $handle );
@@ -824,7 +831,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 			}
 
 			// Map row data using field mapping
-			$mapped_data = $this->map_csv_row_data( $row, $field_map );
+			$mapped_data = $this->map_csv_row_data( $row, $field_map, $ambiguous_dates );
 			
 			if ( ! $mapped_data ) {
 				$errors++;
@@ -872,6 +879,40 @@ class DFX_Parish_Retreat_Letters_Admin {
 			}
 			
 			$this->add_admin_notice( $error_message, 'warning' );
+		}
+
+		// Warn about ambiguous dates if any were found
+		if ( ! empty( $ambiguous_dates ) ) {
+			$unique_ambiguous = array_unique( $ambiguous_dates );
+			$current_preference = get_option( 'dfx_retreat_letters_date_format', 'auto' );
+			
+			$preference_text = '';
+			switch ( $current_preference ) {
+				case 'dmy':
+					$preference_text = __( 'DD/MM/YYYY (Day/Month/Year)', 'dfx-parish-retreat-letters' );
+					break;
+				case 'mdy':
+					$preference_text = __( 'MM/DD/YYYY (Month/Day/Year)', 'dfx-parish-retreat-letters' );
+					break;
+				default:
+					$preference_text = __( 'Auto-detect', 'dfx-parish-retreat-letters' );
+					break;
+			}
+			
+			$ambiguous_message = sprintf(
+				/* translators: %1$d: Number of ambiguous dates, %2$s: Current preference */
+				__( 'Warning: %1$d ambiguous date(s) were interpreted using your current preference (%2$s).', 'dfx-parish-retreat-letters' ),
+				count( $unique_ambiguous ),
+				$preference_text
+			);
+			
+			if ( count( $unique_ambiguous ) <= 5 ) {
+				$ambiguous_message .= '<br><strong>' . __( 'Ambiguous dates found:', 'dfx-parish-retreat-letters' ) . '</strong> ' . implode( ', ', $unique_ambiguous );
+			}
+			
+			$ambiguous_message .= '<br>' . __( 'To avoid ambiguity in future imports, consider using YYYY-MM-DD format or dates where day > 12.', 'dfx-parish-retreat-letters' );
+			
+			$this->add_admin_notice( $ambiguous_message, 'info' );
 		}
 
 		wp_redirect( admin_url( 'admin.php?page=dfx-retreats&action=attendants&retreat_id=' . $retreat_id ) );
@@ -984,7 +1025,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 	 * @param array $field_map Field mapping array.
 	 * @return array|false Mapped data or false on failure.
 	 */
-	private function map_csv_row_data( $row, $field_map ) {
+	private function map_csv_row_data( $row, $field_map, &$ambiguous_dates = null ) {
 		$mapped_data = array();
 
 		// Map each required field
@@ -997,6 +1038,11 @@ class DFX_Parish_Retreat_Letters_Admin {
 
 		// Special handling for date of birth - try to parse different formats
 		if ( isset( $mapped_data['date_of_birth'] ) ) {
+			// Check if date is ambiguous before parsing
+			if ( is_array( $ambiguous_dates ) && $this->is_ambiguous_date( $mapped_data['date_of_birth'] ) ) {
+				$ambiguous_dates[] = $mapped_data['date_of_birth'];
+			}
+			
 			$parsed_date = $this->parse_flexible_date( $mapped_data['date_of_birth'] );
 			if ( $parsed_date ) {
 				$mapped_data['date_of_birth'] = $parsed_date;
@@ -1014,9 +1060,10 @@ class DFX_Parish_Retreat_Letters_Admin {
 	 *
 	 * @since 1.0.0
 	 * @param string $date_string Date string in various formats.
+	 * @param string $preferred_format Optional preferred format hint.
 	 * @return string|false Standardized date (Y-m-d) or false on failure.
 	 */
-	private function parse_flexible_date( $date_string ) {
+	private function parse_flexible_date( $date_string, $preferred_format = '' ) {
 		if ( empty( $date_string ) ) {
 			return false;
 		}
@@ -1024,30 +1071,29 @@ class DFX_Parish_Retreat_Letters_Admin {
 		// Remove extra whitespace
 		$date_string = trim( $date_string );
 
-		// Try various date formats
-		$formats = array(
-			'Y-m-d',     // 2023-01-15
-			'd/m/Y',     // 15/01/2023
-			'm/d/Y',     // 01/15/2023
-			'd-m-Y',     // 15-01-2023
-			'm-d-Y',     // 01-15-2023
-			'd.m.Y',     // 15.01.2023
-			'm.d.Y',     // 01.15.2023
-			'Y/m/d',     // 2023/01/15
-			'd/m/y',     // 15/01/23
-			'm/d/y',     // 01/15/23
-			'd-m-y',     // 15-01-23
-			'm-d-y',     // 01-15-23
-		);
+		// Get user's preferred date format from settings
+		if ( empty( $preferred_format ) ) {
+			$preferred_format = get_option( 'dfx_retreat_letters_date_format', 'auto' );
+		}
+
+		// Try to auto-detect format based on unambiguous dates first
+		$detected_format = $this->detect_date_format( $date_string );
+		if ( $detected_format ) {
+			$date = DateTime::createFromFormat( $detected_format, $date_string );
+			if ( $date && $date->format( $detected_format ) === $date_string ) {
+				if ( $this->is_reasonable_date( $date ) ) {
+					return $date->format( 'Y-m-d' );
+				}
+			}
+		}
+
+		// Define format priority based on user preference
+		$formats = $this->get_date_formats_by_preference( $preferred_format );
 
 		foreach ( $formats as $format ) {
 			$date = DateTime::createFromFormat( $format, $date_string );
 			if ( $date && $date->format( $format ) === $date_string ) {
-				// Validate that the date is reasonable (not in the future, not too old)
-				$now = new DateTime();
-				$min_date = new DateTime( '1900-01-01' );
-				
-				if ( $date <= $now && $date >= $min_date ) {
+				if ( $this->is_reasonable_date( $date ) ) {
 					return $date->format( 'Y-m-d' );
 				}
 			}
@@ -1059,16 +1105,129 @@ class DFX_Parish_Retreat_Letters_Admin {
 			$date = new DateTime();
 			$date->setTimestamp( $timestamp );
 			
-			// Validate that the date is reasonable
-			$now = new DateTime();
-			$min_date = new DateTime( '1900-01-01' );
-			
-			if ( $date <= $now && $date >= $min_date ) {
+			if ( $this->is_reasonable_date( $date ) ) {
 				return $date->format( 'Y-m-d' );
 			}
 		}
 
 		return false;
+	}
+
+	/**
+	 * Detect date format for unambiguous dates.
+	 *
+	 * @since 1.0.0
+	 * @param string $date_string Date string.
+	 * @return string|false Detected format or false if ambiguous.
+	 */
+	private function detect_date_format( $date_string ) {
+		// Regular expressions for different date formats
+		$patterns = array(
+			'Y-m-d' => '/^(\d{4})-(\d{1,2})-(\d{1,2})$/',    // 2023-01-15
+			'Y/m/d' => '/^(\d{4})\/(\d{1,2})\/(\d{1,2})$/',   // 2023/01/15
+			'd/m/Y' => '/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/',   // 15/01/2023
+			'm/d/Y' => '/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/',   // 01/15/2023 (same pattern as d/m/Y)
+			'd-m-Y' => '/^(\d{1,2})-(\d{1,2})-(\d{4})$/',     // 15-01-2023
+			'm-d-Y' => '/^(\d{1,2})-(\d{1,2})-(\d{4})$/',     // 01-15-2023 (same pattern as d-m-Y)
+			'd.m.Y' => '/^(\d{1,2})\.(\d{1,2})\.(\d{4})$/',   // 15.01.2023
+			'm.d.Y' => '/^(\d{1,2})\.(\d{1,2})\.(\d{4})$/',   // 01.15.2023 (same pattern as d.m.Y)
+		);
+
+		foreach ( $patterns as $format => $pattern ) {
+			if ( preg_match( $pattern, $date_string, $matches ) ) {
+				// For YYYY-MM-DD and YYYY/MM/DD formats, they're unambiguous
+				if ( in_array( $format, array( 'Y-m-d', 'Y/m/d' ), true ) ) {
+					return $format;
+				}
+
+				// For other formats, check if day > 12 to determine if it's unambiguous
+				$part1 = intval( $matches[1] );
+				$part2 = intval( $matches[2] );
+				
+				// If either part is > 12, we can determine the format
+				if ( $part1 > 12 ) {
+					// First part is day, so format is d/m/Y, d-m-Y, or d.m.Y
+					if ( strpos( $format, 'd/' ) === 0 || strpos( $format, 'd-' ) === 0 || strpos( $format, 'd.' ) === 0 ) {
+						return $format;
+					}
+				} elseif ( $part2 > 12 ) {
+					// Second part is day, so format is m/d/Y, m-d-Y, or m.d.Y
+					if ( strpos( $format, 'm/' ) === 0 || strpos( $format, 'm-' ) === 0 || strpos( $format, 'm.' ) === 0 ) {
+						return $format;
+					}
+				}
+			}
+		}
+
+		return false; // Ambiguous or not recognized
+	}
+
+	/**
+	 * Get date formats ordered by preference.
+	 *
+	 * @since 1.0.0
+	 * @param string $preferred_format User's preferred format.
+	 * @return array Ordered array of date formats.
+	 */
+	private function get_date_formats_by_preference( $preferred_format ) {
+		$all_formats = array(
+			'Y-m-d',     // 2023-01-15
+			'Y/m/d',     // 2023/01/15
+			'd/m/Y',     // 15/01/2023
+			'm/d/Y',     // 01/15/2023
+			'd-m-Y',     // 15-01-2023
+			'm-d-Y',     // 01-15-2023
+			'd.m.Y',     // 15.01.2023
+			'm.d.Y',     // 01.15.2023
+			'd/m/y',     // 15/01/23
+			'm/d/y',     // 01/15/23
+			'd-m-y',     // 15-01-23
+			'm-d-y',     // 01-15-23
+		);
+
+		switch ( $preferred_format ) {
+			case 'dmy':
+				// Day/Month/Year preference - prioritize d/m/Y formats
+				return array(
+					'Y-m-d', 'Y/m/d', 'd/m/Y', 'd-m-Y', 'd.m.Y', 'd/m/y', 'd-m-y',
+					'm/d/Y', 'm-d-Y', 'm.d.Y', 'm/d/y', 'm-d-y'
+				);
+			case 'mdy':
+				// Month/Day/Year preference - prioritize m/d/Y formats
+				return array(
+					'Y-m-d', 'Y/m/d', 'm/d/Y', 'm-d-Y', 'm.d.Y', 'm/d/y', 'm-d-y',
+					'd/m/Y', 'd-m-Y', 'd.m.Y', 'd/m/y', 'd-m-y'
+				);
+			case 'auto':
+			default:
+				// Auto-detection or default - try ISO format first, then common formats
+				return $all_formats;
+		}
+	}
+
+	/**
+	 * Check if a date is within reasonable bounds.
+	 *
+	 * @since 1.0.0
+	 * @param DateTime $date Date object to validate.
+	 * @return bool True if reasonable, false otherwise.
+	 */
+	private function is_reasonable_date( $date ) {
+		$now = new DateTime();
+		$min_date = new DateTime( '1900-01-01' );
+		
+		return $date <= $now && $date >= $min_date;
+	}
+
+	/**
+	 * Check if a date string is ambiguous.
+	 *
+	 * @since 1.0.0
+	 * @param string $date_string Date string to check.
+	 * @return bool True if ambiguous, false if unambiguous.
+	 */
+	private function is_ambiguous_date( $date_string ) {
+		return $this->detect_date_format( $date_string ) === false;
 	}
 
 	/**
@@ -1406,12 +1565,37 @@ class DFX_Parish_Retreat_Letters_Admin {
 					<li><?php esc_html_e( 'Column names can be in English or Spanish', 'dfx-parish-retreat-letters' ); ?></li>
 					<li><?php esc_html_e( 'The first row must contain column headers', 'dfx-parish-retreat-letters' ); ?></li>
 				</ul>
+				<div class="notice notice-warning">
+					<p><strong><?php esc_html_e( 'Important Note about Date Formats:', 'dfx-parish-retreat-letters' ); ?></strong></p>
+					<p><?php esc_html_e( 'For ambiguous dates like "01/10/2025", the system cannot determine if this means "January 10th" or "October 1st". To avoid confusion:', 'dfx-parish-retreat-letters' ); ?></p>
+					<ul>
+						<li><?php esc_html_e( 'Use unambiguous formats like YYYY-MM-DD (2025-01-10)', 'dfx-parish-retreat-letters' ); ?></li>
+						<li><?php esc_html_e( 'Use dates where day > 12 (e.g., 15/01/2025 is clearly January 15th)', 'dfx-parish-retreat-letters' ); ?></li>
+						<li><?php esc_html_e( 'Set your preferred date format below to ensure consistent interpretation', 'dfx-parish-retreat-letters' ); ?></li>
+					</ul>
+				</div>
 			</div>
 
 			<form method="post" enctype="multipart/form-data">
 				<?php wp_nonce_field( 'dfx_attendants_import' ); ?>
 				<table class="form-table">
 					<tbody>
+						<tr>
+							<th scope="row">
+								<label for="date_format_preference"><?php esc_html_e( 'Date Format Preference', 'dfx-parish-retreat-letters' ); ?></label>
+							</th>
+							<td>
+								<?php $current_preference = get_option( 'dfx_retreat_letters_date_format', 'auto' ); ?>
+								<select id="date_format_preference" name="date_format_preference">
+									<option value="auto" <?php selected( $current_preference, 'auto' ); ?>><?php esc_html_e( 'Auto-detect (recommended)', 'dfx-parish-retreat-letters' ); ?></option>
+									<option value="dmy" <?php selected( $current_preference, 'dmy' ); ?>><?php esc_html_e( 'DD/MM/YYYY (Day/Month/Year)', 'dfx-parish-retreat-letters' ); ?></option>
+									<option value="mdy" <?php selected( $current_preference, 'mdy' ); ?>><?php esc_html_e( 'MM/DD/YYYY (Month/Day/Year)', 'dfx-parish-retreat-letters' ); ?></option>
+								</select>
+								<p class="description">
+									<?php esc_html_e( 'This preference helps interpret ambiguous dates like "01/10/2025". Auto-detect works best with unambiguous dates.', 'dfx-parish-retreat-letters' ); ?>
+								</p>
+							</td>
+						</tr>
 						<tr>
 							<th scope="row">
 								<label for="csv_file"><?php esc_html_e( 'CSV File', 'dfx-parish-retreat-letters' ); ?> <span class="description">(<?php esc_html_e( 'required', 'dfx-parish-retreat-letters' ); ?>)</span></label>
