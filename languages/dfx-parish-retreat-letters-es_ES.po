@@ -709,4 +709,9 @@ msgstr "Mensaje enviado exitosamente con %d archivo(s)."
 
 msgid "Note: Some files could not be uploaded: %s"
 msgstr "Nota: Algunos archivos no pudieron subirse: %s"
-msgstr "Tipo de archivo: %s, Tamaño: %s - No se puede mostrar el contenido para imprimir."
+
+msgid "Click to view print history"
+msgstr "Haga clic para ver el historial de impresión"
+
+msgid "Unknown User"
+msgstr "Usuario Desconocido"

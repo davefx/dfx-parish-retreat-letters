@@ -132,6 +132,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 		add_action( 'wp_ajax_dfx_print_message', array( $this, 'ajax_print_message' ) );
 		add_action( 'wp_ajax_dfx_download_file', array( $this, 'ajax_download_file' ) );
 		add_action( 'wp_ajax_dfx_delete_message', array( $this, 'ajax_delete_message' ) );
+		add_action( 'wp_ajax_dfx_get_print_log', array( $this, 'ajax_get_print_log' ) );
 	}
 
 	/**
@@ -2056,14 +2057,19 @@ class DFX_Parish_Retreat_Letters_Admin {
 									<td>
 										<?php if ( $message->print_count > 0 ) : ?>
 											<span class="dashicons dashicons-yes-alt" style="color: #46b450;" title="<?php esc_attr_e( 'Printed', 'dfx-parish-retreat-letters' ); ?>"></span>
-											<?php
-											printf(
-												/* translators: %1$d: Print count, %2$s: First print date */
-												esc_html__( 'Printed %1$d time(s), first: %2$s', 'dfx-parish-retreat-letters' ),
-												$message->print_count,
-												date_i18n( get_option( 'date_format' ) . ' ' . get_option( 'time_format' ), strtotime( $message->first_printed_at ) )
-											);
-											?>
+											<a href="#" class="dfx-view-print-log" data-message-id="<?php echo esc_attr( $message->id ); ?>" style="text-decoration: none;">
+												<?php
+												printf(
+													/* translators: %1$d: Print count, %2$s: First print date */
+													esc_html__( 'Printed %1$d time(s), first: %2$s', 'dfx-parish-retreat-letters' ),
+													$message->print_count,
+													date_i18n( get_option( 'date_format' ) . ' ' . get_option( 'time_format' ), strtotime( $message->first_printed_at ) )
+												);
+												?>
+											</a>
+											<small style="display: block; margin-top: 2px; color: #666;">
+												<?php esc_html_e( 'Click to view print history', 'dfx-parish-retreat-letters' ); ?>
+											</small>
 										<?php else : ?>
 											<span class="dashicons dashicons-warning" style="color: #dba617;" title="<?php esc_attr_e( 'Not Printed', 'dfx-parish-retreat-letters' ); ?>"></span>
 											<?php esc_html_e( 'Not printed', 'dfx-parish-retreat-letters' ); ?>
@@ -2191,6 +2197,44 @@ class DFX_Parish_Retreat_Letters_Admin {
 		} else {
 			wp_send_json_error( array( 'message' => __( 'Error deleting message.', 'dfx-parish-retreat-letters' ) ) );
 		}
+	}
+
+	/**
+	 * AJAX handler for getting message print log.
+	 *
+	 * @since 1.2.1
+	 */
+	public function ajax_get_print_log() {
+		if ( ! wp_verify_nonce( $_POST['nonce'] ?? '', 'dfx_retreats_nonce' ) ) {
+			wp_die( __( 'Security check failed.', 'dfx-parish-retreat-letters' ) );
+		}
+
+		$message_id = absint( $_POST['message_id'] ?? 0 );
+		if ( ! $message_id ) {
+			wp_send_json_error( array( 'message' => __( 'Invalid message ID.', 'dfx-parish-retreat-letters' ) ) );
+		}
+
+		// Get print logs for this message
+		$print_log_model = new DFX_Parish_Retreat_Letters_PrintLog();
+		$print_logs = $print_log_model->get_by_message( $message_id, array( 'per_page' => 100 ) );
+
+		// Format the data for display
+		$formatted_logs = array();
+		foreach ( $print_logs as $log ) {
+			$formatted_logs[] = array(
+				'user_name' => $log->display_name ?: $log->user_login ?: __( 'Unknown User', 'dfx-parish-retreat-letters' ),
+				'printed_at' => date_i18n( 
+					get_option( 'date_format' ) . ' ' . get_option( 'time_format' ), 
+					strtotime( $log->printed_at ) 
+				),
+				'ip_address' => $log->ip_address,
+			);
+		}
+
+		wp_send_json_success( array( 
+			'logs' => $formatted_logs,
+			'total_count' => count( $formatted_logs )
+		) );
 	}
 
 	/**

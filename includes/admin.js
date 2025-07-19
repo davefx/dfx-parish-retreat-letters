@@ -49,8 +49,10 @@
             $('<style id="dfx-modal-styles">' +
                 '.dfx-modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 100000; display: none; }' +
                 '.dfx-modal-dialog { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #fff; border-radius: 4px; box-shadow: 0 4px 20px rgba(0,0,0,0.3); max-width: 500px; width: 90%; }' +
-                '.dfx-modal-header { padding: 20px 20px 10px; border-bottom: 1px solid #ddd; }' +
+                '.dfx-modal-header { padding: 20px 20px 10px; border-bottom: 1px solid #ddd; position: relative; }' +
                 '.dfx-modal-header h3 { margin: 0; font-size: 18px; color: #d63638; }' +
+                '.dfx-modal-close { position: absolute; top: 15px; right: 20px; background: none; border: none; font-size: 24px; line-height: 1; cursor: pointer; color: #666; padding: 0; }' +
+                '.dfx-modal-close:hover { color: #000; }' +
                 '.dfx-modal-body { padding: 20px; }' +
                 '.dfx-warning-message { background: #fff8e5; border: 1px solid #f0b849; border-radius: 4px; padding: 15px; margin-bottom: 20px; }' +
                 '.dfx-warning-message p { margin: 0 0 10px; }' +
@@ -59,6 +61,9 @@
                 '.dfx-confirmation-section input { width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px; }' +
                 '.dfx-modal-footer { padding: 15px 20px; border-top: 1px solid #ddd; text-align: right; }' +
                 '.dfx-modal-footer .button { margin-left: 10px; }' +
+                '#dfx-print-log-modal .dfx-modal-dialog { max-width: 700px; }' +
+                '#dfx-print-log-modal .dfx-modal-body table { margin: 0; }' +
+                '#dfx-print-log-modal .dfx-modal-body th, #dfx-print-log-modal .dfx-modal-body td { padding: 8px 12px; }' +
             '</style>').appendTo('head');
         }
         // Handle delete retreat button clicks
@@ -466,6 +471,130 @@
                 }
             });
         });
+
+        // Handle view print log clicks
+        $('.dfx-view-print-log').on('click', function(e) {
+            e.preventDefault();
+            
+            var messageId = $(this).data('message-id');
+            
+            var ajaxUrl = (typeof dfxRetreatsAdmin !== 'undefined' && dfxRetreatsAdmin.ajaxurl) 
+                ? dfxRetreatsAdmin.ajaxurl 
+                : (typeof ajaxurl !== 'undefined' ? ajaxurl : '/wp-admin/admin-ajax.php');
+            var nonce = (typeof dfxRetreatsAdmin !== 'undefined' && dfxRetreatsAdmin.nonce) 
+                ? dfxRetreatsAdmin.nonce 
+                : '';
+            
+            // Show loading state
+            showPrintLogModal(messageId, null, true);
+            
+            $.ajax({
+                url: ajaxUrl,
+                type: 'POST',
+                data: {
+                    action: 'dfx_get_print_log',
+                    message_id: messageId,
+                    nonce: nonce
+                },
+                success: function(response) {
+                    if (response.success) {
+                        showPrintLogModal(messageId, response.data, false);
+                    } else {
+                        alert(response.data.message || 'Error loading print history.');
+                        closePrintLogModal();
+                    }
+                },
+                error: function() {
+                    alert('Error loading print history. Please try again.');
+                    closePrintLogModal();
+                }
+            });
+        });
+
+        // Function to show print log modal
+        function showPrintLogModal(messageId, data, loading) {
+            // Remove existing modal if any
+            $('#dfx-print-log-modal').remove();
+            
+            var modalHtml = '';
+            
+            if (loading) {
+                modalHtml = 
+                    '<div id="dfx-print-log-modal" class="dfx-modal-overlay">' +
+                        '<div class="dfx-modal-dialog">' +
+                            '<div class="dfx-modal-header">' +
+                                '<h3>Print History</h3>' +
+                                '<button type="button" class="dfx-modal-close" aria-label="Close">&times;</button>' +
+                            '</div>' +
+                            '<div class="dfx-modal-body">' +
+                                '<p>Loading print history...</p>' +
+                            '</div>' +
+                        '</div>' +
+                    '</div>';
+            } else {
+                var logsTable = '';
+                if (data.logs && data.logs.length > 0) {
+                    logsTable = '<table class="widefat fixed striped">' +
+                        '<thead>' +
+                            '<tr>' +
+                                '<th>User</th>' +
+                                '<th>Date & Time</th>' +
+                                '<th>IP Address</th>' +
+                            '</tr>' +
+                        '</thead>' +
+                        '<tbody>';
+                    
+                    for (var i = 0; i < data.logs.length; i++) {
+                        var log = data.logs[i];
+                        logsTable += '<tr>' +
+                            '<td>' + log.user_name + '</td>' +
+                            '<td>' + log.printed_at + '</td>' +
+                            '<td>' + log.ip_address + '</td>' +
+                        '</tr>';
+                    }
+                    
+                    logsTable += '</tbody></table>';
+                } else {
+                    logsTable = '<p>No print history available for this message.</p>';
+                }
+                
+                modalHtml = 
+                    '<div id="dfx-print-log-modal" class="dfx-modal-overlay">' +
+                        '<div class="dfx-modal-dialog" style="max-width: 700px;">' +
+                            '<div class="dfx-modal-header">' +
+                                '<h3>Print History (Total: ' + data.total_count + ')</h3>' +
+                                '<button type="button" class="dfx-modal-close" aria-label="Close">&times;</button>' +
+                            '</div>' +
+                            '<div class="dfx-modal-body">' +
+                                logsTable +
+                            '</div>' +
+                        '</div>' +
+                    '</div>';
+            }
+            
+            $('body').append(modalHtml);
+            $('#dfx-print-log-modal').show();
+            
+            // Handle close button clicks
+            $('.dfx-modal-close').on('click', function(e) {
+                e.preventDefault();
+                closePrintLogModal();
+            });
+            
+            // Handle backdrop clicks
+            $('#dfx-print-log-modal').on('click', function(e) {
+                if (e.target === this) {
+                    closePrintLogModal();
+                }
+            });
+        }
+
+        // Function to close print log modal
+        function closePrintLogModal() {
+            $('#dfx-print-log-modal').fadeOut(200, function() {
+                $(this).remove();
+            });
+        }
 
         // Function to copy text to clipboard
         function copyToClipboard(text) {
