@@ -156,3 +156,159 @@ msgstr "Eliminar Para Siempre"
 
 msgid "Deleting..."
 msgstr "Eliminando..."
+
+msgid "Error deleting retreat. Please try again."
+msgstr "Error al eliminar el retiro. Por favor, inténtalo de nuevo."
+
+msgid "Retreat name verification failed. Deletion cancelled for security."
+msgstr "Falló la verificación del nombre del retiro. Eliminación cancelada por seguridad."
+
+#. Attendant management strings
+msgid "Attendants"
+msgstr "Asistentes"
+
+msgid "Add New Attendant"
+msgstr "Añadir Nuevo Asistente"
+
+msgid "Edit Attendant"
+msgstr "Editar Asistente"
+
+msgid "Surnames"
+msgstr "Apellidos"
+
+msgid "Date of Birth"
+msgstr "Fecha de Nacimiento"
+
+msgid "Emergency Contact"
+msgstr "Contacto de Emergencia"
+
+msgid "Emergency Contact Name"
+msgstr "Nombre del Contacto de Emergencia"
+
+msgid "Emergency Contact Surname"
+msgstr "Apellido del Contacto de Emergencia"
+
+msgid "Emergency Contact Phone"
+msgstr "Teléfono del Contacto de Emergencia"
+
+msgid "Add Attendant"
+msgstr "Añadir Asistente"
+
+msgid "Update Attendant"
+msgstr "Actualizar Asistente"
+
+msgid "Search Attendants:"
+msgstr "Buscar Asistentes:"
+
+msgid "Search Attendants"
+msgstr "Buscar Asistentes"
+
+msgid "Export CSV"
+msgstr "Exportar CSV"
+
+msgid "Enter phone number with area code."
+msgstr "Ingrese el número de teléfono con código de área."
+
+#. Plurals for attendant counts
+msgid "%d attendant"
+msgid_plural "%d attendants"
+msgstr[0] "%d asistente"
+msgstr[1] "%d asistentes"
+
+#. Context messages for attendant management
+msgid "Attendants for %s"
+msgstr "Asistentes para %s"
+
+msgid "Invalid retreat ID."
+msgstr "ID de retiro inválido."
+
+msgid "Retreat not found."
+msgstr "Retiro no encontrado."
+
+msgid "Invalid retreat or attendant ID."
+msgstr "ID de retiro o asistente inválido."
+
+msgid "Retreat or attendant not found, or attendant does not belong to this retreat."
+msgstr "Retiro o asistente no encontrado, o el asistente no pertenece a este retiro."
+
+#. Totals and statistics
+msgid "Total attendants: %d"
+msgstr "Total de asistentes: %d"
+
+#. Success and error messages for attendants
+msgid "Attendant created successfully."
+msgstr "Asistente creado con éxito."
+
+msgid "Attendant updated successfully."
+msgstr "Asistente actualizado con éxito."
+
+msgid "Attendant deleted successfully."
+msgstr "Asistente eliminado con éxito."
+
+msgid "Error creating attendant. Please check your data."
+msgstr "Error al crear el asistente. Por favor verifica tus datos."
+
+msgid "Error updating attendant. Please check your data."
+msgstr "Error al actualizar el asistente. Por favor verifica tus datos."
+
+msgid "Error deleting attendant."
+msgstr "Error al eliminar el asistente."
+
+#. Search and navigation messages for attendants
+msgid "No attendants found for your search."
+msgstr "No se encontraron asistentes para tu búsqueda."
+
+msgid "No attendants found for this retreat."
+msgstr "No se encontraron asistentes para este retiro."
+
+msgid "Add the first attendant"
+msgstr "Añadir el primer asistente"
+
+msgid "Manage Attendants"
+msgstr "Gestionar Asistentes"
+
+msgid "Import CSV"
+msgstr "Importar CSV"
+
+msgid "Import Attendants from CSV"
+msgstr "Importar Asistentes desde CSV"
+
+msgid "CSV Import Instructions"
+msgstr "Instrucciones de Importación CSV"
+
+msgid "Your CSV file should have the following columns in this exact order:"
+msgstr "Tu archivo CSV debe tener las siguientes columnas en este orden exacto:"
+
+msgid "Date of Birth (YYYY-MM-DD format)"
+msgstr "Fecha de Nacimiento (formato AAAA-MM-DD)"
+
+msgid "The first row should contain column headers and will be skipped."
+msgstr "La primera fila debe contener los encabezados de columna y será omitida."
+
+msgid "CSV File"
+msgstr "Archivo CSV"
+
+msgid "Select a CSV file to import. Maximum file size: 2MB."
+msgstr "Selecciona un archivo CSV para importar. Tamaño máximo de archivo: 2MB."
+
+msgid "Import Attendants"
+msgstr "Importar Asistentes"
+
+msgid "Please select a valid CSV file."
+msgstr "Por favor selecciona un archivo CSV válido."
+
+msgid "CSV file is too large. Maximum size is 2MB."
+msgstr "El archivo CSV es demasiado grande. El tamaño máximo es 2MB."
+
+msgid "Unable to read CSV file."
+msgstr "No se puede leer el archivo CSV."
+
+msgid "Successfully imported %d attendants."
+msgstr "%d asistentes importados con éxito."
+
+msgid "%d rows had errors and were not imported."
+msgstr "%d filas tuvieron errores y no fueron importadas."
+
+#. Confirmation messages for attendants
+msgid "Are you sure you want to delete this attendant?"
+msgstr "¿Estás seguro de que quieres eliminar este asistente?"
