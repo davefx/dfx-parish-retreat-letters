@@ -65,7 +65,9 @@ class DFX_Parish_Retreat_Letters_Security {
 	public static function get_instance() {
 		if ( is_null( self::$instance ) ) {
 			self::$instance = new self();
+			self::$instance->get_encryption_key(true); // Ensure key is initialized
 		}
+
 		return self::$instance;
 	}
 
@@ -101,9 +103,15 @@ class DFX_Parish_Retreat_Letters_Security {
 	 * @since 1.2.0
 	 * @return string The encryption key.
 	 */
-	private function get_encryption_key() {
+	private function get_encryption_key($show_message = false) {
 		// Check if key is defined in wp-config.php (recommended for production)
 		if ( defined( 'DFX_PARISH_RETREAT_LETTERS_ENCRYPTION_KEY' ) ) {
+
+			// Check if we also have it in options, and if so, remove it to avoid duplication
+			if ( get_option( 'dfx_parish_retreat_letters_encryption_key' ) ) {
+				delete_option( 'dfx_parish_retreat_letters_encryption_key' );
+			}
+
 			return DFX_PARISH_RETREAT_LETTERS_ENCRYPTION_KEY;
 		}
 
@@ -111,7 +119,22 @@ class DFX_Parish_Retreat_Letters_Security {
 		$key = get_option( 'dfx_parish_retreat_letters_encryption_key' );
 		if ( ! $key ) {
 			$key = $this->generate_secure_key();
+			// Store the key in options for easy access
 			update_option( 'dfx_parish_retreat_letters_encryption_key', $key );
+		}
+
+		// Generate a warning message in the backend, so the admin knows the key is stored in the database
+		// and with instructions to move it to wp-config.php
+		if ( $show_message && is_admin() && ! defined( 'DFX_PARISH_RETREAT_LETTERS_ENCRYPTION_KEY' ) ) {
+			add_action( 'admin_notices', function() use ( $key ) {
+				echo '<div class="notice notice-warning"><p>';
+				esc_html_e( 'DFX Parish Retreat Letters: The encryption key is stored in the database. For better security, please define DFX_PARISH_RETREAT_LETTERS_ENCRYPTION_KEY in wp-config.php.', 'dfx-parish-retreat-letters' );
+				echo '<br>';
+				esc_html_e( 'You can generate a secure key using the following code:', 'dfx-parish-retreat-letters' );
+				echo '<br/><code>define(\'DFX_PARISH_RETREAT_LETTERS_ENCRYPTION_KEY\', \'' . esc_html( $key ) . '\');</code><br/>';
+				esc_html_e( 'Place this line in your wp-config.php file to secure the key.', 'dfx-parish-retreat-letters' );
+				echo '</p></div>';
+			} );
 		}
 
 		return $key;
@@ -441,7 +464,7 @@ class DFX_Parish_Retreat_Letters_Security {
 	 * @return bool True if within rate limit, false if exceeded.
 	 */
 	public function check_rate_limit( $ip_address, $max_attempts = 5, $time_window = 60 ) {
-		$transient_key = 'dfx_rate_limit_' . md5( $ip_address );
+		$transient_key = 'dfx_prl_message_rate_limit_' . md5( $ip_address );
 		$attempts = get_transient( $transient_key );
 
 		if ( $attempts === false ) {
@@ -475,7 +498,7 @@ class DFX_Parish_Retreat_Letters_Security {
 		);
 
 		// Store in transient for admin review
-		$violations = get_transient( 'dfx_rate_limit_violations' ) ?: array();
+		$violations = get_transient( 'dfx_prl_message_rate_limit_violations' ) ?: array();
 		$violations[] = $log_entry;
 		
 		// Keep only last 100 violations
@@ -483,6 +506,6 @@ class DFX_Parish_Retreat_Letters_Security {
 			$violations = array_slice( $violations, -100 );
 		}
 		
-		set_transient( 'dfx_rate_limit_violations', $violations, 24 * 60 * 60 ); // 24 hours
+		set_transient( 'dfx_prl_message_rate_limit_violations', $violations, 24 * 60 * 60 ); // 24 hours
 	}
 }
