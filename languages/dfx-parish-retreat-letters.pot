@@ -49,6 +49,114 @@ msgstr ""
 msgid "Actions"
 msgstr ""
 
+msgid "User"
+msgstr ""
+
+msgid "Role"
+msgstr ""
+
+msgid "Date"
+msgstr ""
+
+msgid "Name"
+msgstr ""
+
+msgid "Email"
+msgstr ""
+
+msgid "required"
+msgstr ""
+
+msgid "Access Management"
+msgstr ""
+
+msgid "Current Permissions"
+msgstr ""
+
+msgid "Granted By"
+msgstr ""
+
+msgid "Retreat Manager"
+msgstr ""
+
+msgid "Message Manager"
+msgstr ""
+
+msgid "Pending Invitations"
+msgstr ""
+
+msgid "Grant Access"
+msgstr ""
+
+msgid "Existing Users"
+msgstr ""
+
+msgid "Invite New Users"
+msgstr ""
+
+msgid "Search and Grant Permission to Existing Users"
+msgstr ""
+
+msgid "Search by username, email, or name..."
+msgstr ""
+
+msgid "Send Invitation to New User"
+msgstr ""
+
+msgid "Select role..."
+msgstr ""
+
+msgid "Send Invitation"
+msgstr ""
+
+msgid "No users found."
+msgstr ""
+
+msgid "Grant"
+msgstr ""
+
+msgid "Revoke"
+msgstr ""
+
+msgid "Cancel"
+msgstr ""
+
+msgid "Search failed. Please try again."
+msgstr ""
+
+msgid "Please select a role first."
+msgstr ""
+
+msgid "Failed to send invitation. Please try again."
+msgstr ""
+
+msgid "Are you sure you want to revoke this permission?"
+msgstr ""
+
+msgid "Are you sure you want to cancel this invitation?"
+msgstr ""
+
+msgid "Failed to grant permission. Please try again."
+msgstr ""
+
+msgid "Failed to revoke permission. Please try again."
+msgstr ""
+
+msgid "Failed to cancel invitation. Please try again."
+msgstr ""
+
+msgid "By %s"
+msgstr ""
+
+msgid "Expires %s"
+msgstr ""
+
+msgid "You cannot revoke your own permissions"
+msgstr ""
+
+msgid "No users have been granted permissions for this retreat yet."
+msgstr ""
+
 msgid "Name"
 msgstr ""
 
