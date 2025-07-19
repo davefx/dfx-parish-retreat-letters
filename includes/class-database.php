@@ -108,11 +108,11 @@ class DFX_Parish_Retreat_Letters_Database {
 	 */
 	private function __construct() {
 		global $wpdb;
-		$this->retreats_table = $wpdb->prefix . 'dfx_retreats';
-		$this->attendants_table = $wpdb->prefix . 'dfx_attendants';
-		$this->messages_table = $wpdb->prefix . 'dfx_confidential_messages';
-		$this->message_files_table = $wpdb->prefix . 'dfx_message_files';
-		$this->message_print_log_table = $wpdb->prefix . 'dfx_message_print_log';
+		$this->retreats_table = $wpdb->prefix . 'dfx_prl_retreats';
+		$this->attendants_table = $wpdb->prefix . 'dfx_prl_attendants';
+		$this->messages_table = $wpdb->prefix . 'dfx_prl_confidential_messages';
+		$this->message_files_table = $wpdb->prefix . 'dfx_prl_message_files';
+		$this->message_print_log_table = $wpdb->prefix . 'dfx_prl_message_print_log';
 		
 		// Only check for database upgrades if WordPress is fully loaded
 		if ( did_action( 'init' ) || current_action() === 'init' ) {
