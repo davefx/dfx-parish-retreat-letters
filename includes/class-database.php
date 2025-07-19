@@ -38,7 +38,7 @@ class DFX_Parish_Retreat_Letters_Database {
 	 * @since 1.0.0
 	 * @var string
 	 */
-	const DB_VERSION = '1.2.1';
+	const DB_VERSION = '1.3.0';
 
 	/**
 	 * The database version option name.
@@ -89,6 +89,30 @@ class DFX_Parish_Retreat_Letters_Database {
 	private $message_print_log_table;
 
 	/**
+	 * The table name for retreat permissions.
+	 *
+	 * @since 1.3.0
+	 * @var string
+	 */
+	private $permissions_table;
+
+	/**
+	 * The table name for retreat invitations.
+	 *
+	 * @since 1.3.0
+	 * @var string
+	 */
+	private $invitations_table;
+
+	/**
+	 * The table name for permission audit log.
+	 *
+	 * @since 1.3.0
+	 * @var string
+	 */
+	private $audit_log_table;
+
+	/**
 	 * Get the single instance of the class.
 	 *
 	 * @since 1.0.0
@@ -113,6 +137,9 @@ class DFX_Parish_Retreat_Letters_Database {
 		$this->messages_table = $wpdb->prefix . 'dfx_prl_confidential_messages';
 		$this->message_files_table = $wpdb->prefix . 'dfx_prl_message_files';
 		$this->message_print_log_table = $wpdb->prefix . 'dfx_prl_message_print_log';
+		$this->permissions_table = $wpdb->prefix . 'dfx_prl_retreat_permissions';
+		$this->invitations_table = $wpdb->prefix . 'dfx_prl_retreat_invitations';
+		$this->audit_log_table = $wpdb->prefix . 'dfx_prl_permission_audit_log';
 		
 		// Only check for database upgrades if WordPress is fully loaded
 		if ( did_action( 'init' ) || current_action() === 'init' ) {
@@ -184,11 +211,21 @@ class DFX_Parish_Retreat_Letters_Database {
 	public function drop_tables() {
 		global $wpdb;
 		// Drop tables in reverse order due to foreign key constraints
+		$wpdb->query( "DROP TABLE IF EXISTS {$this->audit_log_table}" ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		$wpdb->query( "DROP TABLE IF EXISTS {$this->invitations_table}" ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		$wpdb->query( "DROP TABLE IF EXISTS {$this->permissions_table}" ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 		$wpdb->query( "DROP TABLE IF EXISTS {$this->message_print_log_table}" ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 		$wpdb->query( "DROP TABLE IF EXISTS {$this->message_files_table}" ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 		$wpdb->query( "DROP TABLE IF EXISTS {$this->messages_table}" ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 		$wpdb->query( "DROP TABLE IF EXISTS {$this->attendants_table}" ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 		$wpdb->query( "DROP TABLE IF EXISTS {$this->retreats_table}" ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		
+		// Remove custom capabilities
+		$admin_role = get_role( 'administrator' );
+		if ( $admin_role ) {
+			$admin_role->remove_cap( 'manage_retreat_plugin' );
+		}
+		
 		delete_option( self::DB_VERSION_OPTION );
 	}
 
@@ -240,6 +277,36 @@ class DFX_Parish_Retreat_Letters_Database {
 	 */
 	public function get_message_print_log_table() {
 		return $this->message_print_log_table;
+	}
+
+	/**
+	 * Get the retreat permissions table name.
+	 *
+	 * @since 1.3.0
+	 * @return string
+	 */
+	public function get_permissions_table() {
+		return $this->permissions_table;
+	}
+
+	/**
+	 * Get the retreat invitations table name.
+	 *
+	 * @since 1.3.0
+	 * @return string
+	 */
+	public function get_invitations_table() {
+		return $this->invitations_table;
+	}
+
+	/**
+	 * Get the permission audit log table name.
+	 *
+	 * @since 1.3.0
+	 * @return string
+	 */
+	public function get_audit_log_table() {
+		return $this->audit_log_table;
 	}
 
 	/**
@@ -331,6 +398,10 @@ class DFX_Parish_Retreat_Letters_Database {
 
 		if ( version_compare( $from_version, '1.2.1', '<' ) ) {
 			$this->upgrade_to_1_2_1();
+		}
+
+		if ( version_compare( $from_version, '1.3.0', '<' ) ) {
+			$this->upgrade_to_1_3_0();
 		}
 
 		// Update the database version to current
@@ -551,6 +622,118 @@ class DFX_Parish_Retreat_Letters_Database {
 
 		if ( empty( $column_exists ) ) {
 			$wpdb->query( "ALTER TABLE {$this->retreats_table} ADD COLUMN custom_message text NULL DEFAULT NULL AFTER end_date" ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		}
+	}
+
+	/**
+	 * Upgrade database to version 1.3.0.
+	 * This upgrade adds the authorization system tables.
+	 *
+	 * @since 1.3.0
+	 */
+	private function upgrade_to_1_3_0() {
+		global $wpdb;
+		$charset_collate = $wpdb->get_charset_collate();
+
+		// Create retreat permissions table
+		$permissions_exist = $wpdb->get_var( $wpdb->prepare( "SHOW TABLES LIKE %s", $this->permissions_table ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
+		
+		if ( $permissions_exist !== $this->permissions_table ) {
+			$permissions_sql = "CREATE TABLE {$this->permissions_table} (
+				id mediumint(9) NOT NULL AUTO_INCREMENT,
+				user_id bigint(20) unsigned NOT NULL,
+				retreat_id mediumint(9) NOT NULL,
+				permission_level enum('manager','message_manager') NOT NULL DEFAULT 'message_manager',
+				granted_by bigint(20) unsigned NOT NULL,
+				granted_at datetime DEFAULT CURRENT_TIMESTAMP,
+				revoked_at datetime DEFAULT NULL,
+				is_active tinyint(1) NOT NULL DEFAULT 1,
+				PRIMARY KEY (id),
+				UNIQUE KEY unique_active_permission (user_id, retreat_id, permission_level, is_active),
+				INDEX idx_user_id (user_id),
+				INDEX idx_retreat_id (retreat_id),
+				INDEX idx_permission_level (permission_level),
+				INDEX idx_granted_by (granted_by),
+				INDEX idx_granted_at (granted_at),
+				INDEX idx_is_active (is_active),
+				FOREIGN KEY (user_id) REFERENCES {$wpdb->users}(ID) ON DELETE CASCADE,
+				FOREIGN KEY (retreat_id) REFERENCES {$this->retreats_table}(id) ON DELETE CASCADE,
+				FOREIGN KEY (granted_by) REFERENCES {$wpdb->users}(ID) ON DELETE RESTRICT
+			) $charset_collate;";
+
+			require_once ABSPATH . 'wp-admin/includes/upgrade.php';
+			dbDelta( $permissions_sql );
+		}
+
+		// Create retreat invitations table
+		$invitations_exist = $wpdb->get_var( $wpdb->prepare( "SHOW TABLES LIKE %s", $this->invitations_table ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
+		
+		if ( $invitations_exist !== $this->invitations_table ) {
+			$invitations_sql = "CREATE TABLE {$this->invitations_table} (
+				id mediumint(9) NOT NULL AUTO_INCREMENT,
+				retreat_id mediumint(9) NOT NULL,
+				email varchar(255) NOT NULL,
+				name varchar(255) NOT NULL,
+				permission_level enum('manager','message_manager') NOT NULL DEFAULT 'message_manager',
+				token varchar(255) NOT NULL,
+				invited_by bigint(20) unsigned NOT NULL,
+				invited_at datetime DEFAULT CURRENT_TIMESTAMP,
+				expires_at datetime NOT NULL,
+				accepted_at datetime DEFAULT NULL,
+				status enum('pending','accepted','expired','cancelled') NOT NULL DEFAULT 'pending',
+				created_user_id bigint(20) unsigned DEFAULT NULL,
+				PRIMARY KEY (id),
+				UNIQUE KEY unique_token (token),
+				UNIQUE KEY unique_pending_invitation (retreat_id, email, permission_level, status),
+				INDEX idx_retreat_id (retreat_id),
+				INDEX idx_email (email),
+				INDEX idx_token (token),
+				INDEX idx_invited_by (invited_by),
+				INDEX idx_invited_at (invited_at),
+				INDEX idx_expires_at (expires_at),
+				INDEX idx_status (status),
+				FOREIGN KEY (retreat_id) REFERENCES {$this->retreats_table}(id) ON DELETE CASCADE,
+				FOREIGN KEY (invited_by) REFERENCES {$wpdb->users}(ID) ON DELETE CASCADE,
+				FOREIGN KEY (created_user_id) REFERENCES {$wpdb->users}(ID) ON DELETE SET NULL
+			) $charset_collate;";
+
+			dbDelta( $invitations_sql );
+		}
+
+		// Create permission audit log table
+		$audit_log_exist = $wpdb->get_var( $wpdb->prepare( "SHOW TABLES LIKE %s", $this->audit_log_table ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
+		
+		if ( $audit_log_exist !== $this->audit_log_table ) {
+			$audit_log_sql = "CREATE TABLE {$this->audit_log_table} (
+				id mediumint(9) NOT NULL AUTO_INCREMENT,
+				user_id bigint(20) unsigned NOT NULL,
+				retreat_id mediumint(9) NOT NULL,
+				action enum('granted','revoked','invitation_sent','invitation_accepted','invitation_cancelled') NOT NULL,
+				permission_level enum('manager','message_manager') NOT NULL,
+				performed_by bigint(20) unsigned NOT NULL,
+				performed_at datetime DEFAULT CURRENT_TIMESTAMP,
+				details text DEFAULT NULL,
+				ip_address varchar(45) DEFAULT NULL,
+				user_agent text DEFAULT NULL,
+				PRIMARY KEY (id),
+				INDEX idx_user_id (user_id),
+				INDEX idx_retreat_id (retreat_id),
+				INDEX idx_action (action),
+				INDEX idx_permission_level (permission_level),
+				INDEX idx_performed_by (performed_by),
+				INDEX idx_performed_at (performed_at),
+				FOREIGN KEY (user_id) REFERENCES {$wpdb->users}(ID) ON DELETE CASCADE,
+				FOREIGN KEY (retreat_id) REFERENCES {$this->retreats_table}(id) ON DELETE CASCADE,
+				FOREIGN KEY (performed_by) REFERENCES {$wpdb->users}(ID) ON DELETE CASCADE
+			) $charset_collate;";
+
+			dbDelta( $audit_log_sql );
+		}
+
+		// Add the manage_retreat_plugin capability to administrator role
+		$admin_role = get_role( 'administrator' );
+		if ( $admin_role ) {
+			$admin_role->add_cap( 'manage_retreat_plugin' );
 		}
 	}
 

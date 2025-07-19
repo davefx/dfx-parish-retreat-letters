@@ -89,6 +89,14 @@ class DFX_Parish_Retreat_Letters_Admin {
 	private $gdpr;
 
 	/**
+	 * The permissions management instance.
+	 *
+	 * @since 1.3.0
+	 * @var DFX_Parish_Retreat_Letters_Permissions
+	 */
+	private $permissions;
+
+	/**
 	 * Get the single instance of the class.
 	 *
 	 * @since 1.0.0
@@ -114,6 +122,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 		$this->print_log_model = new DFX_Parish_Retreat_Letters_PrintLog();
 		$this->security = DFX_Parish_Retreat_Letters_Security::get_instance();
 		$this->gdpr = DFX_Parish_Retreat_Letters_GDPR::get_instance();
+		$this->permissions = DFX_Parish_Retreat_Letters_Permissions::get_instance();
 		$this->init_hooks();
 	}
 
@@ -133,6 +142,13 @@ class DFX_Parish_Retreat_Letters_Admin {
 		add_action( 'wp_ajax_dfx_download_file', array( $this, 'ajax_download_file' ) );
 		add_action( 'wp_ajax_dfx_delete_message', array( $this, 'ajax_delete_message' ) );
 		add_action( 'wp_ajax_dfx_get_print_log', array( $this, 'ajax_get_print_log' ) );
+		
+		// Add new AJAX handlers for permission system
+		add_action( 'wp_ajax_dfx_search_users', array( $this, 'ajax_search_users' ) );
+		add_action( 'wp_ajax_dfx_grant_permission', array( $this, 'ajax_grant_permission' ) );
+		add_action( 'wp_ajax_dfx_revoke_permission', array( $this, 'ajax_revoke_permission' ) );
+		add_action( 'wp_ajax_dfx_send_invitation', array( $this, 'ajax_send_invitation' ) );
+		add_action( 'wp_ajax_dfx_cancel_invitation', array( $this, 'ajax_cancel_invitation' ) );
 	}
 
 	/**
@@ -141,10 +157,15 @@ class DFX_Parish_Retreat_Letters_Admin {
 	 * @since 1.0.0
 	 */
 	public function add_admin_menu() {
+		// Check if user has any level of retreat access
+		if ( ! $this->user_has_retreat_access() ) {
+			return;
+		}
+
 		add_menu_page(
 			__( 'Retreats', 'dfx-parish-retreat-letters' ),
 			__( 'Retreats', 'dfx-parish-retreat-letters' ),
-			'manage_options',
+			'read', // Basic capability - we'll do specific checks in pages
 			'dfx-retreats',
 			array( $this, 'retreats_list_page' ),
 			'dashicons-groups',
@@ -155,44 +176,61 @@ class DFX_Parish_Retreat_Letters_Admin {
 			'dfx-retreats',
 			__( 'All Retreats', 'dfx-parish-retreat-letters' ),
 			__( 'All Retreats', 'dfx-parish-retreat-letters' ),
-			'manage_options',
+			'read',
 			'dfx-retreats',
 			array( $this, 'retreats_list_page' )
 		);
 
-		add_submenu_page(
-			'dfx-retreats',
-			__( 'Add New Retreat', 'dfx-parish-retreat-letters' ),
-			__( 'Add New', 'dfx-parish-retreat-letters' ),
-			'manage_options',
-			'dfx-retreats-add',
-			array( $this, 'retreat_add_page' )
-		);
+		// Only plugin administrators can add new retreats
+		if ( $this->permissions->current_user_can_manage_plugin() ) {
+			add_submenu_page(
+				'dfx-retreats',
+				__( 'Add New Retreat', 'dfx-parish-retreat-letters' ),
+				__( 'Add New', 'dfx-parish-retreat-letters' ),
+				'manage_retreat_plugin',
+				'dfx-retreats-add',
+				array( $this, 'retreat_add_page' )
+			);
 
-
-
-		add_submenu_page(
-			'dfx-retreats',
-			__( 'Privacy & Compliance', 'dfx-parish-retreat-letters' ),
-			__( 'Privacy & Compliance', 'dfx-parish-retreat-letters' ),
-			'manage_options',
-			'dfx-privacy',
-			array( $this, 'privacy_compliance_page' )
-		);
+			add_submenu_page(
+				'dfx-retreats',
+				__( 'Privacy & Compliance', 'dfx-parish-retreat-letters' ),
+				__( 'Privacy & Compliance', 'dfx-parish-retreat-letters' ),
+				'manage_retreat_plugin',
+				'dfx-privacy',
+				array( $this, 'privacy_compliance_page' )
+			);
+		}
 
 		// Hidden submenu page for messages (accessed only through attendant links)
-		// Use parent slug to avoid null issues
 		add_submenu_page(
-			'dfx-retreats', // Parent slug, but we'll remove it from menu later
+			'dfx-retreats',
 			__( 'Confidential Messages', 'dfx-parish-retreat-letters' ),
 			'',  // Empty menu title to hide from menu display
-			'manage_options',
+			'read',
 			'dfx-messages',
 			array( $this, 'messages_list_page' )
 		);
 		
 		// Hide the messages submenu item from displaying in the menu
 		add_action( 'admin_head', array( $this, 'hide_messages_submenu' ) );
+	}
+
+	/**
+	 * Check if current user has any level of retreat access.
+	 *
+	 * @since 1.3.0
+	 * @return bool True if user has retreat access.
+	 */
+	private function user_has_retreat_access() {
+		// Plugin administrators always have access
+		if ( $this->permissions->current_user_can_manage_plugin() ) {
+			return true;
+		}
+
+		// Check if user has permissions for any retreats
+		$accessible_retreats = $this->permissions->get_user_accessible_retreats( get_current_user_id() );
+		return ! empty( $accessible_retreats );
 	}
 
 	/**

@@ -83,6 +83,24 @@ class DFX_Parish_Retreat_Letters {
 	protected $gdpr;
 
 	/**
+	 * The permissions management instance.
+	 *
+	 * @since    1.3.0
+	 * @access   protected
+	 * @var      DFX_Parish_Retreat_Letters_Permissions    $permissions    Manages permissions system.
+	 */
+	protected $permissions;
+
+	/**
+	 * The invitations management instance.
+	 *
+	 * @since    1.3.0
+	 * @access   protected
+	 * @var      DFX_Parish_Retreat_Letters_Invitations    $invitations    Manages invitation system.
+	 */
+	protected $invitations;
+
+	/**
 	 * The unique identifier of this plugin.
 	 *
 	 * @since    1.0.0
@@ -138,6 +156,8 @@ class DFX_Parish_Retreat_Letters {
 		$this->init_database();
 		$this->init_security();
 		$this->init_gdpr();
+		$this->init_permissions();
+		$this->init_invitations();
 		$this->init_admin();
 		$this->init_public_hooks();
 	}
@@ -227,6 +247,16 @@ class DFX_Parish_Retreat_Letters {
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-gdpr.php';
 
 		/**
+		 * The class responsible for permissions management.
+		 */
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-permissions.php';
+
+		/**
+		 * The class responsible for invitation system.
+		 */
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-invitations.php';
+
+		/**
 		 * The class responsible for defining admin interface functionality
 		 * of the plugin.
 		 */
@@ -274,6 +304,26 @@ class DFX_Parish_Retreat_Letters {
 	 */
 	private function init_gdpr() {
 		$this->gdpr = DFX_Parish_Retreat_Letters_GDPR::get_instance();
+	}
+
+	/**
+	 * Initialize the permissions management.
+	 *
+	 * @since    1.3.0
+	 * @access   private
+	 */
+	private function init_permissions() {
+		$this->permissions = DFX_Parish_Retreat_Letters_Permissions::get_instance();
+	}
+
+	/**
+	 * Initialize the invitations management.
+	 *
+	 * @since    1.3.0
+	 * @access   private
+	 */
+	private function init_invitations() {
+		$this->invitations = DFX_Parish_Retreat_Letters_Invitations::get_instance();
 	}
 
 	/**
