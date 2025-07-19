@@ -1557,7 +1557,6 @@ class DFX_Parish_Retreat_Letters_Admin {
 					<p><?php esc_html_e( 'For ambiguous dates like "01/10/2025", the system cannot determine if this means "January 10th" or "October 1st". To avoid confusion:', 'dfx-parish-retreat-letters' ); ?></p>
 					<ul>
 						<li><?php esc_html_e( 'Use unambiguous formats like YYYY-MM-DD (2025-01-10)', 'dfx-parish-retreat-letters' ); ?></li>
-						<li><?php esc_html_e( 'Use dates where day > 12 (e.g., 15/01/2025 is clearly January 15th)', 'dfx-parish-retreat-letters' ); ?></li>
 						<li><?php esc_html_e( 'Set your preferred date format below to ensure consistent interpretation', 'dfx-parish-retreat-letters' ); ?></li>
 					</ul>
 				</div>
