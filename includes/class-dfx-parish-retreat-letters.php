@@ -1408,13 +1408,9 @@ class DFX_Parish_Retreat_Letters {
 					success: function(response) {
 						if (response.success) {
 							showNotice('<?php echo esc_js( __( 'Your message has been sent successfully and securely stored.', 'dfx-parish-retreat-letters' ) ); ?>', 'success');
-							$('#dfx-message-form')[0].reset();
-							editor.html('').addClass('empty');
-							hiddenInput.val('');
-							$('#dfx-file-list').empty();
-							// Reset to text mode
-							$('input[name="message_mode"][value="text"]').prop('checked', true).trigger('change');
-							generateCaptcha();
+							// Hide the form completely and show only success message
+							$('#dfx-message-form').hide();
+							$('.dfx-message-mode').hide(); // Hide mode selector too
 						} else {
 							var errorMessage = '<?php echo esc_js( __( 'An error occurred while sending your message.', 'dfx-parish-retreat-letters' ) ); ?>';
 							if (response.data && response.data.message) {

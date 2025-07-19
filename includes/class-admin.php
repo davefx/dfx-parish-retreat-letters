@@ -625,15 +625,23 @@ class DFX_Parish_Retreat_Letters_Admin {
 										</a>
 									</td>
 									<td>
-										<a href="<?php echo esc_url( admin_url( 'admin.php?page=dfx-retreats-add&edit=' . $retreat->id ) ); ?>" class="button button-small">
-											<?php esc_html_e( 'Edit', 'dfx-parish-retreat-letters' ); ?>
-										</a>
-										<a href="<?php echo esc_url( admin_url( 'admin.php?page=dfx-retreats&action=attendants&retreat_id=' . $retreat->id ) ); ?>" class="button button-small">
-											<?php esc_html_e( 'Attendants', 'dfx-parish-retreat-letters' ); ?>
-										</a>
-										<button type="button" class="button button-small button-link-delete dfx-delete-retreat" data-retreat-id="<?php echo esc_attr( $retreat->id ); ?>" data-retreat-name="<?php echo esc_attr( $retreat->name ); ?>">
-											<?php esc_html_e( 'Delete', 'dfx-parish-retreat-letters' ); ?>
-										</button>
+										<?php if ( $this->permissions->current_user_can_manage_retreat( $retreat->id ) ) : ?>
+											<a href="<?php echo esc_url( admin_url( 'admin.php?page=dfx-retreats-add&edit=' . $retreat->id ) ); ?>" class="button button-small">
+												<?php esc_html_e( 'Edit', 'dfx-parish-retreat-letters' ); ?>
+											</a>
+										<?php endif; ?>
+										
+										<?php if ( $this->permissions->current_user_can_view_retreat( $retreat->id ) ) : ?>
+											<a href="<?php echo esc_url( admin_url( 'admin.php?page=dfx-retreats&action=attendants&retreat_id=' . $retreat->id ) ); ?>" class="button button-small">
+												<?php esc_html_e( 'Attendants', 'dfx-parish-retreat-letters' ); ?>
+											</a>
+										<?php endif; ?>
+										
+										<?php if ( $this->permissions->current_user_can_manage_plugin() ) : ?>
+											<button type="button" class="button button-small button-link-delete dfx-delete-retreat" data-retreat-id="<?php echo esc_attr( $retreat->id ); ?>" data-retreat-name="<?php echo esc_attr( $retreat->name ); ?>">
+												<?php esc_html_e( 'Delete', 'dfx-parish-retreat-letters' ); ?>
+											</button>
+										<?php endif; ?>
 									</td>
 								</tr>
 							<?php endforeach; ?>
@@ -2062,6 +2070,11 @@ class DFX_Parish_Retreat_Letters_Admin {
 			wp_die( __( 'Invalid retreat ID.', 'dfx-parish-retreat-letters' ) );
 		}
 
+		// Check permissions - only retreat managers and plugin administrators can add attendants
+		if ( ! $this->permissions->current_user_can_manage_retreat( $retreat_id ) ) {
+			wp_die( __( 'You do not have permission to add attendants to this retreat.', 'dfx-parish-retreat-letters' ) );
+		}
+
 		$retreat = $this->retreat_model->get( $retreat_id );
 		if ( ! $retreat ) {
 			wp_die( __( 'Retreat not found.', 'dfx-parish-retreat-letters' ) );
@@ -2086,6 +2099,11 @@ class DFX_Parish_Retreat_Letters_Admin {
 	private function attendant_edit_page( $retreat_id, $attendant_id ) {
 		if ( ! $retreat_id || ! $attendant_id ) {
 			wp_die( __( 'Invalid retreat or attendant ID.', 'dfx-parish-retreat-letters' ) );
+		}
+
+		// Check permissions - only retreat managers and plugin administrators can edit attendants
+		if ( ! $this->permissions->current_user_can_manage_retreat( $retreat_id ) ) {
+			wp_die( __( 'You do not have permission to edit attendants for this retreat.', 'dfx-parish-retreat-letters' ) );
 		}
 
 		$retreat = $this->retreat_model->get( $retreat_id );
@@ -2756,9 +2774,11 @@ class DFX_Parish_Retreat_Letters_Admin {
 				);
 				?>
 			</h1>
-			<a href="<?php echo esc_url( admin_url( 'admin.php?page=dfx-retreats&action=add_attendant&retreat_id=' . $retreat->id ) ); ?>" class="page-title-action">
-				<?php esc_html_e( 'Add New Attendant', 'dfx-parish-retreat-letters' ); ?>
-			</a>
+			<?php if ( $this->permissions->current_user_can_manage_retreat( $retreat->id ) ) : ?>
+				<a href="<?php echo esc_url( admin_url( 'admin.php?page=dfx-retreats&action=add_attendant&retreat_id=' . $retreat->id ) ); ?>" class="page-title-action">
+					<?php esc_html_e( 'Add New Attendant', 'dfx-parish-retreat-letters' ); ?>
+				</a>
+			<?php endif; ?>
 			<hr class="wp-header-end">
 
 			<!-- Breadcrumb -->
@@ -2855,23 +2875,29 @@ class DFX_Parish_Retreat_Letters_Admin {
 										<?php endif; ?>
 									</td>
 									<td>
-										<a href="<?php echo esc_url( admin_url( 'admin.php?page=dfx-retreats&action=edit_attendant&retreat_id=' . $retreat->id . '&attendant_id=' . $attendant->id ) ); ?>" class="button button-small">
-											<?php esc_html_e( 'Edit', 'dfx-parish-retreat-letters' ); ?>
-										</a>
-										
-										<?php if ( empty( $attendant->message_url_token ) ) : ?>
-											<button type="button" class="button button-small dfx-generate-url" data-attendant-id="<?php echo esc_attr( $attendant->id ); ?>">
-												<?php esc_html_e( 'Generate Message URL', 'dfx-parish-retreat-letters' ); ?>
-											</button>
-										<?php else : ?>
-											<button type="button" class="button button-small button-primary dfx-copy-url" data-url="<?php echo esc_url( home_url( '/messages/' . $attendant->message_url_token ) ); ?>">
-												<?php esc_html_e( 'Copy Message URL', 'dfx-parish-retreat-letters' ); ?>
-											</button>
+										<?php if ( $this->permissions->current_user_can_manage_retreat( $retreat->id ) ) : ?>
+											<a href="<?php echo esc_url( admin_url( 'admin.php?page=dfx-retreats&action=edit_attendant&retreat_id=' . $retreat->id . '&attendant_id=' . $attendant->id ) ); ?>" class="button button-small">
+												<?php esc_html_e( 'Edit', 'dfx-parish-retreat-letters' ); ?>
+											</a>
 										<?php endif; ?>
 										
-										<button type="button" class="button button-small button-link-delete dfx-delete-attendant" data-attendant-id="<?php echo esc_attr( $attendant->id ); ?>">
-											<?php esc_html_e( 'Delete', 'dfx-parish-retreat-letters' ); ?>
-										</button>
+										<?php if ( $this->permissions->current_user_can_manage_retreat( $retreat->id ) ) : ?>
+											<?php if ( empty( $attendant->message_url_token ) ) : ?>
+												<button type="button" class="button button-small dfx-generate-url" data-attendant-id="<?php echo esc_attr( $attendant->id ); ?>">
+													<?php esc_html_e( 'Generate Message URL', 'dfx-parish-retreat-letters' ); ?>
+												</button>
+											<?php else : ?>
+												<button type="button" class="button button-small button-primary dfx-copy-url" data-url="<?php echo esc_url( home_url( '/messages/' . $attendant->message_url_token ) ); ?>">
+													<?php esc_html_e( 'Copy Message URL', 'dfx-parish-retreat-letters' ); ?>
+												</button>
+											<?php endif; ?>
+										<?php endif; ?>
+										
+										<?php if ( $this->permissions->current_user_can_manage_retreat( $retreat->id ) ) : ?>
+											<button type="button" class="button button-small button-link-delete dfx-delete-attendant" data-attendant-id="<?php echo esc_attr( $attendant->id ); ?>">
+												<?php esc_html_e( 'Delete', 'dfx-parish-retreat-letters' ); ?>
+											</button>
+										<?php endif; ?>
 									</td>
 								</tr>
 							<?php endforeach; ?>
@@ -3384,9 +3410,24 @@ class DFX_Parish_Retreat_Letters_Admin {
 											<?php esc_html_e( 'Print', 'dfx-parish-retreat-letters' ); ?>
 										</button>
 
-										<button type="button" class="button button-small button-link-delete dfx-delete-message" data-message-id="<?php echo esc_attr( $message->id ); ?>">
-											<?php esc_html_e( 'Delete', 'dfx-parish-retreat-letters' ); ?>
-										</button>
+										<?php 
+										// Check if user can delete messages for this retreat
+										$can_delete = false;
+										if ( $attendant ) {
+											// If we have attendant info, check retreat permissions
+											$can_delete = $this->permissions->current_user_can_manage_retreat( $attendant->retreat_id );
+										} else {
+											// If no specific attendant, we need to check the message's attendant retreat
+											// For now, allow plugin administrators to delete any message
+											$can_delete = $this->permissions->current_user_can_manage_plugin();
+										}
+										?>
+										
+										<?php if ( $can_delete ) : ?>
+											<button type="button" class="button button-small button-link-delete dfx-delete-message" data-message-id="<?php echo esc_attr( $message->id ); ?>">
+												<?php esc_html_e( 'Delete', 'dfx-parish-retreat-letters' ); ?>
+											</button>
+										<?php endif; ?>
 									</td>
 								</tr>
 							<?php endforeach; ?>
