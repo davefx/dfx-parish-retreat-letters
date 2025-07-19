@@ -171,6 +171,11 @@ class DFX_Parish_Retreat_Letters {
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-retreat.php';
 
 		/**
+		 * The class responsible for attendant CRUD operations.
+		 */
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-attendant.php';
+
+		/**
 		 * The class responsible for defining admin interface functionality
 		 * of the plugin.
 		 */

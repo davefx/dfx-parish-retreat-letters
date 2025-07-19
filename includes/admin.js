@@ -60,6 +60,58 @@
                 }
             });
         });
+
+        // Handle delete attendant button clicks
+        $('.dfx-delete-attendant').on('click', function(e) {
+            e.preventDefault();
+            
+            var attendantId = $(this).data('attendant-id');
+            var $row = $(this).closest('tr');
+            
+            if (!confirm(dfxRetreatsAdmin.messages.confirmDeleteAttendant || dfxRetreatsAdmin.messages.confirmDelete)) {
+                return;
+            }
+            
+            // Disable button and show loading state
+            $(this).prop('disabled', true).text('Deleting...');
+            
+            $.ajax({
+                url: dfxRetreatsAdmin.ajaxurl,
+                type: 'POST',
+                data: {
+                    action: 'dfx_delete_attendant',
+                    attendant_id: attendantId,
+                    nonce: dfxRetreatsAdmin.nonce
+                },
+                success: function(response) {
+                    if (response.success) {
+                        // Remove the row with animation
+                        $row.fadeOut(300, function() {
+                            $(this).remove();
+                            
+                            // Show success message
+                            $('<div class="notice notice-success is-dismissible"><p>' + response.data.message + '</p></div>')
+                                .insertAfter('.wp-header-end')
+                                .delay(3000)
+                                .fadeOut();
+                        });
+                    } else {
+                        alert(response.data.message || 'Error deleting attendant.');
+                        // Re-enable button
+                        $('.dfx-delete-attendant[data-attendant-id="' + attendantId + '"]')
+                            .prop('disabled', false)
+                            .text('Delete');
+                    }
+                },
+                error: function() {
+                    alert('Error deleting attendant. Please try again.');
+                    // Re-enable button
+                    $('.dfx-delete-attendant[data-attendant-id="' + attendantId + '"]')
+                        .prop('disabled', false)
+                        .text('Delete');
+                }
+            });
+        });
         
         // Form validation for add/edit retreat
         $('form').on('submit', function(e) {
