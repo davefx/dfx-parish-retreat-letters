@@ -108,8 +108,22 @@ class DFX_Parish_Retreat_Letters_Security {
 		if ( defined( 'DFX_PARISH_RETREAT_LETTERS_ENCRYPTION_KEY' ) ) {
 
 			// Check if we also have it in options, and if so, remove it to avoid duplication
-			if ( get_option( 'dfx_parish_retreat_letters_encryption_key' ) ) {
-				delete_option( 'dfx_parish_retreat_letters_encryption_key' );
+			$defined_in_option = get_option( 'dfx_parish_retreat_letters_encryption_key' );
+			if ( $defined_in_option ) {
+				if ( $defined_in_option !== DFX_PARISH_RETREAT_LETTERS_ENCRYPTION_KEY ) {
+					// If the option value does not match the defined constant, show a critical error
+					// message in the backend
+					add_action( 'admin_notices', function() {
+						echo '<div class="notice notice-error"><p>';
+						esc_html_e( 'DFX Parish Retreat Letters: The encryption key defined in wp-config.php does not match the one stored in the database. Please update the key in wp-config.php or remove it from the database.', 'dfx-parish-retreat-letters' );
+						echo '<br>';
+						esc_html_e( 'Please note only the key defined in the wp-config.php file will be used. If any messages were already cyphered using the encryption key defined in the database, they will be unreadable.', 'dfx-parish-retreat-letters' );
+						echo '</p></div>';
+					} );
+				} else {
+					// If they match, we can safely delete the option
+					delete_option( 'dfx_parish_retreat_letters_encryption_key' );
+				}
 			}
 
 			return DFX_PARISH_RETREAT_LETTERS_ENCRYPTION_KEY;
