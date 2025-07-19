@@ -1440,10 +1440,10 @@ class DFX_Parish_Retreat_Letters {
 				}, 500);
 				
 				if (type === 'success') {
-					// Keep success message visible longer (10 seconds)
-					setTimeout(function() {
-						notice.fadeOut();
-					}, 10000);
+					// Keep success message forever
+					// setTimeout(function() {
+					//	notice.fadeOut();
+					// }, 60000);
 				}
 			}
 		});

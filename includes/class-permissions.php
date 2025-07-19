@@ -543,11 +543,14 @@ class DFX_Parish_Retreat_Letters_Permissions {
 	 * @since 1.3.0
 	 */
 	private function init_woocommerce_handling() {
-		// Only add the handler if WooCommerce is active
-		if ( class_exists( 'WooCommerce' ) ) {
-			// Add early admin_init hook to handle WooCommerce restrictions
-			add_action( 'admin_init', array( $this, 'handle_woocommerce_admin_restriction' ), 5 );
-		}
+
+		add_action( 'admin_init', function() {
+			// Only add the handler if WooCommerce is active
+			if ( class_exists( 'WooCommerce' ) ) {
+				// Add early admin_init hook to handle WooCommerce restrictions
+				add_action( 'admin_init', array( $this, 'handle_woocommerce_admin_restriction' ), 5 );
+			}
+		}, 0 );
 	}
 
 	/**
@@ -609,6 +612,10 @@ class DFX_Parish_Retreat_Letters_Permissions {
 		// Also try to remove if it's hooked differently
 		if ( function_exists( 'wc_prevent_admin_access' ) ) {
 			remove_action( 'admin_init', 'wc_prevent_admin_access', 10 );
+		}
+
+		if ( function_exists( 'wc_disable_admin' ) ) {
+			remove_action( 'admin_init', 'wc_disable_admin', 10 );
 		}
 
 		// Remove any other WooCommerce admin restrictions that might be in place
