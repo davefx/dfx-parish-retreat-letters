@@ -350,12 +350,20 @@ class DFX_Parish_Retreat_Letters {
 		// Check if we're on a message URL pattern: /messages/[token]
 		$request_uri = $_SERVER['REQUEST_URI'] ?? '';
 		
+		// Ensure we have a valid string
+		if ( ! is_string( $request_uri ) || empty( $request_uri ) ) {
+			return;
+		}
+		
 		// Remove query string
 		$request_uri = strtok( $request_uri, '?' );
+		if ( $request_uri === false ) {
+			return;
+		}
 		
 		// Get the site's base path
 		$site_url = parse_url( home_url(), PHP_URL_PATH );
-		$site_path = $site_url ? $site_url : '/';
+		$site_path = ( is_string( $site_url ) && ! empty( $site_url ) ) ? $site_url : '/';
 		
 		// Normalize paths
 		if ( $site_path !== '/' ) {
@@ -870,11 +878,20 @@ class DFX_Parish_Retreat_Letters {
 	public function enqueue_public_scripts() {
 		// Only enqueue on message URLs
 		$request_uri = $_SERVER['REQUEST_URI'] ?? '';
+		
+		// Ensure we have a valid string
+		if ( ! is_string( $request_uri ) || empty( $request_uri ) ) {
+			return;
+		}
+		
 		$request_uri = strtok( $request_uri, '?' );
+		if ( $request_uri === false ) {
+			return;
+		}
 		
 		// Get the site's base path (same logic as handle_message_url_routing)
 		$site_url = parse_url( home_url(), PHP_URL_PATH );
-		$site_path = $site_url ? $site_url : '/';
+		$site_path = ( is_string( $site_url ) && ! empty( $site_url ) ) ? $site_url : '/';
 		
 		// Normalize paths
 		if ( $site_path !== '/' ) {

@@ -283,7 +283,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 	 */
 	private function display_retreats_list() {
 		// Handle form submissions
-		if ( $_SERVER['REQUEST_METHOD'] === 'POST' ) {
+		if ( ( $_SERVER['REQUEST_METHOD'] ?? '' ) === 'POST' ) {
 			$this->handle_list_page_actions();
 		}
 
@@ -316,7 +316,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 		$retreat = $retreat_id ? $this->retreat_model->get( $retreat_id ) : null;
 
 		// Handle form submission
-		if ( $_SERVER['REQUEST_METHOD'] === 'POST' ) {
+		if ( ( $_SERVER['REQUEST_METHOD'] ?? '' ) === 'POST' ) {
 			$this->handle_add_edit_submission( $retreat_id );
 			return;
 		}
@@ -674,7 +674,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 		}
 
 		// Handle form submissions
-		if ( $_SERVER['REQUEST_METHOD'] === 'POST' ) {
+		if ( ( $_SERVER['REQUEST_METHOD'] ?? '' ) === 'POST' ) {
 			$this->handle_attendant_list_actions( $retreat_id );
 		}
 
@@ -713,7 +713,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 		}
 
 		// Handle form submission
-		if ( $_SERVER['REQUEST_METHOD'] === 'POST' ) {
+		if ( ( $_SERVER['REQUEST_METHOD'] ?? '' ) === 'POST' ) {
 			$this->handle_attendant_add_edit_submission( $retreat_id );
 			return;
 		}
@@ -741,7 +741,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 		}
 
 		// Handle form submission
-		if ( $_SERVER['REQUEST_METHOD'] === 'POST' ) {
+		if ( ( $_SERVER['REQUEST_METHOD'] ?? '' ) === 'POST' ) {
 			$this->handle_attendant_add_edit_submission( $retreat_id, $attendant_id );
 			return;
 		}
@@ -766,7 +766,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 		}
 
 		// Handle form submission
-		if ( $_SERVER['REQUEST_METHOD'] === 'POST' ) {
+		if ( ( $_SERVER['REQUEST_METHOD'] ?? '' ) === 'POST' ) {
 			$this->handle_csv_import( $retreat_id );
 			return;
 		}
@@ -1834,7 +1834,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 	 */
 	public function messages_list_page() {
 		// Handle form submissions
-		if ( $_SERVER['REQUEST_METHOD'] === 'POST' ) {
+		if ( ( $_SERVER['REQUEST_METHOD'] ?? '' ) === 'POST' ) {
 			$this->handle_message_list_actions();
 		}
 
@@ -2347,7 +2347,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 	 */
 	public function privacy_compliance_page() {
 		// Handle form submissions
-		if ( $_SERVER['REQUEST_METHOD'] === 'POST' ) {
+		if ( ( $_SERVER['REQUEST_METHOD'] ?? '' ) === 'POST' ) {
 			$this->handle_privacy_compliance_actions();
 		}
 
