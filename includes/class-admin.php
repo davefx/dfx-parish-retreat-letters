@@ -175,6 +175,9 @@ class DFX_Parish_Retreat_Letters_Admin {
 				$attendant_id = absint( $_GET['attendant_id'] ?? 0 );
 				$this->attendant_edit_page( $retreat_id, $attendant_id );
 				break;
+			case 'import_attendants':
+				$this->attendants_import_page( $retreat_id );
+				break;
 			default:
 				$this->display_retreats_list();
 				break;
@@ -488,6 +491,11 @@ class DFX_Parish_Retreat_Letters_Admin {
 
 				<p class="submit">
 					<input type="submit" name="submit" id="submit" class="button button-primary" value="<?php echo esc_attr( $is_edit ? __( 'Update Retreat', 'dfx-parish-retreat-letters' ) : __( 'Add Retreat', 'dfx-parish-retreat-letters' ) ); ?>">
+					<?php if ( $is_edit ) : ?>
+						<a href="<?php echo esc_url( admin_url( 'admin.php?page=dfx-retreats&action=attendants&retreat_id=' . $retreat->id ) ); ?>" class="button">
+							<?php esc_html_e( 'Manage Attendants', 'dfx-parish-retreat-letters' ); ?>
+						</a>
+					<?php endif; ?>
 					<a href="<?php echo esc_url( admin_url( 'admin.php?page=dfx-retreats' ) ); ?>" class="button">
 						<?php esc_html_e( 'Cancel', 'dfx-parish-retreat-letters' ); ?>
 					</a>
@@ -628,6 +636,31 @@ class DFX_Parish_Retreat_Letters_Admin {
 	}
 
 	/**
+	 * Display the attendants CSV import page.
+	 *
+	 * @since 1.0.0
+	 * @param int $retreat_id Retreat ID.
+	 */
+	private function attendants_import_page( $retreat_id ) {
+		if ( ! $retreat_id ) {
+			wp_die( __( 'Invalid retreat ID.', 'dfx-parish-retreat-letters' ) );
+		}
+
+		$retreat = $this->retreat_model->get( $retreat_id );
+		if ( ! $retreat ) {
+			wp_die( __( 'Retreat not found.', 'dfx-parish-retreat-letters' ) );
+		}
+
+		// Handle form submission
+		if ( $_SERVER['REQUEST_METHOD'] === 'POST' ) {
+			$this->handle_csv_import( $retreat_id );
+			return;
+		}
+
+		$this->render_csv_import_page( $retreat );
+	}
+
+	/**
 	 * Handle attendant list page actions.
 	 *
 	 * @since 1.0.0
@@ -691,9 +724,101 @@ class DFX_Parish_Retreat_Letters_Admin {
 				wp_redirect( admin_url( 'admin.php?page=dfx-retreats&action=attendants&retreat_id=' . $retreat_id ) );
 				exit;
 			} else {
-				$this->add_admin_notice( __( 'Error creating attendant. Please check your data.', 'dfx-parish-retreat-letters' ), 'error' );
 			}
 		}
+	}
+
+	/**
+	 * Handle CSV import submission.
+	 *
+	 * @since 1.0.0
+	 * @param int $retreat_id Retreat ID.
+	 */
+	private function handle_csv_import( $retreat_id ) {
+		if ( ! wp_verify_nonce( $_POST['_wpnonce'] ?? '', 'dfx_attendants_import' ) ) {
+			wp_die( __( 'Security check failed.', 'dfx-parish-retreat-letters' ) );
+		}
+
+		if ( ! isset( $_FILES['csv_file'] ) || $_FILES['csv_file']['error'] !== UPLOAD_ERR_OK ) {
+			$this->add_admin_notice( __( 'Please select a valid CSV file.', 'dfx-parish-retreat-letters' ), 'error' );
+			return;
+		}
+
+		$file = $_FILES['csv_file'];
+		$file_path = $file['tmp_name'];
+
+		// Basic file validation
+		if ( $file['size'] > 2 * 1024 * 1024 ) { // 2MB limit
+			$this->add_admin_notice( __( 'CSV file is too large. Maximum size is 2MB.', 'dfx-parish-retreat-letters' ), 'error' );
+			return;
+		}
+
+		$handle = fopen( $file_path, 'r' );
+		if ( ! $handle ) {
+			$this->add_admin_notice( __( 'Unable to read CSV file.', 'dfx-parish-retreat-letters' ), 'error' );
+			return;
+		}
+
+		$imported = 0;
+		$errors = 0;
+		$line_number = 0;
+
+		// Skip header row
+		fgetcsv( $handle );
+		$line_number++;
+
+		while ( ( $row = fgetcsv( $handle ) ) !== false ) {
+			$line_number++;
+
+			// Ensure we have enough columns
+			if ( count( $row ) < 6 ) {
+				$errors++;
+				continue;
+			}
+
+			$data = array(
+				'retreat_id'                => $retreat_id,
+				'name'                      => trim( $row[0] ),
+				'surnames'                  => trim( $row[1] ),
+				'date_of_birth'             => trim( $row[2] ),
+				'emergency_contact_name'    => trim( $row[3] ),
+				'emergency_contact_surname' => trim( $row[4] ),
+				'emergency_contact_phone'   => trim( $row[5] ),
+			);
+
+			if ( $this->attendant_model->create( $data ) ) {
+				$imported++;
+			} else {
+				$errors++;
+			}
+		}
+
+		fclose( $handle );
+
+		if ( $imported > 0 ) {
+			$this->add_admin_notice( 
+				sprintf(
+					/* translators: %d: Number of imported attendants */
+					__( 'Successfully imported %d attendants.', 'dfx-parish-retreat-letters' ),
+					$imported
+				), 
+				'success' 
+			);
+		}
+
+		if ( $errors > 0 ) {
+			$this->add_admin_notice( 
+				sprintf(
+					/* translators: %d: Number of errors */
+					__( '%d rows had errors and were not imported.', 'dfx-parish-retreat-letters' ),
+					$errors
+				), 
+				'warning' 
+			);
+		}
+
+		wp_redirect( admin_url( 'admin.php?page=dfx-retreats&action=attendants&retreat_id=' . $retreat_id ) );
+		exit;
 	}
 
 	/**
@@ -822,6 +947,9 @@ class DFX_Parish_Retreat_Letters_Admin {
 						<button type="submit" name="action" value="export_csv" class="button">
 							<?php esc_html_e( 'Export CSV', 'dfx-parish-retreat-letters' ); ?>
 						</button>
+						<a href="<?php echo esc_url( admin_url( 'admin.php?page=dfx-retreats&action=import_attendants&retreat_id=' . $retreat->id ) ); ?>" class="button">
+							<?php esc_html_e( 'Import CSV', 'dfx-parish-retreat-letters' ); ?>
+						</a>
 					</div>
 					<?php if ( $total_pages > 1 ) : ?>
 						<div class="tablenav-pages">
@@ -978,6 +1106,69 @@ class DFX_Parish_Retreat_Letters_Admin {
 
 				<p class="submit">
 					<input type="submit" name="submit" id="submit" class="button button-primary" value="<?php echo esc_attr( $is_edit ? __( 'Update Attendant', 'dfx-parish-retreat-letters' ) : __( 'Add Attendant', 'dfx-parish-retreat-letters' ) ); ?>">
+					<a href="<?php echo esc_url( admin_url( 'admin.php?page=dfx-retreats&action=attendants&retreat_id=' . $retreat->id ) ); ?>" class="button">
+						<?php esc_html_e( 'Cancel', 'dfx-parish-retreat-letters' ); ?>
+					</a>
+				</p>
+			</form>
+		</div>
+		<?php
+	}
+
+	/**
+	 * Render the CSV import page.
+	 *
+	 * @since 1.0.0
+	 * @param object $retreat Retreat object.
+	 */
+	private function render_csv_import_page( $retreat ) {
+		?>
+		<div class="wrap">
+			<h1><?php esc_html_e( 'Import Attendants from CSV', 'dfx-parish-retreat-letters' ); ?></h1>
+			<hr class="wp-header-end">
+
+			<!-- Breadcrumb -->
+			<p class="description">
+				<a href="<?php echo esc_url( admin_url( 'admin.php?page=dfx-retreats' ) ); ?>"><?php esc_html_e( 'Retreats', 'dfx-parish-retreat-letters' ); ?></a>
+				&gt; <a href="<?php echo esc_url( admin_url( 'admin.php?page=dfx-retreats&action=attendants&retreat_id=' . $retreat->id ) ); ?>"><?php echo esc_html( $retreat->name ); ?></a>
+				&gt; <?php esc_html_e( 'Attendants', 'dfx-parish-retreat-letters' ); ?>
+				&gt; <?php esc_html_e( 'Import CSV', 'dfx-parish-retreat-letters' ); ?>
+			</p>
+
+			<?php $this->display_admin_notices(); ?>
+
+			<div class="notice notice-info">
+				<p><strong><?php esc_html_e( 'CSV Import Instructions', 'dfx-parish-retreat-letters' ); ?></strong></p>
+				<p><?php esc_html_e( 'Your CSV file should have the following columns in this exact order:', 'dfx-parish-retreat-letters' ); ?></p>
+				<ol>
+					<li><?php esc_html_e( 'Name', 'dfx-parish-retreat-letters' ); ?></li>
+					<li><?php esc_html_e( 'Surnames', 'dfx-parish-retreat-letters' ); ?></li>
+					<li><?php esc_html_e( 'Date of Birth (YYYY-MM-DD format)', 'dfx-parish-retreat-letters' ); ?></li>
+					<li><?php esc_html_e( 'Emergency Contact Name', 'dfx-parish-retreat-letters' ); ?></li>
+					<li><?php esc_html_e( 'Emergency Contact Surname', 'dfx-parish-retreat-letters' ); ?></li>
+					<li><?php esc_html_e( 'Emergency Contact Phone', 'dfx-parish-retreat-letters' ); ?></li>
+				</ol>
+				<p><?php esc_html_e( 'The first row should contain column headers and will be skipped.', 'dfx-parish-retreat-letters' ); ?></p>
+			</div>
+
+			<form method="post" enctype="multipart/form-data">
+				<?php wp_nonce_field( 'dfx_attendants_import' ); ?>
+				<table class="form-table">
+					<tbody>
+						<tr>
+							<th scope="row">
+								<label for="csv_file"><?php esc_html_e( 'CSV File', 'dfx-parish-retreat-letters' ); ?> <span class="description">(<?php esc_html_e( 'required', 'dfx-parish-retreat-letters' ); ?>)</span></label>
+							</th>
+							<td>
+								<input type="file" id="csv_file" name="csv_file" accept=".csv" required>
+								<p class="description"><?php esc_html_e( 'Select a CSV file to import. Maximum file size: 2MB.', 'dfx-parish-retreat-letters' ); ?></p>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+
+				<p class="submit">
+					<input type="submit" name="submit" id="submit" class="button button-primary" value="<?php esc_attr_e( 'Import Attendants', 'dfx-parish-retreat-letters' ); ?>">
 					<a href="<?php echo esc_url( admin_url( 'admin.php?page=dfx-retreats&action=attendants&retreat_id=' . $retreat->id ) ); ?>" class="button">
 						<?php esc_html_e( 'Cancel', 'dfx-parish-retreat-letters' ); ?>
 					</a>
