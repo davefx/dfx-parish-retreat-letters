@@ -149,6 +149,17 @@ class DFX_Parish_Retreat_Letters_Admin {
 				'messages' => array(
 					'confirmDelete' => __( 'Are you sure you want to delete this retreat?', 'dfx-parish-retreat-letters' ),
 					'confirmDeleteAttendant' => __( 'Are you sure you want to delete this attendant?', 'dfx-parish-retreat-letters' ),
+					'deleteRetreatTitle' => __( 'Delete Retreat - Confirmation Required', 'dfx-parish-retreat-letters' ),
+					'deleteWarning' => __( 'WARNING: This action cannot be undone!', 'dfx-parish-retreat-letters' ),
+					'deleteWarningAttendants' => __( 'All attendants for this retreat will be permanently deleted', 'dfx-parish-retreat-letters' ),
+					'deleteWarningLetters' => __( 'All letters and related information will be permanently deleted', 'dfx-parish-retreat-letters' ),
+					'deleteWarningPermanent' => __( 'This action is irreversible and cannot be restored', 'dfx-parish-retreat-letters' ),
+					'typeRetreatName' => __( 'To confirm deletion, please type the exact retreat name below:', 'dfx-parish-retreat-letters' ),
+					'retreatNamePlaceholder' => __( 'Type retreat name here...', 'dfx-parish-retreat-letters' ),
+					'deleteButton' => __( 'Delete Forever', 'dfx-parish-retreat-letters' ),
+					'cancelButton' => __( 'Cancel', 'dfx-parish-retreat-letters' ),
+					'deleting' => __( 'Deleting...', 'dfx-parish-retreat-letters' ),
+					'deleteError' => __( 'Error deleting retreat. Please try again.', 'dfx-parish-retreat-letters' ),
 				),
 			)
 		);
@@ -305,6 +316,18 @@ class DFX_Parish_Retreat_Letters_Admin {
 		}
 
 		$retreat_id = absint( $_POST['retreat_id'] ?? 0 );
+		$retreat_name = sanitize_text_field( $_POST['retreat_name'] ?? '' );
+
+		// Get the retreat to verify the name
+		$retreat = $this->retreat_model->get( $retreat_id );
+		if ( ! $retreat ) {
+			wp_send_json_error( array( 'message' => __( 'Retreat not found.', 'dfx-parish-retreat-letters' ) ) );
+		}
+
+		// Verify the retreat name matches exactly
+		if ( $retreat->name !== $retreat_name ) {
+			wp_send_json_error( array( 'message' => __( 'Retreat name verification failed. Deletion cancelled for security.', 'dfx-parish-retreat-letters' ) ) );
+		}
 
 		if ( $this->retreat_model->delete( $retreat_id ) ) {
 			wp_send_json_success( array( 'message' => __( 'Retreat deleted successfully.', 'dfx-parish-retreat-letters' ) ) );
@@ -407,7 +430,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 										<a href="<?php echo esc_url( admin_url( 'admin.php?page=dfx-retreats&action=attendants&retreat_id=' . $retreat->id ) ); ?>" class="button button-small">
 											<?php esc_html_e( 'Attendants', 'dfx-parish-retreat-letters' ); ?>
 										</a>
-										<button type="button" class="button button-small button-link-delete dfx-delete-retreat" data-retreat-id="<?php echo esc_attr( $retreat->id ); ?>">
+										<button type="button" class="button button-small button-link-delete dfx-delete-retreat" data-retreat-id="<?php echo esc_attr( $retreat->id ); ?>" data-retreat-name="<?php echo esc_attr( $retreat->name ); ?>">
 											<?php esc_html_e( 'Delete', 'dfx-parish-retreat-letters' ); ?>
 										</button>
 									</td>
