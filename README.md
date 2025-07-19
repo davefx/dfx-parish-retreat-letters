@@ -71,9 +71,5 @@ This plugin is licensed under the GPL v3 or later.
 
 ## Changelog
 
-### 1.0.0
+### 25.7.19
 - Initial release
-- Basic plugin structure with OOP and singleton pattern
-- Internationalization support
-- Spanish translations
-- WordPress coding standards compliance
