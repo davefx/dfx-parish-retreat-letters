@@ -787,10 +787,10 @@ msgid "IP Address Anonymization"
 msgstr "Anonimización de Direcciones IP"
 
 msgid "30 days (Fixed for GDPR compliance)"
-msgstr "30 días (Fijo para cumplimiento GDPR)"
+msgstr "30 días (Fijo para cumplimiento RGPD)"
 
 msgid "IP addresses are automatically anonymized after 30 days to comply with GDPR requirements."
-msgstr "Las direcciones IP se anonimizan automáticamente después de 30 días para cumplir con los requisitos del GDPR."
+msgstr "Las direcciones IP se anonimizan automáticamente después de 30 días para cumplir con los requisitos del RGPD."
 
 msgid "Update Retention Settings"
 msgstr "Actualizar Configuración de Retención"
@@ -814,7 +814,7 @@ msgid "Personal Data Export/Erasure"
 msgstr "Exportación/Borrado de Datos Personales"
 
 msgid "Export or erase personal data by sender name for GDPR compliance."
-msgstr "Exportar o borrar datos personales por nombre del remitente para cumplimiento GDPR."
+msgstr "Exportar o borrar datos personales por nombre del remitente para cumplimiento RGPD."
 
 msgid "Export Personal Data"
 msgstr "Exportar Datos Personales"
