@@ -178,6 +178,16 @@ class DFX_Parish_Retreat_Letters_Admin {
 			'dfx-privacy',
 			array( $this, 'privacy_compliance_page' )
 		);
+
+		// Hidden submenu page for messages (accessed only through attendant links)
+		add_submenu_page(
+			null, // Hidden from menu
+			__( 'Confidential Messages', 'dfx-parish-retreat-letters' ),
+			__( 'Messages', 'dfx-parish-retreat-letters' ),
+			'manage_options',
+			'dfx-messages',
+			array( $this, 'messages_list_page' )
+		);
 	}
 
 	/**
