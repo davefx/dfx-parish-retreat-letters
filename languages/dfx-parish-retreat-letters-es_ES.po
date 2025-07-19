@@ -608,11 +608,11 @@ msgstr "Se requiere al menos un archivo."
 msgid "File upload message"
 msgstr "Mensaje con archivo adjunto"
 
-msgid "Custom Message for Attendants"
-msgstr "Mensaje Personalizado para Asistentes"
+msgid "Custom Message for Letter Senders"
+msgstr "Mensaje personalizado para remitentes de cartas"
 
-msgid "Optional message that will be displayed to attendants when they access their message form..."
-msgstr "Mensaje opcional que se mostrará a los asistentes cuando accedan a su formulario de mensajes..."
+msgid "Optional message that will be displayed to senders in the letters form."
+msgstr "Mensaje opcional que se mostrará a los remitentes en el formulario de cartas."
 
 msgid "This message will be displayed before the message submission form for all attendants of this retreat. HTML is allowed."
 msgstr "Este mensaje se mostrará antes del formulario de envío de mensajes para todos los asistentes de este retiro. Se permite HTML."

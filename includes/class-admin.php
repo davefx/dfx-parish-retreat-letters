@@ -583,10 +583,10 @@ class DFX_Parish_Retreat_Letters_Admin {
 						</tr>
 						<tr>
 							<th scope="row">
-								<label for="custom_message"><?php esc_html_e( 'Custom Message for Attendants', 'dfx-parish-retreat-letters' ); ?></label>
+								<label for="custom_message"><?php esc_html_e( 'Custom Message for Letter Senders', 'dfx-parish-retreat-letters' ); ?></label>
 							</th>
 							<td>
-								<textarea id="custom_message" name="custom_message" rows="5" class="large-text" placeholder="<?php esc_attr_e( 'Optional message that will be displayed to attendants when they access their message form...', 'dfx-parish-retreat-letters' ); ?>"><?php echo esc_textarea( $retreat->custom_message ?? '' ); ?></textarea>
+								<textarea id="custom_message" name="custom_message" rows="5" class="large-text" placeholder="<?php esc_attr_e( 'Optional message that will be displayed to senders in the letters form.', 'dfx-parish-retreat-letters' ); ?>"><?php echo esc_textarea( $retreat->custom_message ?? '' ); ?></textarea>
 								<p class="description"><?php esc_html_e( 'This message will be displayed before the message submission form for all attendants of this retreat. HTML is allowed.', 'dfx-parish-retreat-letters' ); ?></p>
 							</td>
 						</tr>
