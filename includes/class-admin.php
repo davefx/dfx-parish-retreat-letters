@@ -188,16 +188,6 @@ class DFX_Parish_Retreat_Letters_Admin {
 			'dfx-messages',
 			array( $this, 'messages_list_page' )
 		);
-
-		// Hidden submenu page for printing (accessed through print tokens)
-		add_submenu_page(
-			null, // Hidden from menu
-			__( 'Print Message', 'dfx-parish-retreat-letters' ),
-			__( 'Print', 'dfx-parish-retreat-letters' ),
-			'manage_options',
-			'dfx-print',
-			array( $this, 'print_message_page' )
-		);
 	}
 
 	/**
@@ -211,6 +201,9 @@ class DFX_Parish_Retreat_Letters_Admin {
 		$our_pages = array( 'dfx-retreats', 'dfx-messages', 'dfx-privacy' );
 		$is_our_page = false;
 		
+		// Ensure hook_suffix is a string
+		$hook_suffix = (string) $hook_suffix;
+		
 		foreach ( $our_pages as $page ) {
 			if ( strpos( $hook_suffix, $page ) !== false ) {
 				$is_our_page = true;
@@ -221,6 +214,8 @@ class DFX_Parish_Retreat_Letters_Admin {
 		// Also check for query parameters that indicate our pages
 		if ( ! $is_our_page && isset( $_GET['page'] ) ) {
 			$page_param = sanitize_text_field( $_GET['page'] );
+			// Ensure page_param is a string
+			$page_param = (string) $page_param;
 			foreach ( $our_pages as $page ) {
 				if ( strpos( $page_param, $page ) !== false ) {
 					$is_our_page = true;
@@ -2008,8 +2003,6 @@ class DFX_Parish_Retreat_Letters_Admin {
 				<table class="wp-list-table widefat fixed striped">
 					<thead>
 						<tr>
-							<th scope="col" class="manage-column"><?php esc_html_e( 'Attendant', 'dfx-parish-retreat-letters' ); ?></th>
-							<th scope="col" class="manage-column"><?php esc_html_e( 'Retreat', 'dfx-parish-retreat-letters' ); ?></th>
 							<th scope="col" class="manage-column"><?php esc_html_e( 'From', 'dfx-parish-retreat-letters' ); ?></th>
 							<th scope="col" class="manage-column"><?php esc_html_e( 'Type', 'dfx-parish-retreat-letters' ); ?></th>
 							<th scope="col" class="manage-column"><?php esc_html_e( 'Submitted', 'dfx-parish-retreat-letters' ); ?></th>
@@ -2021,10 +2014,6 @@ class DFX_Parish_Retreat_Letters_Admin {
 						<?php if ( ! empty( $messages ) ) : ?>
 							<?php foreach ( $messages as $message ) : ?>
 								<tr>
-									<td>
-										<strong><?php echo esc_html( $message->attendant_name . ' ' . $message->attendant_surnames ); ?></strong>
-									</td>
-									<td><?php echo esc_html( $message->retreat_name ); ?></td>
 									<td><?php echo esc_html( $message->sender_name ?: __( 'Anonymous', 'dfx-parish-retreat-letters' ) ); ?></td>
 									<td>
 										<?php if ( $message->message_type === 'text' ) : ?>
@@ -2076,7 +2065,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 							<?php endforeach; ?>
 						<?php else : ?>
 							<tr>
-								<td colspan="7">
+								<td colspan="5">
 									<?php if ( $search || $retreat_id || $message_type ) : ?>
 										<?php esc_html_e( 'No messages found for your search/filter criteria.', 'dfx-parish-retreat-letters' ); ?>
 									<?php else : ?>
@@ -2090,158 +2079,6 @@ class DFX_Parish_Retreat_Letters_Admin {
 			</form>
 		</div>
 		<?php
-	}
-
-	/**
-	 * Print message page - renders clean content for printing.
-	 *
-	 * @since 1.2.0
-	 */
-	public function print_message_page() {
-		// Verify token
-		$token = sanitize_text_field( $_GET['token'] ?? '' );
-		if ( ! $token ) {
-			wp_die( __( 'Invalid print request.', 'dfx-parish-retreat-letters' ) );
-		}
-
-		$message_id = get_transient( 'dfx_print_token_' . $token );
-		if ( ! $message_id ) {
-			wp_die( __( 'Print token expired or invalid.', 'dfx-parish-retreat-letters' ) );
-		}
-
-		// Delete the token after use
-		delete_transient( 'dfx_print_token_' . $token );
-
-		// Get message with decrypted content
-		$message = $this->message_model->get_with_decrypted_content( $message_id );
-		if ( ! $message ) {
-			wp_die( __( 'Message not found.', 'dfx-parish-retreat-letters' ) );
-		}
-
-		// Get attached files if any
-		$files = $this->file_model->get_by_message( $message_id );
-
-		// Render the print page
-		$this->render_print_page( $message, $files );
-	}
-
-	/**
-	 * Render the clean print page.
-	 *
-	 * @since 1.2.0
-	 * @param object $message Message object with decrypted content.
-	 * @param array  $files   Array of file objects.
-	 */
-	private function render_print_page( $message, $files ) {
-		// Output clean HTML for printing
-		?>
-		<!DOCTYPE html>
-		<html <?php language_attributes(); ?>>
-		<head>
-			<meta charset="<?php bloginfo( 'charset' ); ?>">
-			<meta name="viewport" content="width=device-width, initial-scale=1">
-			<title><?php esc_html_e( 'Print Message', 'dfx-parish-retreat-letters' ); ?></title>
-			<style>
-				body {
-					font-family: Arial, sans-serif;
-					line-height: 1.6;
-					margin: 20px;
-					color: #333;
-				}
-				.message-content {
-					margin: 0;
-					padding: 0;
-				}
-				.file-content {
-					margin-top: 20px;
-					padding: 20px;
-					border: 1px solid #ddd;
-					background: #f9f9f9;
-				}
-				.file-content h3 {
-					margin-top: 0;
-				}
-				.file-text {
-					white-space: pre-wrap;
-					font-family: 'Courier New', monospace;
-					background: white;
-					padding: 15px;
-					border: 1px solid #ccc;
-				}
-				.file-image {
-					max-width: 100%;
-					height: auto;
-				}
-				@media print {
-					body { margin: 0; }
-					.no-print { display: none !important; }
-				}
-			</style>
-		</head>
-		<body>
-			<?php
-			if ( $message->message_type === 'text' ) {
-				// For text messages, display the content
-				echo '<div class="message-content">';
-				echo wp_kses_post( $message->decrypted_content );
-				echo '</div>';
-			} elseif ( $message->message_type === 'file' && ! empty( $files ) ) {
-				// For file messages, display the actual file content
-				foreach ( $files as $file ) {
-					$decrypted_file = $this->file_model->get_decrypted_file( $file->id );
-					if ( $decrypted_file ) {
-						echo '<div class="file-content">';
-						
-						// Handle different file types
-						if ( $file->file_type === 'text/plain' ) {
-							echo '<h3>' . esc_html( $decrypted_file['filename'] ) . '</h3>';
-							echo '<div class="file-text">' . esc_html( $decrypted_file['content'] ) . '</div>';
-						} elseif ( strpos( $file->file_type, 'image/' ) === 0 ) {
-							// For images, create a data URL and display
-							$image_data = base64_encode( $decrypted_file['content'] );
-							echo '<h3>' . esc_html( $decrypted_file['filename'] ) . '</h3>';
-							echo '<img src="data:' . esc_attr( $file->file_type ) . ';base64,' . esc_attr( $image_data ) . '" class="file-image" alt="' . esc_attr( $decrypted_file['filename'] ) . '">';
-						} elseif ( $file->file_type === 'application/pdf' ) {
-							// For PDFs, we'll need a different approach since we can't easily render PDF content in HTML
-							echo '<h3>' . esc_html( $decrypted_file['filename'] ) . '</h3>';
-							echo '<p>' . esc_html__( 'PDF files require specialized software to view. File size:', 'dfx-parish-retreat-letters' ) . ' ' . esc_html( size_format( $decrypted_file['size'] ) ) . '</p>';
-							// TODO: Consider PDF.js integration for better PDF rendering
-						} elseif ( in_array( $file->file_type, array( 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' ) ) ) {
-							// For Word documents, we can't easily render them
-							echo '<h3>' . esc_html( $decrypted_file['filename'] ) . '</h3>';
-							echo '<p>' . esc_html__( 'Word documents require specialized software to view. File size:', 'dfx-parish-retreat-letters' ) . ' ' . esc_html( size_format( $decrypted_file['size'] ) ) . '</p>';
-							// TODO: Consider document conversion libraries for better rendering
-						} else {
-							// For other file types, show file info
-							echo '<h3>' . esc_html( $decrypted_file['filename'] ) . '</h3>';
-							echo '<p>' . sprintf( 
-								esc_html__( 'File type: %s, Size: %s', 'dfx-parish-retreat-letters' ),
-								esc_html( $file->file_type ),
-								esc_html( size_format( $decrypted_file['size'] ) )
-							) . '</p>';
-						}
-						
-						echo '</div>';
-					}
-				}
-			}
-			?>
-			
-			<script>
-				// Auto-trigger print dialog when page loads
-				window.addEventListener('load', function() {
-					window.print();
-				});
-				
-				// Close window after printing or when print dialog is cancelled
-				window.addEventListener('afterprint', function() {
-					window.close();
-				});
-			</script>
-		</body>
-		</html>
-		<?php
-		exit; // Important: exit after rendering to prevent WordPress from adding headers/footers
 	}
 
 	/**
@@ -2290,8 +2127,8 @@ class DFX_Parish_Retreat_Letters_Admin {
 		// Log the print operation
 		$this->print_log_model->log_print( $message_id, get_current_user_id() );
 
-		// Return the print URL
-		$print_url = admin_url( 'admin.php?page=dfx-print&token=' . $print_token );
+		// Return the print URL - use clean URL instead of admin interface
+		$print_url = home_url( '/print/' . $print_token );
 		wp_send_json_success( array( 'print_url' => $print_url ) );
 	}
 
@@ -2552,7 +2389,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 						<?php foreach ( $recent_audit_logs as $log ) : ?>
 							<tr>
 								<td><?php echo esc_html( date_i18n( get_option( 'date_format' ) . ' ' . get_option( 'time_format' ), $log['timestamp'] ) ); ?></td>
-								<td><?php echo esc_html( ucwords( str_replace( '_', ' ', $log['event_type'] ) ) ); ?></td>
+								<td><?php echo esc_html( ucwords( str_replace( '_', ' ', (string) ( $log['event_type'] ?? '' ) ) ) ); ?></td>
 								<td>
 									<?php
 									if ( $log['user_id'] ) {

@@ -347,7 +347,7 @@ class DFX_Parish_Retreat_Letters {
 	 * @since 1.2.0
 	 */
 	public function handle_message_url_routing() {
-		// Check if we're on a message URL pattern: /messages/[token]
+		// Check if we're on a message URL pattern: /messages/[token] or /print/[token]
 		$request_uri = $_SERVER['REQUEST_URI'] ?? '';
 		
 		// Ensure we have a valid string
@@ -370,21 +370,38 @@ class DFX_Parish_Retreat_Letters {
 			$site_path = rtrim( $site_path, '/' );
 		}
 		
-		// Create the pattern based on the site's base path
-		$pattern = '#^' . preg_quote( $site_path, '#' ) . '/messages/([a-zA-Z0-9]+)/?$#';
+		// Create patterns for both message submission and print URLs
+		$messages_pattern = '#^' . preg_quote( $site_path, '#' ) . '/messages/([a-zA-Z0-9]+)/?$#';
+		$print_pattern = '#^' . preg_quote( $site_path, '#' ) . '/print/([a-zA-Z0-9]+)/?$#';
 		
 		// Also try without the site path for root installations
-		$root_pattern = '#^/messages/([a-zA-Z0-9]+)/?$#';
+		$root_messages_pattern = '#^/messages/([a-zA-Z0-9]+)/?$#';
+		$root_print_pattern = '#^/print/([a-zA-Z0-9]+)/?$#';
 		
 		$token = null;
-		if ( preg_match( $pattern, $request_uri, $matches ) ) {
+		$is_print = false;
+		
+		// Check for message submission URLs
+		if ( preg_match( $messages_pattern, $request_uri, $matches ) ) {
 			$token = sanitize_text_field( $matches[1] );
-		} elseif ( preg_match( $root_pattern, $request_uri, $matches ) ) {
+		} elseif ( preg_match( $root_messages_pattern, $request_uri, $matches ) ) {
 			$token = sanitize_text_field( $matches[1] );
+		}
+		// Check for print URLs
+		elseif ( preg_match( $print_pattern, $request_uri, $matches ) ) {
+			$token = sanitize_text_field( $matches[1] );
+			$is_print = true;
+		} elseif ( preg_match( $root_print_pattern, $request_uri, $matches ) ) {
+			$token = sanitize_text_field( $matches[1] );
+			$is_print = true;
 		}
 		
 		if ( $token ) {
-			$this->display_message_form( $token );
+			if ( $is_print ) {
+				$this->handle_print_request( $token );
+			} else {
+				$this->display_message_form( $token );
+			}
 			exit;
 		}
 	}
@@ -1515,5 +1532,173 @@ class DFX_Parish_Retreat_Letters {
 			
 			$file_model->create( $file_model_data );
 		}
+	}
+
+	/**
+	 * Handle print requests for messages via clean URLs.
+	 *
+	 * @since 1.2.0
+	 * @param string $token Print token.
+	 */
+	private function handle_print_request( $token ) {
+		// Verify token
+		if ( ! $token ) {
+			wp_die( __( 'Invalid print request.', 'dfx-parish-retreat-letters' ) );
+		}
+
+		$message_id = get_transient( 'dfx_print_token_' . $token );
+		if ( ! $message_id ) {
+			wp_die( __( 'Print token expired or invalid.', 'dfx-parish-retreat-letters' ) );
+		}
+
+		// Delete the token after use
+		delete_transient( 'dfx_print_token_' . $token );
+
+		// Initialize models
+		$message_model = new DFX_Parish_Retreat_Letters_ConfidentialMessage();
+		$file_model = new DFX_Parish_Retreat_Letters_MessageFile();
+
+		// Get message with decrypted content
+		$message = $message_model->get_with_decrypted_content( $message_id );
+		if ( ! $message ) {
+			wp_die( __( 'Message not found.', 'dfx-parish-retreat-letters' ) );
+		}
+
+		// Get attached files if any
+		$files = $file_model->get_by_message( $message_id );
+
+		// Render the clean print page
+		$this->render_print_page( $message, $files );
+	}
+
+	/**
+	 * Render clean print page without WordPress headers/footers.
+	 *
+	 * @since 1.2.0
+	 * @param object $message Message object with decrypted content.
+	 * @param array  $files   Array of file objects.
+	 */
+	private function render_print_page( $message, $files ) {
+		// Output clean HTML for printing
+		?>
+		<!DOCTYPE html>
+		<html <?php language_attributes(); ?>>
+		<head>
+			<meta charset="<?php bloginfo( 'charset' ); ?>">
+			<meta name="viewport" content="width=device-width, initial-scale=1">
+			<title><?php esc_html_e( 'Print Message', 'dfx-parish-retreat-letters' ); ?></title>
+			<style>
+				body {
+					font-family: Arial, sans-serif;
+					line-height: 1.6;
+					margin: 20px;
+					color: #333;
+				}
+				.message-content {
+					margin: 0;
+					padding: 0;
+				}
+				.file-content {
+					margin-top: 20px;
+					padding: 20px;
+					border: 1px solid #ddd;
+					background: #f9f9f9;
+				}
+				.file-content h3 {
+					margin-top: 0;
+				}
+				.file-text {
+					white-space: pre-wrap;
+					font-family: 'Courier New', monospace;
+					background: white;
+					padding: 15px;
+					border: 1px solid #ccc;
+				}
+				.file-image {
+					max-width: 100%;
+					height: auto;
+				}
+				@media print {
+					body { margin: 0; }
+					.no-print { display: none !important; }
+				}
+			</style>
+		</head>
+		<body>
+			<?php
+			if ( $message->message_type === 'text' ) {
+				// For text messages, display the content
+				echo '<div class="message-content">';
+				echo wp_kses_post( $message->decrypted_content );
+				echo '</div>';
+			} elseif ( $message->message_type === 'file' && ! empty( $files ) ) {
+				// Initialize file model for decryption
+				$file_model = new DFX_Parish_Retreat_Letters_MessageFile();
+				
+				// For file messages, display the actual file content
+				foreach ( $files as $file ) {
+					$decrypted_file = $file_model->get_decrypted_file( $file->id );
+					if ( $decrypted_file ) {
+						echo '<div class="file-content">';
+						
+						// Handle different file types
+						if ( $file->file_type === 'text/plain' ) {
+							echo '<h3>' . esc_html( $decrypted_file['filename'] ) . '</h3>';
+							echo '<div class="file-text">' . esc_html( $decrypted_file['content'] ) . '</div>';
+						} elseif ( strpos( $file->file_type, 'image/' ) === 0 ) {
+							// For images, create a data URL and display
+							$image_data = base64_encode( $decrypted_file['content'] );
+							echo '<h3>' . esc_html( $decrypted_file['filename'] ) . '</h3>';
+							echo '<img src="data:' . esc_attr( $file->file_type ) . ';base64,' . esc_attr( $image_data ) . '" class="file-image" alt="' . esc_attr( $decrypted_file['filename'] ) . '">';
+						} elseif ( $file->file_type === 'application/pdf' ) {
+							// For PDFs, we'll try to embed them
+							$pdf_data = base64_encode( $decrypted_file['content'] );
+							echo '<h3>' . esc_html( $decrypted_file['filename'] ) . '</h3>';
+							echo '<embed src="data:application/pdf;base64,' . esc_attr( $pdf_data ) . '" type="application/pdf" width="100%" height="800px" style="border: none;">';
+						} elseif ( in_array( $file->file_type, array( 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' ) ) ) {
+							// For Word documents, show that they need to be opened separately
+							echo '<h3>' . esc_html( $decrypted_file['filename'] ) . '</h3>';
+							echo '<p>' . esc_html__( 'Word document content cannot be displayed for printing. Please download and print separately.', 'dfx-parish-retreat-letters' ) . '</p>';
+							echo '<p>' . esc_html__( 'File size:', 'dfx-parish-retreat-letters' ) . ' ' . esc_html( size_format( $decrypted_file['size'] ) ) . '</p>';
+						} else {
+							// For other file types, try to display as text if possible
+							$content = $decrypted_file['content'];
+							
+							// Check if content is text-like
+							if ( mb_check_encoding( $content, 'UTF-8' ) && ctype_print( str_replace( array( "\n", "\r", "\t" ), '', $content ) ) ) {
+								echo '<h3>' . esc_html( $decrypted_file['filename'] ) . '</h3>';
+								echo '<div class="file-text">' . esc_html( $content ) . '</div>';
+							} else {
+								// Binary file that can't be printed as text
+								echo '<h3>' . esc_html( $decrypted_file['filename'] ) . '</h3>';
+								echo '<p>' . sprintf( 
+									esc_html__( 'File type: %s, Size: %s - Cannot display content for printing.', 'dfx-parish-retreat-letters' ),
+									esc_html( $file->file_type ),
+									esc_html( size_format( $decrypted_file['size'] ) )
+								) . '</p>';
+							}
+						}
+						
+						echo '</div>';
+					}
+				}
+			}
+			?>
+			
+			<script>
+				// Auto-trigger print dialog when page loads
+				window.addEventListener('load', function() {
+					window.print();
+				});
+				
+				// Close tab after printing or when print dialog is cancelled
+				window.addEventListener('afterprint', function() {
+					window.close();
+				});
+			</script>
+		</body>
+		</html>
+		<?php
+		exit; // Important: exit after rendering to prevent WordPress from adding headers/footers
 	}
 }

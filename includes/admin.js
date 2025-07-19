@@ -384,7 +384,7 @@
                 success: function(response) {
                     if (response.success) {
                         // Open print URL in new tab
-                        window.open(response.data.print_url, '_blank', 'width=800,height=600,scrollbars=yes,resizable=yes');
+                        window.open(response.data.print_url, '_blank');
                     } else {
                         alert(response.data.message || printErrorText);
                     }
