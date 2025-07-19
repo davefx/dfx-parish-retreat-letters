@@ -427,8 +427,8 @@ msgstr "Cursiva"
 msgid "Underline"
 msgstr "Subrayado"
 
-msgid "You can use the toolbar to format your text. HTML is allowed but will be filtered for security."
-msgstr "Puede usar la barra de herramientas para formatear su texto. HTML está permitido pero será filtrado por seguridad."
+msgid "You can use the toolbar to format your text, create lists, and paste images. HTML is allowed but will be filtered for security."
+msgstr "Puede usar la barra de herramientas para formatear su texto, crear listas y pegar imágenes. HTML está permitido pero será filtrado por seguridad."
 
 msgid "Allowed file types: PDF, DOC, DOCX, TXT, JPG, PNG, GIF. Maximum 5MB per file."
 msgstr "Tipos de archivo permitidos: PDF, DOC, DOCX, TXT, JPG, PNG, GIF. Máximo 5MB por archivo."
@@ -616,3 +616,24 @@ msgstr "Mensaje opcional que se mostrará a los asistentes cuando accedan a su f
 
 msgid "This message will be displayed before the message submission form for all attendants of this retreat. HTML is allowed."
 msgstr "Este mensaje se mostrará antes del formulario de envío de mensajes para todos los asistentes de este retiro. Se permite HTML."
+
+msgid "Bullet List"
+msgstr "Lista con Viñetas"
+
+msgid "Numbered List"
+msgstr "Lista Numerada"
+
+msgid "List"
+msgstr "Lista"
+
+msgid "Undo"
+msgstr "Deshacer"
+
+msgid "Redo"
+msgstr "Rehacer"
+
+msgid "Security check error. Please refresh the page."
+msgstr "Error en la verificación de seguridad. Por favor, actualiza la página."
+
+msgid "Security check error. Please try again."
+msgstr "Error en la verificación de seguridad. Por favor, inténtalo de nuevo."

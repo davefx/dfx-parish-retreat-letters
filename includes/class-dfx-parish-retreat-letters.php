@@ -500,14 +500,19 @@ class DFX_Parish_Retreat_Letters {
 					<div class="dfx-form-group" id="dfx-text-group">
 						<label for="message_content"><?php esc_html_e( 'Your Message', 'dfx-parish-retreat-letters' ); ?> <span class="required">*</span></label>
 						<div id="dfx-editor-container">
-							<textarea id="message_content" name="message_content" rows="10" placeholder="<?php esc_attr_e( 'Write your confidential message here...', 'dfx-parish-retreat-letters' ); ?>"></textarea>
+							<div class="dfx-editor-toolbar">
+								<button type="button" data-command="bold" title="<?php esc_attr_e( 'Bold', 'dfx-parish-retreat-letters' ); ?>"><strong>B</strong></button>
+								<button type="button" data-command="italic" title="<?php esc_attr_e( 'Italic', 'dfx-parish-retreat-letters' ); ?>"><em>I</em></button>
+								<button type="button" data-command="underline" title="<?php esc_attr_e( 'Underline', 'dfx-parish-retreat-letters' ); ?>"><u>U</u></button>
+								<button type="button" data-command="insertUnorderedList" title="<?php esc_attr_e( 'Bullet List', 'dfx-parish-retreat-letters' ); ?>">• <?php esc_html_e( 'List', 'dfx-parish-retreat-letters' ); ?></button>
+								<button type="button" data-command="insertOrderedList" title="<?php esc_attr_e( 'Numbered List', 'dfx-parish-retreat-letters' ); ?>">1. <?php esc_html_e( 'List', 'dfx-parish-retreat-letters' ); ?></button>
+								<button type="button" data-command="undo" title="<?php esc_attr_e( 'Undo', 'dfx-parish-retreat-letters' ); ?>"><?php esc_html_e( 'Undo', 'dfx-parish-retreat-letters' ); ?></button>
+								<button type="button" data-command="redo" title="<?php esc_attr_e( 'Redo', 'dfx-parish-retreat-letters' ); ?>"><?php esc_html_e( 'Redo', 'dfx-parish-retreat-letters' ); ?></button>
+							</div>
+							<div id="message_content" contenteditable="true" class="dfx-editor" placeholder="<?php esc_attr_e( 'Write your confidential message here...', 'dfx-parish-retreat-letters' ); ?>"></div>
+							<textarea id="message_content_hidden" name="message_content" style="display: none;"></textarea>
 						</div>
-						<div class="dfx-editor-toolbar">
-							<button type="button" data-command="bold" title="<?php esc_attr_e( 'Bold', 'dfx-parish-retreat-letters' ); ?>"><strong>B</strong></button>
-							<button type="button" data-command="italic" title="<?php esc_attr_e( 'Italic', 'dfx-parish-retreat-letters' ); ?>"><em>I</em></button>
-							<button type="button" data-command="underline" title="<?php esc_attr_e( 'Underline', 'dfx-parish-retreat-letters' ); ?>"><u>U</u></button>
-						</div>
-						<p class="dfx-help-text"><?php esc_html_e( 'You can use the toolbar to format your text. HTML is allowed but will be filtered for security.', 'dfx-parish-retreat-letters' ); ?></p>
+						<p class="dfx-help-text"><?php esc_html_e( 'You can use the toolbar to format your text, create lists, and paste images. HTML is allowed but will be filtered for security.', 'dfx-parish-retreat-letters' ); ?></p>
 					</div>
 
 					<div class="dfx-form-group" id="dfx-file-group" style="display: none;">
@@ -658,22 +663,79 @@ class DFX_Parish_Retreat_Letters {
 			min-height: 150px;
 		}
 
-		.dfx-editor-toolbar {
+		.dfx-editor {
+			min-height: 150px;
+			max-height: 400px;
+			overflow-y: auto;
+			padding: 0.75rem;
+			border: 1px solid #ddd;
+			border-radius: 4px;
+			font-size: 1rem;
+			font-family: inherit;
+			line-height: 1.5;
+			background: white;
+			outline: none;
 			margin-top: 0.5rem;
+		}
+
+		.dfx-editor:focus {
+			border-color: #007cba;
+			box-shadow: 0 0 0 1px #007cba;
+		}
+
+		.dfx-editor[contenteditable="true"]:empty:before {
+			content: attr(placeholder);
+			color: #999;
+			pointer-events: none;
+		}
+
+		.dfx-editor img {
+			max-width: 100%;
+			height: auto;
+			border-radius: 4px;
+			margin: 0.5rem 0;
+		}
+
+		.dfx-editor ul, .dfx-editor ol {
+			margin: 1rem 0;
+			padding-left: 2rem;
+		}
+
+		.dfx-editor li {
+			margin-bottom: 0.25rem;
+		}
+
+		.dfx-editor-toolbar {
+			margin-bottom: 0.5rem;
 			display: flex;
 			gap: 0.5rem;
+			flex-wrap: wrap;
+			padding: 0.5rem;
+			background: #f8f9fa;
+			border: 1px solid #ddd;
+			border-radius: 4px;
 		}
 
 		.dfx-editor-toolbar button {
-			padding: 0.25rem 0.5rem;
+			padding: 0.375rem 0.75rem;
 			border: 1px solid #ddd;
-			background: #f8f9fa;
+			background: white;
 			cursor: pointer;
-			border-radius: 2px;
+			border-radius: 3px;
+			font-size: 0.875rem;
+			transition: all 0.2s;
 		}
 
 		.dfx-editor-toolbar button:hover {
 			background: #e9ecef;
+			border-color: #adb5bd;
+		}
+
+		.dfx-editor-toolbar button:active,
+		.dfx-editor-toolbar button.active {
+			background: #007cba;
+			color: white;
+			border-color: #005a87;
 		}
 
 		.dfx-help-text {
@@ -821,6 +883,9 @@ class DFX_Parish_Retreat_Letters {
 		?>
 		<script>
 		jQuery(document).ready(function($) {
+			var editor = $('#message_content');
+			var hiddenInput = $('#message_content_hidden');
+			
 			// Generate and display CAPTCHA
 			generateCaptcha();
 			
@@ -830,14 +895,45 @@ class DFX_Parish_Retreat_Letters {
 				if (mode === 'text') {
 					$('#dfx-text-group').show();
 					$('#dfx-file-group').hide();
-					$('#message_content').prop('required', true);
+					hiddenInput.prop('required', true);
 					$('#message_files').prop('required', false);
 				} else {
 					$('#dfx-text-group').hide();
 					$('#dfx-file-group').show();
-					$('#message_content').prop('required', false);
+					hiddenInput.prop('required', false);
 					$('#message_files').prop('required', true);
 				}
+			});
+			
+			// Editor functionality
+			editor.on('input paste keyup', function() {
+				// Sync contenteditable content to hidden textarea
+				hiddenInput.val($(this).html());
+				
+				// Update placeholder visibility
+				if ($(this).text().trim() === '') {
+					$(this).addClass('empty');
+				} else {
+					$(this).removeClass('empty');
+				}
+			});
+			
+			// Handle paste events to clean up content
+			editor.on('paste', function(e) {
+				e.preventDefault();
+				
+				var paste = (e.originalEvent.clipboardData || window.clipboardData).getData('text/html');
+				if (!paste) {
+					paste = (e.originalEvent.clipboardData || window.clipboardData).getData('text/plain');
+					paste = paste.replace(/\n/g, '<br>');
+				}
+				
+				// Clean the pasted content
+				var cleanHTML = cleanPastedContent(paste);
+				document.execCommand('insertHTML', false, cleanHTML);
+				
+				// Update hidden input
+				hiddenInput.val(editor.html());
 			});
 			
 			// File handling
@@ -848,14 +944,69 @@ class DFX_Parish_Retreat_Letters {
 			// Form submission
 			$('#dfx-message-form').on('submit', function(e) {
 				e.preventDefault();
+				
+				// Sync editor content before submission
+				if (editor.length) {
+					hiddenInput.val(editor.html());
+				}
+				
 				submitMessage();
 			});
 			
 			// Editor toolbar
-			$('.dfx-editor-toolbar button').on('click', function() {
+			$('.dfx-editor-toolbar button').on('click', function(e) {
+				e.preventDefault();
 				var command = $(this).data('command');
+				
+				// Focus the editor first
+				editor.focus();
+				
+				// Execute the command
 				document.execCommand(command, false, null);
+				
+				// Update hidden input
+				hiddenInput.val(editor.html());
+				
+				// Update button states
+				updateToolbarStates();
 			});
+			
+			// Update toolbar button states based on current selection
+			function updateToolbarStates() {
+				$('.dfx-editor-toolbar button').each(function() {
+					var command = $(this).data('command');
+					var isActive = false;
+					
+					try {
+						isActive = document.queryCommandState(command);
+					} catch (e) {
+						// Some commands may not be supported
+					}
+					
+					$(this).toggleClass('active', isActive);
+				});
+			}
+			
+			// Update toolbar states when selection changes
+			editor.on('mouseup keyup', function() {
+				setTimeout(updateToolbarStates, 10);
+			});
+			
+			function cleanPastedContent(html) {
+				// Create a temporary div to clean the content
+				var temp = $('<div>').html(html);
+				
+				// Remove potentially dangerous elements and attributes
+				temp.find('script, style, meta, link').remove();
+				temp.find('*').removeAttr('style class id onclick onload onerror');
+				
+				// Convert common formatting
+				temp.find('div').replaceWith(function() {
+					return '<p>' + $(this).html() + '</p>';
+				});
+				
+				return temp.html();
+			}
 
 			function generateCaptcha() {
 				var num1 = Math.floor(Math.random() * 10) + 1;
@@ -874,6 +1025,7 @@ class DFX_Parish_Retreat_Letters {
 				
 				$('#dfx-captcha-question').text('<?php esc_html_e( 'Please solve: ', 'dfx-parish-retreat-letters' ); ?>' + question);
 				$('#captcha_token').val(btoa(answer.toString()));
+				$('#captcha_answer').val('');
 			}
 
 			function displaySelectedFiles(files) {
@@ -919,8 +1071,10 @@ class DFX_Parish_Retreat_Letters {
 				// Validate mode-specific requirements
 				var mode = $('input[name="message_mode"]:checked').val();
 				if (mode === 'text') {
-					var content = $('#message_content').val().trim();
-					if (!content) {
+					var content = hiddenInput.val().trim();
+					// Also check the text content without HTML
+					var textContent = editor.text().trim();
+					if (!content || !textContent) {
 						showNotice('<?php esc_html_e( 'Please enter a message.', 'dfx-parish-retreat-letters' ); ?>', 'error');
 						return;
 					}
@@ -933,10 +1087,29 @@ class DFX_Parish_Retreat_Letters {
 				}
 				
 				// Validate CAPTCHA
-				var userAnswer = $('#captcha_answer').val();
-				var expectedAnswer = atob($('#captcha_token').val());
+				var userAnswer = $('#captcha_answer').val().trim();
+				var expectedAnswerB64 = $('#captcha_token').val();
 				
-				if (userAnswer != expectedAnswer) {
+				if (!userAnswer) {
+					showNotice('<?php esc_html_e( 'Please complete the security check.', 'dfx-parish-retreat-letters' ); ?>', 'error');
+					return;
+				}
+				
+				if (!expectedAnswerB64) {
+					showNotice('<?php esc_html_e( 'Security check error. Please refresh the page.', 'dfx-parish-retreat-letters' ); ?>', 'error');
+					return;
+				}
+				
+				var expectedAnswer;
+				try {
+					expectedAnswer = atob(expectedAnswerB64);
+				} catch (e) {
+					showNotice('<?php esc_html_e( 'Security check error. Please try again.', 'dfx-parish-retreat-letters' ); ?>', 'error');
+					generateCaptcha();
+					return;
+				}
+				
+				if (parseInt(userAnswer) != parseInt(expectedAnswer)) {
 					showNotice('<?php esc_html_e( 'Incorrect security answer. Please try again.', 'dfx-parish-retreat-letters' ); ?>', 'error');
 					generateCaptcha();
 					$('#captcha_answer').val('');
@@ -961,15 +1134,22 @@ class DFX_Parish_Retreat_Letters {
 						if (response.success) {
 							showNotice('<?php esc_html_e( 'Your message has been sent successfully and securely stored.', 'dfx-parish-retreat-letters' ); ?>', 'success');
 							$('#dfx-message-form')[0].reset();
+							editor.html('').addClass('empty');
+							hiddenInput.val('');
 							$('#dfx-file-list').empty();
 							// Reset to text mode
 							$('input[name="message_mode"][value="text"]').prop('checked', true).trigger('change');
 							generateCaptcha();
 						} else {
-							showNotice(response.data.message || '<?php esc_html_e( 'An error occurred while sending your message.', 'dfx-parish-retreat-letters' ); ?>', 'error');
+							var errorMessage = '<?php esc_html_e( 'An error occurred while sending your message.', 'dfx-parish-retreat-letters' ); ?>';
+							if (response.data && response.data.message) {
+								errorMessage = response.data.message;
+							}
+							showNotice(errorMessage, 'error');
 						}
 					},
-					error: function() {
+					error: function(xhr, status, error) {
+						console.error('AJAX Error:', status, error);
 						showNotice('<?php esc_html_e( 'A network error occurred. Please try again.', 'dfx-parish-retreat-letters' ); ?>', 'error');
 					},
 					complete: function() {
@@ -1055,7 +1235,10 @@ class DFX_Parish_Retreat_Letters {
 		if ( $message_mode === 'text' ) {
 			// Validate message content
 			$content = wp_kses_post( $_POST['message_content'] ?? '' );
-			if ( empty( trim( $content ) ) ) {
+			
+			// Check if content has actual text, not just HTML tags
+			$text_content = trim( wp_strip_all_tags( $content ) );
+			if ( empty( $content ) || empty( $text_content ) ) {
 				wp_send_json_error( array( 'message' => __( 'Message content is required.', 'dfx-parish-retreat-letters' ) ) );
 			}
 			$message_type = 'text';
