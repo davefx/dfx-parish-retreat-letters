@@ -38,7 +38,7 @@ class DFX_Parish_Retreat_Letters_Database {
 	 * @since 1.0.0
 	 * @var string
 	 */
-	const DB_VERSION = '1.2.0';
+	const DB_VERSION = '1.2.1';
 
 	/**
 	 * The database version option name.
@@ -140,6 +140,7 @@ class DFX_Parish_Retreat_Letters_Database {
 			location varchar(255) NOT NULL,
 			start_date date NOT NULL,
 			end_date date NOT NULL,
+			custom_message text NULL DEFAULT NULL,
 			created_at datetime DEFAULT CURRENT_TIMESTAMP,
 			updated_at datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 			PRIMARY KEY (id),
@@ -326,6 +327,10 @@ class DFX_Parish_Retreat_Letters_Database {
 
 		if ( version_compare( $from_version, '1.2.0', '<' ) ) {
 			$this->upgrade_to_1_2_0();
+		}
+
+		if ( version_compare( $from_version, '1.2.1', '<' ) ) {
+			$this->upgrade_to_1_2_1();
 		}
 
 		// Update the database version to current
@@ -526,6 +531,26 @@ class DFX_Parish_Retreat_Letters_Database {
 					array( '%d' )
 				);
 			}
+		}
+	}
+
+	/**
+	 * Upgrade database to version 1.2.1.
+	 * This upgrade adds custom_message field to retreats table.
+	 *
+	 * @since 1.2.1
+	 */
+	private function upgrade_to_1_2_1() {
+		global $wpdb;
+
+		// Add custom_message field to retreats table if it doesn't exist
+		$column_exists = $wpdb->get_results( $wpdb->prepare(
+			"SHOW COLUMNS FROM {$this->retreats_table} LIKE %s",
+			'custom_message'
+		) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+
+		if ( empty( $column_exists ) ) {
+			$wpdb->query( "ALTER TABLE {$this->retreats_table} ADD COLUMN custom_message text NULL DEFAULT NULL AFTER end_date" ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 		}
 	}
 

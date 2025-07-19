@@ -295,7 +295,7 @@ class DFX_Parish_Retreat_Letters {
 	 * @access   private
 	 */
 	private function init_public_hooks() {
-		add_action( 'init', array( $this, 'handle_message_url_routing' ) );
+		add_action( 'wp_loaded', array( $this, 'handle_message_url_routing' ) );
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_public_scripts' ) );
 		add_action( 'wp_ajax_nopriv_dfx_submit_message', array( $this, 'handle_message_submission' ) );
 		add_action( 'wp_ajax_dfx_submit_message', array( $this, 'handle_message_submission' ) );
@@ -436,7 +436,7 @@ class DFX_Parish_Retreat_Letters {
 		global $wpdb;
 		
 		$attendant = $wpdb->get_row( $wpdb->prepare(
-			"SELECT a.*, r.name as retreat_name, r.location as retreat_location, r.start_date, r.end_date
+			"SELECT a.*, r.name as retreat_name, r.location as retreat_location, r.start_date, r.end_date, r.custom_message
 			 FROM {$this->database->get_attendants_table()} a
 			 INNER JOIN {$this->database->get_retreats_table()} r ON a.retreat_id = r.id
 			 WHERE a.message_url_token = %s",
@@ -465,6 +465,12 @@ class DFX_Parish_Retreat_Letters {
 					<p><?php echo esc_html( date_i18n( get_option( 'date_format' ), strtotime( $attendant->start_date ) ) ); ?> - <?php echo esc_html( date_i18n( get_option( 'date_format' ), strtotime( $attendant->end_date ) ) ); ?></p>
 				</div>
 
+				<?php if ( ! empty( $attendant->custom_message ) ) : ?>
+				<div class="dfx-custom-message">
+					<?php echo wp_kses_post( wpautop( $attendant->custom_message ) ); ?>
+				</div>
+				<?php endif; ?>
+
 				<div id="dfx-message-notices"></div>
 
 				<form id="dfx-message-form" enctype="multipart/form-data">
@@ -473,14 +479,28 @@ class DFX_Parish_Retreat_Letters {
 					<input type="hidden" name="attendant_id" value="<?php echo esc_attr( $attendant->id ); ?>">
 
 					<div class="dfx-form-group">
-						<label for="sender_name"><?php esc_html_e( 'Your Name (Optional)', 'dfx-parish-retreat-letters' ); ?></label>
-						<input type="text" id="sender_name" name="sender_name" maxlength="255" placeholder="<?php esc_attr_e( 'Enter your name if you wish to identify yourself', 'dfx-parish-retreat-letters' ); ?>">
+						<label for="sender_name"><?php esc_html_e( 'Your Name', 'dfx-parish-retreat-letters' ); ?> <span class="required">*</span></label>
+						<input type="text" id="sender_name" name="sender_name" required maxlength="255" placeholder="<?php esc_attr_e( 'Enter your name', 'dfx-parish-retreat-letters' ); ?>">
 					</div>
 
-					<div class="dfx-form-group">
+					<div class="dfx-message-mode">
+						<h3><?php esc_html_e( 'Choose message type:', 'dfx-parish-retreat-letters' ); ?></h3>
+						<div class="dfx-mode-selector">
+							<label>
+								<input type="radio" name="message_mode" value="text" checked>
+								<?php esc_html_e( 'Text Message', 'dfx-parish-retreat-letters' ); ?>
+							</label>
+							<label>
+								<input type="radio" name="message_mode" value="file">
+								<?php esc_html_e( 'File Upload', 'dfx-parish-retreat-letters' ); ?>
+							</label>
+						</div>
+					</div>
+
+					<div class="dfx-form-group" id="dfx-text-group">
 						<label for="message_content"><?php esc_html_e( 'Your Message', 'dfx-parish-retreat-letters' ); ?> <span class="required">*</span></label>
 						<div id="dfx-editor-container">
-							<textarea id="message_content" name="message_content" required rows="10" placeholder="<?php esc_attr_e( 'Write your confidential message here...', 'dfx-parish-retreat-letters' ); ?>"></textarea>
+							<textarea id="message_content" name="message_content" rows="10" placeholder="<?php esc_attr_e( 'Write your confidential message here...', 'dfx-parish-retreat-letters' ); ?>"></textarea>
 						</div>
 						<div class="dfx-editor-toolbar">
 							<button type="button" data-command="bold" title="<?php esc_attr_e( 'Bold', 'dfx-parish-retreat-letters' ); ?>"><strong>B</strong></button>
@@ -490,8 +510,8 @@ class DFX_Parish_Retreat_Letters {
 						<p class="dfx-help-text"><?php esc_html_e( 'You can use the toolbar to format your text. HTML is allowed but will be filtered for security.', 'dfx-parish-retreat-letters' ); ?></p>
 					</div>
 
-					<div class="dfx-form-group">
-						<label for="message_files"><?php esc_html_e( 'Attach Files (Optional)', 'dfx-parish-retreat-letters' ); ?></label>
+					<div class="dfx-form-group" id="dfx-file-group" style="display: none;">
+						<label for="message_files"><?php esc_html_e( 'Attach Files', 'dfx-parish-retreat-letters' ); ?> <span class="required">*</span></label>
 						<input type="file" id="message_files" name="message_files[]" multiple accept=".pdf,.doc,.docx,.txt,.jpg,.jpeg,.png,.gif">
 						<p class="dfx-help-text">
 							<?php esc_html_e( 'Allowed file types: PDF, DOC, DOCX, TXT, JPG, PNG, GIF. Maximum 5MB per file.', 'dfx-parish-retreat-letters' ); ?>
@@ -559,6 +579,53 @@ class DFX_Parish_Retreat_Letters {
 			margin-top: 0;
 			color: #007cba;
 			font-size: 1.1rem;
+		}
+
+		.dfx-custom-message {
+			background: #e7f3ff;
+			padding: 1.5rem;
+			border-radius: 4px;
+			margin-bottom: 2rem;
+			border-left: 4px solid #0073aa;
+		}
+
+		.dfx-custom-message p {
+			margin-bottom: 1rem;
+		}
+
+		.dfx-custom-message p:last-child {
+			margin-bottom: 0;
+		}
+
+		.dfx-message-mode {
+			margin-bottom: 1.5rem;
+			padding: 1rem;
+			background: #f8f9fa;
+			border-radius: 4px;
+			border: 1px solid #ddd;
+		}
+
+		.dfx-message-mode h3 {
+			margin-top: 0;
+			margin-bottom: 1rem;
+			color: #333;
+		}
+
+		.dfx-mode-selector {
+			display: flex;
+			gap: 2rem;
+		}
+
+		.dfx-mode-selector label {
+			display: flex;
+			align-items: center;
+			gap: 0.5rem;
+			cursor: pointer;
+			font-weight: 600;
+		}
+
+		.dfx-mode-selector input[type="radio"] {
+			margin: 0;
 		}
 
 		.dfx-form-group {
@@ -717,6 +784,11 @@ class DFX_Parish_Retreat_Letters {
 				margin: 1rem;
 				padding: 1rem;
 			}
+
+			.dfx-mode-selector {
+				flex-direction: column;
+				gap: 1rem;
+			}
 		}
 		</style>
 		<?php
@@ -751,6 +823,22 @@ class DFX_Parish_Retreat_Letters {
 		jQuery(document).ready(function($) {
 			// Generate and display CAPTCHA
 			generateCaptcha();
+			
+			// Message mode switching
+			$('input[name="message_mode"]').on('change', function() {
+				var mode = $(this).val();
+				if (mode === 'text') {
+					$('#dfx-text-group').show();
+					$('#dfx-file-group').hide();
+					$('#message_content').prop('required', true);
+					$('#message_files').prop('required', false);
+				} else {
+					$('#dfx-text-group').hide();
+					$('#dfx-file-group').show();
+					$('#message_content').prop('required', false);
+					$('#message_files').prop('required', true);
+				}
+			});
 			
 			// File handling
 			$('#message_files').on('change', function() {
@@ -828,6 +916,22 @@ class DFX_Parish_Retreat_Letters {
 				var form = $('#dfx-message-form')[0];
 				var formData = new FormData(form);
 				
+				// Validate mode-specific requirements
+				var mode = $('input[name="message_mode"]:checked').val();
+				if (mode === 'text') {
+					var content = $('#message_content').val().trim();
+					if (!content) {
+						showNotice('<?php esc_html_e( 'Please enter a message.', 'dfx-parish-retreat-letters' ); ?>', 'error');
+						return;
+					}
+				} else {
+					var files = $('#message_files')[0].files;
+					if (!files || files.length === 0) {
+						showNotice('<?php esc_html_e( 'Please select at least one file.', 'dfx-parish-retreat-letters' ); ?>', 'error');
+						return;
+					}
+				}
+				
 				// Validate CAPTCHA
 				var userAnswer = $('#captcha_answer').val();
 				var expectedAnswer = atob($('#captcha_token').val());
@@ -838,6 +942,9 @@ class DFX_Parish_Retreat_Letters {
 					$('#captcha_answer').val('');
 					return;
 				}
+				
+				// Add message mode to form data
+				formData.append('message_mode', mode);
 				
 				// Disable submit button
 				$('#dfx-submit-btn').prop('disabled', true);
@@ -855,6 +962,8 @@ class DFX_Parish_Retreat_Letters {
 							showNotice('<?php esc_html_e( 'Your message has been sent successfully and securely stored.', 'dfx-parish-retreat-letters' ); ?>', 'success');
 							$('#dfx-message-form')[0].reset();
 							$('#dfx-file-list').empty();
+							// Reset to text mode
+							$('input[name="message_mode"][value="text"]').prop('checked', true).trigger('change');
 							generateCaptcha();
 						} else {
 							showNotice(response.data.message || '<?php esc_html_e( 'An error occurred while sending your message.', 'dfx-parish-retreat-letters' ); ?>', 'error');
@@ -927,19 +1036,45 @@ class DFX_Parish_Retreat_Letters {
 			wp_send_json_error( array( 'message' => __( 'Invalid attendant.', 'dfx-parish-retreat-letters' ) ) );
 		}
 
-		// Validate message content
-		$content = wp_kses_post( $_POST['message_content'] ?? '' );
-		if ( empty( trim( $content ) ) ) {
-			wp_send_json_error( array( 'message' => __( 'Message content is required.', 'dfx-parish-retreat-letters' ) ) );
+		// Validate sender name (now required)
+		$sender_name = sanitize_text_field( $_POST['sender_name'] ?? '' );
+		if ( empty( trim( $sender_name ) ) ) {
+			wp_send_json_error( array( 'message' => __( 'Sender name is required.', 'dfx-parish-retreat-letters' ) ) );
+		}
+
+		// Validate message mode
+		$message_mode = sanitize_text_field( $_POST['message_mode'] ?? 'text' );
+		if ( ! in_array( $message_mode, array( 'text', 'file' ), true ) ) {
+			wp_send_json_error( array( 'message' => __( 'Invalid message mode.', 'dfx-parish-retreat-letters' ) ) );
+		}
+
+		// Validate based on message mode
+		$content = '';
+		$message_type = 'text';
+		
+		if ( $message_mode === 'text' ) {
+			// Validate message content
+			$content = wp_kses_post( $_POST['message_content'] ?? '' );
+			if ( empty( trim( $content ) ) ) {
+				wp_send_json_error( array( 'message' => __( 'Message content is required.', 'dfx-parish-retreat-letters' ) ) );
+			}
+			$message_type = 'text';
+		} else {
+			// Validate file upload
+			if ( empty( $_FILES['message_files']['name'][0] ) ) {
+				wp_send_json_error( array( 'message' => __( 'At least one file is required.', 'dfx-parish-retreat-letters' ) ) );
+			}
+			$content = __( 'File upload message', 'dfx-parish-retreat-letters' );
+			$message_type = 'file';
 		}
 
 		// Create message
 		$message_model = new DFX_Parish_Retreat_Letters_ConfidentialMessage();
 		$message_data = array(
 			'attendant_id' => $attendant_id,
-			'sender_name'  => sanitize_text_field( $_POST['sender_name'] ?? '' ),
+			'sender_name'  => $sender_name,
 			'content'      => $content,
-			'message_type' => 'text',
+			'message_type' => $message_type,
 		);
 
 		$message_id = $message_model->create( $message_data );
@@ -947,8 +1082,8 @@ class DFX_Parish_Retreat_Letters {
 			wp_send_json_error( array( 'message' => __( 'Failed to save message.', 'dfx-parish-retreat-letters' ) ) );
 		}
 
-		// Handle file uploads
-		if ( ! empty( $_FILES['message_files']['name'][0] ) ) {
+		// Handle file uploads only if in file mode
+		if ( $message_mode === 'file' && ! empty( $_FILES['message_files']['name'][0] ) ) {
 			$this->handle_file_uploads( $message_id, $_FILES['message_files'] );
 		}
 

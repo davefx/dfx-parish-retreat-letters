@@ -348,10 +348,11 @@ class DFX_Parish_Retreat_Letters_Admin {
 		}
 
 		$data = array(
-			'name'       => sanitize_text_field( $_POST['name'] ?? '' ),
-			'location'   => sanitize_text_field( $_POST['location'] ?? '' ),
-			'start_date' => sanitize_text_field( $_POST['start_date'] ?? '' ),
-			'end_date'   => sanitize_text_field( $_POST['end_date'] ?? '' ),
+			'name'           => sanitize_text_field( $_POST['name'] ?? '' ),
+			'location'       => sanitize_text_field( $_POST['location'] ?? '' ),
+			'start_date'     => sanitize_text_field( $_POST['start_date'] ?? '' ),
+			'end_date'       => sanitize_text_field( $_POST['end_date'] ?? '' ),
+			'custom_message' => wp_kses_post( $_POST['custom_message'] ?? '' ),
 		);
 
 		if ( $retreat_id ) {
@@ -578,6 +579,15 @@ class DFX_Parish_Retreat_Letters_Admin {
 							</th>
 							<td>
 								<input type="date" id="end_date" name="end_date" value="<?php echo esc_attr( $retreat->end_date ?? '' ); ?>" required>
+							</td>
+						</tr>
+						<tr>
+							<th scope="row">
+								<label for="custom_message"><?php esc_html_e( 'Custom Message for Attendants', 'dfx-parish-retreat-letters' ); ?></label>
+							</th>
+							<td>
+								<textarea id="custom_message" name="custom_message" rows="5" class="large-text" placeholder="<?php esc_attr_e( 'Optional message that will be displayed to attendants when they access their message form...', 'dfx-parish-retreat-letters' ); ?>"><?php echo esc_textarea( $retreat->custom_message ?? '' ); ?></textarea>
+								<p class="description"><?php esc_html_e( 'This message will be displayed before the message submission form for all attendants of this retreat. HTML is allowed.', 'dfx-parish-retreat-letters' ); ?></p>
 							</td>
 						</tr>
 					</tbody>

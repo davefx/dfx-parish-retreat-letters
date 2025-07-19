@@ -412,12 +412,6 @@ msgstr "Enviar un Mensaje Confidencial"
 msgid "For Retreat Attendant"
 msgstr "Para el Asistente del Retiro"
 
-msgid "Your Name (Optional)"
-msgstr "Su Nombre (Opcional)"
-
-msgid "Enter your name if you wish to identify yourself"
-msgstr "Ingrese su nombre si desea identificarse"
-
 msgid "Your Message"
 msgstr "Su Mensaje"
 
@@ -435,9 +429,6 @@ msgstr "Subrayado"
 
 msgid "You can use the toolbar to format your text. HTML is allowed but will be filtered for security."
 msgstr "Puede usar la barra de herramientas para formatear su texto. HTML está permitido pero será filtrado por seguridad."
-
-msgid "Attach Files (Optional)"
-msgstr "Adjuntar Archivos (Opcional)"
 
 msgid "Allowed file types: PDF, DOC, DOCX, TXT, JPG, PNG, GIF. Maximum 5MB per file."
 msgstr "Tipos de archivo permitidos: PDF, DOC, DOCX, TXT, JPG, PNG, GIF. Máximo 5MB por archivo."
@@ -486,9 +477,6 @@ msgstr "Ocurrió un error al enviar su mensaje."
 
 msgid "A network error occurred. Please try again."
 msgstr "Ocurrió un error de red. Por favor inténtelo de nuevo."
-
-msgid "Security check failed."
-msgstr "Falló la verificación de seguridad."
 
 msgid "Too many submission attempts. Please wait before trying again."
 msgstr "Demasiados intentos de envío. Por favor espere antes de intentar de nuevo."
@@ -579,13 +567,52 @@ msgstr "Error al preparar el mensaje para imprimir. Por favor inténtelo de nuev
 msgid "Message deleted successfully."
 msgstr "Mensaje eliminado exitosamente."
 
-msgid "Retreat name verification failed. Deletion cancelled for security."
-msgstr "Falló la verificación del nombre del retiro. Eliminación cancelada por seguridad."
-
-msgid "Error deleting retreat."
-msgstr "Error al eliminar el retiro."
-
 #. OpenSSL error
 msgid "DFX Parish Retreat Letters: OpenSSL extension is required for the confidential message system."
 msgstr "DFX Cartas de Retiro Parroquial: La extensión OpenSSL es requerida para el sistema de mensajes confidenciales."
-msgstr "Para evitar ambigüedad en futuras importaciones, considere usar el formato AAAA-MM-DD."
+
+#. New strings for message form improvements
+msgid "Your Name"
+msgstr "Su Nombre"
+
+msgid "Enter your name"
+msgstr "Ingrese su nombre"
+
+msgid "Choose message type:"
+msgstr "Elija el tipo de mensaje:"
+
+msgid "Text Message"
+msgstr "Mensaje de Texto"
+
+msgid "File Upload"
+msgstr "Subida de Archivos"
+
+msgid "Attach Files"
+msgstr "Adjuntar Archivos"
+
+msgid "Please enter a message."
+msgstr "Por favor ingrese un mensaje."
+
+msgid "Please select at least one file."
+msgstr "Por favor seleccione al menos un archivo."
+
+msgid "Sender name is required."
+msgstr "El nombre del remitente es obligatorio."
+
+msgid "Invalid message mode."
+msgstr "Modo de mensaje inválido."
+
+msgid "At least one file is required."
+msgstr "Se requiere al menos un archivo."
+
+msgid "File upload message"
+msgstr "Mensaje con archivo adjunto"
+
+msgid "Custom Message for Attendants"
+msgstr "Mensaje Personalizado para Asistentes"
+
+msgid "Optional message that will be displayed to attendants when they access their message form..."
+msgstr "Mensaje opcional que se mostrará a los asistentes cuando accedan a su formulario de mensajes..."
+
+msgid "This message will be displayed before the message submission form for all attendants of this retreat. HTML is allowed."
+msgstr "Este mensaje se mostrará antes del formulario de envío de mensajes para todos los asistentes de este retiro. Se permite HTML."
