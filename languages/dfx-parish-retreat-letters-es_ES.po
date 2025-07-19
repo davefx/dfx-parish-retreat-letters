@@ -715,3 +715,148 @@ msgstr "Haga clic para ver el historial de impresión"
 
 msgid "Unknown User"
 msgstr "Usuario Desconocido"
+
+#. Privacy & Compliance translations
+msgid "Privacy & Compliance"
+msgstr "Privacidad y Cumplimiento"
+
+msgid "Compliance Status Overview"
+msgstr "Resumen del Estado de Cumplimiento"
+
+msgid "Encryption"
+msgstr "Cifrado"
+
+msgid "AES-256 encryption active"
+msgstr "Cifrado AES-256 activo"
+
+msgid "Encryption requirements not met"
+msgstr "Los requisitos de cifrado no se cumplen"
+
+msgid "IP Anonymization"
+msgstr "Anonimización de IP"
+
+msgid "IPs anonymized after 30 days"
+msgstr "IPs anonimizadas después de 30 días"
+
+msgid "Data Retention"
+msgstr "Retención de Datos"
+
+msgid "Policy configured"
+msgstr "Política configurada"
+
+msgid "Policy needs configuration"
+msgstr "La política necesita configuración"
+
+msgid "Audit Logging"
+msgstr "Registro de Auditoría"
+
+msgid "All actions are logged"
+msgstr "Todas las acciones son registradas"
+
+msgid "Data Statistics"
+msgstr "Estadísticas de Datos"
+
+msgid "Confidential Messages"
+msgstr "Mensajes Confidenciales"
+
+msgid "Audit Log Entries"
+msgstr "Entradas del Registro de Auditoría"
+
+msgid "Last Cleanup"
+msgstr "Última Limpieza"
+
+msgid "Never"
+msgstr "Nunca"
+
+msgid "Data Retention Policy"
+msgstr "Política de Retención de Datos"
+
+msgid "Message Retention Period"
+msgstr "Período de Retención de Mensajes"
+
+msgid "Number of days to keep confidential messages (30-3650 days). Set to 0 to keep indefinitely."
+msgstr "Número de días para mantener los mensajes confidenciales (30-3650 días). Establecer a 0 para mantener indefinidamente."
+
+msgid "Audit Log Retention Period"
+msgstr "Período de Retención del Registro de Auditoría"
+
+msgid "Number of days to keep audit logs (365-3650 days)."
+msgstr "Número de días para mantener los registros de auditoría (365-3650 días)."
+
+msgid "IP Address Anonymization"
+msgstr "Anonimización de Direcciones IP"
+
+msgid "30 days (Fixed for GDPR compliance)"
+msgstr "30 días (Fijo para cumplimiento GDPR)"
+
+msgid "IP addresses are automatically anonymized after 30 days to comply with GDPR requirements."
+msgstr "Las direcciones IP se anonimizan automáticamente después de 30 días para cumplir con los requisitos del GDPR."
+
+msgid "Update Retention Settings"
+msgstr "Actualizar Configuración de Retención"
+
+msgid "Privacy Tools"
+msgstr "Herramientas de Privacidad"
+
+msgid "Manual Cleanup"
+msgstr "Limpieza Manual"
+
+msgid "Run manual privacy cleanup to anonymize old IP addresses and clean up expired data."
+msgstr "Ejecutar limpieza manual de privacidad para anonimizar direcciones IP antiguas y limpiar datos caducados."
+
+msgid "Run Cleanup Now"
+msgstr "Ejecutar Limpieza Ahora"
+
+msgid "Are you sure you want to run the privacy cleanup?"
+msgstr "¿Está seguro de que desea ejecutar la limpieza de privacidad?"
+
+msgid "Personal Data Export/Erasure"
+msgstr "Exportación/Borrado de Datos Personales"
+
+msgid "Export or erase personal data by sender name for GDPR compliance."
+msgstr "Exportar o borrar datos personales por nombre del remitente para cumplimiento GDPR."
+
+msgid "Export Personal Data"
+msgstr "Exportar Datos Personales"
+
+msgid "Enter sender name or email"
+msgstr "Ingrese nombre del remitente o email"
+
+msgid "Export Data"
+msgstr "Exportar Datos"
+
+msgid "Erase Personal Data"
+msgstr "Borrar Datos Personales"
+
+msgid "Type ERASE to confirm"
+msgstr "Escriba BORRAR para confirmar"
+
+msgid "Erase Data"
+msgstr "Borrar Datos"
+
+msgid "Recent Audit Activity"
+msgstr "Actividad de Auditoría Reciente"
+
+msgid "Date/Time"
+msgstr "Fecha/Hora"
+
+msgid "Event Type"
+msgstr "Tipo de Evento"
+
+msgid "User"
+msgstr "Usuario"
+
+msgid "Details"
+msgstr "Detalles"
+
+msgid "System"
+msgstr "Sistema"
+
+msgid "No additional details"
+msgstr "Sin detalles adicionales"
+
+msgid "No audit logs found."
+msgstr "No se encontraron registros de auditoría."
+
+msgid "Privacy cleanup completed successfully."
+msgstr "Limpieza de privacidad completada exitosamente."
