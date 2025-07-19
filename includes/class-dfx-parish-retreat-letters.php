@@ -349,6 +349,10 @@ class DFX_Parish_Retreat_Letters {
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_public_scripts' ) );
 		add_action( 'wp_ajax_nopriv_dfx_submit_message', array( $this, 'handle_message_submission' ) );
 		add_action( 'wp_ajax_dfx_submit_message', array( $this, 'handle_message_submission' ) );
+		
+		// Schedule cleanup tasks
+		add_action( 'init', array( $this, 'schedule_cleanup_tasks' ) );
+		add_action( 'dfx_retreat_cleanup_hook', array( $this, 'run_cleanup_tasks' ) );
 	}
 
 	/**
@@ -1852,5 +1856,38 @@ class DFX_Parish_Retreat_Letters {
 		</html>
 		<?php
 		exit; // Important: exit after rendering to prevent WordPress from adding headers/footers
+	}
+
+	/**
+	 * Schedule cleanup tasks.
+	 *
+	 * @since 1.3.0
+	 */
+	public function schedule_cleanup_tasks() {
+		if ( ! wp_next_scheduled( 'dfx_retreat_cleanup_hook' ) ) {
+			wp_schedule_event( time(), 'daily', 'dfx_retreat_cleanup_hook' );
+		}
+	}
+
+	/**
+	 * Run scheduled cleanup tasks.
+	 *
+	 * @since 1.3.0
+	 */
+	public function run_cleanup_tasks() {
+		// Clean up expired invitations
+		if ( $this->invitations ) {
+			$this->invitations->cleanup_expired_invitations();
+		}
+
+		// Clean up old permissions
+		if ( $this->permissions ) {
+			$this->permissions->cleanup_permissions();
+		}
+
+		// Anonymize old IP addresses
+		if ( $this->security ) {
+			$this->security->anonymize_old_ip_addresses();
+		}
 	}
 }

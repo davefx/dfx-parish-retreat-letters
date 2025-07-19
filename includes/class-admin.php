@@ -381,15 +381,32 @@ class DFX_Parish_Retreat_Letters_Admin {
 		$page_num = max( 1, absint( $_GET['paged'] ?? 1 ) );
 		$per_page = 20;
 
-		// Get retreats with attendant counts
-		$retreats = $this->retreat_model->get_all( array(
+		// Get retreats filtered by user permissions
+		$get_all_options = array(
 			'search'   => $search,
 			'per_page' => $per_page,
 			'page'     => $page_num,
 			'include_attendant_count' => true,
-		) );
+		);
 
-		$total_items = $this->retreat_model->get_count( $search );
+		// Filter retreats based on user permissions
+		if ( ! $this->permissions->current_user_can_manage_plugin() ) {
+			$accessible_retreats = $this->permissions->get_user_accessible_retreats( get_current_user_id() );
+			if ( empty( $accessible_retreats ) ) {
+				// User has no retreat access
+				$retreats = array();
+				$total_items = 0;
+			} else {
+				$get_all_options['retreat_ids'] = $accessible_retreats;
+				$retreats = $this->retreat_model->get_all( $get_all_options );
+				$total_items = $this->retreat_model->get_count( $search, $accessible_retreats );
+			}
+		} else {
+			// Plugin administrators see all retreats
+			$retreats = $this->retreat_model->get_all( $get_all_options );
+			$total_items = $this->retreat_model->get_count( $search );
+		}
+
 		$total_pages = ceil( $total_items / $per_page );
 
 		$this->render_list_page( $retreats, $search, $page_num, $total_pages, $total_items );
@@ -403,6 +420,19 @@ class DFX_Parish_Retreat_Letters_Admin {
 	public function retreat_add_page() {
 		$retreat_id = absint( $_GET['edit'] ?? 0 );
 		$retreat = $retreat_id ? $this->retreat_model->get( $retreat_id ) : null;
+
+		// Check permissions
+		if ( $retreat_id ) {
+			// Editing existing retreat - check if user can manage this retreat
+			if ( ! $this->permissions->current_user_can_manage_retreat( $retreat_id ) ) {
+				wp_die( __( 'You do not have permission to edit this retreat.', 'dfx-parish-retreat-letters' ) );
+			}
+		} else {
+			// Adding new retreat - only plugin administrators can do this
+			if ( ! $this->permissions->current_user_can_manage_plugin() ) {
+				wp_die( __( 'You do not have permission to add new retreats.', 'dfx-parish-retreat-letters' ) );
+			}
+		}
 
 		// Handle form submission
 		if ( ( $_SERVER['REQUEST_METHOD'] ?? '' ) === 'POST' ) {
@@ -757,13 +787,21 @@ class DFX_Parish_Retreat_Letters_Admin {
 			wp_die( __( 'Invalid retreat ID.', 'dfx-parish-retreat-letters' ) );
 		}
 
+		// Check permissions
+		if ( ! $this->permissions->current_user_can_view_retreat( $retreat_id ) ) {
+			wp_die( __( 'You do not have permission to view this retreat.', 'dfx-parish-retreat-letters' ) );
+		}
+
 		$retreat = $this->retreat_model->get( $retreat_id );
 		if ( ! $retreat ) {
 			wp_die( __( 'Retreat not found.', 'dfx-parish-retreat-letters' ) );
 		}
 
-		// Handle form submissions
+		// Handle form submissions (only for retreat managers)
 		if ( ( $_SERVER['REQUEST_METHOD'] ?? '' ) === 'POST' ) {
+			if ( ! $this->permissions->current_user_can_manage_retreat( $retreat_id ) ) {
+				wp_die( __( 'You do not have permission to modify this retreat.', 'dfx-parish-retreat-letters' ) );
+			}
 			$this->handle_attendant_list_actions( $retreat_id );
 		}
 
@@ -2273,6 +2311,207 @@ class DFX_Parish_Retreat_Letters_Admin {
 			'logs' => $formatted_logs,
 			'total_count' => count( $formatted_logs )
 		) );
+	}
+
+	/**
+	 * AJAX handler for searching users.
+	 *
+	 * @since 1.3.0
+	 */
+	public function ajax_search_users() {
+		if ( ! wp_verify_nonce( $_POST['nonce'] ?? '', 'dfx_retreats_nonce' ) ) {
+			wp_die( __( 'Security check failed.', 'dfx-parish-retreat-letters' ) );
+		}
+
+		$retreat_id = absint( $_POST['retreat_id'] ?? 0 );
+		if ( ! $retreat_id || ! $this->permissions->user_can_delegate_permissions( get_current_user_id(), $retreat_id ) ) {
+			wp_send_json_error( array( 'message' => __( 'Permission denied.', 'dfx-parish-retreat-letters' ) ) );
+		}
+
+		$search_term = sanitize_text_field( $_POST['search'] ?? '' );
+		if ( strlen( $search_term ) < 2 ) {
+			wp_send_json_error( array( 'message' => __( 'Search term must be at least 2 characters.', 'dfx-parish-retreat-letters' ) ) );
+		}
+
+		// Search users by username, email, or display name
+		$users = get_users( array(
+			'search'         => '*' . esc_attr( $search_term ) . '*',
+			'search_columns' => array( 'user_login', 'user_email', 'display_name' ),
+			'number'         => 10,
+			'fields'         => array( 'ID', 'user_login', 'user_email', 'display_name' ),
+		) );
+
+		$results = array();
+		foreach ( $users as $user ) {
+			// Skip users who already have permissions for this retreat
+			if ( $this->permissions->user_has_retreat_permission( $user->ID, $retreat_id, 'manager' ) ||
+				 $this->permissions->user_has_retreat_permission( $user->ID, $retreat_id, 'message_manager' ) ) {
+				continue;
+			}
+
+			$results[] = array(
+				'id'           => $user->ID,
+				'username'     => $user->user_login,
+				'email'        => $user->user_email,
+				'display_name' => $user->display_name ?: $user->user_login,
+			);
+		}
+
+		wp_send_json_success( array( 'users' => $results ) );
+	}
+
+	/**
+	 * AJAX handler for granting permissions.
+	 *
+	 * @since 1.3.0
+	 */
+	public function ajax_grant_permission() {
+		if ( ! wp_verify_nonce( $_POST['nonce'] ?? '', 'dfx_retreats_nonce' ) ) {
+			wp_die( __( 'Security check failed.', 'dfx-parish-retreat-letters' ) );
+		}
+
+		$retreat_id = absint( $_POST['retreat_id'] ?? 0 );
+		$user_id = absint( $_POST['user_id'] ?? 0 );
+		$permission_level = sanitize_text_field( $_POST['permission_level'] ?? '' );
+
+		if ( ! $retreat_id || ! $user_id || ! in_array( $permission_level, array( 'manager', 'message_manager' ), true ) ) {
+			wp_send_json_error( array( 'message' => __( 'Invalid parameters.', 'dfx-parish-retreat-letters' ) ) );
+		}
+
+		if ( ! $this->permissions->user_can_delegate_permissions( get_current_user_id(), $retreat_id ) ) {
+			wp_send_json_error( array( 'message' => __( 'Permission denied.', 'dfx-parish-retreat-letters' ) ) );
+		}
+
+		$result = $this->permissions->grant_permission( $user_id, $retreat_id, $permission_level, get_current_user_id() );
+		
+		if ( $result ) {
+			$user = get_user_by( 'id', $user_id );
+			$permission_name = $permission_level === 'manager' 
+				? __( 'Retreat Manager', 'dfx-parish-retreat-letters' )
+				: __( 'Message Manager', 'dfx-parish-retreat-letters' );
+
+			wp_send_json_success( array( 
+				'message' => sprintf( 
+					__( 'Permission granted to %s as %s.', 'dfx-parish-retreat-letters' ),
+					$user->display_name,
+					$permission_name
+				),
+				'user' => array(
+					'id'           => $user->ID,
+					'display_name' => $user->display_name,
+					'email'        => $user->user_email,
+					'permission'   => $permission_level,
+				),
+			) );
+		} else {
+			wp_send_json_error( array( 'message' => __( 'Failed to grant permission.', 'dfx-parish-retreat-letters' ) ) );
+		}
+	}
+
+	/**
+	 * AJAX handler for revoking permissions.
+	 *
+	 * @since 1.3.0
+	 */
+	public function ajax_revoke_permission() {
+		if ( ! wp_verify_nonce( $_POST['nonce'] ?? '', 'dfx_retreats_nonce' ) ) {
+			wp_die( __( 'Security check failed.', 'dfx-parish-retreat-letters' ) );
+		}
+
+		$retreat_id = absint( $_POST['retreat_id'] ?? 0 );
+		$user_id = absint( $_POST['user_id'] ?? 0 );
+		$permission_level = sanitize_text_field( $_POST['permission_level'] ?? '' );
+
+		if ( ! $retreat_id || ! $user_id || ! in_array( $permission_level, array( 'manager', 'message_manager' ), true ) ) {
+			wp_send_json_error( array( 'message' => __( 'Invalid parameters.', 'dfx-parish-retreat-letters' ) ) );
+		}
+
+		if ( ! $this->permissions->user_can_delegate_permissions( get_current_user_id(), $retreat_id ) ) {
+			wp_send_json_error( array( 'message' => __( 'Permission denied.', 'dfx-parish-retreat-letters' ) ) );
+		}
+
+		// Prevent users from revoking their own permissions
+		if ( $user_id === get_current_user_id() ) {
+			wp_send_json_error( array( 'message' => __( 'You cannot revoke your own permissions.', 'dfx-parish-retreat-letters' ) ) );
+		}
+
+		$result = $this->permissions->revoke_permission( $user_id, $retreat_id, $permission_level, get_current_user_id() );
+		
+		if ( $result ) {
+			$user = get_user_by( 'id', $user_id );
+			wp_send_json_success( array( 
+				'message' => sprintf( 
+					__( 'Permission revoked from %s.', 'dfx-parish-retreat-letters' ),
+					$user->display_name
+				),
+			) );
+		} else {
+			wp_send_json_error( array( 'message' => __( 'Failed to revoke permission.', 'dfx-parish-retreat-letters' ) ) );
+		}
+	}
+
+	/**
+	 * AJAX handler for sending invitations.
+	 *
+	 * @since 1.3.0
+	 */
+	public function ajax_send_invitation() {
+		if ( ! wp_verify_nonce( $_POST['nonce'] ?? '', 'dfx_retreats_nonce' ) ) {
+			wp_die( __( 'Security check failed.', 'dfx-parish-retreat-letters' ) );
+		}
+
+		$retreat_id = absint( $_POST['retreat_id'] ?? 0 );
+		$email = sanitize_email( $_POST['email'] ?? '' );
+		$name = sanitize_text_field( $_POST['name'] ?? '' );
+		$permission_level = sanitize_text_field( $_POST['permission_level'] ?? '' );
+
+		if ( ! $retreat_id || ! $email || ! $name || ! in_array( $permission_level, array( 'manager', 'message_manager' ), true ) ) {
+			wp_send_json_error( array( 'message' => __( 'Invalid parameters.', 'dfx-parish-retreat-letters' ) ) );
+		}
+
+		if ( ! $this->permissions->user_can_delegate_permissions( get_current_user_id(), $retreat_id ) ) {
+			wp_send_json_error( array( 'message' => __( 'Permission denied.', 'dfx-parish-retreat-letters' ) ) );
+		}
+
+		$invitations = DFX_Parish_Retreat_Letters_Invitations::get_instance();
+		$result = $invitations->send_invitation( $retreat_id, $email, $name, $permission_level, get_current_user_id() );
+		
+		if ( $result['success'] ) {
+			wp_send_json_success( array( 'message' => $result['message'] ) );
+		} else {
+			wp_send_json_error( array( 'message' => $result['message'] ) );
+		}
+	}
+
+	/**
+	 * AJAX handler for cancelling invitations.
+	 *
+	 * @since 1.3.0
+	 */
+	public function ajax_cancel_invitation() {
+		if ( ! wp_verify_nonce( $_POST['nonce'] ?? '', 'dfx_retreats_nonce' ) ) {
+			wp_die( __( 'Security check failed.', 'dfx-parish-retreat-letters' ) );
+		}
+
+		$invitation_id = absint( $_POST['invitation_id'] ?? 0 );
+		$retreat_id = absint( $_POST['retreat_id'] ?? 0 );
+
+		if ( ! $invitation_id || ! $retreat_id ) {
+			wp_send_json_error( array( 'message' => __( 'Invalid parameters.', 'dfx-parish-retreat-letters' ) ) );
+		}
+
+		if ( ! $this->permissions->user_can_delegate_permissions( get_current_user_id(), $retreat_id ) ) {
+			wp_send_json_error( array( 'message' => __( 'Permission denied.', 'dfx-parish-retreat-letters' ) ) );
+		}
+
+		$invitations = DFX_Parish_Retreat_Letters_Invitations::get_instance();
+		$result = $invitations->cancel_invitation( $invitation_id, get_current_user_id() );
+		
+		if ( $result ) {
+			wp_send_json_success( array( 'message' => __( 'Invitation cancelled successfully.', 'dfx-parish-retreat-letters' ) ) );
+		} else {
+			wp_send_json_error( array( 'message' => __( 'Failed to cancel invitation.', 'dfx-parish-retreat-letters' ) ) );
+		}
 	}
 
 	/**

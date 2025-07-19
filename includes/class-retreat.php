@@ -157,12 +157,21 @@ class DFX_Parish_Retreat_Letters_Retreat {
 			'per_page'          => 20,
 			'page'              => 1,
 			'include_attendant_count' => false,
+			'retreat_ids'       => array(), // New parameter for filtering by specific retreat IDs
 		);
 
 		$args = wp_parse_args( $args, $defaults );
 
 		$where_clause = '1=1';
 		$where_values = array();
+
+		// Filter by specific retreat IDs if provided
+		if ( ! empty( $args['retreat_ids'] ) && is_array( $args['retreat_ids'] ) ) {
+			$retreat_ids = array_map( 'absint', $args['retreat_ids'] );
+			$placeholders = implode( ',', array_fill( 0, count( $retreat_ids ), '%d' ) );
+			$where_clause .= " AND id IN ({$placeholders})";
+			$where_values = array_merge( $where_values, $retreat_ids );
+		}
 
 		// Add search functionality
 		if ( ! empty( $args['search'] ) ) {
@@ -215,11 +224,19 @@ class DFX_Parish_Retreat_Letters_Retreat {
 	 * @param string $search Optional search term.
 	 * @return int Total count.
 	 */
-	public function get_count( $search = '' ) {
+	public function get_count( $search = '', $retreat_ids = array() ) {
 		global $wpdb;
 
 		$where_clause = '1=1';
 		$where_values = array();
+
+		// Filter by specific retreat IDs if provided
+		if ( ! empty( $retreat_ids ) && is_array( $retreat_ids ) ) {
+			$retreat_ids = array_map( 'absint', $retreat_ids );
+			$placeholders = implode( ',', array_fill( 0, count( $retreat_ids ), '%d' ) );
+			$where_clause .= " AND id IN ({$placeholders})";
+			$where_values = array_merge( $where_values, $retreat_ids );
+		}
 
 		if ( ! empty( $search ) ) {
 			$where_clause .= ' AND (name LIKE %s OR location LIKE %s)';
