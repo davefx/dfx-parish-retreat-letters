@@ -2039,7 +2039,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 												/* translators: %1$d: Print count, %2$s: First print date */
 												esc_html__( 'Printed %1$d time(s), first: %2$s', 'dfx-parish-retreat-letters' ),
 												$message->print_count,
-												date_i18n( get_option( 'date_format' ), strtotime( $message->first_printed_at ) )
+												date_i18n( get_option( 'date_format' ) . ' ' . get_option( 'time_format' ), strtotime( $message->first_printed_at ) )
 											);
 											?>
 										<?php else : ?>
@@ -2219,102 +2219,42 @@ class DFX_Parish_Retreat_Letters_Admin {
 	 */
 	private function generate_print_html( $message, $attendant, $retreat, $files ) {
 		ob_start();
-		?>
-		<!DOCTYPE html>
-		<html>
-		<head>
-			<meta charset="UTF-8">
-			<title><?php esc_html_e( 'Confidential Message', 'dfx-parish-retreat-letters' ); ?></title>
-			<style>
-				body { font-family: Arial, sans-serif; margin: 20px; line-height: 1.6; }
-				.header { border-bottom: 2px solid #333; margin-bottom: 20px; padding-bottom: 10px; }
-				.header h1 { margin: 0; color: #333; }
-				.meta-info { background: #f9f9f9; padding: 15px; border-radius: 5px; margin-bottom: 20px; }
-				.meta-info h2 { margin-top: 0; color: #555; }
-				.meta-table { width: 100%; border-collapse: collapse; }
-				.meta-table th, .meta-table td { padding: 8px; text-align: left; border-bottom: 1px solid #ddd; }
-				.meta-table th { background-color: #f2f2f2; font-weight: bold; }
-				.message-content { background: #fff; padding: 20px; border: 1px solid #ddd; border-radius: 5px; margin-bottom: 20px; }
-				.message-content h3 { margin-top: 0; color: #333; }
-				.files-section { margin-top: 20px; }
-				.files-section h3 { color: #333; }
-				.file-list { list-style: none; padding: 0; }
-				.file-list li { background: #f9f9f9; padding: 10px; margin-bottom: 5px; border-radius: 3px; }
-				.print-info { margin-top: 30px; font-size: 12px; color: #666; border-top: 1px solid #ddd; padding-top: 10px; }
-				@media print {
-					body { margin: 0; }
-					.no-print { display: none; }
+		
+		// If this is a file-only message, print file contents
+		if ( $message->message_type === 'file' && ! empty( $files ) ) {
+			foreach ( $files as $file ) {
+				$decrypted_file = $this->file_model->get_decrypted_file( $file->id );
+				if ( $decrypted_file ) {
+					// For text-based files, display content directly
+					if ( in_array( $file->file_type, array( 'text/plain', 'application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' ) ) ) {
+						if ( $file->file_type === 'text/plain' ) {
+							echo '<pre>' . esc_html( $decrypted_file['content'] ) . '</pre>';
+						} else {
+							// For other document types, show a message about content
+							echo '<p>' . sprintf( 
+								esc_html__( 'File: %s (%s, %s)', 'dfx-parish-retreat-letters' ),
+								esc_html( $decrypted_file['filename'] ),
+								esc_html( $decrypted_file['type'] ),
+								esc_html( size_format( $decrypted_file['size'] ) )
+							) . '</p>';
+							echo '<p>' . esc_html__( 'Note: This file requires specialized software to view its contents.', 'dfx-parish-retreat-letters' ) . '</p>';
+						}
+					} else {
+						// For non-text files (images, etc.), show info
+						echo '<p>' . sprintf( 
+							esc_html__( 'File: %s (%s, %s)', 'dfx-parish-retreat-letters' ),
+							esc_html( $decrypted_file['filename'] ),
+							esc_html( $decrypted_file['type'] ),
+							esc_html( size_format( $decrypted_file['size'] ) )
+						) . '</p>';
+					}
 				}
-			</style>
-		</head>
-		<body>
-			<div class="header">
-				<h1><?php esc_html_e( 'CONFIDENTIAL MESSAGE', 'dfx-parish-retreat-letters' ); ?></h1>
-			</div>
-
-			<div class="meta-info">
-				<h2><?php esc_html_e( 'Message Details', 'dfx-parish-retreat-letters' ); ?></h2>
-				<table class="meta-table">
-					<tr>
-						<th><?php esc_html_e( 'For Attendant', 'dfx-parish-retreat-letters' ); ?></th>
-						<td><?php echo esc_html( $attendant->name . ' ' . $attendant->surnames ); ?></td>
-					</tr>
-					<tr>
-						<th><?php esc_html_e( 'Retreat', 'dfx-parish-retreat-letters' ); ?></th>
-						<td><?php echo esc_html( $retreat->name ); ?> - <?php echo esc_html( $retreat->location ); ?></td>
-					</tr>
-					<tr>
-						<th><?php esc_html_e( 'Retreat Dates', 'dfx-parish-retreat-letters' ); ?></th>
-						<td><?php echo esc_html( date_i18n( get_option( 'date_format' ), strtotime( $retreat->start_date ) ) ); ?> - <?php echo esc_html( date_i18n( get_option( 'date_format' ), strtotime( $retreat->end_date ) ) ); ?></td>
-					</tr>
-					<tr>
-						<th><?php esc_html_e( 'From', 'dfx-parish-retreat-letters' ); ?></th>
-						<td><?php echo esc_html( $message->sender_name ?: __( 'Anonymous', 'dfx-parish-retreat-letters' ) ); ?></td>
-					</tr>
-					<tr>
-						<th><?php esc_html_e( 'Submitted', 'dfx-parish-retreat-letters' ); ?></th>
-						<td><?php echo esc_html( date_i18n( get_option( 'date_format' ) . ' ' . get_option( 'time_format' ), strtotime( $message->submitted_at ) ) ); ?></td>
-					</tr>
-					<tr>
-						<th><?php esc_html_e( 'Message ID', 'dfx-parish-retreat-letters' ); ?></th>
-						<td><?php echo esc_html( $message->id ); ?></td>
-					</tr>
-				</table>
-			</div>
-
-			<div class="message-content">
-				<h3><?php esc_html_e( 'Message Content', 'dfx-parish-retreat-letters' ); ?></h3>
-				<div><?php echo wp_kses_post( $message->decrypted_content ); ?></div>
-			</div>
-
-			<?php if ( ! empty( $files ) ) : ?>
-				<div class="files-section">
-					<h3><?php esc_html_e( 'Attached Files', 'dfx-parish-retreat-letters' ); ?></h3>
-					<ul class="file-list">
-						<?php foreach ( $files as $file ) : ?>
-							<li>
-								<strong><?php echo esc_html( $file->original_filename ); ?></strong>
-								(<?php echo esc_html( $file->file_type ); ?>, <?php echo esc_html( size_format( $file->file_size ) ); ?>)
-								<br>
-								<small><?php esc_html_e( 'Uploaded:', 'dfx-parish-retreat-letters' ); ?> <?php echo esc_html( date_i18n( get_option( 'date_format' ) . ' ' . get_option( 'time_format' ), strtotime( $file->uploaded_at ) ) ); ?></small>
-							</li>
-						<?php endforeach; ?>
-					</ul>
-					<p><em><?php esc_html_e( 'Note: Files are encrypted and stored separately. Contact system administrator to access file contents.', 'dfx-parish-retreat-letters' ); ?></em></p>
-				</div>
-			<?php endif; ?>
-
-			<div class="print-info">
-				<p>
-					<strong><?php esc_html_e( 'Print Information:', 'dfx-parish-retreat-letters' ); ?></strong><br>
-					<?php esc_html_e( 'Printed by:', 'dfx-parish-retreat-letters' ); ?> <?php echo esc_html( wp_get_current_user()->display_name ); ?><br>
-					<?php esc_html_e( 'Print date:', 'dfx-parish-retreat-letters' ); ?> <?php echo esc_html( date_i18n( get_option( 'date_format' ) . ' ' . get_option( 'time_format' ) ) ); ?><br>
-					<?php esc_html_e( 'This document contains confidential information and should be handled accordingly.', 'dfx-parish-retreat-letters' ); ?>
-				</p>
-			</div>
-		</body>
-		</html>
-		<?php
+			}
+		} else {
+			// For text messages, just print the content
+			echo wp_kses_post( $message->decrypted_content );
+		}
+		
 		return ob_get_clean();
 	}
 
