@@ -68,6 +68,9 @@ class DFX_Parish_Retreat_Letters_Permissions {
 	 */
 	private function __construct() {
 		$this->database = DFX_Parish_Retreat_Letters_Database::get_instance();
+		
+		// Initialize WooCommerce admin access handling
+		$this->init_woocommerce_handling();
 	}
 
 	/**
@@ -344,6 +347,9 @@ class DFX_Parish_Retreat_Letters_Permissions {
 		if ( ! $user->has_cap( 'read' ) && ! user_can( $user_id, 'edit_posts' ) ) {
 			$user->add_cap( 'read' );
 		}
+
+		// Handle WooCommerce admin access blocking - the global handler will take care of this
+		// No need to add additional hooks here since init_woocommerce_handling already set up the handler
 	}
 
 	/**
@@ -507,5 +513,118 @@ class DFX_Parish_Retreat_Letters_Permissions {
 		); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 
 		return $deleted ? $deleted : 0;
+	}
+
+	/**
+	 * Ensure WooCommerce doesn't block admin access for users with retreat permissions.
+	 *
+	 * @since 1.3.0
+	 * @param int $user_id User ID.
+	 */
+	private function ensure_woocommerce_admin_access( $user_id ) {
+		// Check if WooCommerce is active
+		if ( ! class_exists( 'WooCommerce' ) ) {
+			return;
+		}
+
+		// Check if the user should have admin access based on retreat permissions
+		$accessible_retreats = $this->get_user_accessible_retreats( $user_id );
+		if ( empty( $accessible_retreats ) ) {
+			return;
+		}
+
+		// Add a high priority action to handle admin_init and remove WooCommerce restrictions
+		add_action( 'admin_init', array( $this, 'handle_woocommerce_admin_restriction' ), 5 );
+	}
+
+	/**
+	 * Initialize WooCommerce admin access handling.
+	 *
+	 * @since 1.3.0
+	 */
+	private function init_woocommerce_handling() {
+		// Only add the handler if WooCommerce is active
+		if ( class_exists( 'WooCommerce' ) ) {
+			// Add early admin_init hook to handle WooCommerce restrictions
+			add_action( 'admin_init', array( $this, 'handle_woocommerce_admin_restriction' ), 5 );
+		}
+	}
+
+	/**
+	 * Handle WooCommerce admin restriction for users with retreat permissions.
+	 *
+	 * @since 1.3.0
+	 */
+	public function handle_woocommerce_admin_restriction() {
+		// Only run for users who should have retreat access
+		$current_user_id = get_current_user_id();
+		if ( ! $current_user_id ) {
+			return;
+		}
+
+		// Check if user has retreat permissions
+		$accessible_retreats = $this->get_user_accessible_retreats( $current_user_id );
+		if ( empty( $accessible_retreats ) ) {
+			return;
+		}
+
+		// Check if WooCommerce's wc_disable_admin is hooked to admin_init
+		if ( ! function_exists( 'wc_disable_admin_bar' ) ) {
+			return;
+		}
+
+		// Get the current user
+		$user = wp_get_current_user();
+		if ( ! $user || ! $user->exists() ) {
+			return;
+		}
+
+		// Check if user has admin-type capabilities or retreat permissions
+		$has_admin_access = $user->has_cap( 'edit_posts' ) || 
+							$user->has_cap( 'manage_options' ) || 
+							$user->has_cap( 'manage_retreat_plugin' );
+
+		// If user doesn't have standard admin access but has retreat permissions, 
+		// we need to prevent WooCommerce from redirecting them
+		if ( ! $has_admin_access && ! empty( $accessible_retreats ) ) {
+			// Remove WooCommerce's admin restrictions
+			$this->remove_woocommerce_admin_restrictions();
+		}
+	}
+
+	/**
+	 * Remove WooCommerce admin restrictions for users with retreat permissions.
+	 *
+	 * @since 1.3.0
+	 */
+	private function remove_woocommerce_admin_restrictions() {
+		// Check if WooCommerce functions exist
+		if ( ! function_exists( 'wc_disable_admin_bar' ) ) {
+			return;
+		}
+
+		// Remove WooCommerce admin restrictions
+		remove_action( 'admin_init', 'wc_disable_admin_bar', 10 );
+		
+		// Also try to remove if it's hooked differently
+		if ( function_exists( 'wc_prevent_admin_access' ) ) {
+			remove_action( 'admin_init', 'wc_prevent_admin_access', 10 );
+		}
+
+		// Remove any other WooCommerce admin restrictions that might be in place
+		global $wp_filter;
+		if ( isset( $wp_filter['admin_init'] ) ) {
+			foreach ( $wp_filter['admin_init']->callbacks as $priority => $callbacks ) {
+				foreach ( $callbacks as $key => $callback ) {
+					// Look for WooCommerce admin restriction callbacks
+					if ( is_array( $callback['function'] ) && 
+						 is_object( $callback['function'][0] ) && 
+						 get_class( $callback['function'][0] ) === 'WC_Admin' &&
+						 $callback['function'][1] === 'prevent_admin_access' ) {
+						remove_action( 'admin_init', $callback['function'], $priority );
+					}
+				}
+			}
+		}
 	}
 }
