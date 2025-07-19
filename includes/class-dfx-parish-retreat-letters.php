@@ -47,6 +47,24 @@ class DFX_Parish_Retreat_Letters {
 	protected $i18n;
 
 	/**
+	 * The database management instance.
+	 *
+	 * @since    1.0.0
+	 * @access   protected
+	 * @var      DFX_Parish_Retreat_Letters_Database    $database    Manages database operations.
+	 */
+	protected $database;
+
+	/**
+	 * The admin interface instance.
+	 *
+	 * @since    1.0.0
+	 * @access   protected
+	 * @var      DFX_Parish_Retreat_Letters_Admin    $admin    Manages admin interface.
+	 */
+	protected $admin;
+
+	/**
 	 * The unique identifier of this plugin.
 	 *
 	 * @since    1.0.0
@@ -99,6 +117,8 @@ class DFX_Parish_Retreat_Letters {
 
 		$this->load_dependencies();
 		$this->set_locale();
+		$this->init_database();
+		$this->init_admin();
 	}
 
 	/**
@@ -125,6 +145,9 @@ class DFX_Parish_Retreat_Letters {
 	 * Include the following files that make up the plugin:
 	 *
 	 * - DFX_Parish_Retreat_Letters_I18n. Defines internationalization functionality.
+	 * - DFX_Parish_Retreat_Letters_Database. Manages database operations.
+	 * - DFX_Parish_Retreat_Letters_Retreat. Handles retreat CRUD operations.
+	 * - DFX_Parish_Retreat_Letters_Admin. Manages admin interface.
 	 *
 	 * @since    1.0.0
 	 * @access   private
@@ -135,6 +158,23 @@ class DFX_Parish_Retreat_Letters {
 		 * of the plugin.
 		 */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-i18n.php';
+
+		/**
+		 * The class responsible for defining database functionality
+		 * of the plugin.
+		 */
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-database.php';
+
+		/**
+		 * The class responsible for retreat CRUD operations.
+		 */
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-retreat.php';
+
+		/**
+		 * The class responsible for defining admin interface functionality
+		 * of the plugin.
+		 */
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-admin.php';
 	}
 
 	/**
@@ -148,6 +188,28 @@ class DFX_Parish_Retreat_Letters {
 	 */
 	private function set_locale() {
 		$this->i18n = new DFX_Parish_Retreat_Letters_I18n();
+	}
+
+	/**
+	 * Initialize the database management.
+	 *
+	 * @since    1.0.0
+	 * @access   private
+	 */
+	private function init_database() {
+		$this->database = DFX_Parish_Retreat_Letters_Database::get_instance();
+	}
+
+	/**
+	 * Initialize the admin interface.
+	 *
+	 * @since    1.0.0
+	 * @access   private
+	 */
+	private function init_admin() {
+		if ( is_admin() ) {
+			$this->admin = DFX_Parish_Retreat_Letters_Admin::get_instance();
+		}
 	}
 
 	/**
@@ -178,5 +240,15 @@ class DFX_Parish_Retreat_Letters {
 	 */
 	public function get_version() {
 		return $this->version;
+	}
+
+	/**
+	 * Get the database instance.
+	 *
+	 * @since     1.0.0
+	 * @return    DFX_Parish_Retreat_Letters_Database    The database instance.
+	 */
+	public function get_database() {
+		return $this->database;
 	}
 }

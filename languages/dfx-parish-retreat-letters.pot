@@ -18,6 +18,100 @@ msgstr ""
 msgid "DFX Parish Retreat Letters"
 msgstr ""
 
+#. Admin menu title
+msgid "Retreats"
+msgstr ""
+
+msgid "All Retreats"
+msgstr ""
+
+msgid "Add New"
+msgstr ""
+
+msgid "Add New Retreat"
+msgstr ""
+
+msgid "Edit Retreat"
+msgstr ""
+
+msgid "Retreat Name"
+msgstr ""
+
+msgid "Location"
+msgstr ""
+
+msgid "Start Date"
+msgstr ""
+
+msgid "End Date"
+msgstr ""
+
+msgid "Actions"
+msgstr ""
+
+msgid "Edit"
+msgstr ""
+
+msgid "Delete"
+msgstr ""
+
+msgid "Cancel"
+msgstr ""
+
+msgid "Update Retreat"
+msgstr ""
+
+msgid "Add Retreat"
+msgstr ""
+
+msgid "required"
+msgstr ""
+
+msgid "Search Retreats:"
+msgstr ""
+
+msgid "Search Retreats"
+msgstr ""
+
+msgid "Total retreats: %d"
+msgstr ""
+
+msgid "Name"
+msgstr ""
+
+msgid "No retreats found for your search."
+msgstr ""
+
+msgid "No retreats found."
+msgstr ""
+
+msgid "Add the first retreat"
+msgstr ""
+
+msgid "Are you sure you want to delete this retreat?"
+msgstr ""
+
+msgid "Security check failed."
+msgstr ""
+
+msgid "Retreat deleted successfully."
+msgstr ""
+
+msgid "Error deleting retreat."
+msgstr ""
+
+msgid "Retreat updated successfully."
+msgstr ""
+
+msgid "Error updating retreat. Please check your data."
+msgstr ""
+
+msgid "Retreat created successfully."
+msgstr ""
+
+msgid "Error creating retreat. Please check your data."
+msgstr ""
+
 #. Plugin URI of the plugin/theme
 msgid "https://github.com/davefx/dfx-parish-retreat-letters"
 msgstr ""

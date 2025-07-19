@@ -40,14 +40,16 @@ define( 'DFX_PARISH_RETREAT_LETTERS_PLUGIN_BASENAME', plugin_basename( __FILE__ 
  * The code that runs during plugin activation.
  */
 function activate_dfx_parish_retreat_letters() {
-	// Future activation logic can be added here
+	require_once plugin_dir_path( __FILE__ ) . 'includes/class-database.php';
+	$database = DFX_Parish_Retreat_Letters_Database::get_instance();
+	$database->create_tables();
 }
 
 /**
  * The code that runs during plugin deactivation.
  */
 function deactivate_dfx_parish_retreat_letters() {
-	// Future deactivation logic can be added here
+	// Keep data on deactivation - only remove on uninstall
 }
 
 register_activation_hook( __FILE__, 'activate_dfx_parish_retreat_letters' );
