@@ -362,16 +362,10 @@ msgstr ""
 msgid "Date Format Preference"
 msgstr ""
 
-msgid "Auto-detect (recommended)"
-msgstr ""
-
 msgid "DD/MM/YYYY (Day/Month/Year)"
 msgstr ""
 
-msgid "MM/DD/YYYY (Month/Day/Year)"
-msgstr ""
-
-msgid "This preference helps interpret ambiguous dates like \"01/10/2025\". Auto-detect works best with unambiguous dates."
+msgid "This preference is used to interpret ambiguous dates like \"01/10/2025\". Unambiguous dates are always parsed correctly regardless of this setting."
 msgstr ""
 
 msgid "Important Note about Date Formats:"
@@ -383,13 +377,7 @@ msgstr ""
 msgid "Use unambiguous formats like YYYY-MM-DD (2025-01-10)"
 msgstr ""
 
-msgid "Use dates where day > 12 (e.g., 15/01/2025 is clearly January 15th)"
-msgstr ""
-
 msgid "Set your preferred date format below to ensure consistent interpretation"
-msgstr ""
-
-msgid "Auto-detect"
 msgstr ""
 
 #, php-format
@@ -399,7 +387,7 @@ msgstr ""
 msgid "Ambiguous dates found:"
 msgstr ""
 
-msgid "To avoid ambiguity in future imports, consider using YYYY-MM-DD format or dates where day > 12."
+msgid "To avoid ambiguity in future imports, consider using YYYY-MM-DD format."
 msgstr ""
 
 #. Plugin URI of the plugin/theme

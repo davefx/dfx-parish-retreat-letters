@@ -763,8 +763,8 @@ class DFX_Parish_Retreat_Letters_Admin {
 		}
 
 		// Save the date format preference
-		$date_format_preference = sanitize_text_field( $_POST['date_format_preference'] ?? 'auto' );
-		if ( in_array( $date_format_preference, array( 'auto', 'dmy', 'mdy' ), true ) ) {
+		$date_format_preference = sanitize_text_field( $_POST['date_format_preference'] ?? 'dmy' );
+		if ( in_array( $date_format_preference, array( 'dmy', 'mdy' ), true ) ) {
 			update_option( 'dfx_retreat_letters_date_format', $date_format_preference );
 		}
 
@@ -884,7 +884,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 		// Warn about ambiguous dates if any were found
 		if ( ! empty( $ambiguous_dates ) ) {
 			$unique_ambiguous = array_unique( $ambiguous_dates );
-			$current_preference = get_option( 'dfx_retreat_letters_date_format', 'auto' );
+			$current_preference = get_option( 'dfx_retreat_letters_date_format', 'dmy' );
 			
 			$preference_text = '';
 			switch ( $current_preference ) {
@@ -895,7 +895,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 					$preference_text = __( 'MM/DD/YYYY (Month/Day/Year)', 'dfx-parish-retreat-letters' );
 					break;
 				default:
-					$preference_text = __( 'Auto-detect', 'dfx-parish-retreat-letters' );
+					$preference_text = __( 'DD/MM/YYYY (Day/Month/Year)', 'dfx-parish-retreat-letters' );
 					break;
 			}
 			
@@ -910,7 +910,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 				$ambiguous_message .= '<br><strong>' . __( 'Ambiguous dates found:', 'dfx-parish-retreat-letters' ) . '</strong> ' . implode( ', ', $unique_ambiguous );
 			}
 			
-			$ambiguous_message .= '<br>' . __( 'To avoid ambiguity in future imports, consider using YYYY-MM-DD format or dates where day > 12.', 'dfx-parish-retreat-letters' );
+			$ambiguous_message .= '<br>' . __( 'To avoid ambiguity in future imports, consider using YYYY-MM-DD format.', 'dfx-parish-retreat-letters' );
 			
 			$this->add_admin_notice( $ambiguous_message, 'info' );
 		}
@@ -1071,9 +1071,9 @@ class DFX_Parish_Retreat_Letters_Admin {
 		// Remove extra whitespace
 		$date_string = trim( $date_string );
 
-		// Get user's preferred date format from settings
+		// Get user's preferred date format from settings (only for ambiguous dates)
 		if ( empty( $preferred_format ) ) {
-			$preferred_format = get_option( 'dfx_retreat_letters_date_format', 'auto' );
+			$preferred_format = get_option( 'dfx_retreat_letters_date_format', 'dmy' );
 		}
 
 		// Try to auto-detect format based on unambiguous dates first
@@ -1087,7 +1087,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 			}
 		}
 
-		// Define format priority based on user preference
+		// For ambiguous dates, use user preference
 		$formats = $this->get_date_formats_by_preference( $preferred_format );
 
 		foreach ( $formats as $format ) {
@@ -1170,21 +1170,6 @@ class DFX_Parish_Retreat_Letters_Admin {
 	 * @return array Ordered array of date formats.
 	 */
 	private function get_date_formats_by_preference( $preferred_format ) {
-		$all_formats = array(
-			'Y-m-d',     // 2023-01-15
-			'Y/m/d',     // 2023/01/15
-			'd/m/Y',     // 15/01/2023
-			'm/d/Y',     // 01/15/2023
-			'd-m-Y',     // 15-01-2023
-			'm-d-Y',     // 01-15-2023
-			'd.m.Y',     // 15.01.2023
-			'm.d.Y',     // 01.15.2023
-			'd/m/y',     // 15/01/23
-			'm/d/y',     // 01/15/23
-			'd-m-y',     // 15-01-23
-			'm-d-y',     // 01-15-23
-		);
-
 		switch ( $preferred_format ) {
 			case 'dmy':
 				// Day/Month/Year preference - prioritize d/m/Y formats
@@ -1198,10 +1183,12 @@ class DFX_Parish_Retreat_Letters_Admin {
 					'Y-m-d', 'Y/m/d', 'm/d/Y', 'm-d-Y', 'm.d.Y', 'm/d/y', 'm-d-y',
 					'd/m/Y', 'd-m-Y', 'd.m.Y', 'd/m/y', 'd-m-y'
 				);
-			case 'auto':
 			default:
-				// Auto-detection or default - try ISO format first, then common formats
-				return $all_formats;
+				// Default to Day/Month/Year format if invalid preference
+				return array(
+					'Y-m-d', 'Y/m/d', 'd/m/Y', 'd-m-Y', 'd.m.Y', 'd/m/y', 'd-m-y',
+					'm/d/Y', 'm-d-Y', 'm.d.Y', 'm/d/y', 'm-d-y'
+				);
 		}
 	}
 
@@ -1585,14 +1572,13 @@ class DFX_Parish_Retreat_Letters_Admin {
 								<label for="date_format_preference"><?php esc_html_e( 'Date Format Preference', 'dfx-parish-retreat-letters' ); ?></label>
 							</th>
 							<td>
-								<?php $current_preference = get_option( 'dfx_retreat_letters_date_format', 'auto' ); ?>
+								<?php $current_preference = get_option( 'dfx_retreat_letters_date_format', 'dmy' ); ?>
 								<select id="date_format_preference" name="date_format_preference">
-									<option value="auto" <?php selected( $current_preference, 'auto' ); ?>><?php esc_html_e( 'Auto-detect (recommended)', 'dfx-parish-retreat-letters' ); ?></option>
 									<option value="dmy" <?php selected( $current_preference, 'dmy' ); ?>><?php esc_html_e( 'DD/MM/YYYY (Day/Month/Year)', 'dfx-parish-retreat-letters' ); ?></option>
 									<option value="mdy" <?php selected( $current_preference, 'mdy' ); ?>><?php esc_html_e( 'MM/DD/YYYY (Month/Day/Year)', 'dfx-parish-retreat-letters' ); ?></option>
 								</select>
 								<p class="description">
-									<?php esc_html_e( 'This preference helps interpret ambiguous dates like "01/10/2025". Auto-detect works best with unambiguous dates.', 'dfx-parish-retreat-letters' ); ?>
+									<?php esc_html_e( 'This preference is used to interpret ambiguous dates like "01/10/2025". Unambiguous dates are always parsed correctly regardless of this setting.', 'dfx-parish-retreat-letters' ); ?>
 								</p>
 							</td>
 						</tr>
