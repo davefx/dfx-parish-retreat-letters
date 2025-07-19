@@ -34,22 +34,22 @@ msgid "Add New"
 msgstr "Añadir Nuevo"
 
 msgid "Add New Retreat"
-msgstr "Añadir Nuevo Retiro"
+msgstr "Añadir nuevo retiro"
 
 msgid "Edit Retreat"
-msgstr "Editar Retiro"
+msgstr "Editar retiro"
 
 msgid "Retreat Name"
-msgstr "Nombre del Retiro"
+msgstr "Nombre del retiro"
 
 msgid "Location"
 msgstr "Ubicación"
 
 msgid "Start Date"
-msgstr "Fecha de Inicio"
+msgstr "Fecha de inicio"
 
 msgid "End Date"
-msgstr "Fecha de Fin"
+msgstr "Fecha de fin"
 
 msgid "Actions"
 msgstr "Acciones"
@@ -64,19 +64,19 @@ msgid "Cancel"
 msgstr "Cancelar"
 
 msgid "Update Retreat"
-msgstr "Actualizar Retiro"
+msgstr "Actualizar retiro"
 
 msgid "Add Retreat"
-msgstr "Añadir Retiro"
+msgstr "Añadir retiro"
 
 msgid "required"
-msgstr "requerido"
+msgstr "obligatorio"
 
 msgid "Search Retreats:"
-msgstr "Buscar Retiros:"
+msgstr "Buscar retiros:"
 
 msgid "Search Retreats"
-msgstr "Buscar Retiros"
+msgstr "Buscar retiros"
 
 msgid "Total retreats: %d"
 msgstr "Total de retiros: %d"
@@ -131,7 +131,7 @@ msgstr "https://github.com/davefx"
 
 #. Enhanced delete confirmation messages
 msgid "Delete Retreat - Confirmation Required"
-msgstr "Eliminar Retiro - Confirmación Requerida"
+msgstr "Eliminar retiro - Se requiere confirmación"
 
 msgid "WARNING: This action cannot be undone!"
 msgstr "¡ADVERTENCIA: Esta acción no se puede deshacer!"
@@ -152,7 +152,7 @@ msgid "Type retreat name here..."
 msgstr "Escriba el nombre del retiro aquí..."
 
 msgid "Delete Forever"
-msgstr "Eliminar Para Siempre"
+msgstr "Eliminar para siempre"
 
 msgid "Deleting..."
 msgstr "Eliminando..."
@@ -168,46 +168,46 @@ msgid "Attendants"
 msgstr "Asistentes"
 
 msgid "Add New Attendant"
-msgstr "Añadir Nuevo Asistente"
+msgstr "Añadir nuevo asistente"
 
 msgid "Edit Attendant"
-msgstr "Editar Asistente"
+msgstr "Editar asistente"
 
 msgid "Surnames"
 msgstr "Apellidos"
 
 msgid "Date of Birth"
-msgstr "Fecha de Nacimiento"
+msgstr "Fecha de nacimiento"
 
 msgid "Emergency Contact"
-msgstr "Contacto de Emergencia"
+msgstr "Contacto de emergencia"
 
 msgid "Emergency Contact Name"
-msgstr "Nombre del Contacto de Emergencia"
+msgstr "Nombre del contacto de emergencia"
 
 msgid "Emergency Contact Surname"
-msgstr "Apellido del Contacto de Emergencia"
+msgstr "Apellido del contacto de emergencia"
 
 msgid "Emergency Contact Phone"
-msgstr "Teléfono del Contacto de Emergencia"
+msgstr "Teléfono del contacto de emergencia"
 
 msgid "Add Attendant"
-msgstr "Añadir Asistente"
+msgstr "Añadir asistente"
 
 msgid "Update Attendant"
-msgstr "Actualizar Asistente"
+msgstr "Actualizar asistente"
 
 msgid "Search Attendants:"
-msgstr "Buscar Asistentes:"
+msgstr "Buscar asistentes:"
 
 msgid "Search Attendants"
-msgstr "Buscar Asistentes"
+msgstr "Buscar asistentes"
 
 msgid "Export CSV"
 msgstr "Exportar CSV"
 
 msgid "Enter phone number with area code."
-msgstr "Ingrese el número de teléfono con código de área."
+msgstr "Ingrese el número de teléfono con cualquier prefijo necesario."
 
 #. Plurals for attendant counts
 msgid "%d attendant"
@@ -333,7 +333,7 @@ msgid "...and more errors."
 msgstr "...y más errores."
 
 msgid "Your CSV file should contain the following required columns. Column order is flexible and the system will automatically identify columns by their names:"
-msgstr "Tu archivo CSV debe contener las siguientes columnas requeridas. El orden de las columnas es flexible y el sistema identificará automáticamente las columnas por sus nombres:"
+msgstr "Tu archivo CSV debe contener las siguientes columnas obligatorias. El orden de las columnas es flexible y el sistema identificará automáticamente las columnas por sus nombres:"
 
 msgid "(or \"Nombre\")"
 msgstr "(o \"Nombre\")"
@@ -404,3 +404,459 @@ msgstr "Fechas ambiguas encontradas:"
 
 msgid "To avoid ambiguity in future imports, consider using YYYY-MM-DD format."
 msgstr "Para evitar ambigüedad en futuras importaciones, considere usar el formato AAAA-MM-DD."
+
+#. Message system translations
+msgid "Send a Confidential Message"
+msgstr "Enviar un Mensaje Confidencial"
+
+msgid "For Retreat Attendant"
+msgstr "Para el Asistente del Retiro"
+
+msgid "Your Message"
+msgstr "Su Mensaje"
+
+msgid "Write your confidential message here..."
+msgstr "Escriba su mensaje confidencial aquí..."
+
+msgid "Bold"
+msgstr "Negrita"
+
+msgid "Italic"
+msgstr "Cursiva"
+
+msgid "Underline"
+msgstr "Subrayado"
+
+msgid "You can use the toolbar to format your text, create lists, and paste images. HTML is allowed but will be filtered for security."
+msgstr "Puede usar la barra de herramientas para formatear su texto, crear listas y pegar imágenes. HTML está permitido pero será filtrado por seguridad."
+
+msgid "Allowed file types: PDF, DOC, DOCX, TXT, JPG, PNG, GIF. Maximum 5MB per file."
+msgstr "Tipos de archivo permitidos: PDF, DOC, DOCX, TXT, JPG, PNG, GIF. Máximo 5MB por archivo."
+
+msgid "Security Check"
+msgstr "Verificación de Seguridad"
+
+msgid "Send Confidential Message"
+msgstr "Enviar Mensaje Confidencial"
+
+msgid "Sending..."
+msgstr "Enviando..."
+
+msgid "Privacy & Security"
+msgstr "Privacidad y Seguridad"
+
+msgid "Your message will be encrypted and stored securely."
+msgstr "Su mensaje será cifrado y almacenado de forma segura."
+
+msgid "Only authorized retreat administrators can access your message."
+msgstr "Solo los administradores autorizados del retiro pueden acceder a su mensaje."
+
+msgid "Messages can only be viewed when printed - no content is displayed on screen."
+msgstr "Los mensajes solo se pueden ver cuando se imprimen - no se muestra contenido en pantalla."
+
+msgid "Your IP address will be anonymized after 30 days for privacy compliance."
+msgstr "Su dirección IP será anonimizada después de 30 días para cumplir con la privacidad."
+
+msgid "All data is handled in accordance with GDPR and Spanish privacy laws."
+msgstr "Todos los datos se manejan de acuerdo con el RGPD y las leyes de privacidad españolas."
+
+msgid "Please solve: "
+msgstr "Por favor resuelva: "
+
+msgid "Remove"
+msgstr "Eliminar"
+
+msgid "Incorrect security answer. Please try again."
+msgstr "Respuesta de seguridad incorrecta. Por favor inténtelo de nuevo."
+
+msgid "Your message has been sent successfully and securely stored."
+msgstr "Su mensaje ha sido enviado exitosamente y almacenado de forma segura."
+
+msgid "An error occurred while sending your message."
+msgstr "Ocurrió un error al enviar su mensaje."
+
+msgid "A network error occurred. Please try again."
+msgstr "Ocurrió un error de red. Por favor inténtelo de nuevo."
+
+msgid "Too many submission attempts. Please wait before trying again."
+msgstr "Demasiados intentos de envío. Por favor espere antes de intentar de nuevo."
+
+msgid "Please complete the security check."
+msgstr "Por favor complete la verificación de seguridad."
+
+msgid "Incorrect security answer."
+msgstr "Respuesta de seguridad incorrecta."
+
+msgid "Invalid attendant."
+msgstr "Asistente no válido."
+
+msgid "Message content is required."
+msgstr "Se requiere contenido del mensaje."
+
+msgid "Failed to save message."
+msgstr "Error al guardar el mensaje."
+
+msgid "Message sent successfully."
+msgstr "Mensaje enviado correctamente."
+
+msgid "Too many requests. Please wait before trying again."
+msgstr "Demasiadas solicitudes. Por favor espere antes de intentar de nuevo."
+
+msgid "Rate Limit Exceeded"
+msgstr "Límite de solicitudes excedido"
+
+#. Admin interface messages
+msgid "Generate Message URL"
+msgstr "Generar URL de Mensaje"
+
+msgid "Copy URL"
+msgstr "Copiar URL"
+
+msgid "View Messages"
+msgstr "Ver Mensajes"
+
+msgid "Message URL generated successfully."
+msgstr "URL de mensaje generada correctamente."
+
+msgid "Failed to generate message URL."
+msgstr "Error al generar la URL del mensaje."
+
+msgid "Invalid attendant ID."
+msgstr "ID de asistente no válido."
+
+msgid "Attendant not found."
+msgstr "Asistente no encontrado."
+
+#. GDPR and privacy messages
+msgid "Message content is encrypted and cannot be exported in plain text for security reasons."
+msgstr "El contenido del mensaje está cifrado y no puede ser exportado en texto plano por razones de seguridad."
+
+msgid "File content is encrypted and cannot be exported for security reasons."
+msgstr "El contenido del archivo está cifrado y no puede ser exportado por razones de seguridad."
+
+msgid "Please provide an identifier (name or email)."
+msgstr "Por favor proporcione un identificador (nombre o correo electrónico)."
+
+msgid "Please type \"ERASE\" to confirm data deletion."
+msgstr "Por favor escriba \"BORRAR\" para confirmar la eliminación de datos."
+
+#, php-format
+msgid "Data erasure completed. Erased %d messages and %d files."
+msgstr "Eliminación de datos completada. Se eliminaron %d mensajes y %d archivos."
+
+#, php-format
+msgid "Message ID %d could not be deleted due to system error"
+msgstr "El mensaje ID %d no pudo ser eliminado debido a un error del sistema"
+
+msgid "Insufficient permissions."
+msgstr "Permisos insuficientes."
+
+#. Print and admin actions
+msgid "Are you sure you want to delete this message? This action cannot be undone."
+msgstr "¿Está seguro de que desea eliminar este mensaje? Esta acción no se puede deshacer."
+
+msgid "Error generating message URL. Please try again."
+msgstr "Error al generar la URL del mensaje. Por favor inténtelo de nuevo."
+
+msgid "Preparing for print..."
+msgstr "Preparando para imprimir..."
+
+msgid "Error preparing message for print. Please try again."
+msgstr "Error al preparar el mensaje para imprimir. Por favor inténtelo de nuevo."
+
+msgid "Message deleted successfully."
+msgstr "Mensaje eliminado exitosamente."
+
+#. OpenSSL error
+msgid "DFX Parish Retreat Letters: OpenSSL extension is required for the confidential message system."
+msgstr "DFX Cartas de Retiro Parroquial: La extensión OpenSSL es necesaria para el sistema de mensajes confidenciales."
+
+#. New strings for message form improvements
+msgid "Your Name"
+msgstr "Su Nombre"
+
+msgid "Enter your name"
+msgstr "Introduzca su nombre"
+
+msgid "Choose message type:"
+msgstr "Seleccione el tipo de mensaje:"
+
+msgid "Text Message"
+msgstr "Mensaje de texto"
+
+msgid "File Upload"
+msgstr "Subida de archivos"
+
+msgid "Attach Files"
+msgstr "Adjuntar archivos"
+
+msgid "Please enter a message."
+msgstr "Por favor introduzca un mensaje."
+
+msgid "Please select at least one file."
+msgstr "Por favor seleccione un archivo."
+
+msgid "Sender name is required."
+msgstr "El nombre del remitente es obligatorio."
+
+msgid "Invalid message mode."
+msgstr "Modo de mensaje no válido."
+
+msgid "At least one file is required."
+msgstr "Se requiere al menos un archivo."
+
+msgid "File upload message"
+msgstr "Mensaje con archivo adjunto"
+
+msgid "Custom Message for Letter Senders"
+msgstr "Mensaje personalizado para remitentes de cartas"
+
+msgid "Optional message that will be displayed to senders in the letters form."
+msgstr "Mensaje opcional que se mostrará a los remitentes en el formulario de cartas."
+
+msgid "This message will be displayed before the message submission form for all attendants of this retreat. HTML is allowed."
+msgstr "Este mensaje se mostrará antes del formulario de envío de mensajes para todos los asistentes de este retiro. Se permite HTML."
+
+msgid "Bullet List"
+msgstr "Lista con Viñetas"
+
+msgid "Numbered List"
+msgstr "Lista Numerada"
+
+msgid "List"
+msgstr "Lista"
+
+msgid "Undo"
+msgstr "Deshacer"
+
+msgid "Redo"
+msgstr "Rehacer"
+
+msgid "Security check error. Please refresh the page."
+msgstr "Error en la verificación de seguridad. Por favor, actualiza la página."
+
+msgid "Security check error. Please try again."
+msgstr "Error en la verificación de seguridad. Por favor, inténtalo de nuevo."
+
+msgid "Print Status"
+msgstr "Estado de Impresión"
+
+msgid "Printed"
+msgstr "Impreso"
+
+msgid "Not Printed"
+msgstr "No Impreso"
+
+msgid "Printed %1$d time(s), first: %2$s"
+msgstr "Impreso %1$d vez(es), por primera vez: %2$s"
+
+msgid "Not printed"
+msgstr "No impreso"
+
+msgid "Print"
+msgstr "Imprimir"
+
+msgid "Files"
+msgstr "Archivos"
+
+msgid "Message with Files"
+msgstr "Mensaje con Archivos"
+
+msgid "Messages with Files"
+msgstr "Mensajes con Archivos"
+
+msgid "Encrypted Files"
+msgstr "Archivos cifrados"
+
+msgid "Print Message"
+msgstr "Imprimir mensaje"
+
+msgid "Invalid print request."
+msgstr "Solicitud de impresión no válida."
+
+msgid "Print token expired or invalid."
+msgstr "Token de impresión caducado o no válido."
+
+msgid "Message not found."
+msgstr "Mensaje no encontrado."
+
+msgid "File not found."
+msgstr "Archivo no encontrado."
+
+msgid "Word document content cannot be displayed for printing. Please download and print separately."
+msgstr "El contenido del documento de Word no se puede mostrar para imprimir. Por favor descargue e imprima por separado."
+
+msgid "File size:"
+msgstr "Tamaño del archivo:"
+
+msgid "File type: %s, Size: %s - Cannot display content for printing."
+msgstr "Tipo de archivo: %s, Tamaño: %s - No se puede mostrar el contenido para imprimir."
+
+msgid "File \"%s\" upload failed with error code %d."
+msgstr "La subida del archivo \"%s\" falló con código de error %d."
+
+msgid "File \"%s\" failed validation (unsupported type or too large)."
+msgstr "El archivo \"%s\" falló la validación (tipo no soportado o demasiado grande)."
+
+msgid "File \"%s\" could not be saved to database."
+msgstr "El archivo \"%s\" no pudo guardarse en la base de datos."
+
+msgid "No files could be uploaded."
+msgstr "No se pudieron subir archivos."
+
+msgid "Message sent successfully with %d file(s)."
+msgstr "Mensaje enviado exitosamente con %d archivo(s)."
+
+msgid "Note: Some files could not be uploaded: %s"
+msgstr "Nota: Algunos archivos no pudieron subirse: %s"
+
+msgid "Click to view print history"
+msgstr "Haga clic para ver el historial de impresión"
+
+msgid "Unknown User"
+msgstr "Usuario Desconocido"
+
+#. Privacy & Compliance translations
+msgid "Privacy & Compliance"
+msgstr "Privacidad y Cumplimiento"
+
+msgid "Compliance Status Overview"
+msgstr "Resumen del Estado de Cumplimiento"
+
+msgid "Encryption"
+msgstr "Cifrado"
+
+msgid "AES-256 encryption active"
+msgstr "Cifrado AES-256 activo"
+
+msgid "Encryption requirements not met"
+msgstr "Los requisitos de cifrado no se cumplen"
+
+msgid "IP Anonymization"
+msgstr "Anonimización de IP"
+
+msgid "IPs anonymized after 30 days"
+msgstr "IPs anonimizadas después de 30 días"
+
+msgid "Data Retention"
+msgstr "Retención de Datos"
+
+msgid "Policy configured"
+msgstr "Política configurada"
+
+msgid "Policy needs configuration"
+msgstr "La política necesita configuración"
+
+msgid "Audit Logging"
+msgstr "Registro de Auditoría"
+
+msgid "All actions are logged"
+msgstr "Todas las acciones son registradas"
+
+msgid "Data Statistics"
+msgstr "Estadísticas de Datos"
+
+msgid "Confidential Messages"
+msgstr "Mensajes Confidenciales"
+
+msgid "Audit Log Entries"
+msgstr "Entradas del Registro de Auditoría"
+
+msgid "Last Cleanup"
+msgstr "Última Limpieza"
+
+msgid "Never"
+msgstr "Nunca"
+
+msgid "Data Retention Policy"
+msgstr "Política de Retención de Datos"
+
+msgid "Message Retention Period"
+msgstr "Período de Retención de Mensajes"
+
+msgid "Number of days to keep confidential messages (30-3650 days). Set to 0 to keep indefinitely."
+msgstr "Número de días para mantener los mensajes confidenciales (30-3650 días). Establecer a 0 para mantener indefinidamente."
+
+msgid "Audit Log Retention Period"
+msgstr "Período de Retención del Registro de Auditoría"
+
+msgid "Number of days to keep audit logs (365-3650 days)."
+msgstr "Número de días para mantener los registros de auditoría (365-3650 días)."
+
+msgid "IP Address Anonymization"
+msgstr "Anonimización de Direcciones IP"
+
+msgid "30 days (Fixed for GDPR compliance)"
+msgstr "30 días (Fijo para cumplimiento RGPD)"
+
+msgid "IP addresses are automatically anonymized after 30 days to comply with GDPR requirements."
+msgstr "Las direcciones IP se anonimizan automáticamente después de 30 días para cumplir con los requisitos del RGPD."
+
+msgid "Update Retention Settings"
+msgstr "Actualizar Configuración de Retención"
+
+msgid "Privacy Tools"
+msgstr "Herramientas de Privacidad"
+
+msgid "Manual Cleanup"
+msgstr "Limpieza Manual"
+
+msgid "Run manual privacy cleanup to anonymize old IP addresses and clean up expired data."
+msgstr "Ejecutar limpieza manual de privacidad para anonimizar direcciones IP antiguas y limpiar datos caducados."
+
+msgid "Run Cleanup Now"
+msgstr "Ejecutar Limpieza Ahora"
+
+msgid "Are you sure you want to run the privacy cleanup?"
+msgstr "¿Está seguro de que desea ejecutar la limpieza de privacidad?"
+
+msgid "Personal Data Export/Erasure"
+msgstr "Exportación/Borrado de Datos Personales"
+
+msgid "Export or erase personal data by sender name for GDPR compliance."
+msgstr "Exportar o borrar datos personales por nombre del remitente para cumplimiento RGPD."
+
+msgid "Export Personal Data"
+msgstr "Exportar Datos Personales"
+
+msgid "Enter sender name or email"
+msgstr "Ingrese nombre del remitente o email"
+
+msgid "Export Data"
+msgstr "Exportar Datos"
+
+msgid "Erase Personal Data"
+msgstr "Borrar Datos Personales"
+
+msgid "Type ERASE to confirm"
+msgstr "Escriba BORRAR para confirmar"
+
+msgid "Erase Data"
+msgstr "Borrar Datos"
+
+msgid "Recent Audit Activity"
+msgstr "Actividad de Auditoría Reciente"
+
+msgid "Date/Time"
+msgstr "Fecha/Hora"
+
+msgid "Event Type"
+msgstr "Tipo de Evento"
+
+msgid "User"
+msgstr "Usuario"
+
+msgid "Details"
+msgstr "Detalles"
+
+msgid "System"
+msgstr "Sistema"
+
+msgid "No additional details"
+msgstr "Sin detalles adicionales"
+
+msgid "No audit logs found."
+msgstr "No se encontraron registros de auditoría."
+
+msgid "Privacy cleanup completed successfully."
+msgstr "Limpieza de privacidad completada exitosamente."

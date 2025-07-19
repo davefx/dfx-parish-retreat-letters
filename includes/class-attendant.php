@@ -55,6 +55,10 @@ class DFX_Parish_Retreat_Letters_Attendant {
 			return false;
 		}
 
+		// Generate unique message URL token automatically
+		$security = DFX_Parish_Retreat_Letters_Security::get_instance();
+		$message_url_token = $security->generate_unique_message_token();
+
 		$result = $wpdb->insert(
 			$this->database->get_attendants_table(),
 			array(
@@ -65,8 +69,9 @@ class DFX_Parish_Retreat_Letters_Attendant {
 				'emergency_contact_name'    => $sanitized_data['emergency_contact_name'],
 				'emergency_contact_surname' => $sanitized_data['emergency_contact_surname'],
 				'emergency_contact_phone'   => $sanitized_data['emergency_contact_phone'],
+				'message_url_token'         => $message_url_token,
 			),
-			array( '%d', '%s', '%s', '%s', '%s', '%s', '%s' )
+			array( '%d', '%s', '%s', '%s', '%s', '%s', '%s', '%s' )
 		);
 
 		return $result ? $wpdb->insert_id : false;

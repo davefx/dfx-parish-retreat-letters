@@ -38,7 +38,7 @@ class DFX_Parish_Retreat_Letters_Database {
 	 * @since 1.0.0
 	 * @var string
 	 */
-	const DB_VERSION = '1.1.0';
+	const DB_VERSION = '1.2.1';
 
 	/**
 	 * The database version option name.
@@ -65,6 +65,30 @@ class DFX_Parish_Retreat_Letters_Database {
 	private $attendants_table;
 
 	/**
+	 * The table name for confidential messages.
+	 *
+	 * @since 1.2.0
+	 * @var string
+	 */
+	private $messages_table;
+
+	/**
+	 * The table name for message files.
+	 *
+	 * @since 1.2.0
+	 * @var string
+	 */
+	private $message_files_table;
+
+	/**
+	 * The table name for message print log.
+	 *
+	 * @since 1.2.0
+	 * @var string
+	 */
+	private $message_print_log_table;
+
+	/**
 	 * Get the single instance of the class.
 	 *
 	 * @since 1.0.0
@@ -84,8 +108,11 @@ class DFX_Parish_Retreat_Letters_Database {
 	 */
 	private function __construct() {
 		global $wpdb;
-		$this->retreats_table = $wpdb->prefix . 'dfx_retreats';
-		$this->attendants_table = $wpdb->prefix . 'dfx_attendants';
+		$this->retreats_table = $wpdb->prefix . 'dfx_prl_retreats';
+		$this->attendants_table = $wpdb->prefix . 'dfx_prl_attendants';
+		$this->messages_table = $wpdb->prefix . 'dfx_prl_confidential_messages';
+		$this->message_files_table = $wpdb->prefix . 'dfx_prl_message_files';
+		$this->message_print_log_table = $wpdb->prefix . 'dfx_prl_message_print_log';
 		
 		// Only check for database upgrades if WordPress is fully loaded
 		if ( did_action( 'init' ) || current_action() === 'init' ) {
@@ -113,6 +140,7 @@ class DFX_Parish_Retreat_Letters_Database {
 			location varchar(255) NOT NULL,
 			start_date date NOT NULL,
 			end_date date NOT NULL,
+			custom_message text NULL DEFAULT NULL,
 			created_at datetime DEFAULT CURRENT_TIMESTAMP,
 			updated_at datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 			PRIMARY KEY (id),
@@ -155,7 +183,10 @@ class DFX_Parish_Retreat_Letters_Database {
 	 */
 	public function drop_tables() {
 		global $wpdb;
-		// Drop attendants table first due to foreign key constraint
+		// Drop tables in reverse order due to foreign key constraints
+		$wpdb->query( "DROP TABLE IF EXISTS {$this->message_print_log_table}" ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		$wpdb->query( "DROP TABLE IF EXISTS {$this->message_files_table}" ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		$wpdb->query( "DROP TABLE IF EXISTS {$this->messages_table}" ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 		$wpdb->query( "DROP TABLE IF EXISTS {$this->attendants_table}" ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 		$wpdb->query( "DROP TABLE IF EXISTS {$this->retreats_table}" ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 		delete_option( self::DB_VERSION_OPTION );
@@ -182,6 +213,36 @@ class DFX_Parish_Retreat_Letters_Database {
 	}
 
 	/**
+	 * Get the confidential messages table name.
+	 *
+	 * @since 1.2.0
+	 * @return string
+	 */
+	public function get_messages_table() {
+		return $this->messages_table;
+	}
+
+	/**
+	 * Get the message files table name.
+	 *
+	 * @since 1.2.0
+	 * @return string
+	 */
+	public function get_message_files_table() {
+		return $this->message_files_table;
+	}
+
+	/**
+	 * Get the message print log table name.
+	 *
+	 * @since 1.2.0
+	 * @return string
+	 */
+	public function get_message_print_log_table() {
+		return $this->message_print_log_table;
+	}
+
+	/**
 	 * Check if the database tables exist.
 	 *
 	 * @since 1.0.0
@@ -192,6 +253,23 @@ class DFX_Parish_Retreat_Letters_Database {
 		$retreats_exist = $wpdb->get_var( $wpdb->prepare( "SHOW TABLES LIKE %s", $this->retreats_table ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
 		$attendants_exist = $wpdb->get_var( $wpdb->prepare( "SHOW TABLES LIKE %s", $this->attendants_table ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
 		return $retreats_exist === $this->retreats_table && $attendants_exist === $this->attendants_table;
+	}
+
+	/**
+	 * Check if the message system tables exist.
+	 *
+	 * @since 1.2.0
+	 * @return bool
+	 */
+	public function message_tables_exist() {
+		global $wpdb;
+		$messages_exist = $wpdb->get_var( $wpdb->prepare( "SHOW TABLES LIKE %s", $this->messages_table ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
+		$files_exist = $wpdb->get_var( $wpdb->prepare( "SHOW TABLES LIKE %s", $this->message_files_table ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
+		$print_log_exist = $wpdb->get_var( $wpdb->prepare( "SHOW TABLES LIKE %s", $this->message_print_log_table ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
+		
+		return $messages_exist === $this->messages_table && 
+		       $files_exist === $this->message_files_table && 
+		       $print_log_exist === $this->message_print_log_table;
 	}
 
 	/**
@@ -245,6 +323,14 @@ class DFX_Parish_Retreat_Letters_Database {
 		// Version-specific upgrades
 		if ( version_compare( $from_version, '1.1.0', '<' ) ) {
 			$this->upgrade_to_1_1_0();
+		}
+
+		if ( version_compare( $from_version, '1.2.0', '<' ) ) {
+			$this->upgrade_to_1_2_0();
+		}
+
+		if ( version_compare( $from_version, '1.2.1', '<' ) ) {
+			$this->upgrade_to_1_2_1();
 		}
 
 		// Update the database version to current
@@ -313,6 +399,158 @@ class DFX_Parish_Retreat_Letters_Database {
 
 			require_once ABSPATH . 'wp-admin/includes/upgrade.php';
 			dbDelta( $attendants_sql );
+		}
+	}
+
+	/**
+	 * Upgrade database to version 1.2.0.
+	 * This upgrade adds the confidential message system tables and message_url_token to attendants.
+	 *
+	 * @since 1.2.0
+	 */
+	private function upgrade_to_1_2_0() {
+		global $wpdb;
+		$charset_collate = $wpdb->get_charset_collate();
+
+		// Add message_url_token to attendants table if it doesn't exist
+		$column_exists = $wpdb->get_results( $wpdb->prepare(
+			"SHOW COLUMNS FROM {$this->attendants_table} LIKE %s",
+			'message_url_token'
+		) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+
+		if ( empty( $column_exists ) ) {
+			$wpdb->query( "ALTER TABLE {$this->attendants_table} ADD COLUMN message_url_token VARCHAR(255) NULL DEFAULT NULL AFTER emergency_contact_phone" ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			$wpdb->query( "ALTER TABLE {$this->attendants_table} ADD INDEX idx_message_url_token (message_url_token)" ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		}
+
+		// Generate tokens for existing attendants that don't have them
+		$this->generate_missing_tokens();
+
+		// Create confidential messages table
+		$messages_exist = $wpdb->get_var( $wpdb->prepare( "SHOW TABLES LIKE %s", $this->messages_table ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
+		
+		if ( $messages_exist !== $this->messages_table ) {
+			$messages_sql = "CREATE TABLE {$this->messages_table} (
+				id mediumint(9) NOT NULL AUTO_INCREMENT,
+				attendant_id mediumint(9) NOT NULL,
+				sender_name varchar(255) DEFAULT '',
+				encrypted_content longtext NOT NULL,
+				content_salt varchar(255) NOT NULL,
+				message_type enum('text','file') NOT NULL DEFAULT 'text',
+				ip_address varchar(45) DEFAULT NULL,
+				ip_hash varchar(255) DEFAULT NULL,
+				submitted_at datetime DEFAULT CURRENT_TIMESTAMP,
+				ip_anonymized_at datetime DEFAULT NULL,
+				PRIMARY KEY (id),
+				INDEX idx_attendant_id (attendant_id),
+				INDEX idx_submitted_at (submitted_at),
+				INDEX idx_message_type (message_type),
+				INDEX idx_ip_anonymized_at (ip_anonymized_at),
+				FOREIGN KEY (attendant_id) REFERENCES {$this->attendants_table}(id) ON DELETE CASCADE
+			) $charset_collate;";
+
+			require_once ABSPATH . 'wp-admin/includes/upgrade.php';
+			dbDelta( $messages_sql );
+		}
+
+		// Create message files table
+		$files_exist = $wpdb->get_var( $wpdb->prepare( "SHOW TABLES LIKE %s", $this->message_files_table ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
+		
+		if ( $files_exist !== $this->message_files_table ) {
+			$files_sql = "CREATE TABLE {$this->message_files_table} (
+				id mediumint(9) NOT NULL AUTO_INCREMENT,
+				message_id mediumint(9) NOT NULL,
+				original_filename varchar(255) NOT NULL,
+				encrypted_filename varchar(255) NOT NULL,
+				file_type varchar(50) NOT NULL,
+				file_size int(11) NOT NULL,
+				encrypted_file_path text NOT NULL,
+				file_salt varchar(255) NOT NULL,
+				uploaded_at datetime DEFAULT CURRENT_TIMESTAMP,
+				PRIMARY KEY (id),
+				INDEX idx_message_id (message_id),
+				INDEX idx_file_type (file_type),
+				INDEX idx_uploaded_at (uploaded_at),
+				FOREIGN KEY (message_id) REFERENCES {$this->messages_table}(id) ON DELETE CASCADE
+			) $charset_collate;";
+
+			dbDelta( $files_sql );
+		}
+
+		// Create message print log table
+		$print_log_exist = $wpdb->get_var( $wpdb->prepare( "SHOW TABLES LIKE %s", $this->message_print_log_table ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
+		
+		if ( $print_log_exist !== $this->message_print_log_table ) {
+			$print_log_sql = "CREATE TABLE {$this->message_print_log_table} (
+				id mediumint(9) NOT NULL AUTO_INCREMENT,
+				message_id mediumint(9) NOT NULL,
+				user_id bigint(20) unsigned NOT NULL,
+				printed_at datetime DEFAULT CURRENT_TIMESTAMP,
+				ip_address varchar(45) DEFAULT NULL,
+				user_agent text DEFAULT NULL,
+				PRIMARY KEY (id),
+				INDEX idx_message_id (message_id),
+				INDEX idx_user_id (user_id),
+				INDEX idx_printed_at (printed_at),
+				FOREIGN KEY (message_id) REFERENCES {$this->messages_table}(id) ON DELETE CASCADE,
+				FOREIGN KEY (user_id) REFERENCES {$wpdb->users}(ID) ON DELETE CASCADE
+			) $charset_collate;";
+
+			dbDelta( $print_log_sql );
+		}
+	}
+
+	/**
+	 * Generate tokens for existing attendants that don't have them.
+	 *
+	 * @since 1.2.0
+	 */
+	private function generate_missing_tokens() {
+		global $wpdb;
+		
+		// Get attendants without tokens
+		$attendants_without_tokens = $wpdb->get_results(
+			"SELECT id FROM {$this->attendants_table} WHERE message_url_token IS NULL OR message_url_token = ''"
+		); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+
+		if ( empty( $attendants_without_tokens ) ) {
+			return;
+		}
+
+		// Only include security class if it's available
+		if ( class_exists( 'DFX_Parish_Retreat_Letters_Security' ) ) {
+			$security = DFX_Parish_Retreat_Letters_Security::get_instance();
+			
+			foreach ( $attendants_without_tokens as $attendant ) {
+				$token = $security->generate_unique_message_token();
+				$wpdb->update(
+					$this->attendants_table,
+					array( 'message_url_token' => $token ),
+					array( 'id' => $attendant->id ),
+					array( '%s' ),
+					array( '%d' )
+				);
+			}
+		}
+	}
+
+	/**
+	 * Upgrade database to version 1.2.1.
+	 * This upgrade adds custom_message field to retreats table.
+	 *
+	 * @since 1.2.1
+	 */
+	private function upgrade_to_1_2_1() {
+		global $wpdb;
+
+		// Add custom_message field to retreats table if it doesn't exist
+		$column_exists = $wpdb->get_results( $wpdb->prepare(
+			"SHOW COLUMNS FROM {$this->retreats_table} LIKE %s",
+			'custom_message'
+		) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+
+		if ( empty( $column_exists ) ) {
+			$wpdb->query( "ALTER TABLE {$this->retreats_table} ADD COLUMN custom_message text NULL DEFAULT NULL AFTER end_date" ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 		}
 	}
 
