@@ -34,22 +34,22 @@ msgid "Add New"
 msgstr "Añadir Nuevo"
 
 msgid "Add New Retreat"
-msgstr "Añadir Nuevo Retiro"
+msgstr "Añadir nuevo retiro"
 
 msgid "Edit Retreat"
-msgstr "Editar Retiro"
+msgstr "Editar retiro"
 
 msgid "Retreat Name"
-msgstr "Nombre del Retiro"
+msgstr "Nombre del retiro"
 
 msgid "Location"
 msgstr "Ubicación"
 
 msgid "Start Date"
-msgstr "Fecha de Inicio"
+msgstr "Fecha de inicio"
 
 msgid "End Date"
-msgstr "Fecha de Fin"
+msgstr "Fecha de fin"
 
 msgid "Actions"
 msgstr "Acciones"
@@ -64,19 +64,19 @@ msgid "Cancel"
 msgstr "Cancelar"
 
 msgid "Update Retreat"
-msgstr "Actualizar Retiro"
+msgstr "Actualizar retiro"
 
 msgid "Add Retreat"
-msgstr "Añadir Retiro"
+msgstr "Añadir retiro"
 
 msgid "required"
-msgstr "requerido"
+msgstr "obligatorio"
 
 msgid "Search Retreats:"
-msgstr "Buscar Retiros:"
+msgstr "Buscar retiros:"
 
 msgid "Search Retreats"
-msgstr "Buscar Retiros"
+msgstr "Buscar retiros"
 
 msgid "Total retreats: %d"
 msgstr "Total de retiros: %d"
@@ -131,7 +131,7 @@ msgstr "https://github.com/davefx"
 
 #. Enhanced delete confirmation messages
 msgid "Delete Retreat - Confirmation Required"
-msgstr "Eliminar Retiro - Confirmación Requerida"
+msgstr "Eliminar retiro - Se requiere confirmación"
 
 msgid "WARNING: This action cannot be undone!"
 msgstr "¡ADVERTENCIA: Esta acción no se puede deshacer!"
@@ -152,7 +152,7 @@ msgid "Type retreat name here..."
 msgstr "Escriba el nombre del retiro aquí..."
 
 msgid "Delete Forever"
-msgstr "Eliminar Para Siempre"
+msgstr "Eliminar para siempre"
 
 msgid "Deleting..."
 msgstr "Eliminando..."
@@ -168,46 +168,46 @@ msgid "Attendants"
 msgstr "Asistentes"
 
 msgid "Add New Attendant"
-msgstr "Añadir Nuevo Asistente"
+msgstr "Añadir nuevo asistente"
 
 msgid "Edit Attendant"
-msgstr "Editar Asistente"
+msgstr "Editar asistente"
 
 msgid "Surnames"
 msgstr "Apellidos"
 
 msgid "Date of Birth"
-msgstr "Fecha de Nacimiento"
+msgstr "Fecha de nacimiento"
 
 msgid "Emergency Contact"
-msgstr "Contacto de Emergencia"
+msgstr "Contacto de emergencia"
 
 msgid "Emergency Contact Name"
-msgstr "Nombre del Contacto de Emergencia"
+msgstr "Nombre del contacto de emergencia"
 
 msgid "Emergency Contact Surname"
-msgstr "Apellido del Contacto de Emergencia"
+msgstr "Apellido del contacto de emergencia"
 
 msgid "Emergency Contact Phone"
-msgstr "Teléfono del Contacto de Emergencia"
+msgstr "Teléfono del contacto de emergencia"
 
 msgid "Add Attendant"
-msgstr "Añadir Asistente"
+msgstr "Añadir asistente"
 
 msgid "Update Attendant"
-msgstr "Actualizar Asistente"
+msgstr "Actualizar asistente"
 
 msgid "Search Attendants:"
-msgstr "Buscar Asistentes:"
+msgstr "Buscar asistentes:"
 
 msgid "Search Attendants"
-msgstr "Buscar Asistentes"
+msgstr "Buscar asistentes"
 
 msgid "Export CSV"
 msgstr "Exportar CSV"
 
 msgid "Enter phone number with area code."
-msgstr "Ingrese el número de teléfono con código de área."
+msgstr "Ingrese el número de teléfono con cualquier prefijo necesario."
 
 #. Plurals for attendant counts
 msgid "%d attendant"
@@ -333,7 +333,7 @@ msgid "...and more errors."
 msgstr "...y más errores."
 
 msgid "Your CSV file should contain the following required columns. Column order is flexible and the system will automatically identify columns by their names:"
-msgstr "Tu archivo CSV debe contener las siguientes columnas requeridas. El orden de las columnas es flexible y el sistema identificará automáticamente las columnas por sus nombres:"
+msgstr "Tu archivo CSV debe contener las siguientes columnas obligatorias. El orden de las columnas es flexible y el sistema identificará automáticamente las columnas por sus nombres:"
 
 msgid "(or \"Nombre\")"
 msgstr "(o \"Nombre\")"
@@ -458,7 +458,7 @@ msgid "Your IP address will be anonymized after 30 days for privacy compliance."
 msgstr "Su dirección IP será anonimizada después de 30 días para cumplir con la privacidad."
 
 msgid "All data is handled in accordance with GDPR and Spanish privacy laws."
-msgstr "Todos los datos se manejan de acuerdo con el GDPR y las leyes de privacidad españolas."
+msgstr "Todos los datos se manejan de acuerdo con el RGPD y las leyes de privacidad españolas."
 
 msgid "Please solve: "
 msgstr "Por favor resuelva: "
@@ -488,22 +488,22 @@ msgid "Incorrect security answer."
 msgstr "Respuesta de seguridad incorrecta."
 
 msgid "Invalid attendant."
-msgstr "Asistente inválido."
+msgstr "Asistente no válido."
 
 msgid "Message content is required."
-msgstr "El contenido del mensaje es requerido."
+msgstr "Se requiere contenido del mensaje."
 
 msgid "Failed to save message."
 msgstr "Error al guardar el mensaje."
 
 msgid "Message sent successfully."
-msgstr "Mensaje enviado exitosamente."
+msgstr "Mensaje enviado correctamente."
 
 msgid "Too many requests. Please wait before trying again."
 msgstr "Demasiadas solicitudes. Por favor espere antes de intentar de nuevo."
 
 msgid "Rate Limit Exceeded"
-msgstr "Límite de Velocidad Excedido"
+msgstr "Límite de solicitudes excedido"
 
 #. Admin interface messages
 msgid "Generate Message URL"
@@ -516,13 +516,13 @@ msgid "View Messages"
 msgstr "Ver Mensajes"
 
 msgid "Message URL generated successfully."
-msgstr "URL de mensaje generada exitosamente."
+msgstr "URL de mensaje generada correctamente."
 
 msgid "Failed to generate message URL."
 msgstr "Error al generar la URL del mensaje."
 
 msgid "Invalid attendant ID."
-msgstr "ID de asistente inválido."
+msgstr "ID de asistente no válido."
 
 msgid "Attendant not found."
 msgstr "Asistente no encontrado."
@@ -569,38 +569,38 @@ msgstr "Mensaje eliminado exitosamente."
 
 #. OpenSSL error
 msgid "DFX Parish Retreat Letters: OpenSSL extension is required for the confidential message system."
-msgstr "DFX Cartas de Retiro Parroquial: La extensión OpenSSL es requerida para el sistema de mensajes confidenciales."
+msgstr "DFX Cartas de Retiro Parroquial: La extensión OpenSSL es necesaria para el sistema de mensajes confidenciales."
 
 #. New strings for message form improvements
 msgid "Your Name"
 msgstr "Su Nombre"
 
 msgid "Enter your name"
-msgstr "Ingrese su nombre"
+msgstr "Introduzca su nombre"
 
 msgid "Choose message type:"
-msgstr "Elija el tipo de mensaje:"
+msgstr "Seleccione el tipo de mensaje:"
 
 msgid "Text Message"
-msgstr "Mensaje de Texto"
+msgstr "Mensaje de texto"
 
 msgid "File Upload"
-msgstr "Subida de Archivos"
+msgstr "Subida de archivos"
 
 msgid "Attach Files"
-msgstr "Adjuntar Archivos"
+msgstr "Adjuntar archivos"
 
 msgid "Please enter a message."
-msgstr "Por favor ingrese un mensaje."
+msgstr "Por favor introduzca un mensaje."
 
 msgid "Please select at least one file."
-msgstr "Por favor seleccione al menos un archivo."
+msgstr "Por favor seleccione un archivo."
 
 msgid "Sender name is required."
 msgstr "El nombre del remitente es obligatorio."
 
 msgid "Invalid message mode."
-msgstr "Modo de mensaje inválido."
+msgstr "Modo de mensaje no válido."
 
 msgid "At least one file is required."
 msgstr "Se requiere al menos un archivo."
@@ -648,7 +648,7 @@ msgid "Not Printed"
 msgstr "No Impreso"
 
 msgid "Printed %1$d time(s), first: %2$s"
-msgstr "Impreso %1$d vez(es), primera: %2$s"
+msgstr "Impreso %1$d vez(es), por primera vez: %2$s"
 
 msgid "Not printed"
 msgstr "No impreso"
@@ -666,16 +666,16 @@ msgid "Messages with Files"
 msgstr "Mensajes con Archivos"
 
 msgid "Encrypted Files"
-msgstr "Archivos Cifrados"
+msgstr "Archivos cifrados"
 
 msgid "Print Message"
-msgstr "Imprimir Mensaje"
+msgstr "Imprimir mensaje"
 
 msgid "Invalid print request."
-msgstr "Solicitud de impresión inválida."
+msgstr "Solicitud de impresión no válida."
 
 msgid "Print token expired or invalid."
-msgstr "Token de impresión expirado o inválido."
+msgstr "Token de impresión caducado o no válido."
 
 msgid "Message not found."
 msgstr "Mensaje no encontrado."
