@@ -1890,7 +1890,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 		);
 
 		$messages = $this->message_model->get_by_attendant( $attendant_id, $args );
-		$total_items = $this->message_model->get_count_by_attendant( $attendant_id );
+		$total_items = $this->message_model->get_count_by_attendant( $attendant_id, $args );
 		$total_pages = ceil( $total_items / $per_page );
 
 		$this->render_messages_list_page( $messages, array(), $search, 0, $attendant_id, $message_type, $page_num, $total_pages, $total_items, $attendant );

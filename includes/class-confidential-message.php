@@ -143,28 +143,67 @@ class DFX_Parish_Retreat_Letters_ConfidentialMessage {
 		global $wpdb;
 
 		$defaults = array(
-			'orderby'  => 'submitted_at',
-			'order'    => 'DESC',
-			'per_page' => 20,
-			'page'     => 1,
+			'orderby'      => 'submitted_at',
+			'order'        => 'DESC',
+			'per_page'     => 20,
+			'page'         => 1,
+			'search'       => '',
+			'message_type' => '',
 		);
 
 		$args = wp_parse_args( $args, $defaults );
 
+		$where_clause = 'm.attendant_id = %d';
+		$where_values = array( $attendant_id );
+
+		// Filter by message type
+		if ( ! empty( $args['message_type'] ) ) {
+			$where_clause .= ' AND m.message_type = %s';
+			$where_values[] = $args['message_type'];
+		}
+
+		// Add search functionality
+		if ( ! empty( $args['search'] ) ) {
+			$where_clause .= ' AND (a.name LIKE %s OR a.surnames LIKE %s OR m.sender_name LIKE %s)';
+			$search_term = '%' . $wpdb->esc_like( $args['search'] ) . '%';
+			$where_values[] = $search_term;
+			$where_values[] = $search_term;
+			$where_values[] = $search_term;
+		}
+
 		// Sanitize orderby and order
-		$allowed_orderby = array( 'id', 'sender_name', 'message_type', 'submitted_at' );
+		$allowed_orderby = array( 'id', 'sender_name', 'message_type', 'submitted_at', 'attendant_name' );
 		$orderby = in_array( $args['orderby'], $allowed_orderby, true ) ? $args['orderby'] : 'submitted_at';
 		$order = in_array( strtoupper( $args['order'] ), array( 'ASC', 'DESC' ), true ) ? strtoupper( $args['order'] ) : 'DESC';
+
+		// Map orderby to actual column names
+		if ( $orderby === 'attendant_name' ) {
+			$orderby = 'a.name';
+		} elseif ( $orderby !== 'id' ) {
+			$orderby = 'm.' . $orderby;
+		} else {
+			$orderby = 'm.id';
+		}
 
 		// Calculate offset
 		$offset = ( absint( $args['page'] ) - 1 ) * absint( $args['per_page'] );
 
-		$sql = "SELECT * FROM {$this->database->get_messages_table()} 
-				WHERE attendant_id = %d 
+		$sql = "SELECT m.*, a.name as attendant_name, a.surnames as attendant_surnames, 
+				       r.name as retreat_name, r.id as retreat_id,
+				       (SELECT COUNT(*) FROM {$this->database->get_message_files_table()} f WHERE f.message_id = m.id) as file_count,
+				       (SELECT COUNT(*) FROM {$this->database->get_message_print_log_table()} p WHERE p.message_id = m.id) as print_count,
+				       (SELECT MIN(printed_at) FROM {$this->database->get_message_print_log_table()} p WHERE p.message_id = m.id) as first_printed_at
+				FROM {$this->database->get_messages_table()} m
+				INNER JOIN {$this->database->get_attendants_table()} a ON m.attendant_id = a.id
+				INNER JOIN {$this->database->get_retreats_table()} r ON a.retreat_id = r.id
+				WHERE {$where_clause} 
 				ORDER BY {$orderby} {$order} 
 				LIMIT %d OFFSET %d";
 
-		$sql = $wpdb->prepare( $sql, $attendant_id, absint( $args['per_page'] ), $offset ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+		$where_values[] = absint( $args['per_page'] );
+		$where_values[] = $offset;
+
+		$sql = $wpdb->prepare( $sql, $where_values ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 
 		$results = $wpdb->get_results( $sql ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.PreparedSQL.NotPrepared
 
@@ -175,16 +214,41 @@ class DFX_Parish_Retreat_Letters_ConfidentialMessage {
 	 * Get message count by attendant ID.
 	 *
 	 * @since 1.2.0
-	 * @param int $attendant_id Attendant ID.
+	 * @param int   $attendant_id Attendant ID.
+	 * @param array $args         Query arguments.
 	 * @return int Message count.
 	 */
-	public function get_count_by_attendant( $attendant_id ) {
+	public function get_count_by_attendant( $attendant_id, $args = array() ) {
 		global $wpdb;
 
-		$count = $wpdb->get_var( $wpdb->prepare(
-			"SELECT COUNT(*) FROM {$this->database->get_messages_table()} WHERE attendant_id = %d",
-			$attendant_id
-		) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		$where_clause = 'm.attendant_id = %d';
+		$where_values = array( $attendant_id );
+
+		// Filter by message type
+		if ( ! empty( $args['message_type'] ) ) {
+			$where_clause .= ' AND m.message_type = %s';
+			$where_values[] = $args['message_type'];
+		}
+
+		// Add search functionality
+		if ( ! empty( $args['search'] ) ) {
+			$where_clause .= ' AND (a.name LIKE %s OR a.surnames LIKE %s OR m.sender_name LIKE %s)';
+			$search_term = '%' . $wpdb->esc_like( $args['search'] ) . '%';
+			$where_values[] = $search_term;
+			$where_values[] = $search_term;
+			$where_values[] = $search_term;
+		}
+
+		$sql = "SELECT COUNT(*) 
+				FROM {$this->database->get_messages_table()} m
+				INNER JOIN {$this->database->get_attendants_table()} a ON m.attendant_id = a.id
+				WHERE {$where_clause}";
+
+		if ( ! empty( $where_values ) ) {
+			$sql = $wpdb->prepare( $sql, $where_values ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+		}
+
+		$count = $wpdb->get_var( $sql ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 
 		return (int) $count;
 	}
