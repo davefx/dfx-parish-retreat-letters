@@ -59,7 +59,9 @@ class DFX_PRL_Database {
             KEY idx_end_date (end_date)
         ) {$charset_collate};";
 
-        require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
+        if ( ! function_exists( 'dbDelta' ) ) {
+            require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
+        }
         dbDelta( $sql );
     }
 

@@ -110,13 +110,27 @@ class DFX_PRL_Admin {
     public function retreats_page() {
         // Handle search and pagination
         $search = isset( $_GET['s'] ) ? sanitize_text_field( $_GET['s'] ) : '';
-        $paged = isset( $_GET['paged'] ) ? intval( $_GET['paged'] ) : 1;
+        $paged = isset( $_GET['paged'] ) ? max( 1, intval( $_GET['paged'] ) ) : 1;
         $per_page = 20;
         $offset = ( $paged - 1 ) * $per_page;
 
-        // Date filters
-        $start_date_from = isset( $_GET['start_date_from'] ) ? sanitize_text_field( $_GET['start_date_from'] ) : '';
-        $start_date_to = isset( $_GET['start_date_to'] ) ? sanitize_text_field( $_GET['start_date_to'] ) : '';
+        // Date filters with validation
+        $start_date_from = '';
+        $start_date_to = '';
+        
+        if ( isset( $_GET['start_date_from'] ) && ! empty( $_GET['start_date_from'] ) ) {
+            $date = sanitize_text_field( $_GET['start_date_from'] );
+            if ( preg_match( '/^\d{4}-\d{2}-\d{2}$/', $date ) ) {
+                $start_date_from = $date;
+            }
+        }
+        
+        if ( isset( $_GET['start_date_to'] ) && ! empty( $_GET['start_date_to'] ) ) {
+            $date = sanitize_text_field( $_GET['start_date_to'] );
+            if ( preg_match( '/^\d{4}-\d{2}-\d{2}$/', $date ) ) {
+                $start_date_to = $date;
+            }
+        }
 
         $args = array(
             'search' => $search,
@@ -148,6 +162,11 @@ class DFX_PRL_Admin {
             if ( $existing_retreat ) {
                 $retreat = $existing_retreat;
                 $edit_mode = true;
+            } else {
+                // Retreat not found, redirect with error
+                $this->add_admin_notice( __( 'Retreat not found.', 'dfx-parish-retreat-letters' ), 'error' );
+                wp_redirect( admin_url( 'admin.php?page=dfx-prl-retreats' ) );
+                exit;
             }
         }
 
