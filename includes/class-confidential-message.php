@@ -100,7 +100,10 @@ class DFX_Parish_Retreat_Letters_ConfidentialMessage {
 		global $wpdb;
 
 		$result = $wpdb->get_row( $wpdb->prepare(
-			"SELECT * FROM {$this->database->get_messages_table()} WHERE id = %d",
+			"SELECT m.*, a.retreat_id 
+			 FROM {$this->database->get_messages_table()} m
+			 INNER JOIN {$this->database->get_attendants_table()} a ON m.attendant_id = a.id
+			 WHERE m.id = %d",
 			$id
 		) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 

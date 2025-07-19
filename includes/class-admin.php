@@ -2881,6 +2881,12 @@ class DFX_Parish_Retreat_Letters_Admin {
 											</a>
 										<?php endif; ?>
 										
+										<?php if ( $this->permissions->current_user_can_manage_messages( $retreat->id ) ) : ?>
+											<a href="<?php echo esc_url( admin_url( 'admin.php?page=dfx-messages&attendant_id=' . $attendant->id ) ); ?>" class="button button-small">
+												<?php esc_html_e( 'Messages', 'dfx-parish-retreat-letters' ); ?>
+											</a>
+										<?php endif; ?>
+										
 										<?php if ( $this->permissions->current_user_can_manage_retreat( $retreat->id ) ) : ?>
 											<?php if ( empty( $attendant->message_url_token ) ) : ?>
 												<button type="button" class="button button-small dfx-generate-url" data-attendant-id="<?php echo esc_attr( $attendant->id ); ?>">
@@ -3414,8 +3420,8 @@ class DFX_Parish_Retreat_Letters_Admin {
 										// Check if user can delete messages for this retreat
 										$can_delete = false;
 										if ( $attendant ) {
-											// If we have attendant info, check retreat permissions
-											$can_delete = $this->permissions->current_user_can_manage_retreat( $attendant->retreat_id );
+											// Message managers and retreat managers can delete messages
+											$can_delete = $this->permissions->current_user_can_manage_messages( $attendant->retreat_id );
 										} else {
 											// If no specific attendant, we need to check the message's attendant retreat
 											// For now, allow plugin administrators to delete any message
@@ -3535,6 +3541,17 @@ class DFX_Parish_Retreat_Letters_Admin {
 		$message_id = absint( $_POST['message_id'] ?? 0 );
 		if ( ! $message_id ) {
 			wp_send_json_error( array( 'message' => __( 'Invalid message ID.', 'dfx-parish-retreat-letters' ) ) );
+		}
+
+		// Get message to check permissions
+		$message = $this->message_model->get( $message_id );
+		if ( ! $message ) {
+			wp_send_json_error( array( 'message' => __( 'Message not found.', 'dfx-parish-retreat-letters' ) ) );
+		}
+
+		// Check if user has permission to delete messages for this retreat
+		if ( ! $this->permissions->current_user_can_manage_messages( $message->retreat_id ) ) {
+			wp_send_json_error( array( 'message' => __( 'You do not have permission to delete messages for this retreat.', 'dfx-parish-retreat-letters' ) ) );
 		}
 
 		if ( $this->message_model->delete( $message_id ) ) {
