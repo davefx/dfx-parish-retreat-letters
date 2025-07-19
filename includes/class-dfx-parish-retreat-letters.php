@@ -872,7 +872,24 @@ class DFX_Parish_Retreat_Letters {
 		$request_uri = $_SERVER['REQUEST_URI'] ?? '';
 		$request_uri = strtok( $request_uri, '?' );
 		
-		if ( preg_match( '#^/messages/([a-zA-Z0-9]+)/?$#', $request_uri ) ) {
+		// Get the site's base path (same logic as handle_message_url_routing)
+		$site_url = parse_url( home_url(), PHP_URL_PATH );
+		$site_path = $site_url ? $site_url : '/';
+		
+		// Normalize paths
+		if ( $site_path !== '/' ) {
+			$site_path = rtrim( $site_path, '/' );
+		}
+		
+		// Create the pattern based on the site's base path
+		$pattern = '#^' . preg_quote( $site_path, '#' ) . '/messages/([a-zA-Z0-9]+)/?$#';
+		
+		// Also try without the site path for root installations
+		$root_pattern = '#^/messages/([a-zA-Z0-9]+)/?$#';
+		
+		$is_message_url = preg_match( $pattern, $request_uri ) || preg_match( $root_pattern, $request_uri );
+		
+		if ( $is_message_url ) {
 			wp_enqueue_script( 'jquery' );
 			
 			// Inline script for message form functionality
