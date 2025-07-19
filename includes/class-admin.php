@@ -202,9 +202,11 @@ class DFX_Parish_Retreat_Letters_Admin {
 		$is_our_page = false;
 		
 		// Ensure hook_suffix is a string
-		$hook_suffix = (string) $hook_suffix;
+		$hook_suffix = (string) ( $hook_suffix ?? '' );
 		
 		foreach ( $our_pages as $page ) {
+			// Ensure page is a string
+			$page = (string) $page;
 			if ( strpos( $hook_suffix, $page ) !== false ) {
 				$is_our_page = true;
 				break;
@@ -215,8 +217,10 @@ class DFX_Parish_Retreat_Letters_Admin {
 		if ( ! $is_our_page && isset( $_GET['page'] ) ) {
 			$page_param = sanitize_text_field( $_GET['page'] );
 			// Ensure page_param is a string
-			$page_param = (string) $page_param;
+			$page_param = (string) ( $page_param ?? '' );
 			foreach ( $our_pages as $page ) {
+				// Ensure page is a string
+				$page = (string) $page;
 				if ( strpos( $page_param, $page ) !== false ) {
 					$is_our_page = true;
 					break;

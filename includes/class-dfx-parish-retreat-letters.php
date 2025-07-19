@@ -365,7 +365,8 @@ class DFX_Parish_Retreat_Letters {
 		$site_url = parse_url( home_url(), PHP_URL_PATH );
 		$site_path = ( is_string( $site_url ) && ! empty( $site_url ) ) ? $site_url : '/';
 		
-		// Normalize paths
+		// Normalize paths and ensure site_path is a string
+		$site_path = (string) $site_path;
 		if ( $site_path !== '/' ) {
 			$site_path = rtrim( $site_path, '/' );
 		}
@@ -910,7 +911,8 @@ class DFX_Parish_Retreat_Letters {
 		$site_url = parse_url( home_url(), PHP_URL_PATH );
 		$site_path = ( is_string( $site_url ) && ! empty( $site_url ) ) ? $site_url : '/';
 		
-		// Normalize paths
+		// Normalize paths and ensure site_path is a string
+		$site_path = (string) $site_path;
 		if ( $site_path !== '/' ) {
 			$site_path = rtrim( $site_path, '/' );
 		}
@@ -1567,8 +1569,40 @@ class DFX_Parish_Retreat_Letters {
 		// Get attached files if any
 		$files = $file_model->get_by_message( $message_id );
 
-		// Render the clean print page
+		// For file messages with a single PDF, serve the PDF directly
+		if ( $message->message_type === 'file' && count( $files ) === 1 && $files[0]->file_type === 'application/pdf' ) {
+			$this->serve_pdf_file( $files[0], $file_model );
+			return;
+		}
+
+		// For all other cases, render the clean print page
 		$this->render_print_page( $message, $files );
+	}
+
+	/**
+	 * Serve PDF file directly for printing.
+	 *
+	 * @since 1.2.1
+	 * @param object $file File object.
+	 * @param DFX_Parish_Retreat_Letters_MessageFile $file_model File model instance.
+	 */
+	private function serve_pdf_file( $file, $file_model ) {
+		$decrypted_file = $file_model->get_decrypted_file( $file->id );
+		if ( ! $decrypted_file ) {
+			wp_die( __( 'File not found.', 'dfx-parish-retreat-letters' ) );
+		}
+
+		// Set headers for PDF
+		header( 'Content-Type: application/pdf' );
+		header( 'Content-Disposition: inline; filename="' . sanitize_file_name( $decrypted_file['filename'] ) . '"' );
+		header( 'Content-Length: ' . strlen( $decrypted_file['content'] ) );
+		header( 'Cache-Control: private, no-cache, no-store, must-revalidate' );
+		header( 'Pragma: no-cache' );
+		header( 'Expires: 0' );
+
+		// Output PDF content
+		echo $decrypted_file['content'];
+		exit;
 	}
 
 	/**
@@ -1662,10 +1696,10 @@ class DFX_Parish_Retreat_Letters {
 							echo '<p>' . esc_html__( 'File size:', 'dfx-parish-retreat-letters' ) . ' ' . esc_html( size_format( $decrypted_file['size'] ) ) . '</p>';
 						} else {
 							// For other file types, try to display as text if possible
-							$content = $decrypted_file['content'];
+							$content = $decrypted_file['content'] ?? '';
 							
 							// Check if content is text-like
-							if ( mb_check_encoding( $content, 'UTF-8' ) && ctype_print( str_replace( array( "\n", "\r", "\t" ), '', $content ) ) ) {
+							if ( is_string( $content ) && mb_check_encoding( $content, 'UTF-8' ) && ctype_print( str_replace( array( "\n", "\r", "\t" ), '', $content ) ) ) {
 								echo '<h3>' . esc_html( $decrypted_file['filename'] ) . '</h3>';
 								echo '<div class="file-text">' . esc_html( $content ) . '</div>';
 							} else {
