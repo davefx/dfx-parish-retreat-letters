@@ -860,3 +860,90 @@ msgstr "No se encontraron registros de auditoría."
 
 msgid "Privacy cleanup completed successfully."
 msgstr "Limpieza de privacidad completada exitosamente."
+
+msgid "Access Management"
+msgstr "Gestión de Acceso"
+
+msgid "Current Permissions"
+msgstr "Permisos Actuales"
+
+msgid "Granted By"
+msgstr "Otorgado Por"
+
+msgid "Retreat Manager"
+msgstr "Gestor de Retiro"
+
+msgid "Message Manager"
+msgstr "Gestor de Mensajes"
+
+msgid "Pending Invitations"
+msgstr "Invitaciones Pendientes"
+
+msgid "Grant Access"
+msgstr "Otorgar Acceso"
+
+msgid "Existing Users"
+msgstr "Usuarios Existentes"
+
+msgid "Invite New Users"
+msgstr "Invitar Nuevos Usuarios"
+
+msgid "Search and Grant Permission to Existing Users"
+msgstr "Buscar y Otorgar Permisos a Usuarios Existentes"
+
+msgid "Search by username, email, or name..."
+msgstr "Buscar por nombre de usuario, email o nombre..."
+
+msgid "Send Invitation to New User"
+msgstr "Enviar Invitación a Nuevo Usuario"
+
+msgid "Select role..."
+msgstr "Seleccionar rol..."
+
+msgid "Send Invitation"
+msgstr "Enviar Invitación"
+
+msgid "No users found."
+msgstr "No se encontraron usuarios."
+
+msgid "Grant"
+msgstr "Otorgar"
+
+msgid "Revoke"
+msgstr "Revocar"
+
+msgid "Search failed. Please try again."
+msgstr "La búsqueda falló. Por favor inténtelo de nuevo."
+
+msgid "Please select a role first."
+msgstr "Por favor seleccione un rol primero."
+
+msgid "Failed to send invitation. Please try again."
+msgstr "Error al enviar la invitación. Por favor inténtelo de nuevo."
+
+msgid "Are you sure you want to revoke this permission?"
+msgstr "¿Está seguro de que desea revocar este permiso?"
+
+msgid "Are you sure you want to cancel this invitation?"
+msgstr "¿Está seguro de que desea cancelar esta invitación?"
+
+msgid "Failed to grant permission. Please try again."
+msgstr "Error al otorgar el permiso. Por favor inténtelo de nuevo."
+
+msgid "Failed to revoke permission. Please try again."
+msgstr "Error al revocar el permiso. Por favor inténtelo de nuevo."
+
+msgid "Failed to cancel invitation. Please try again."
+msgstr "Error al cancelar la invitación. Por favor inténtelo de nuevo."
+
+msgid "By %s"
+msgstr "Por %s"
+
+msgid "Expires %s"
+msgstr "Expira %s"
+
+msgid "You cannot revoke your own permissions"
+msgstr "No puede revocar sus propios permisos"
+
+msgid "No users have been granted permissions for this retreat yet."
+msgstr "Aún no se han otorgado permisos a usuarios para este retiro."

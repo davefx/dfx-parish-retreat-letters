@@ -34,9 +34,40 @@ function dfx_parish_retreat_letters_uninstall() {
 	$database = DFX_Parish_Retreat_Letters_Database::get_instance();
 	$database->drop_tables();
 	
+	// Clean up scheduled tasks
+	wp_clear_scheduled_hook( 'dfx_retreat_cleanup_hook' );
+	
+	// Clean up custom capabilities from all roles
+	$roles = wp_roles();
+	if ( $roles && $roles->roles ) {
+		foreach ( $roles->roles as $role_name => $role_data ) {
+			$role = get_role( $role_name );
+			if ( $role ) {
+				// Remove global capability
+				$role->remove_cap( 'manage_retreat_plugin' );
+				
+				// Remove any dynamic retreat-specific capabilities
+				if ( isset( $role_data['capabilities'] ) && is_array( $role_data['capabilities'] ) ) {
+					foreach ( $role_data['capabilities'] as $cap => $value ) {
+						if ( strpos( $cap, 'manage_retreat_' ) === 0 || strpos( $cap, 'manage_retreat_messages_' ) === 0 ) {
+							$role->remove_cap( $cap );
+						}
+					}
+				}
+			}
+		}
+	}
+	
 	// Clean up any remaining options
 	delete_option( 'dfx_parish_retreat_letters_db_version' );
+	delete_option( 'dfx_parish_retreat_letters_encryption_key' );
 	delete_transient( 'dfx_admin_notices' );
+	delete_transient( 'dfx_prl_message_rate_limit_violations' );
+	
+	// Clean up any remaining rate limit transients
+	global $wpdb;
+	$wpdb->query( "DELETE FROM {$wpdb->options} WHERE option_name LIKE '_transient_dfx_prl_message_rate_limit_%'" );
+	$wpdb->query( "DELETE FROM {$wpdb->options} WHERE option_name LIKE '_transient_timeout_dfx_prl_message_rate_limit_%'" );
 }
 
 // Run uninstall

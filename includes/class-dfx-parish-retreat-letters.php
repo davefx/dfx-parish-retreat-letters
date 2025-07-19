@@ -83,6 +83,24 @@ class DFX_Parish_Retreat_Letters {
 	protected $gdpr;
 
 	/**
+	 * The permissions management instance.
+	 *
+	 * @since    1.3.0
+	 * @access   protected
+	 * @var      DFX_Parish_Retreat_Letters_Permissions    $permissions    Manages permissions system.
+	 */
+	protected $permissions;
+
+	/**
+	 * The invitations management instance.
+	 *
+	 * @since    1.3.0
+	 * @access   protected
+	 * @var      DFX_Parish_Retreat_Letters_Invitations    $invitations    Manages invitation system.
+	 */
+	protected $invitations;
+
+	/**
 	 * The unique identifier of this plugin.
 	 *
 	 * @since    1.0.0
@@ -138,6 +156,8 @@ class DFX_Parish_Retreat_Letters {
 		$this->init_database();
 		$this->init_security();
 		$this->init_gdpr();
+		$this->init_permissions();
+		$this->init_invitations();
 		$this->init_admin();
 		$this->init_public_hooks();
 	}
@@ -227,6 +247,16 @@ class DFX_Parish_Retreat_Letters {
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-gdpr.php';
 
 		/**
+		 * The class responsible for permissions management.
+		 */
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-permissions.php';
+
+		/**
+		 * The class responsible for invitation system.
+		 */
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-invitations.php';
+
+		/**
 		 * The class responsible for defining admin interface functionality
 		 * of the plugin.
 		 */
@@ -277,6 +307,26 @@ class DFX_Parish_Retreat_Letters {
 	}
 
 	/**
+	 * Initialize the permissions management.
+	 *
+	 * @since    1.3.0
+	 * @access   private
+	 */
+	private function init_permissions() {
+		$this->permissions = DFX_Parish_Retreat_Letters_Permissions::get_instance();
+	}
+
+	/**
+	 * Initialize the invitations management.
+	 *
+	 * @since    1.3.0
+	 * @access   private
+	 */
+	private function init_invitations() {
+		$this->invitations = DFX_Parish_Retreat_Letters_Invitations::get_instance();
+	}
+
+	/**
 	 * Initialize the admin interface.
 	 *
 	 * @since    1.0.0
@@ -299,6 +349,10 @@ class DFX_Parish_Retreat_Letters {
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_public_scripts' ) );
 		add_action( 'wp_ajax_nopriv_dfx_submit_message', array( $this, 'handle_message_submission' ) );
 		add_action( 'wp_ajax_dfx_submit_message', array( $this, 'handle_message_submission' ) );
+		
+		// Schedule cleanup tasks
+		add_action( 'init', array( $this, 'schedule_cleanup_tasks' ) );
+		add_action( 'dfx_retreat_cleanup_hook', array( $this, 'run_cleanup_tasks' ) );
 	}
 
 	/**
@@ -1354,13 +1408,9 @@ class DFX_Parish_Retreat_Letters {
 					success: function(response) {
 						if (response.success) {
 							showNotice('<?php echo esc_js( __( 'Your message has been sent successfully and securely stored.', 'dfx-parish-retreat-letters' ) ); ?>', 'success');
-							$('#dfx-message-form')[0].reset();
-							editor.html('').addClass('empty');
-							hiddenInput.val('');
-							$('#dfx-file-list').empty();
-							// Reset to text mode
-							$('input[name="message_mode"][value="text"]').prop('checked', true).trigger('change');
-							generateCaptcha();
+							// Hide the form completely and show only success message
+							$('#dfx-message-form').hide();
+							$('.dfx-message-mode').hide(); // Hide mode selector too
 						} else {
 							var errorMessage = '<?php echo esc_js( __( 'An error occurred while sending your message.', 'dfx-parish-retreat-letters' ) ); ?>';
 							if (response.data && response.data.message) {
@@ -1390,9 +1440,10 @@ class DFX_Parish_Retreat_Letters {
 				}, 500);
 				
 				if (type === 'success') {
-					setTimeout(function() {
-						notice.fadeOut();
-					}, 5000);
+					// Keep success message forever
+					// setTimeout(function() {
+					//	notice.fadeOut();
+					// }, 60000);
 				}
 			}
 		});
@@ -1790,17 +1841,79 @@ class DFX_Parish_Retreat_Letters {
 			<script>
 				// Auto-trigger print dialog when page loads
 				window.addEventListener('load', function() {
-					window.print();
+					// Small delay to ensure page is fully rendered
+					setTimeout(function() {
+						window.print();
+						
+						// Fallback: close window after a reasonable time if afterprint doesn't fire
+						setTimeout(function() {
+							if (!window.closed) {
+								window.close();
+							}
+						}, 3000); // 3 seconds fallback
+					}, 100);
 				});
 				
-				// Close tab after printing or when print dialog is cancelled
+				// Close tab after printing
 				window.addEventListener('afterprint', function() {
-					window.close();
+					setTimeout(function() {
+						window.close();
+					}, 100);
+				});
+				
+				// Handle print dialog cancellation (beforeprint + timeout)
+				var printStarted = false;
+				window.addEventListener('beforeprint', function() {
+					printStarted = true;
+				});
+				
+				// Additional fallback for browsers that don't support afterprint
+				window.addEventListener('focus', function() {
+					if (printStarted) {
+						setTimeout(function() {
+							if (!window.closed) {
+								window.close();
+							}
+						}, 500);
+					}
 				});
 			</script>
 		</body>
 		</html>
 		<?php
 		exit; // Important: exit after rendering to prevent WordPress from adding headers/footers
+	}
+
+	/**
+	 * Schedule cleanup tasks.
+	 *
+	 * @since 1.3.0
+	 */
+	public function schedule_cleanup_tasks() {
+		if ( ! wp_next_scheduled( 'dfx_retreat_cleanup_hook' ) ) {
+			wp_schedule_event( time(), 'daily', 'dfx_retreat_cleanup_hook' );
+		}
+	}
+
+	/**
+	 * Run scheduled cleanup tasks.
+	 *
+	 * @since 1.3.0
+	 */
+	public function run_cleanup_tasks() {
+		// Clean up expired invitations
+		if ( $this->invitations ) {
+			$this->invitations->cleanup_expired_invitations();
+		}
+
+		// Clean up old permissions
+		if ( $this->permissions ) {
+			$this->permissions->cleanup_permissions();
+		}
+
+		// Anonymize old IP addresses
+		if ( $this->security ) {
+			$this->security->anonymize_old_ip_addresses();
+		}
 	}
 }
