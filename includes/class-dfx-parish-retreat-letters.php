@@ -74,6 +74,15 @@ class DFX_Parish_Retreat_Letters {
 	protected $security;
 
 	/**
+	 * The GDPR compliance instance.
+	 *
+	 * @since    1.2.0
+	 * @access   protected
+	 * @var      DFX_Parish_Retreat_Letters_GDPR    $gdpr    Manages GDPR compliance.
+	 */
+	protected $gdpr;
+
+	/**
 	 * The unique identifier of this plugin.
 	 *
 	 * @since    1.0.0
@@ -128,6 +137,7 @@ class DFX_Parish_Retreat_Letters {
 		$this->set_locale();
 		$this->init_database();
 		$this->init_security();
+		$this->init_gdpr();
 		$this->init_admin();
 		$this->init_public_hooks();
 	}
@@ -212,6 +222,11 @@ class DFX_Parish_Retreat_Letters {
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-print-log.php';
 
 		/**
+		 * The class responsible for GDPR compliance.
+		 */
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-gdpr.php';
+
+		/**
 		 * The class responsible for defining admin interface functionality
 		 * of the plugin.
 		 */
@@ -249,6 +264,16 @@ class DFX_Parish_Retreat_Letters {
 	 */
 	private function init_security() {
 		$this->security = DFX_Parish_Retreat_Letters_Security::get_instance();
+	}
+
+	/**
+	 * Initialize the GDPR compliance management.
+	 *
+	 * @since    1.2.0
+	 * @access   private
+	 */
+	private function init_gdpr() {
+		$this->gdpr = DFX_Parish_Retreat_Letters_GDPR::get_instance();
 	}
 
 	/**

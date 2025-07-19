@@ -81,6 +81,14 @@ class DFX_Parish_Retreat_Letters_Admin {
 	private $security;
 
 	/**
+	 * The GDPR compliance instance.
+	 *
+	 * @since 1.2.0
+	 * @var DFX_Parish_Retreat_Letters_GDPR
+	 */
+	private $gdpr;
+
+	/**
 	 * Get the single instance of the class.
 	 *
 	 * @since 1.0.0
@@ -105,6 +113,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 		$this->file_model = new DFX_Parish_Retreat_Letters_MessageFile();
 		$this->print_log_model = new DFX_Parish_Retreat_Letters_PrintLog();
 		$this->security = DFX_Parish_Retreat_Letters_Security::get_instance();
+		$this->gdpr = DFX_Parish_Retreat_Letters_GDPR::get_instance();
 		$this->init_hooks();
 	}
 
@@ -167,6 +176,15 @@ class DFX_Parish_Retreat_Letters_Admin {
 			'dfx-messages',
 			array( $this, 'messages_list_page' )
 		);
+
+		add_submenu_page(
+			'dfx-retreats',
+			__( 'Privacy & Compliance', 'dfx-parish-retreat-letters' ),
+			__( 'Privacy & Compliance', 'dfx-parish-retreat-letters' ),
+			'manage_options',
+			'dfx-privacy',
+			array( $this, 'privacy_compliance_page' )
+		);
 	}
 
 	/**
@@ -176,7 +194,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 	 * @param string $hook_suffix The current admin page.
 	 */
 	public function enqueue_admin_scripts( $hook_suffix ) {
-		if ( strpos( $hook_suffix, 'dfx-retreats' ) === false && strpos( $hook_suffix, 'dfx-messages' ) === false ) {
+		if ( strpos( $hook_suffix, 'dfx-retreats' ) === false && strpos( $hook_suffix, 'dfx-messages' ) === false && strpos( $hook_suffix, 'dfx-privacy' ) === false ) {
 			return;
 		}
 
@@ -2266,5 +2284,440 @@ class DFX_Parish_Retreat_Letters_Admin {
 		} else {
 			wp_send_json_error( array( 'message' => __( 'Error deleting message.', 'dfx-parish-retreat-letters' ) ) );
 		}
+	}
+
+	/**
+	 * Display the privacy and compliance page.
+	 *
+	 * @since 1.2.0
+	 */
+	public function privacy_compliance_page() {
+		// Handle form submissions
+		if ( $_SERVER['REQUEST_METHOD'] === 'POST' ) {
+			$this->handle_privacy_compliance_actions();
+		}
+
+		$compliance_status = $this->gdpr->get_privacy_compliance_status();
+		$retention_settings = $this->gdpr->get_retention_settings();
+		$recent_audit_logs = $this->gdpr->get_audit_logs( array( 'limit' => 10 ) );
+
+		$this->render_privacy_compliance_page( $compliance_status, $retention_settings, $recent_audit_logs );
+	}
+
+	/**
+	 * Handle privacy compliance page actions.
+	 *
+	 * @since 1.2.0
+	 */
+	private function handle_privacy_compliance_actions() {
+		if ( ! wp_verify_nonce( $_POST['_wpnonce'] ?? '', 'dfx_privacy_action' ) ) {
+			wp_die( __( 'Security check failed.', 'dfx-parish-retreat-letters' ) );
+		}
+
+		$action = sanitize_text_field( $_POST['action'] ?? '' );
+
+		switch ( $action ) {
+			case 'update_retention':
+				$settings = array(
+					'message_retention_days' => absint( $_POST['message_retention_days'] ?? 365 ),
+					'audit_log_retention_days' => absint( $_POST['audit_log_retention_days'] ?? 730 ),
+				);
+
+				if ( $this->gdpr->update_retention_settings( $settings ) ) {
+					$this->add_admin_notice( __( 'Retention settings updated successfully.', 'dfx-parish-retreat-letters' ), 'success' );
+				} else {
+					$this->add_admin_notice( __( 'Error updating retention settings. Please check your values.', 'dfx-parish-retreat-letters' ), 'error' );
+				}
+				break;
+
+			case 'run_cleanup':
+				$this->gdpr->run_daily_cleanup();
+				$this->add_admin_notice( __( 'Privacy cleanup completed successfully.', 'dfx-parish-retreat-letters' ), 'success' );
+				break;
+		}
+	}
+
+	/**
+	 * Render the privacy compliance page.
+	 *
+	 * @since 1.2.0
+	 * @param array $compliance_status Privacy compliance status.
+	 * @param array $retention_settings Data retention settings.
+	 * @param array $recent_audit_logs Recent audit log entries.
+	 */
+	private function render_privacy_compliance_page( $compliance_status, $retention_settings, $recent_audit_logs ) {
+		?>
+		<div class="wrap">
+			<h1><?php esc_html_e( 'Privacy & Compliance', 'dfx-parish-retreat-letters' ); ?></h1>
+			<hr class="wp-header-end">
+
+			<?php $this->display_admin_notices(); ?>
+
+			<!-- Compliance Status Overview -->
+			<div class="dfx-compliance-overview">
+				<h2><?php esc_html_e( 'Compliance Status Overview', 'dfx-parish-retreat-letters' ); ?></h2>
+				<div class="dfx-status-grid">
+					<div class="dfx-status-item <?php echo $compliance_status['encryption_enabled'] ? 'status-good' : 'status-warning'; ?>">
+						<span class="dashicons <?php echo $compliance_status['encryption_enabled'] ? 'dashicons-yes-alt' : 'dashicons-warning'; ?>"></span>
+						<strong><?php esc_html_e( 'Encryption', 'dfx-parish-retreat-letters' ); ?></strong>
+						<p><?php echo $compliance_status['encryption_enabled'] ? esc_html__( 'AES-256 encryption active', 'dfx-parish-retreat-letters' ) : esc_html__( 'Encryption requirements not met', 'dfx-parish-retreat-letters' ); ?></p>
+					</div>
+
+					<div class="dfx-status-item <?php echo $compliance_status['ip_anonymization_active'] ? 'status-good' : 'status-warning'; ?>">
+						<span class="dashicons <?php echo $compliance_status['ip_anonymization_active'] ? 'dashicons-yes-alt' : 'dashicons-warning'; ?>"></span>
+						<strong><?php esc_html_e( 'IP Anonymization', 'dfx-parish-retreat-letters' ); ?></strong>
+						<p><?php esc_html_e( 'IPs anonymized after 30 days', 'dfx-parish-retreat-letters' ); ?></p>
+					</div>
+
+					<div class="dfx-status-item <?php echo $compliance_status['retention_policy_configured'] ? 'status-good' : 'status-warning'; ?>">
+						<span class="dashicons <?php echo $compliance_status['retention_policy_configured'] ? 'dashicons-yes-alt' : 'dashicons-warning'; ?>"></span>
+						<strong><?php esc_html_e( 'Data Retention', 'dfx-parish-retreat-letters' ); ?></strong>
+						<p><?php echo $compliance_status['retention_policy_configured'] ? esc_html__( 'Policy configured', 'dfx-parish-retreat-letters' ) : esc_html__( 'Policy needs configuration', 'dfx-parish-retreat-letters' ); ?></p>
+					</div>
+
+					<div class="dfx-status-item <?php echo $compliance_status['audit_logging_active'] ? 'status-good' : 'status-warning'; ?>">
+						<span class="dashicons <?php echo $compliance_status['audit_logging_active'] ? 'dashicons-yes-alt' : 'dashicons-warning'; ?>"></span>
+						<strong><?php esc_html_e( 'Audit Logging', 'dfx-parish-retreat-letters' ); ?></strong>
+						<p><?php esc_html_e( 'All actions are logged', 'dfx-parish-retreat-letters' ); ?></p>
+					</div>
+				</div>
+			</div>
+
+			<!-- Data Statistics -->
+			<div class="dfx-data-stats">
+				<h2><?php esc_html_e( 'Data Statistics', 'dfx-parish-retreat-letters' ); ?></h2>
+				<div class="dfx-stats-grid">
+					<div class="dfx-stat-item">
+						<span class="dfx-stat-number"><?php echo esc_html( $compliance_status['messages_count'] ); ?></span>
+						<span class="dfx-stat-label"><?php esc_html_e( 'Confidential Messages', 'dfx-parish-retreat-letters' ); ?></span>
+					</div>
+					<div class="dfx-stat-item">
+						<span class="dfx-stat-number"><?php echo esc_html( $compliance_status['files_count'] ); ?></span>
+						<span class="dfx-stat-label"><?php esc_html_e( 'Encrypted Files', 'dfx-parish-retreat-letters' ); ?></span>
+					</div>
+					<div class="dfx-stat-item">
+						<span class="dfx-stat-number"><?php echo esc_html( $compliance_status['audit_logs_count'] ); ?></span>
+						<span class="dfx-stat-label"><?php esc_html_e( 'Audit Log Entries', 'dfx-parish-retreat-letters' ); ?></span>
+					</div>
+					<div class="dfx-stat-item">
+						<span class="dfx-stat-number"><?php echo $compliance_status['last_cleanup'] ? esc_html( human_time_diff( $compliance_status['last_cleanup'] ) . ' ago' ) : esc_html__( 'Never', 'dfx-parish-retreat-letters' ); ?></span>
+						<span class="dfx-stat-label"><?php esc_html_e( 'Last Cleanup', 'dfx-parish-retreat-letters' ); ?></span>
+					</div>
+				</div>
+			</div>
+
+			<!-- Data Retention Settings -->
+			<form method="post" action="">
+				<?php wp_nonce_field( 'dfx_privacy_action' ); ?>
+				<input type="hidden" name="action" value="update_retention">
+				
+				<h2><?php esc_html_e( 'Data Retention Policy', 'dfx-parish-retreat-letters' ); ?></h2>
+				<table class="form-table">
+					<tbody>
+						<tr>
+							<th scope="row">
+								<label for="message_retention_days"><?php esc_html_e( 'Message Retention Period', 'dfx-parish-retreat-letters' ); ?></label>
+							</th>
+							<td>
+								<input type="number" id="message_retention_days" name="message_retention_days" value="<?php echo esc_attr( $retention_settings['message_retention_days'] ); ?>" min="30" max="3650" required>
+								<p class="description"><?php esc_html_e( 'Number of days to keep confidential messages (30-3650 days). Set to 0 to keep indefinitely.', 'dfx-parish-retreat-letters' ); ?></p>
+							</td>
+						</tr>
+						<tr>
+							<th scope="row">
+								<label for="audit_log_retention_days"><?php esc_html_e( 'Audit Log Retention Period', 'dfx-parish-retreat-letters' ); ?></label>
+							</th>
+							<td>
+								<input type="number" id="audit_log_retention_days" name="audit_log_retention_days" value="<?php echo esc_attr( $retention_settings['audit_log_retention_days'] ); ?>" min="365" max="3650" required>
+								<p class="description"><?php esc_html_e( 'Number of days to keep audit logs (365-3650 days).', 'dfx-parish-retreat-letters' ); ?></p>
+							</td>
+						</tr>
+						<tr>
+							<th scope="row">
+								<?php esc_html_e( 'IP Address Anonymization', 'dfx-parish-retreat-letters' ); ?>
+							</th>
+							<td>
+								<p><strong><?php esc_html_e( '30 days (Fixed for GDPR compliance)', 'dfx-parish-retreat-letters' ); ?></strong></p>
+								<p class="description"><?php esc_html_e( 'IP addresses are automatically anonymized after 30 days to comply with GDPR requirements.', 'dfx-parish-retreat-letters' ); ?></p>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+				
+				<p class="submit">
+					<input type="submit" class="button button-primary" value="<?php esc_attr_e( 'Update Retention Settings', 'dfx-parish-retreat-letters' ); ?>">
+				</p>
+			</form>
+
+			<!-- Privacy Tools -->
+			<h2><?php esc_html_e( 'Privacy Tools', 'dfx-parish-retreat-letters' ); ?></h2>
+			<div class="dfx-privacy-tools">
+				<div class="dfx-tool-section">
+					<h3><?php esc_html_e( 'Manual Cleanup', 'dfx-parish-retreat-letters' ); ?></h3>
+					<p><?php esc_html_e( 'Run manual privacy cleanup to anonymize old IP addresses and clean up expired data.', 'dfx-parish-retreat-letters' ); ?></p>
+					<form method="post" action="" style="display: inline;">
+						<?php wp_nonce_field( 'dfx_privacy_action' ); ?>
+						<input type="hidden" name="action" value="run_cleanup">
+						<input type="submit" class="button" value="<?php esc_attr_e( 'Run Cleanup Now', 'dfx-parish-retreat-letters' ); ?>" onclick="return confirm('<?php esc_attr_e( 'Are you sure you want to run the privacy cleanup?', 'dfx-parish-retreat-letters' ); ?>');">
+					</form>
+				</div>
+
+				<div class="dfx-tool-section">
+					<h3><?php esc_html_e( 'Personal Data Export/Erasure', 'dfx-parish-retreat-letters' ); ?></h3>
+					<p><?php esc_html_e( 'Export or erase personal data by sender name for GDPR compliance.', 'dfx-parish-retreat-letters' ); ?></p>
+					
+					<div class="dfx-gdpr-tools">
+						<div class="dfx-gdpr-export">
+							<h4><?php esc_html_e( 'Export Personal Data', 'dfx-parish-retreat-letters' ); ?></h4>
+							<input type="text" id="export-identifier" placeholder="<?php esc_attr_e( 'Enter sender name or email', 'dfx-parish-retreat-letters' ); ?>">
+							<button type="button" id="export-data-btn" class="button"><?php esc_html_e( 'Export Data', 'dfx-parish-retreat-letters' ); ?></button>
+						</div>
+
+						<div class="dfx-gdpr-erase">
+							<h4><?php esc_html_e( 'Erase Personal Data', 'dfx-parish-retreat-letters' ); ?></h4>
+							<input type="text" id="erase-identifier" placeholder="<?php esc_attr_e( 'Enter sender name or email', 'dfx-parish-retreat-letters' ); ?>">
+							<input type="text" id="erase-confirm" placeholder="<?php esc_attr_e( 'Type ERASE to confirm', 'dfx-parish-retreat-letters' ); ?>">
+							<button type="button" id="erase-data-btn" class="button button-link-delete"><?php esc_html_e( 'Erase Data', 'dfx-parish-retreat-letters' ); ?></button>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<!-- Recent Audit Logs -->
+			<h2><?php esc_html_e( 'Recent Audit Activity', 'dfx-parish-retreat-letters' ); ?></h2>
+			<table class="wp-list-table widefat fixed striped">
+				<thead>
+					<tr>
+						<th scope="col"><?php esc_html_e( 'Date/Time', 'dfx-parish-retreat-letters' ); ?></th>
+						<th scope="col"><?php esc_html_e( 'Event Type', 'dfx-parish-retreat-letters' ); ?></th>
+						<th scope="col"><?php esc_html_e( 'User', 'dfx-parish-retreat-letters' ); ?></th>
+						<th scope="col"><?php esc_html_e( 'Details', 'dfx-parish-retreat-letters' ); ?></th>
+					</tr>
+				</thead>
+				<tbody>
+					<?php if ( ! empty( $recent_audit_logs ) ) : ?>
+						<?php foreach ( $recent_audit_logs as $log ) : ?>
+							<tr>
+								<td><?php echo esc_html( date_i18n( get_option( 'date_format' ) . ' ' . get_option( 'time_format' ), $log['timestamp'] ) ); ?></td>
+								<td><?php echo esc_html( ucwords( str_replace( '_', ' ', $log['event_type'] ) ) ); ?></td>
+								<td>
+									<?php
+									if ( $log['user_id'] ) {
+										$user = get_user_by( 'id', $log['user_id'] );
+										echo esc_html( $user ? $user->display_name : __( 'Unknown User', 'dfx-parish-retreat-letters' ) );
+									} else {
+										esc_html_e( 'System', 'dfx-parish-retreat-letters' );
+									}
+									?>
+								</td>
+								<td>
+									<?php
+									if ( ! empty( $log['data'] ) ) {
+										echo esc_html( wp_json_encode( $log['data'] ) );
+									} else {
+										echo '<em>' . esc_html__( 'No additional details', 'dfx-parish-retreat-letters' ) . '</em>';
+									}
+									?>
+								</td>
+							</tr>
+						<?php endforeach; ?>
+					<?php else : ?>
+						<tr>
+							<td colspan="4"><?php esc_html_e( 'No audit logs found.', 'dfx-parish-retreat-letters' ); ?></td>
+						</tr>
+					<?php endif; ?>
+				</tbody>
+			</table>
+		</div>
+
+		<style>
+		.dfx-status-grid {
+			display: grid;
+			grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+			gap: 20px;
+			margin-bottom: 30px;
+		}
+
+		.dfx-status-item {
+			padding: 20px;
+			border: 1px solid #ddd;
+			border-radius: 8px;
+			background: #fff;
+			text-align: center;
+		}
+
+		.dfx-status-item.status-good {
+			border-color: #46b450;
+			background: #f7fcf7;
+		}
+
+		.dfx-status-item.status-warning {
+			border-color: #ffb900;
+			background: #fffbf0;
+		}
+
+		.dfx-status-item .dashicons {
+			font-size: 32px;
+			width: 32px;
+			height: 32px;
+			margin-bottom: 10px;
+		}
+
+		.dfx-status-item.status-good .dashicons {
+			color: #46b450;
+		}
+
+		.dfx-status-item.status-warning .dashicons {
+			color: #ffb900;
+		}
+
+		.dfx-stats-grid {
+			display: grid;
+			grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+			gap: 20px;
+			margin-bottom: 30px;
+		}
+
+		.dfx-stat-item {
+			text-align: center;
+			padding: 20px;
+			border: 1px solid #ddd;
+			border-radius: 8px;
+			background: #fff;
+		}
+
+		.dfx-stat-number {
+			display: block;
+			font-size: 2em;
+			font-weight: bold;
+			color: #007cba;
+			margin-bottom: 5px;
+		}
+
+		.dfx-stat-label {
+			font-size: 0.9em;
+			color: #666;
+		}
+
+		.dfx-privacy-tools {
+			display: grid;
+			grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+			gap: 30px;
+			margin-bottom: 30px;
+		}
+
+		.dfx-tool-section {
+			padding: 20px;
+			border: 1px solid #ddd;
+			border-radius: 8px;
+			background: #fff;
+		}
+
+		.dfx-tool-section h3 {
+			margin-top: 0;
+			color: #333;
+		}
+
+		.dfx-gdpr-tools {
+			margin-top: 15px;
+		}
+
+		.dfx-gdpr-export, .dfx-gdpr-erase {
+			margin-bottom: 20px;
+		}
+
+		.dfx-gdpr-export h4, .dfx-gdpr-erase h4 {
+			margin-bottom: 10px;
+			color: #555;
+		}
+
+		.dfx-gdpr-export input, .dfx-gdpr-erase input {
+			width: 200px;
+			margin-right: 10px;
+			margin-bottom: 5px;
+		}
+
+		@media (max-width: 768px) {
+			.dfx-status-grid, .dfx-stats-grid {
+				grid-template-columns: 1fr;
+			}
+			
+			.dfx-privacy-tools {
+				grid-template-columns: 1fr;
+			}
+			
+			.dfx-gdpr-export input, .dfx-gdpr-erase input {
+				width: 100%;
+				margin-bottom: 10px;
+			}
+		}
+		</style>
+
+		<script>
+		jQuery(document).ready(function($) {
+			$('#export-data-btn').on('click', function() {
+				var identifier = $('#export-identifier').val().trim();
+				if (!identifier) {
+					alert('<?php esc_html_e( 'Please enter a sender name or email.', 'dfx-parish-retreat-letters' ); ?>');
+					return;
+				}
+
+				var form = $('<form>', {
+					method: 'POST',
+					action: '<?php echo esc_url( admin_url( 'admin-ajax.php' ) ); ?>'
+				});
+
+				form.append($('<input>', { type: 'hidden', name: 'action', value: 'dfx_export_personal_data' }));
+				form.append($('<input>', { type: 'hidden', name: 'identifier', value: identifier }));
+				form.append($('<input>', { type: 'hidden', name: 'nonce', value: '<?php echo esc_attr( wp_create_nonce( 'dfx_gdpr_nonce' ) ); ?>' }));
+
+				$('body').append(form);
+				form.submit();
+			});
+
+			$('#erase-data-btn').on('click', function() {
+				var identifier = $('#erase-identifier').val().trim();
+				var confirm = $('#erase-confirm').val().trim();
+
+				if (!identifier) {
+					alert('<?php esc_html_e( 'Please enter a sender name or email.', 'dfx-parish-retreat-letters' ); ?>');
+					return;
+				}
+
+				if (confirm !== 'ERASE') {
+					alert('<?php esc_html_e( 'Please type "ERASE" to confirm data deletion.', 'dfx-parish-retreat-letters' ); ?>');
+					return;
+				}
+
+				if (!window.confirm('<?php esc_html_e( 'Are you sure you want to permanently erase all data for this identifier? This action cannot be undone.', 'dfx-parish-retreat-letters' ); ?>')) {
+					return;
+				}
+
+				$.ajax({
+					url: '<?php echo esc_url( admin_url( 'admin-ajax.php' ) ); ?>',
+					type: 'POST',
+					data: {
+						action: 'dfx_erase_personal_data',
+						identifier: identifier,
+						confirm: confirm,
+						nonce: '<?php echo esc_attr( wp_create_nonce( 'dfx_gdpr_nonce' ) ); ?>'
+					},
+					success: function(response) {
+						if (response.success) {
+							alert(response.data.message);
+							$('#erase-identifier, #erase-confirm').val('');
+							location.reload();
+						} else {
+							alert(response.data.message || '<?php esc_html_e( 'An error occurred during data erasure.', 'dfx-parish-retreat-letters' ); ?>');
+						}
+					},
+					error: function() {
+						alert('<?php esc_html_e( 'A network error occurred. Please try again.', 'dfx-parish-retreat-letters' ); ?>');
+					}
+				});
+			});
+		});
+		</script>
+		<?php
 	}
 }
