@@ -1,0 +1,35 @@
+# Copyright (C) 2024 DFX Parish Retreat Letters
+# This file is distributed under the same license as the DFX Parish Retreat Letters package.
+msgid ""
+msgstr ""
+"Project-Id-Version: DFX Parish Retreat Letters 1.0.0\n"
+"Report-Msgid-Bugs-To: https://github.com/davefx/dfx-parish-retreat-letters\n"
+"POT-Creation-Date: 2024-01-01 12:00+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: WordPress CLI\n"
+
+#. Plugin Name of the plugin/theme
+msgid "DFX Parish Retreat Letters"
+msgstr ""
+
+#. Plugin URI of the plugin/theme
+msgid "https://github.com/davefx/dfx-parish-retreat-letters"
+msgstr ""
+
+#. Description of the plugin/theme
+msgid "A WordPress plugin for managing parish retreat letters."
+msgstr ""
+
+#. Author of the plugin/theme
+msgid "DaveFX"
+msgstr ""
+
+#. Author URI of the plugin/theme
+msgid "https://github.com/davefx"
+msgstr ""
