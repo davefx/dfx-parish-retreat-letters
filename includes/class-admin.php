@@ -180,14 +180,33 @@ class DFX_Parish_Retreat_Letters_Admin {
 		);
 
 		// Hidden submenu page for messages (accessed only through attendant links)
+		// Use parent slug to avoid null issues
 		add_submenu_page(
-			null, // Hidden from menu
+			'dfx-retreats', // Parent slug, but we'll remove it from menu later
 			__( 'Confidential Messages', 'dfx-parish-retreat-letters' ),
-			__( 'Messages', 'dfx-parish-retreat-letters' ),
+			'',  // Empty menu title to hide from menu display
 			'manage_options',
 			'dfx-messages',
 			array( $this, 'messages_list_page' )
 		);
+		
+		// Hide the messages submenu item from displaying in the menu
+		add_action( 'admin_head', array( $this, 'hide_messages_submenu' ) );
+	}
+
+	/**
+	 * Hide the messages submenu item from displaying in the admin menu.
+	 *
+	 * @since 1.2.1
+	 */
+	public function hide_messages_submenu() {
+		?>
+		<style>
+			#toplevel_page_dfx-retreats .wp-submenu li[class*="dfx-messages"] {
+				display: none !important;
+			}
+		</style>
+		<?php
 	}
 
 	/**
@@ -2054,12 +2073,6 @@ class DFX_Parish_Retreat_Letters_Admin {
 										<button type="button" class="button button-small button-primary dfx-print-message" data-message-id="<?php echo esc_attr( $message->id ); ?>">
 											<?php esc_html_e( 'Print', 'dfx-parish-retreat-letters' ); ?>
 										</button>
-
-										<?php if ( $message->file_count > 0 ) : ?>
-											<a href="<?php echo esc_url( admin_url( 'admin.php?page=dfx-messages&action=view_files&message_id=' . $message->id ) ); ?>" class="button button-small">
-												<?php esc_html_e( 'Files', 'dfx-parish-retreat-letters' ); ?>
-											</a>
-										<?php endif; ?>
 
 										<button type="button" class="button button-small button-link-delete dfx-delete-message" data-message-id="<?php echo esc_attr( $message->id ); ?>">
 											<?php esc_html_e( 'Delete', 'dfx-parish-retreat-letters' ); ?>

@@ -1569,9 +1569,9 @@ class DFX_Parish_Retreat_Letters {
 		// Get attached files if any
 		$files = $file_model->get_by_message( $message_id );
 
-		// For file messages with a single PDF, serve the PDF directly
-		if ( $message->message_type === 'file' && count( $files ) === 1 && $files[0]->file_type === 'application/pdf' ) {
-			$this->serve_pdf_file( $files[0], $file_model );
+		// For file messages with a single file, serve the file directly
+		if ( $message->message_type === 'file' && count( $files ) === 1 ) {
+			$this->serve_file_directly( $files[0], $file_model );
 			return;
 		}
 
@@ -1580,27 +1580,30 @@ class DFX_Parish_Retreat_Letters {
 	}
 
 	/**
-	 * Serve PDF file directly for printing.
+	 * Serve file directly for printing.
 	 *
 	 * @since 1.2.1
 	 * @param object $file File object.
 	 * @param DFX_Parish_Retreat_Letters_MessageFile $file_model File model instance.
 	 */
-	private function serve_pdf_file( $file, $file_model ) {
+	private function serve_file_directly( $file, $file_model ) {
 		$decrypted_file = $file_model->get_decrypted_file( $file->id );
 		if ( ! $decrypted_file ) {
 			wp_die( __( 'File not found.', 'dfx-parish-retreat-letters' ) );
 		}
 
-		// Set headers for PDF
-		header( 'Content-Type: application/pdf' );
-		header( 'Content-Disposition: inline; filename="' . sanitize_file_name( $decrypted_file['filename'] ) . '"' );
+		// Sanitize filename for header
+		$safe_filename = sanitize_file_name( $decrypted_file['filename'] );
+		
+		// Set headers based on file type
+		header( 'Content-Type: ' . $file->file_type );
+		header( 'Content-Disposition: inline; filename="' . $safe_filename . '"' );
 		header( 'Content-Length: ' . strlen( $decrypted_file['content'] ) );
 		header( 'Cache-Control: private, no-cache, no-store, must-revalidate' );
 		header( 'Pragma: no-cache' );
 		header( 'Expires: 0' );
 
-		// Output PDF content
+		// Output file content
 		echo $decrypted_file['content'];
 		exit;
 	}

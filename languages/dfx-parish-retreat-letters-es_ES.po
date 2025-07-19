@@ -637,3 +637,57 @@ msgstr "Error en la verificación de seguridad. Por favor, actualiza la página.
 
 msgid "Security check error. Please try again."
 msgstr "Error en la verificación de seguridad. Por favor, inténtalo de nuevo."
+
+msgid "Print Status"
+msgstr "Estado de Impresión"
+
+msgid "Printed"
+msgstr "Impreso"
+
+msgid "Not Printed"
+msgstr "No Impreso"
+
+msgid "Printed %1$d time(s), first: %2$s"
+msgstr "Impreso %1$d vez(es), primera: %2$s"
+
+msgid "Not printed"
+msgstr "No impreso"
+
+msgid "Print"
+msgstr "Imprimir"
+
+msgid "Files"
+msgstr "Archivos"
+
+msgid "Message with Files"
+msgstr "Mensaje con Archivos"
+
+msgid "Messages with Files"
+msgstr "Mensajes con Archivos"
+
+msgid "Encrypted Files"
+msgstr "Archivos Cifrados"
+
+msgid "Print Message"
+msgstr "Imprimir Mensaje"
+
+msgid "Invalid print request."
+msgstr "Solicitud de impresión inválida."
+
+msgid "Print token expired or invalid."
+msgstr "Token de impresión expirado o inválido."
+
+msgid "Message not found."
+msgstr "Mensaje no encontrado."
+
+msgid "File not found."
+msgstr "Archivo no encontrado."
+
+msgid "Word document content cannot be displayed for printing. Please download and print separately."
+msgstr "El contenido del documento de Word no se puede mostrar para imprimir. Por favor descargue e imprima por separado."
+
+msgid "File size:"
+msgstr "Tamaño del archivo:"
+
+msgid "File type: %s, Size: %s - Cannot display content for printing."
+msgstr "Tipo de archivo: %s, Tamaño: %s - No se puede mostrar el contenido para imprimir."
