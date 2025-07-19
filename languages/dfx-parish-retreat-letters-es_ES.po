@@ -691,3 +691,22 @@ msgstr "Tamaño del archivo:"
 
 msgid "File type: %s, Size: %s - Cannot display content for printing."
 msgstr "Tipo de archivo: %s, Tamaño: %s - No se puede mostrar el contenido para imprimir."
+
+msgid "File \"%s\" upload failed with error code %d."
+msgstr "La subida del archivo \"%s\" falló con código de error %d."
+
+msgid "File \"%s\" failed validation (unsupported type or too large)."
+msgstr "El archivo \"%s\" falló la validación (tipo no soportado o demasiado grande)."
+
+msgid "File \"%s\" could not be saved to database."
+msgstr "El archivo \"%s\" no pudo guardarse en la base de datos."
+
+msgid "No files could be uploaded."
+msgstr "No se pudieron subir archivos."
+
+msgid "Message sent successfully with %d file(s)."
+msgstr "Mensaje enviado exitosamente con %d archivo(s)."
+
+msgid "Note: Some files could not be uploaded: %s"
+msgstr "Nota: Algunos archivos no pudieron subirse: %s"
+msgstr "Tipo de archivo: %s, Tamaño: %s - No se puede mostrar el contenido para imprimir."

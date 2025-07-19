@@ -1487,11 +1487,43 @@ class DFX_Parish_Retreat_Letters {
 		}
 
 		// Handle file uploads only if in file mode
+		$upload_result = array( 'uploaded_count' => 0, 'errors' => array() );
 		if ( $message_mode === 'file' && ! empty( $_FILES['message_files']['name'][0] ) ) {
-			$this->handle_file_uploads( $message_id, $_FILES['message_files'] );
+			$upload_result = $this->handle_file_uploads( $message_id, $_FILES['message_files'] );
+			
+			// If no files were uploaded successfully, return an error
+			if ( $upload_result['uploaded_count'] === 0 ) {
+				// Delete the message since no files were saved
+				$message_model->delete( $message_id );
+				
+				$error_message = __( 'No files could be uploaded.', 'dfx-parish-retreat-letters' );
+				if ( ! empty( $upload_result['errors'] ) ) {
+					$error_message .= ' ' . implode( ' ', $upload_result['errors'] );
+				}
+				
+				wp_send_json_error( array( 'message' => $error_message ) );
+			}
 		}
 
-		wp_send_json_success( array( 'message' => __( 'Message sent successfully.', 'dfx-parish-retreat-letters' ) ) );
+		$success_message = __( 'Message sent successfully.', 'dfx-parish-retreat-letters' );
+		
+		// Add file upload info to success message if applicable
+		if ( $message_mode === 'file' && $upload_result['uploaded_count'] > 0 ) {
+			$success_message = sprintf(
+				__( 'Message sent successfully with %d file(s).', 'dfx-parish-retreat-letters' ),
+				$upload_result['uploaded_count']
+			);
+			
+			// Add warning if some files failed
+			if ( ! empty( $upload_result['errors'] ) ) {
+				$success_message .= ' ' . sprintf(
+					__( 'Note: Some files could not be uploaded: %s', 'dfx-parish-retreat-letters' ),
+					implode( ', ', $upload_result['errors'] )
+				);
+			}
+		}
+
+		wp_send_json_success( array( 'message' => $success_message ) );
 	}
 
 	/**
@@ -1500,19 +1532,35 @@ class DFX_Parish_Retreat_Letters {
 	 * @since 1.2.0
 	 * @param int   $message_id Message ID.
 	 * @param array $files      Files array from $_FILES.
+	 * @return array Array with success status and any error messages.
 	 */
 	private function handle_file_uploads( $message_id, $files ) {
 		$file_model = new DFX_Parish_Retreat_Letters_MessageFile();
 		
 		$file_count = count( $files['name'] );
+		$uploaded_count = 0;
+		$errors = array();
 		
 		for ( $i = 0; $i < $file_count; $i++ ) {
+			$filename = $files['name'][$i];
+			
+			// Skip empty file slots
+			if ( empty( $filename ) ) {
+				continue;
+			}
+			
+			// Check for upload errors
 			if ( $files['error'][$i] !== UPLOAD_ERR_OK ) {
+				$errors[] = sprintf( 
+					__( 'File "%s" upload failed with error code %d.', 'dfx-parish-retreat-letters' ),
+					$filename,
+					$files['error'][$i]
+				);
 				continue;
 			}
 			
 			$file_data = array(
-				'name'     => $files['name'][$i],
+				'name'     => $filename,
 				'tmp_name' => $files['tmp_name'][$i],
 				'size'     => $files['size'][$i],
 				'type'     => $files['type'][$i],
@@ -1521,6 +1569,10 @@ class DFX_Parish_Retreat_Letters {
 			
 			$validated_file = $this->security->validate_file_upload( $file_data );
 			if ( ! $validated_file ) {
+				$errors[] = sprintf( 
+					__( 'File "%s" failed validation (unsupported type or too large).', 'dfx-parish-retreat-letters' ),
+					$filename
+				);
 				continue;
 			}
 			
@@ -1532,8 +1584,21 @@ class DFX_Parish_Retreat_Letters {
 				'tmp_name'          => $validated_file['tmp_name'],
 			);
 			
-			$file_model->create( $file_model_data );
+			$file_id = $file_model->create( $file_model_data );
+			if ( $file_id ) {
+				$uploaded_count++;
+			} else {
+				$errors[] = sprintf( 
+					__( 'File "%s" could not be saved to database.', 'dfx-parish-retreat-letters' ),
+					$filename
+				);
+			}
 		}
+		
+		return array(
+			'uploaded_count' => $uploaded_count,
+			'errors' => $errors,
+		);
 	}
 
 	/**

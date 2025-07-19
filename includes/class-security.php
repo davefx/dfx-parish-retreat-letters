@@ -408,12 +408,41 @@ class DFX_Parish_Retreat_Letters_Security {
 		$finfo = finfo_open( FILEINFO_MIME_TYPE );
 		$mime_type = finfo_file( $finfo, $file['tmp_name'] );
 		finfo_close( $finfo );
+		
+		// Log detected MIME type for debugging (only in wp-config debug mode)
+		if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+			error_log( sprintf( 
+				'DFX File Upload Debug: File "%s" (extension: %s) detected MIME type: %s, expected: %s',
+				$file['name'],
+				$extension,
+				$mime_type,
+				$allowed_types[ $extension ]
+			) );
+		}
 
 		if ( $mime_type !== $allowed_types[ $extension ] ) {
-			// Allow some common variations
+			// Allow common MIME type variations
 			$allowed_variations = array(
-				'text/x-Algol68' => 'text/plain', // Some systems report .txt as this
-				'application/octet-stream' => array( 'application/pdf', 'application/msword' ), // Generic binary
+				// Text files
+				'text/x-Algol68' => array( 'text/plain' ),
+				
+				// DOC files - multiple possible MIME types
+				'application/octet-stream' => array( 
+					'application/pdf', 
+					'application/msword',
+					'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+				),
+				'application/doc' => array( 'application/msword' ),
+				'application/vnd.ms-office' => array( 
+					'application/msword',
+					'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+				),
+				
+				// DOCX files - can be reported as ZIP since DOCX is a ZIP-based format
+				'application/zip' => array( 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' ),
+				
+				// Sometimes PDF files are reported as octet-stream
+				'application/x-pdf' => array( 'application/pdf' ),
 			);
 
 			$is_valid = false;
