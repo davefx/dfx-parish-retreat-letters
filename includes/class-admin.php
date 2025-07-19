@@ -168,14 +168,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 			array( $this, 'retreat_add_page' )
 		);
 
-		add_submenu_page(
-			'dfx-retreats',
-			__( 'Confidential Messages', 'dfx-parish-retreat-letters' ),
-			__( 'Messages', 'dfx-parish-retreat-letters' ),
-			'manage_options',
-			'dfx-messages',
-			array( $this, 'messages_list_page' )
-		);
+
 
 		add_submenu_page(
 			'dfx-retreats',
@@ -1609,6 +1602,59 @@ class DFX_Parish_Retreat_Letters_Admin {
 					</tbody>
 				</table>
 
+				<?php if ( $is_edit ) : ?>
+					<?php
+					// Get message count for this attendant
+					$message_count = $this->message_model->get_count_by_attendant( $attendant->id );
+					?>
+					<hr>
+					<h2><?php esc_html_e( 'Confidential Messages', 'dfx-parish-retreat-letters' ); ?></h2>
+					<table class="form-table">
+						<tbody>
+							<tr>
+								<th scope="row"><?php esc_html_e( 'Messages', 'dfx-parish-retreat-letters' ); ?></th>
+								<td>
+									<?php if ( $message_count > 0 ) : ?>
+										<p>
+											<a href="<?php echo esc_url( admin_url( 'admin.php?page=dfx-messages&attendant_id=' . $attendant->id ) ); ?>" class="button">
+												<?php
+												printf(
+													/* translators: %d: Number of messages */
+													esc_html( _n( 'View %d message', 'View %d messages', $message_count, 'dfx-parish-retreat-letters' ) ),
+													$message_count
+												);
+												?>
+											</a>
+										</p>
+									<?php else : ?>
+										<p class="description"><?php esc_html_e( 'No messages received yet.', 'dfx-parish-retreat-letters' ); ?></p>
+									<?php endif; ?>
+								</td>
+							</tr>
+							<tr>
+								<th scope="row"><?php esc_html_e( 'Message URL', 'dfx-parish-retreat-letters' ); ?></th>
+								<td>
+									<?php if ( empty( $attendant->message_url_token ) ) : ?>
+										<p>
+											<button type="button" class="button dfx-generate-url" data-attendant-id="<?php echo esc_attr( $attendant->id ); ?>">
+												<?php esc_html_e( 'Generate Message URL', 'dfx-parish-retreat-letters' ); ?>
+											</button>
+										</p>
+										<p class="description"><?php esc_html_e( 'Generate a secure URL that can be shared with this attendant to receive confidential messages.', 'dfx-parish-retreat-letters' ); ?></p>
+									<?php else : ?>
+										<p>
+											<button type="button" class="button button-primary dfx-copy-url" data-url="<?php echo esc_url( home_url( '/messages/' . $attendant->message_url_token ) ); ?>">
+												<?php esc_html_e( 'Copy Message URL', 'dfx-parish-retreat-letters' ); ?>
+											</button>
+										</p>
+										<p class="description"><?php esc_html_e( 'Share this secure URL with the attendant to receive confidential messages.', 'dfx-parish-retreat-letters' ); ?></p>
+									<?php endif; ?>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				<?php endif; ?>
+
 				<p class="submit">
 					<input type="submit" name="submit" id="submit" class="button button-primary" value="<?php echo esc_attr( $is_edit ? __( 'Update Attendant', 'dfx-parish-retreat-letters' ) : __( 'Add Attendant', 'dfx-parish-retreat-letters' ) ); ?>">
 					<a href="<?php echo esc_url( admin_url( 'admin.php?page=dfx-retreats&action=attendants&retreat_id=' . $retreat->id ) ); ?>" class="button">
@@ -1780,37 +1826,32 @@ class DFX_Parish_Retreat_Letters_Admin {
 		$page_num = max( 1, absint( $_GET['paged'] ?? 1 ) );
 		$per_page = 20;
 
+		// Messages can only be accessed through attendants - redirect if no attendant_id
+		if ( ! $attendant_id ) {
+			wp_redirect( admin_url( 'admin.php?page=dfx-retreats' ) );
+			exit;
+		}
+
+		// Get attendant info for breadcrumb and validation
+		$attendant = $this->attendant_model->get( $attendant_id );
+		if ( ! $attendant ) {
+			wp_redirect( admin_url( 'admin.php?page=dfx-retreats' ) );
+			exit;
+		}
+
 		// Get messages with metadata
 		$args = array(
 			'search'       => $search,
-			'retreat_id'   => $retreat_id,
 			'message_type' => $message_type,
 			'per_page'     => $per_page,
 			'page'         => $page_num,
 		);
 
-		// If viewing messages for specific attendant, filter by attendant
-		if ( $attendant_id ) {
-			// Get attendant info for breadcrumb
-			$attendant = $this->attendant_model->get( $attendant_id );
-			if ( $attendant ) {
-				$messages = $this->message_model->get_by_attendant( $attendant_id, $args );
-				$total_items = $this->message_model->get_count_by_attendant( $attendant_id );
-			} else {
-				$messages = array();
-				$total_items = 0;
-			}
-		} else {
-			$messages = $this->message_model->get_all_with_metadata( $args );
-			$total_items = $this->message_model->get_total_count( $args );
-		}
-
+		$messages = $this->message_model->get_by_attendant( $attendant_id, $args );
+		$total_items = $this->message_model->get_count_by_attendant( $attendant_id );
 		$total_pages = ceil( $total_items / $per_page );
 
-		// Get retreats for filter dropdown
-		$retreats = $this->retreat_model->get_all( array( 'per_page' => -1 ) );
-
-		$this->render_messages_list_page( $messages, $retreats, $search, $retreat_id, $attendant_id, $message_type, $page_num, $total_pages, $total_items, $attendant ?? null );
+		$this->render_messages_list_page( $messages, array(), $search, 0, $attendant_id, $message_type, $page_num, $total_pages, $total_items, $attendant );
 	}
 
 	/**
@@ -1847,10 +1888,16 @@ class DFX_Parish_Retreat_Letters_Admin {
 			<hr class="wp-header-end">
 
 			<?php if ( $attendant ) : ?>
+				<?php
+				// Get retreat information for breadcrumb
+				$retreat = $this->retreat_model->get( $attendant->retreat_id );
+				?>
 				<!-- Breadcrumb -->
 				<p class="description">
 					<a href="<?php echo esc_url( admin_url( 'admin.php?page=dfx-retreats' ) ); ?>"><?php esc_html_e( 'Retreats', 'dfx-parish-retreat-letters' ); ?></a>
-					&gt; <a href="<?php echo esc_url( admin_url( 'admin.php?page=dfx-messages' ) ); ?>"><?php esc_html_e( 'Messages', 'dfx-parish-retreat-letters' ); ?></a>
+					<?php if ( $retreat ) : ?>
+						&gt; <a href="<?php echo esc_url( admin_url( 'admin.php?page=dfx-retreats&action=attendants&retreat_id=' . $retreat->id ) ); ?>"><?php echo esc_html( $retreat->name ); ?></a>
+					<?php endif; ?>
 					&gt; <?php echo esc_html( $attendant->name . ' ' . $attendant->surnames ); ?>
 				</p>
 			<?php endif; ?>
@@ -1865,23 +1912,10 @@ class DFX_Parish_Retreat_Letters_Admin {
 			<!-- Filters -->
 			<form method="get" action="">
 				<input type="hidden" name="page" value="dfx-messages">
-				<?php if ( $attendant_id ) : ?>
-					<input type="hidden" name="attendant_id" value="<?php echo esc_attr( $attendant_id ); ?>">
-				<?php endif; ?>
+				<input type="hidden" name="attendant_id" value="<?php echo esc_attr( $attendant_id ); ?>">
 				
 				<div class="tablenav top">
 					<div class="alignleft actions">
-						<?php if ( ! $attendant_id ) : ?>
-							<select name="retreat_id">
-								<option value=""><?php esc_html_e( 'All Retreats', 'dfx-parish-retreat-letters' ); ?></option>
-								<?php foreach ( $retreats as $retreat ) : ?>
-									<option value="<?php echo esc_attr( $retreat->id ); ?>" <?php selected( $retreat_id, $retreat->id ); ?>>
-										<?php echo esc_html( $retreat->name ); ?>
-									</option>
-								<?php endforeach; ?>
-							</select>
-						<?php endif; ?>
-
 						<select name="message_type">
 							<option value=""><?php esc_html_e( 'All Types', 'dfx-parish-retreat-letters' ); ?></option>
 							<option value="text" <?php selected( $message_type, 'text' ); ?>><?php esc_html_e( 'Text Messages', 'dfx-parish-retreat-letters' ); ?></option>
@@ -1893,7 +1927,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 
 					<p class="search-box">
 						<label class="screen-reader-text" for="message-search-input"><?php esc_html_e( 'Search Messages:', 'dfx-parish-retreat-letters' ); ?></label>
-						<input type="search" id="message-search-input" name="s" value="<?php echo esc_attr( $search ); ?>" placeholder="<?php esc_attr_e( 'Search by attendant name or sender...', 'dfx-parish-retreat-letters' ); ?>">
+						<input type="search" id="message-search-input" name="s" value="<?php echo esc_attr( $search ); ?>" placeholder="<?php esc_attr_e( 'Search by sender...', 'dfx-parish-retreat-letters' ); ?>">
 						<input type="submit" id="search-submit" class="button" value="<?php esc_attr_e( 'Search Messages', 'dfx-parish-retreat-letters' ); ?>">
 					</p>
 				</div>
