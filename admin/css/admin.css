@@ -1,0 +1,229 @@
+/**
+ * Admin styles for DFX Parish Retreat Letters
+ */
+
+/* General Styles */
+.dfx-prl-filters {
+    margin: 20px 0;
+    padding: 15px;
+    background: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.dfx-prl-filters .search-box {
+    margin-bottom: 0;
+}
+
+.dfx-prl-filters label {
+    display: inline-block;
+    margin: 0 5px 0 15px;
+    font-weight: 600;
+}
+
+.dfx-prl-filters input[type="search"],
+.dfx-prl-filters input[type="date"] {
+    margin-right: 10px;
+}
+
+.dfx-prl-results-info {
+    margin: 15px 0;
+    font-style: italic;
+    color: #666;
+}
+
+/* Retreat List Table */
+.wp-list-table .column-name {
+    width: 25%;
+}
+
+.wp-list-table .column-location {
+    width: 20%;
+}
+
+.wp-list-table .column-start-date,
+.wp-list-table .column-end-date {
+    width: 15%;
+}
+
+.wp-list-table .column-duration {
+    width: 10%;
+}
+
+.wp-list-table .column-actions {
+    width: 15%;
+}
+
+.wp-list-table .row-actions {
+    color: #ddd;
+}
+
+.wp-list-table tr:hover .row-actions {
+    color: #000;
+}
+
+/* No retreats message */
+.no-retreats {
+    padding: 40px 20px;
+    text-align: center;
+    background: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    margin: 20px 0;
+}
+
+.no-retreats p {
+    font-size: 16px;
+    color: #666;
+    margin: 0;
+}
+
+/* Form Styles */
+.dfx-prl-retreat-form .form-table th {
+    width: 200px;
+    vertical-align: top;
+    padding-top: 15px;
+}
+
+.dfx-prl-retreat-form .required {
+    color: #d63638;
+    font-weight: bold;
+}
+
+.dfx-prl-retreat-form .description {
+    font-style: italic;
+    margin-top: 5px;
+}
+
+.dfx-prl-form-actions {
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid #ddd;
+}
+
+.dfx-prl-retreat-info {
+    margin-top: 40px;
+    padding: 20px;
+    background: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.dfx-prl-retreat-info h3 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    color: #23282d;
+}
+
+.dfx-prl-retreat-info table td {
+    padding: 8px 12px;
+    border-bottom: 1px solid #ddd;
+}
+
+.dfx-prl-retreat-info table td:first-child {
+    width: 150px;
+    font-weight: 600;
+}
+
+/* Delete confirmation styles */
+.dfx-prl-deleting {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+/* Loading spinner */
+.dfx-prl-loading {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border: 2px solid #f3f3f3;
+    border-top: 2px solid #0073aa;
+    border-radius: 50%;
+    animation: dfx-prl-spin 1s linear infinite;
+    margin-left: 5px;
+}
+
+@keyframes dfx-prl-spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Responsive styles */
+@media screen and (max-width: 782px) {
+    .dfx-prl-filters label {
+        display: block;
+        margin: 10px 0 5px 0;
+    }
+    
+    .dfx-prl-filters input[type="search"],
+    .dfx-prl-filters input[type="date"] {
+        display: block;
+        width: 100%;
+        margin: 0 0 10px 0;
+    }
+    
+    .wp-list-table .column-duration {
+        display: none;
+    }
+    
+    .dfx-prl-retreat-form .form-table th {
+        width: auto;
+        display: block;
+        padding-bottom: 0;
+    }
+    
+    .dfx-prl-retreat-form .form-table td {
+        display: block;
+        padding-top: 5px;
+    }
+}
+
+/* Admin notice enhancements */
+.notice.notice-success {
+    border-left-color: #46b450;
+}
+
+.notice.notice-error {
+    border-left-color: #dc3232;
+}
+
+/* Pagination improvements */
+.tablenav-pages {
+    text-align: center;
+}
+
+.tablenav-pages .pagination-links {
+    display: inline-block;
+}
+
+/* Button improvements */
+.button.button-small {
+    padding: 2px 8px;
+    font-size: 11px;
+    line-height: 1.4;
+}
+
+/* Focus states for accessibility */
+.dfx-prl-delete-retreat:focus,
+.dfx-prl-delete-retreat:hover {
+    color: #d63638;
+}
+
+/* Success/Error message styling */
+.dfx-prl-message {
+    padding: 12px;
+    margin: 15px 0;
+    border-radius: 4px;
+}
+
+.dfx-prl-message.success {
+    background: #d1f2d1;
+    border-left: 4px solid #46b450;
+    color: #155724;
+}
+
+.dfx-prl-message.error {
+    background: #f8d7da;
+    border-left: 4px solid #dc3232;
+    color: #721c24;
+}

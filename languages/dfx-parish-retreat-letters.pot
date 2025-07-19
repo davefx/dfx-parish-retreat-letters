@@ -1,0 +1,186 @@
+# Copyright (C) 2024 DFX Parish Retreat Letters
+# This file is distributed under the same license as the DFX Parish Retreat Letters package.
+msgid ""
+msgstr ""
+"Project-Id-Version: DFX Parish Retreat Letters 1.0.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-01-01 00:00+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: includes/class-admin.php
+msgid "Retreats"
+msgstr ""
+
+#: includes/class-admin.php
+msgid "All Retreats"
+msgstr ""
+
+#: includes/class-admin.php
+msgid "Add New"
+msgstr ""
+
+#: includes/class-admin.php
+msgid "Add New Retreat"
+msgstr ""
+
+#: includes/class-retreat.php
+msgid "Retreat name is required."
+msgstr ""
+
+#: includes/class-retreat.php
+msgid "Retreat location is required."
+msgstr ""
+
+#: includes/class-retreat.php
+msgid "Start date is required."
+msgstr ""
+
+#: includes/class-retreat.php
+msgid "Start date is not valid."
+msgstr ""
+
+#: includes/class-retreat.php
+msgid "End date is required."
+msgstr ""
+
+#: includes/class-retreat.php
+msgid "End date is not valid."
+msgstr ""
+
+#: includes/class-retreat.php
+msgid "Start date cannot be after end date."
+msgstr ""
+
+#: admin/partials/retreats-list.php
+msgid "Search Retreats:"
+msgstr ""
+
+#: admin/partials/retreats-list.php
+msgid "Search retreats..."
+msgstr ""
+
+#: admin/partials/retreats-list.php
+msgid "Start Date From:"
+msgstr ""
+
+#: admin/partials/retreats-list.php
+msgid "Start Date To:"
+msgstr ""
+
+#: admin/partials/retreats-list.php
+msgid "Search Retreats"
+msgstr ""
+
+#: admin/partials/retreats-list.php
+msgid "Clear Filters"
+msgstr ""
+
+#: admin/partials/retreats-list.php
+msgid "No retreats found matching your search criteria."
+msgstr ""
+
+#: admin/partials/retreats-list.php
+msgid "No retreats found."
+msgstr ""
+
+#: admin/partials/retreats-list.php
+msgid "Create your first retreat"
+msgstr ""
+
+#: admin/partials/retreats-list.php
+msgid "Name"
+msgstr ""
+
+#: admin/partials/retreats-list.php
+msgid "Location"
+msgstr ""
+
+#: admin/partials/retreats-list.php
+msgid "Start Date"
+msgstr ""
+
+#: admin/partials/retreats-list.php
+msgid "End Date"
+msgstr ""
+
+#: admin/partials/retreats-list.php
+msgid "Duration"
+msgstr ""
+
+#: admin/partials/retreats-list.php
+msgid "Actions"
+msgstr ""
+
+#: admin/partials/retreats-list.php
+msgid "Edit"
+msgstr ""
+
+#: admin/partials/retreats-list.php
+msgid "Delete"
+msgstr ""
+
+#: admin/partials/retreat-form.php
+msgid "Edit Retreat"
+msgstr ""
+
+#: admin/partials/retreat-form.php
+msgid "Update Retreat"
+msgstr ""
+
+#: admin/partials/retreat-form.php
+msgid "Add Retreat"
+msgstr ""
+
+#: admin/partials/retreat-form.php
+msgid "← Back to Retreats"
+msgstr ""
+
+#: admin/partials/retreat-form.php
+msgid "Retreat Name"
+msgstr ""
+
+#: admin/partials/retreat-form.php
+msgid "Enter retreat name"
+msgstr ""
+
+#: admin/partials/retreat-form.php
+msgid "Enter the name or title of the retreat."
+msgstr ""
+
+#: admin/partials/retreat-form.php
+msgid "Enter retreat location"
+msgstr ""
+
+#: admin/partials/retreat-form.php
+msgid "Enter the location where the retreat will take place."
+msgstr ""
+
+#: admin/partials/retreat-form.php
+msgid "Select the date when the retreat begins."
+msgstr ""
+
+#: admin/partials/retreat-form.php
+msgid "Select the date when the retreat ends."
+msgstr ""
+
+#: admin/partials/retreat-form.php
+msgid "Cancel"
+msgstr ""
+
+#: admin/partials/retreat-form.php
+msgid "Retreat Information"
+msgstr ""
+
+#: admin/partials/retreat-form.php
+msgid "Created:"
+msgstr ""
+
+#: admin/partials/retreat-form.php
+msgid "Last Updated:"
+msgstr ""
