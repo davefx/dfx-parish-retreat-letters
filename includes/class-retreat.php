@@ -58,12 +58,13 @@ class DFX_Parish_Retreat_Letters_Retreat {
 		$result = $wpdb->insert(
 			$this->database->get_retreats_table(),
 			array(
-				'name'       => $sanitized_data['name'],
-				'location'   => $sanitized_data['location'],
-				'start_date' => $sanitized_data['start_date'],
-				'end_date'   => $sanitized_data['end_date'],
+				'name'           => $sanitized_data['name'],
+				'location'       => $sanitized_data['location'],
+				'start_date'     => $sanitized_data['start_date'],
+				'end_date'       => $sanitized_data['end_date'],
+				'custom_message' => $sanitized_data['custom_message'],
 			),
-			array( '%s', '%s', '%s', '%s' )
+			array( '%s', '%s', '%s', '%s', '%s' )
 		);
 
 		return $result ? $wpdb->insert_id : false;
@@ -106,13 +107,14 @@ class DFX_Parish_Retreat_Letters_Retreat {
 		$result = $wpdb->update(
 			$this->database->get_retreats_table(),
 			array(
-				'name'       => $sanitized_data['name'],
-				'location'   => $sanitized_data['location'],
-				'start_date' => $sanitized_data['start_date'],
-				'end_date'   => $sanitized_data['end_date'],
+				'name'           => $sanitized_data['name'],
+				'location'       => $sanitized_data['location'],
+				'start_date'     => $sanitized_data['start_date'],
+				'end_date'       => $sanitized_data['end_date'],
+				'custom_message' => $sanitized_data['custom_message'],
 			),
 			array( 'id' => $id ),
-			array( '%s', '%s', '%s', '%s' ),
+			array( '%s', '%s', '%s', '%s', '%s' ),
 			array( '%d' )
 		);
 
@@ -244,10 +246,11 @@ class DFX_Parish_Retreat_Letters_Retreat {
 	 */
 	private function sanitize_retreat_data( $data ) {
 		return array(
-			'name'       => sanitize_text_field( $data['name'] ?? '' ),
-			'location'   => sanitize_text_field( $data['location'] ?? '' ),
-			'start_date' => sanitize_text_field( $data['start_date'] ?? '' ),
-			'end_date'   => sanitize_text_field( $data['end_date'] ?? '' ),
+			'name'           => sanitize_text_field( $data['name'] ?? '' ),
+			'location'       => sanitize_text_field( $data['location'] ?? '' ),
+			'start_date'     => sanitize_text_field( $data['start_date'] ?? '' ),
+			'end_date'       => sanitize_text_field( $data['end_date'] ?? '' ),
+			'custom_message' => wp_kses_post( $data['custom_message'] ?? '' ),
 		);
 	}
 

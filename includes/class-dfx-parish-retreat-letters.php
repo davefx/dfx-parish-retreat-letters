@@ -689,6 +689,12 @@ class DFX_Parish_Retreat_Letters {
 			pointer-events: none;
 		}
 
+		.dfx-editor.empty:before {
+			content: attr(placeholder);
+			color: #999;
+			pointer-events: none;
+		}
+
 		.dfx-editor img {
 			max-width: 100%;
 			height: auto;
@@ -886,8 +892,21 @@ class DFX_Parish_Retreat_Letters {
 			var editor = $('#message_content');
 			var hiddenInput = $('#message_content_hidden');
 			
+			// Initialize editor
+			if (editor.length) {
+				// Set initial placeholder state
+				if (editor.text().trim() === '') {
+					editor.addClass('empty');
+				}
+				
+				// Make sure contenteditable is properly set
+				editor.attr('contenteditable', 'true');
+			}
+			
 			// Generate and display CAPTCHA
-			generateCaptcha();
+			setTimeout(function() {
+				generateCaptcha();
+			}, 100);
 			
 			// Message mode switching
 			$('input[name="message_mode"]').on('change', function() {
@@ -956,19 +975,42 @@ class DFX_Parish_Retreat_Letters {
 			// Editor toolbar
 			$('.dfx-editor-toolbar button').on('click', function(e) {
 				e.preventDefault();
+				e.stopPropagation();
+				
 				var command = $(this).data('command');
+				var button = $(this);
 				
 				// Focus the editor first
 				editor.focus();
 				
+				// Ensure we have a selection or cursor position
+				var selection = window.getSelection();
+				if (selection.rangeCount === 0) {
+					// Create a range at the end of the editor
+					var range = document.createRange();
+					range.selectNodeContents(editor[0]);
+					range.collapse(false);
+					selection.addRange(range);
+				}
+				
 				// Execute the command
-				document.execCommand(command, false, null);
+				try {
+					var success = document.execCommand(command, false, null);
+					if (!success) {
+						console.warn('Command failed:', command);
+					}
+				} catch (error) {
+					console.error('Error executing command:', command, error);
+				}
 				
-				// Update hidden input
-				hiddenInput.val(editor.html());
+				// Update hidden input immediately
+				setTimeout(function() {
+					hiddenInput.val(editor.html());
+					updateToolbarStates();
+				}, 10);
 				
-				// Update button states
-				updateToolbarStates();
+				// Keep focus on editor
+				editor.focus();
 			});
 			
 			// Update toolbar button states based on current selection
@@ -1023,9 +1065,27 @@ class DFX_Parish_Retreat_Letters {
 					case '*': answer = num1 * num2; break;
 				}
 				
-				$('#dfx-captcha-question').text('<?php esc_html_e( 'Please solve: ', 'dfx-parish-retreat-letters' ); ?>' + question);
-				$('#captcha_token').val(btoa(answer.toString()));
-				$('#captcha_answer').val('');
+				// Set question text
+				var questionElement = $('#dfx-captcha-question');
+				if (questionElement.length) {
+					questionElement.html('<?php esc_html_e( 'Please solve: ', 'dfx-parish-retreat-letters' ); ?><strong>' + question + '</strong>');
+				}
+				
+				// Set token and clear answer
+				var tokenElement = $('#captcha_token');
+				var answerElement = $('#captcha_answer');
+				
+				if (tokenElement.length) {
+					try {
+						tokenElement.val(btoa(answer.toString()));
+					} catch(e) {
+						console.error('Error encoding CAPTCHA token:', e);
+					}
+				}
+				
+				if (answerElement.length) {
+					answerElement.val('');
+				}
 			}
 
 			function displaySelectedFiles(files) {
