@@ -383,7 +383,8 @@
                 },
                 success: function(response) {
                     if (response.success) {
-                        showPrintModal(response.data.html);
+                        // Open print URL in new tab
+                        window.open(response.data.print_url, '_blank', 'width=800,height=600,scrollbars=yes,resizable=yes');
                     } else {
                         alert(response.data.message || printErrorText);
                     }
@@ -501,45 +502,6 @@
                 document.body.removeChild(textArea);
                 return false;
             }
-        }
-
-        // Function to show print modal
-        function showPrintModal(html) {
-            // Remove any existing modal
-            $('#dfx-print-modal').remove();
-            
-            // Create modal HTML
-            var modalHtml = '<div id="dfx-print-modal">' +
-                           '<div class="dfx-print-actions no-print">' +
-                           '<button type="button" id="dfx-print-btn" class="button button-primary">Print</button>' +
-                           '<button type="button" id="dfx-close-print" class="button">Close</button>' +
-                           '</div>' +
-                           '<div id="dfx-print-content">' + html + '</div>' +
-                           '</div>';
-            
-            // Add modal to body
-            $('body').append(modalHtml);
-            
-            // Show modal
-            $('#dfx-print-modal').show();
-            
-            // Handle print button
-            $('#dfx-print-btn').on('click', function() {
-                window.print();
-            });
-            
-            // Handle close button
-            $('#dfx-close-print').on('click', function() {
-                $('#dfx-print-modal').remove();
-            });
-            
-            // Handle escape key
-            $(document).on('keyup.printModal', function(e) {
-                if (e.keyCode === 27) { // Escape key
-                    $('#dfx-print-modal').remove();
-                    $(document).off('keyup.printModal');
-                }
-            });
         }
     });
 
