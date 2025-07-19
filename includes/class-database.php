@@ -418,6 +418,9 @@ class DFX_Parish_Retreat_Letters_Database {
 			$wpdb->query( "ALTER TABLE {$this->attendants_table} ADD INDEX idx_message_url_token (message_url_token)" ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 		}
 
+		// Generate tokens for existing attendants that don't have them
+		$this->generate_missing_tokens();
+
 		// Create confidential messages table
 		$messages_exist = $wpdb->get_var( $wpdb->prepare( "SHOW TABLES LIKE %s", $this->messages_table ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
 		
@@ -489,6 +492,40 @@ class DFX_Parish_Retreat_Letters_Database {
 			) $charset_collate;";
 
 			dbDelta( $print_log_sql );
+		}
+	}
+
+	/**
+	 * Generate tokens for existing attendants that don't have them.
+	 *
+	 * @since 1.2.0
+	 */
+	private function generate_missing_tokens() {
+		global $wpdb;
+		
+		// Get attendants without tokens
+		$attendants_without_tokens = $wpdb->get_results(
+			"SELECT id FROM {$this->attendants_table} WHERE message_url_token IS NULL OR message_url_token = ''"
+		); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+
+		if ( empty( $attendants_without_tokens ) ) {
+			return;
+		}
+
+		// Only include security class if it's available
+		if ( class_exists( 'DFX_Parish_Retreat_Letters_Security' ) ) {
+			$security = DFX_Parish_Retreat_Letters_Security::get_instance();
+			
+			foreach ( $attendants_without_tokens as $attendant ) {
+				$token = $security->generate_unique_message_token();
+				$wpdb->update(
+					$this->attendants_table,
+					array( 'message_url_token' => $token ),
+					array( 'id' => $attendant->id ),
+					array( '%s' ),
+					array( '%d' )
+				);
+			}
 		}
 	}
 

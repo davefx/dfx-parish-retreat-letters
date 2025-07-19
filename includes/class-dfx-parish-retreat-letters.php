@@ -353,9 +353,29 @@ class DFX_Parish_Retreat_Letters {
 		// Remove query string
 		$request_uri = strtok( $request_uri, '?' );
 		
-		// Match pattern: /messages/[token]
-		if ( preg_match( '#^/messages/([a-zA-Z0-9]+)/?$#', $request_uri, $matches ) ) {
+		// Get the site's base path
+		$site_url = parse_url( home_url(), PHP_URL_PATH );
+		$site_path = $site_url ? $site_url : '/';
+		
+		// Normalize paths
+		if ( $site_path !== '/' ) {
+			$site_path = rtrim( $site_path, '/' );
+		}
+		
+		// Create the pattern based on the site's base path
+		$pattern = '#^' . preg_quote( $site_path, '#' ) . '/messages/([a-zA-Z0-9]+)/?$#';
+		
+		// Also try without the site path for root installations
+		$root_pattern = '#^/messages/([a-zA-Z0-9]+)/?$#';
+		
+		$token = null;
+		if ( preg_match( $pattern, $request_uri, $matches ) ) {
 			$token = sanitize_text_field( $matches[1] );
+		} elseif ( preg_match( $root_pattern, $request_uri, $matches ) ) {
+			$token = sanitize_text_field( $matches[1] );
+		}
+		
+		if ( $token ) {
 			$this->display_message_form( $token );
 			exit;
 		}
