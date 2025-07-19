@@ -128,3 +128,31 @@ msgstr "DaveFX"
 #. Author URI of the plugin/theme
 msgid "https://github.com/davefx"
 msgstr "https://github.com/davefx"
+
+#. Enhanced delete confirmation messages
+msgid "Delete Retreat - Confirmation Required"
+msgstr "Eliminar Retiro - Confirmación Requerida"
+
+msgid "WARNING: This action cannot be undone!"
+msgstr "¡ADVERTENCIA: Esta acción no se puede deshacer!"
+
+msgid "All attendants for this retreat will be permanently deleted"
+msgstr "Todos los asistentes de este retiro serán eliminados permanentemente"
+
+msgid "All letters and related information will be permanently deleted"
+msgstr "Todas las cartas e información relacionada serán eliminadas permanentemente"
+
+msgid "This action is irreversible and cannot be restored"
+msgstr "Esta acción es irreversible y no se puede restaurar"
+
+msgid "To confirm deletion, please type the exact retreat name below:"
+msgstr "Para confirmar la eliminación, escriba el nombre exacto del retiro a continuación:"
+
+msgid "Type retreat name here..."
+msgstr "Escriba el nombre del retiro aquí..."
+
+msgid "Delete Forever"
+msgstr "Eliminar Para Siempre"
+
+msgid "Deleting..."
+msgstr "Eliminando..."
