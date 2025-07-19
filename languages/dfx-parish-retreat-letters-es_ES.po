@@ -312,3 +312,61 @@ msgstr "%d filas tuvieron errores y no fueron importadas."
 #. Confirmation messages for attendants
 msgid "Are you sure you want to delete this attendant?"
 msgstr "¿Estás seguro de que quieres eliminar este asistente?"
+
+#. New CSV Import strings
+msgid "CSV file appears to be empty or invalid."
+msgstr "El archivo CSV parece estar vacío o no es válido."
+
+msgid "Required fields missing from CSV: %s"
+msgstr "Faltan campos requeridos en el CSV: %s"
+
+msgid "Line %d: Invalid data format"
+msgstr "Línea %d: Formato de datos inválido"
+
+msgid "Line %d: Failed to create attendant"
+msgstr "Línea %d: Error al crear asistente"
+
+msgid "Error details:"
+msgstr "Detalles del error:"
+
+msgid "...and more errors."
+msgstr "...y más errores."
+
+msgid "Your CSV file should contain the following required columns. Column order is flexible and the system will automatically identify columns by their names:"
+msgstr "Tu archivo CSV debe contener las siguientes columnas requeridas. El orden de las columnas es flexible y el sistema identificará automáticamente las columnas por sus nombres:"
+
+msgid "(or \"Nombre\")"
+msgstr "(o \"Nombre\")"
+
+msgid "(or \"Apellidos\")"
+msgstr "(o \"Apellidos\")"
+
+msgid "(or \"Fecha de Nacimiento\")"
+msgstr "(o \"Fecha de Nacimiento\")"
+
+msgid "(or \"Nombre del Contacto de Emergencia\")"
+msgstr "(o \"Nombre del Contacto de Emergencia\")"
+
+msgid "(or \"Apellido del Contacto de Emergencia\")"
+msgstr "(o \"Apellido del Contacto de Emergencia\")"
+
+msgid "(or \"Teléfono del Contacto de Emergencia\")"
+msgstr "(o \"Teléfono del Contacto de Emergencia\")"
+
+msgid "Additional features:"
+msgstr "Características adicionales:"
+
+msgid "Column order can be any order"
+msgstr "Las columnas pueden estar en cualquier orden"
+
+msgid "Extra columns are allowed and will be ignored"
+msgstr "Se permiten columnas adicionales y serán ignoradas"
+
+msgid "Date formats supported: YYYY-MM-DD, DD/MM/YYYY, MM/DD/YYYY, DD-MM-YYYY, MM-DD-YYYY, DD.MM.YYYY"
+msgstr "Formatos de fecha soportados: AAAA-MM-DD, DD/MM/AAAA, MM/DD/AAAA, DD-MM-AAAA, MM-DD-AAAA, DD.MM.AAAA"
+
+msgid "Column names can be in English or Spanish"
+msgstr "Los nombres de las columnas pueden estar en inglés o español"
+
+msgid "The first row must contain column headers"
+msgstr "La primera fila debe contener los encabezados de las columnas"

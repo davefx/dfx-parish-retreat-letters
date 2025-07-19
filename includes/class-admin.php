@@ -785,34 +785,60 @@ class DFX_Parish_Retreat_Letters_Admin {
 		$imported = 0;
 		$errors = 0;
 		$line_number = 0;
+		$error_details = array();
 
-		// Skip header row
-		fgetcsv( $handle );
+		// Read header row for field mapping
+		$headers = fgetcsv( $handle );
 		$line_number++;
+		
+		if ( ! $headers ) {
+			$this->add_admin_notice( __( 'CSV file appears to be empty or invalid.', 'dfx-parish-retreat-letters' ), 'error' );
+			fclose( $handle );
+			return;
+		}
+
+		// Create field mapping from headers
+		$field_map = $this->create_field_mapping( $headers );
+		
+		// Check if we have the required fields
+		$missing_fields = $this->get_missing_required_fields( $field_map );
+		if ( ! empty( $missing_fields ) ) {
+			$this->add_admin_notice( 
+				sprintf(
+					/* translators: %s: List of missing field names */
+					__( 'Required fields missing from CSV: %s', 'dfx-parish-retreat-letters' ),
+					implode( ', ', $missing_fields )
+				), 
+				'error' 
+			);
+			fclose( $handle );
+			return;
+		}
 
 		while ( ( $row = fgetcsv( $handle ) ) !== false ) {
 			$line_number++;
 
-			// Ensure we have enough columns
-			if ( count( $row ) < 6 ) {
-				$errors++;
+			// Skip empty rows
+			if ( empty( array_filter( $row ) ) ) {
 				continue;
 			}
 
-			$data = array(
-				'retreat_id'                => $retreat_id,
-				'name'                      => trim( $row[0] ),
-				'surnames'                  => trim( $row[1] ),
-				'date_of_birth'             => trim( $row[2] ),
-				'emergency_contact_name'    => trim( $row[3] ),
-				'emergency_contact_surname' => trim( $row[4] ),
-				'emergency_contact_phone'   => trim( $row[5] ),
-			);
+			// Map row data using field mapping
+			$mapped_data = $this->map_csv_row_data( $row, $field_map );
+			
+			if ( ! $mapped_data ) {
+				$errors++;
+				$error_details[] = sprintf( __( 'Line %d: Invalid data format', 'dfx-parish-retreat-letters' ), $line_number );
+				continue;
+			}
 
-			if ( $this->attendant_model->create( $data ) ) {
+			$mapped_data['retreat_id'] = $retreat_id;
+
+			if ( $this->attendant_model->create( $mapped_data ) ) {
 				$imported++;
 			} else {
 				$errors++;
+				$error_details[] = sprintf( __( 'Line %d: Failed to create attendant', 'dfx-parish-retreat-letters' ), $line_number );
 			}
 		}
 
@@ -830,18 +856,219 @@ class DFX_Parish_Retreat_Letters_Admin {
 		}
 
 		if ( $errors > 0 ) {
-			$this->add_admin_notice( 
-				sprintf(
-					/* translators: %d: Number of errors */
-					__( '%d rows had errors and were not imported.', 'dfx-parish-retreat-letters' ),
-					$errors
-				), 
-				'warning' 
+			$error_message = sprintf(
+				/* translators: %d: Number of errors */
+				__( '%d rows had errors and were not imported.', 'dfx-parish-retreat-letters' ),
+				$errors
 			);
+			
+			// Add detailed error information if available
+			if ( ! empty( $error_details ) && count( $error_details ) <= 10 ) {
+				$error_message .= '<br><strong>' . __( 'Error details:', 'dfx-parish-retreat-letters' ) . '</strong><br>';
+				$error_message .= implode( '<br>', array_slice( $error_details, 0, 10 ) );
+				if ( count( $error_details ) > 10 ) {
+					$error_message .= '<br>' . __( '...and more errors.', 'dfx-parish-retreat-letters' );
+				}
+			}
+			
+			$this->add_admin_notice( $error_message, 'warning' );
 		}
 
 		wp_redirect( admin_url( 'admin.php?page=dfx-retreats&action=attendants&retreat_id=' . $retreat_id ) );
 		exit;
+	}
+
+	/**
+	 * Create field mapping from CSV headers.
+	 *
+	 * @since 1.0.0
+	 * @param array $headers CSV headers.
+	 * @return array Field mapping array.
+	 */
+	private function create_field_mapping( $headers ) {
+		$field_map = array();
+		
+		// Define field mappings for English and Spanish
+		$field_mappings = array(
+			'name' => array(
+				'en' => array( 'name', 'first name', 'nombre' ),
+				'es' => array( 'nombre' ),
+			),
+			'surnames' => array(
+				'en' => array( 'surnames', 'last name', 'surname', 'apellidos' ),
+				'es' => array( 'apellidos' ),
+			),
+			'date_of_birth' => array(
+				'en' => array( 'date of birth', 'birth date', 'dob', 'birthdate', 'fecha de nacimiento' ),
+				'es' => array( 'fecha de nacimiento' ),
+			),
+			'emergency_contact_name' => array(
+				'en' => array( 'emergency contact name', 'emergency name', 'contact name', 'nombre del contacto de emergencia' ),
+				'es' => array( 'nombre del contacto de emergencia', 'contacto emergencia nombre' ),
+			),
+			'emergency_contact_surname' => array(
+				'en' => array( 'emergency contact surname', 'emergency surname', 'contact surname', 'apellido del contacto de emergencia' ),
+				'es' => array( 'apellido del contacto de emergencia', 'contacto emergencia apellido' ),
+			),
+			'emergency_contact_phone' => array(
+				'en' => array( 'emergency contact phone', 'emergency phone', 'contact phone', 'phone', 'teléfono del contacto de emergencia' ),
+				'es' => array( 'teléfono del contacto de emergencia', 'contacto emergencia teléfono', 'teléfono' ),
+			),
+		);
+
+		// Normalize headers (lowercase, trim)
+		$normalized_headers = array_map( function( $header ) {
+			return strtolower( trim( $header ) );
+		}, $headers );
+
+		// Map each field
+		foreach ( $field_mappings as $field => $mappings ) {
+			$all_possible_names = array_merge( $mappings['en'], $mappings['es'] );
+			
+			foreach ( $normalized_headers as $index => $header ) {
+				if ( in_array( $header, $all_possible_names, true ) ) {
+					$field_map[ $field ] = $index;
+					break;
+				}
+			}
+		}
+
+		return $field_map;
+	}
+
+	/**
+	 * Get missing required fields from field mapping.
+	 *
+	 * @since 1.0.0
+	 * @param array $field_map Field mapping array.
+	 * @return array Array of missing required field names.
+	 */
+	private function get_missing_required_fields( $field_map ) {
+		$required_fields = array( 'name', 'surnames', 'date_of_birth', 'emergency_contact_name', 'emergency_contact_surname', 'emergency_contact_phone' );
+		$missing_fields = array();
+
+		foreach ( $required_fields as $field ) {
+			if ( ! isset( $field_map[ $field ] ) ) {
+				// Convert field name to user-friendly name
+				switch ( $field ) {
+					case 'name':
+						$missing_fields[] = __( 'Name', 'dfx-parish-retreat-letters' );
+						break;
+					case 'surnames':
+						$missing_fields[] = __( 'Surnames', 'dfx-parish-retreat-letters' );
+						break;
+					case 'date_of_birth':
+						$missing_fields[] = __( 'Date of Birth', 'dfx-parish-retreat-letters' );
+						break;
+					case 'emergency_contact_name':
+						$missing_fields[] = __( 'Emergency Contact Name', 'dfx-parish-retreat-letters' );
+						break;
+					case 'emergency_contact_surname':
+						$missing_fields[] = __( 'Emergency Contact Surname', 'dfx-parish-retreat-letters' );
+						break;
+					case 'emergency_contact_phone':
+						$missing_fields[] = __( 'Emergency Contact Phone', 'dfx-parish-retreat-letters' );
+						break;
+				}
+			}
+		}
+
+		return $missing_fields;
+	}
+
+	/**
+	 * Map CSV row data using field mapping.
+	 *
+	 * @since 1.0.0
+	 * @param array $row CSV row data.
+	 * @param array $field_map Field mapping array.
+	 * @return array|false Mapped data or false on failure.
+	 */
+	private function map_csv_row_data( $row, $field_map ) {
+		$mapped_data = array();
+
+		// Map each required field
+		foreach ( $field_map as $field => $index ) {
+			if ( ! isset( $row[ $index ] ) ) {
+				return false;
+			}
+			$mapped_data[ $field ] = trim( $row[ $index ] );
+		}
+
+		// Special handling for date of birth - try to parse different formats
+		if ( isset( $mapped_data['date_of_birth'] ) ) {
+			$parsed_date = $this->parse_flexible_date( $mapped_data['date_of_birth'] );
+			if ( $parsed_date ) {
+				$mapped_data['date_of_birth'] = $parsed_date;
+			} else {
+				// If date parsing fails, return false
+				return false;
+			}
+		}
+
+		return $mapped_data;
+	}
+
+	/**
+	 * Parse date in various formats and return standardized format.
+	 *
+	 * @since 1.0.0
+	 * @param string $date_string Date string in various formats.
+	 * @return string|false Standardized date (Y-m-d) or false on failure.
+	 */
+	private function parse_flexible_date( $date_string ) {
+		if ( empty( $date_string ) ) {
+			return false;
+		}
+
+		// Remove extra whitespace
+		$date_string = trim( $date_string );
+
+		// Try various date formats
+		$formats = array(
+			'Y-m-d',     // 2023-01-15
+			'd/m/Y',     // 15/01/2023
+			'm/d/Y',     // 01/15/2023
+			'd-m-Y',     // 15-01-2023
+			'm-d-Y',     // 01-15-2023
+			'd.m.Y',     // 15.01.2023
+			'm.d.Y',     // 01.15.2023
+			'Y/m/d',     // 2023/01/15
+			'd/m/y',     // 15/01/23
+			'm/d/y',     // 01/15/23
+			'd-m-y',     // 15-01-23
+			'm-d-y',     // 01-15-23
+		);
+
+		foreach ( $formats as $format ) {
+			$date = DateTime::createFromFormat( $format, $date_string );
+			if ( $date && $date->format( $format ) === $date_string ) {
+				// Validate that the date is reasonable (not in the future, not too old)
+				$now = new DateTime();
+				$min_date = new DateTime( '1900-01-01' );
+				
+				if ( $date <= $now && $date >= $min_date ) {
+					return $date->format( 'Y-m-d' );
+				}
+			}
+		}
+
+		// Try natural language parsing as last resort
+		$timestamp = strtotime( $date_string );
+		if ( $timestamp !== false ) {
+			$date = new DateTime();
+			$date->setTimestamp( $timestamp );
+			
+			// Validate that the date is reasonable
+			$now = new DateTime();
+			$min_date = new DateTime( '1900-01-01' );
+			
+			if ( $date <= $now && $date >= $min_date ) {
+				return $date->format( 'Y-m-d' );
+			}
+		}
+
+		return false;
 	}
 
 	/**
@@ -1162,16 +1389,23 @@ class DFX_Parish_Retreat_Letters_Admin {
 
 			<div class="notice notice-info">
 				<p><strong><?php esc_html_e( 'CSV Import Instructions', 'dfx-parish-retreat-letters' ); ?></strong></p>
-				<p><?php esc_html_e( 'Your CSV file should have the following columns in this exact order:', 'dfx-parish-retreat-letters' ); ?></p>
-				<ol>
-					<li><?php esc_html_e( 'Name', 'dfx-parish-retreat-letters' ); ?></li>
-					<li><?php esc_html_e( 'Surnames', 'dfx-parish-retreat-letters' ); ?></li>
-					<li><?php esc_html_e( 'Date of Birth (YYYY-MM-DD format)', 'dfx-parish-retreat-letters' ); ?></li>
-					<li><?php esc_html_e( 'Emergency Contact Name', 'dfx-parish-retreat-letters' ); ?></li>
-					<li><?php esc_html_e( 'Emergency Contact Surname', 'dfx-parish-retreat-letters' ); ?></li>
-					<li><?php esc_html_e( 'Emergency Contact Phone', 'dfx-parish-retreat-letters' ); ?></li>
-				</ol>
-				<p><?php esc_html_e( 'The first row should contain column headers and will be skipped.', 'dfx-parish-retreat-letters' ); ?></p>
+				<p><?php esc_html_e( 'Your CSV file should contain the following required columns. Column order is flexible and the system will automatically identify columns by their names:', 'dfx-parish-retreat-letters' ); ?></p>
+				<ul>
+					<li><strong><?php esc_html_e( 'Name', 'dfx-parish-retreat-letters' ); ?></strong> <?php esc_html_e( '(or "Nombre")', 'dfx-parish-retreat-letters' ); ?></li>
+					<li><strong><?php esc_html_e( 'Surnames', 'dfx-parish-retreat-letters' ); ?></strong> <?php esc_html_e( '(or "Apellidos")', 'dfx-parish-retreat-letters' ); ?></li>
+					<li><strong><?php esc_html_e( 'Date of Birth', 'dfx-parish-retreat-letters' ); ?></strong> <?php esc_html_e( '(or "Fecha de Nacimiento")', 'dfx-parish-retreat-letters' ); ?></li>
+					<li><strong><?php esc_html_e( 'Emergency Contact Name', 'dfx-parish-retreat-letters' ); ?></strong> <?php esc_html_e( '(or "Nombre del Contacto de Emergencia")', 'dfx-parish-retreat-letters' ); ?></li>
+					<li><strong><?php esc_html_e( 'Emergency Contact Surname', 'dfx-parish-retreat-letters' ); ?></strong> <?php esc_html_e( '(or "Apellido del Contacto de Emergencia")', 'dfx-parish-retreat-letters' ); ?></li>
+					<li><strong><?php esc_html_e( 'Emergency Contact Phone', 'dfx-parish-retreat-letters' ); ?></strong> <?php esc_html_e( '(or "Teléfono del Contacto de Emergencia")', 'dfx-parish-retreat-letters' ); ?></li>
+				</ul>
+				<p><?php esc_html_e( 'Additional features:', 'dfx-parish-retreat-letters' ); ?></p>
+				<ul>
+					<li><?php esc_html_e( 'Column order can be any order', 'dfx-parish-retreat-letters' ); ?></li>
+					<li><?php esc_html_e( 'Extra columns are allowed and will be ignored', 'dfx-parish-retreat-letters' ); ?></li>
+					<li><?php esc_html_e( 'Date formats supported: YYYY-MM-DD, DD/MM/YYYY, MM/DD/YYYY, DD-MM-YYYY, MM-DD-YYYY, DD.MM.YYYY', 'dfx-parish-retreat-letters' ); ?></li>
+					<li><?php esc_html_e( 'Column names can be in English or Spanish', 'dfx-parish-retreat-letters' ); ?></li>
+					<li><?php esc_html_e( 'The first row must contain column headers', 'dfx-parish-retreat-letters' ); ?></li>
+				</ul>
 			</div>
 
 			<form method="post" enctype="multipart/form-data">
