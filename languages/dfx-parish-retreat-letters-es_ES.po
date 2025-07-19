@@ -128,3 +128,279 @@ msgstr "DaveFX"
 #. Author URI of the plugin/theme
 msgid "https://github.com/davefx"
 msgstr "https://github.com/davefx"
+
+#. Enhanced delete confirmation messages
+msgid "Delete Retreat - Confirmation Required"
+msgstr "Eliminar Retiro - Confirmación Requerida"
+
+msgid "WARNING: This action cannot be undone!"
+msgstr "¡ADVERTENCIA: Esta acción no se puede deshacer!"
+
+msgid "All attendants for this retreat will be permanently deleted"
+msgstr "Todos los asistentes de este retiro serán eliminados permanentemente"
+
+msgid "All letters and related information will be permanently deleted"
+msgstr "Todas las cartas e información relacionada serán eliminadas permanentemente"
+
+msgid "This action is irreversible and cannot be restored"
+msgstr "Esta acción es irreversible y no se puede restaurar"
+
+msgid "To confirm deletion, please type the exact retreat name below:"
+msgstr "Para confirmar la eliminación, escriba el nombre exacto del retiro a continuación:"
+
+msgid "Type retreat name here..."
+msgstr "Escriba el nombre del retiro aquí..."
+
+msgid "Delete Forever"
+msgstr "Eliminar Para Siempre"
+
+msgid "Deleting..."
+msgstr "Eliminando..."
+
+msgid "Error deleting retreat. Please try again."
+msgstr "Error al eliminar el retiro. Por favor, inténtalo de nuevo."
+
+msgid "Retreat name verification failed. Deletion cancelled for security."
+msgstr "Falló la verificación del nombre del retiro. Eliminación cancelada por seguridad."
+
+#. Attendant management strings
+msgid "Attendants"
+msgstr "Asistentes"
+
+msgid "Add New Attendant"
+msgstr "Añadir Nuevo Asistente"
+
+msgid "Edit Attendant"
+msgstr "Editar Asistente"
+
+msgid "Surnames"
+msgstr "Apellidos"
+
+msgid "Date of Birth"
+msgstr "Fecha de Nacimiento"
+
+msgid "Emergency Contact"
+msgstr "Contacto de Emergencia"
+
+msgid "Emergency Contact Name"
+msgstr "Nombre del Contacto de Emergencia"
+
+msgid "Emergency Contact Surname"
+msgstr "Apellido del Contacto de Emergencia"
+
+msgid "Emergency Contact Phone"
+msgstr "Teléfono del Contacto de Emergencia"
+
+msgid "Add Attendant"
+msgstr "Añadir Asistente"
+
+msgid "Update Attendant"
+msgstr "Actualizar Asistente"
+
+msgid "Search Attendants:"
+msgstr "Buscar Asistentes:"
+
+msgid "Search Attendants"
+msgstr "Buscar Asistentes"
+
+msgid "Export CSV"
+msgstr "Exportar CSV"
+
+msgid "Enter phone number with area code."
+msgstr "Ingrese el número de teléfono con código de área."
+
+#. Plurals for attendant counts
+msgid "%d attendant"
+msgid_plural "%d attendants"
+msgstr[0] "%d asistente"
+msgstr[1] "%d asistentes"
+
+#. Context messages for attendant management
+msgid "Attendants for %s"
+msgstr "Asistentes para %s"
+
+msgid "Invalid retreat ID."
+msgstr "ID de retiro inválido."
+
+msgid "Retreat not found."
+msgstr "Retiro no encontrado."
+
+msgid "Invalid retreat or attendant ID."
+msgstr "ID de retiro o asistente inválido."
+
+msgid "Retreat or attendant not found, or attendant does not belong to this retreat."
+msgstr "Retiro o asistente no encontrado, o el asistente no pertenece a este retiro."
+
+#. Totals and statistics
+msgid "Total attendants: %d"
+msgstr "Total de asistentes: %d"
+
+#. Success and error messages for attendants
+msgid "Attendant created successfully."
+msgstr "Asistente creado con éxito."
+
+msgid "Attendant updated successfully."
+msgstr "Asistente actualizado con éxito."
+
+msgid "Attendant deleted successfully."
+msgstr "Asistente eliminado con éxito."
+
+msgid "Error creating attendant. Please check your data."
+msgstr "Error al crear el asistente. Por favor verifica tus datos."
+
+msgid "Error updating attendant. Please check your data."
+msgstr "Error al actualizar el asistente. Por favor verifica tus datos."
+
+msgid "Error deleting attendant."
+msgstr "Error al eliminar el asistente."
+
+#. Search and navigation messages for attendants
+msgid "No attendants found for your search."
+msgstr "No se encontraron asistentes para tu búsqueda."
+
+msgid "No attendants found for this retreat."
+msgstr "No se encontraron asistentes para este retiro."
+
+msgid "Add the first attendant"
+msgstr "Añadir el primer asistente"
+
+msgid "Manage Attendants"
+msgstr "Gestionar Asistentes"
+
+msgid "Import CSV"
+msgstr "Importar CSV"
+
+msgid "Import Attendants from CSV"
+msgstr "Importar Asistentes desde CSV"
+
+msgid "CSV Import Instructions"
+msgstr "Instrucciones de Importación CSV"
+
+msgid "Your CSV file should have the following columns in this exact order:"
+msgstr "Tu archivo CSV debe tener las siguientes columnas en este orden exacto:"
+
+msgid "Date of Birth (YYYY-MM-DD format)"
+msgstr "Fecha de Nacimiento (formato AAAA-MM-DD)"
+
+msgid "The first row should contain column headers and will be skipped."
+msgstr "La primera fila debe contener los encabezados de columna y será omitida."
+
+msgid "CSV File"
+msgstr "Archivo CSV"
+
+msgid "Select a CSV file to import. Maximum file size: 2MB."
+msgstr "Selecciona un archivo CSV para importar. Tamaño máximo de archivo: 2MB."
+
+msgid "Import Attendants"
+msgstr "Importar Asistentes"
+
+msgid "Please select a valid CSV file."
+msgstr "Por favor selecciona un archivo CSV válido."
+
+msgid "CSV file is too large. Maximum size is 2MB."
+msgstr "El archivo CSV es demasiado grande. El tamaño máximo es 2MB."
+
+msgid "Unable to read CSV file."
+msgstr "No se puede leer el archivo CSV."
+
+msgid "Successfully imported %d attendants."
+msgstr "%d asistentes importados con éxito."
+
+msgid "%d rows had errors and were not imported."
+msgstr "%d filas tuvieron errores y no fueron importadas."
+
+#. Confirmation messages for attendants
+msgid "Are you sure you want to delete this attendant?"
+msgstr "¿Estás seguro de que quieres eliminar este asistente?"
+
+#. New CSV Import strings
+msgid "CSV file appears to be empty or invalid."
+msgstr "El archivo CSV parece estar vacío o no es válido."
+
+msgid "Required fields missing from CSV: %s"
+msgstr "Faltan campos requeridos en el CSV: %s"
+
+msgid "Line %d: Invalid data format"
+msgstr "Línea %d: Formato de datos inválido"
+
+msgid "Line %d: Failed to create attendant"
+msgstr "Línea %d: Error al crear asistente"
+
+msgid "Error details:"
+msgstr "Detalles del error:"
+
+msgid "...and more errors."
+msgstr "...y más errores."
+
+msgid "Your CSV file should contain the following required columns. Column order is flexible and the system will automatically identify columns by their names:"
+msgstr "Tu archivo CSV debe contener las siguientes columnas requeridas. El orden de las columnas es flexible y el sistema identificará automáticamente las columnas por sus nombres:"
+
+msgid "(or \"Nombre\")"
+msgstr "(o \"Nombre\")"
+
+msgid "(or \"Apellidos\")"
+msgstr "(o \"Apellidos\")"
+
+msgid "(or \"Fecha de Nacimiento\")"
+msgstr "(o \"Fecha de Nacimiento\")"
+
+msgid "(or \"Nombre del Contacto de Emergencia\")"
+msgstr "(o \"Nombre del Contacto de Emergencia\")"
+
+msgid "(or \"Apellido del Contacto de Emergencia\")"
+msgstr "(o \"Apellido del Contacto de Emergencia\")"
+
+msgid "(or \"Teléfono del Contacto de Emergencia\")"
+msgstr "(o \"Teléfono del Contacto de Emergencia\")"
+
+msgid "Additional features:"
+msgstr "Características adicionales:"
+
+msgid "Column order can be any order"
+msgstr "Las columnas pueden estar en cualquier orden"
+
+msgid "Extra columns are allowed and will be ignored"
+msgstr "Se permiten columnas adicionales y serán ignoradas"
+
+msgid "Date formats supported: YYYY-MM-DD, DD/MM/YYYY, MM/DD/YYYY, DD-MM-YYYY, MM-DD-YYYY, DD.MM.YYYY"
+msgstr "Formatos de fecha soportados: AAAA-MM-DD, DD/MM/AAAA, MM/DD/AAAA, DD-MM-AAAA, MM-DD-AAAA, DD.MM.AAAA"
+
+msgid "Column names can be in English or Spanish"
+msgstr "Los nombres de las columnas pueden estar en inglés o español"
+
+msgid "The first row must contain column headers"
+msgstr "La primera fila debe contener los encabezados de las columnas"
+
+msgid "Date Format Preference"
+msgstr "Preferencia de Formato de Fecha"
+
+msgid "DD/MM/YYYY (Day/Month/Year)"
+msgstr "DD/MM/AAAA (Día/Mes/Año)"
+
+msgid "MM/DD/YYYY (Month/Day/Year)"
+msgstr "MM/DD/AAAA (Mes/Día/Año)"
+
+msgid "This preference is used to interpret ambiguous dates like \"01/10/2025\". Unambiguous dates are always parsed correctly regardless of this setting."
+msgstr "Esta preferencia se utiliza para interpretar fechas ambiguas como \"01/10/2025\". Las fechas no ambiguas siempre se analizan correctamente independientemente de esta configuración."
+
+msgid "Important Note about Date Formats:"
+msgstr "Nota Importante sobre Formatos de Fecha:"
+
+msgid "For ambiguous dates like \"01/10/2025\", the system cannot determine if this means \"January 10th\" or \"October 1st\". To avoid confusion:"
+msgstr "Para fechas ambiguas como \"01/10/2025\", el sistema no puede determinar si esto significa \"10 de enero\" o \"1 de octubre\". Para evitar confusión:"
+
+msgid "Use unambiguous formats like YYYY-MM-DD (2025-01-10)"
+msgstr "Use formatos no ambiguos como AAAA-MM-DD (2025-01-10)"
+
+msgid "Set your preferred date format below to ensure consistent interpretation"
+msgstr "Configure su formato de fecha preferido abajo para asegurar una interpretación consistente"
+
+#, php-format
+msgid "Warning: %1$d ambiguous date(s) were interpreted using your current preference (%2$s)."
+msgstr "Advertencia: %1$d fecha(s) ambigua(s) fueron interpretadas usando su preferencia actual (%2$s)."
+
+msgid "Ambiguous dates found:"
+msgstr "Fechas ambiguas encontradas:"
+
+msgid "To avoid ambiguity in future imports, consider using YYYY-MM-DD format."
+msgstr "Para evitar ambigüedad en futuras importaciones, considere usar el formato AAAA-MM-DD."

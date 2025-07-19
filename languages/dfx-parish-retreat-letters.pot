@@ -49,6 +49,253 @@ msgstr ""
 msgid "Actions"
 msgstr ""
 
+msgid "Name"
+msgstr ""
+
+msgid "Edit"
+msgstr ""
+
+msgid "Delete"
+msgstr ""
+
+msgid "Cancel"
+msgstr ""
+
+msgid "Update Retreat"
+msgstr ""
+
+msgid "Add Retreat"
+msgstr ""
+
+msgid "required"
+msgstr ""
+
+msgid "Search Retreats:"
+msgstr ""
+
+msgid "Search Retreats"
+msgstr ""
+
+#. Attendant management strings
+msgid "Attendants"
+msgstr ""
+
+msgid "Add New Attendant"
+msgstr ""
+
+msgid "Edit Attendant"
+msgstr ""
+
+msgid "Surnames"
+msgstr ""
+
+msgid "Date of Birth"
+msgstr ""
+
+msgid "Emergency Contact"
+msgstr ""
+
+msgid "Emergency Contact Name"
+msgstr ""
+
+msgid "Emergency Contact Surname"
+msgstr ""
+
+msgid "Emergency Contact Phone"
+msgstr ""
+
+msgid "Add Attendant"
+msgstr ""
+
+msgid "Update Attendant"
+msgstr ""
+
+msgid "Search Attendants:"
+msgstr ""
+
+msgid "Search Attendants"
+msgstr ""
+
+msgid "Export CSV"
+msgstr ""
+
+msgid "Enter phone number with area code."
+msgstr ""
+
+#. Plurals for attendant counts
+msgid "%d attendant"
+msgid_plural "%d attendants"
+msgstr[0] ""
+msgstr[1] ""
+
+#. Context messages for attendant management
+msgid "Attendants for %s"
+msgstr ""
+
+msgid "Invalid retreat ID."
+msgstr ""
+
+msgid "Retreat not found."
+msgstr ""
+
+msgid "Invalid retreat or attendant ID."
+msgstr ""
+
+msgid "Retreat or attendant not found, or attendant does not belong to this retreat."
+msgstr ""
+
+#. Totals and statistics
+msgid "Total attendants: %d"
+msgstr ""
+
+msgid "Total retreats: %d"
+msgstr ""
+
+#. Success and error messages
+msgid "Attendant created successfully."
+msgstr ""
+
+msgid "Attendant updated successfully."
+msgstr ""
+
+msgid "Attendant deleted successfully."
+msgstr ""
+
+msgid "Error creating attendant. Please check your data."
+msgstr ""
+
+msgid "Error updating attendant. Please check your data."
+msgstr ""
+
+msgid "Error deleting attendant."
+msgstr ""
+
+msgid "Retreat created successfully."
+msgstr ""
+
+msgid "Retreat updated successfully."
+msgstr ""
+
+msgid "Retreat deleted successfully."
+msgstr ""
+
+msgid "Error creating retreat. Please check your data."
+msgstr ""
+
+msgid "Error updating retreat. Please check your data."
+msgstr ""
+
+msgid "Error deleting retreat."
+msgstr ""
+
+msgid "Security check failed."
+msgstr ""
+
+#. Search and navigation messages
+msgid "No attendants found for your search."
+msgstr ""
+
+msgid "No attendants found for this retreat."
+msgstr ""
+
+msgid "Add the first attendant"
+msgstr ""
+
+msgid "No retreats found for your search."
+msgstr ""
+
+msgid "No retreats found."
+msgstr ""
+
+msgid "Add the first retreat"
+msgstr ""
+
+msgid "Manage Attendants"
+msgstr ""
+
+msgid "Import CSV"
+msgstr ""
+
+msgid "Import Attendants from CSV"
+msgstr ""
+
+msgid "CSV Import Instructions"
+msgstr ""
+
+msgid "Your CSV file should have the following columns in this exact order:"
+msgstr ""
+
+msgid "Date of Birth (YYYY-MM-DD format)"
+msgstr ""
+
+msgid "The first row should contain column headers and will be skipped."
+msgstr ""
+
+msgid "CSV File"
+msgstr ""
+
+msgid "Select a CSV file to import. Maximum file size: 2MB."
+msgstr ""
+
+msgid "Import Attendants"
+msgstr ""
+
+msgid "Please select a valid CSV file."
+msgstr ""
+
+msgid "CSV file is too large. Maximum size is 2MB."
+msgstr ""
+
+msgid "Unable to read CSV file."
+msgstr ""
+
+msgid "Successfully imported %d attendants."
+msgstr ""
+
+msgid "%d rows had errors and were not imported."
+msgstr ""
+
+#. Confirmation messages
+msgid "Are you sure you want to delete this retreat?"
+msgstr ""
+
+msgid "Are you sure you want to delete this attendant?"
+msgstr ""
+
+#. Enhanced delete confirmation messages
+msgid "Delete Retreat - Confirmation Required"
+msgstr ""
+
+msgid "WARNING: This action cannot be undone!"
+msgstr ""
+
+msgid "All attendants for this retreat will be permanently deleted"
+msgstr ""
+
+msgid "All letters and related information will be permanently deleted"
+msgstr ""
+
+msgid "This action is irreversible and cannot be restored"
+msgstr ""
+
+msgid "To confirm deletion, please type the exact retreat name below:"
+msgstr ""
+
+msgid "Type retreat name here..."
+msgstr ""
+
+msgid "Delete Forever"
+msgstr ""
+
+msgid "Deleting..."
+msgstr ""
+
+msgid "Error deleting retreat. Please try again."
+msgstr ""
+
+msgid "Retreat name verification failed. Deletion cancelled for security."
+msgstr ""
+
 msgid "Edit"
 msgstr ""
 
@@ -110,6 +357,37 @@ msgid "Retreat created successfully."
 msgstr ""
 
 msgid "Error creating retreat. Please check your data."
+msgstr ""
+
+msgid "Date Format Preference"
+msgstr ""
+
+msgid "DD/MM/YYYY (Day/Month/Year)"
+msgstr ""
+
+msgid "This preference is used to interpret ambiguous dates like \"01/10/2025\". Unambiguous dates are always parsed correctly regardless of this setting."
+msgstr ""
+
+msgid "Important Note about Date Formats:"
+msgstr ""
+
+msgid "For ambiguous dates like \"01/10/2025\", the system cannot determine if this means \"January 10th\" or \"October 1st\". To avoid confusion:"
+msgstr ""
+
+msgid "Use unambiguous formats like YYYY-MM-DD (2025-01-10)"
+msgstr ""
+
+msgid "Set your preferred date format below to ensure consistent interpretation"
+msgstr ""
+
+#, php-format
+msgid "Warning: %1$d ambiguous date(s) were interpreted using your current preference (%2$s)."
+msgstr ""
+
+msgid "Ambiguous dates found:"
+msgstr ""
+
+msgid "To avoid ambiguity in future imports, consider using YYYY-MM-DD format."
 msgstr ""
 
 #. Plugin URI of the plugin/theme

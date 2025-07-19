@@ -149,11 +149,12 @@ class DFX_Parish_Retreat_Letters_Retreat {
 		global $wpdb;
 
 		$defaults = array(
-			'search'   => '',
-			'orderby'  => 'start_date',
-			'order'    => 'DESC',
-			'per_page' => 20,
-			'page'     => 1,
+			'search'            => '',
+			'orderby'           => 'start_date',
+			'order'             => 'DESC',
+			'per_page'          => 20,
+			'page'              => 1,
+			'include_attendant_count' => false,
 		);
 
 		$args = wp_parse_args( $args, $defaults );
@@ -190,6 +191,17 @@ class DFX_Parish_Retreat_Letters_Retreat {
 		}
 
 		$results = $wpdb->get_results( $sql ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.PreparedSQL.NotPrepared
+
+		// Add attendant counts if requested
+		if ( $args['include_attendant_count'] && ! empty( $results ) ) {
+			$attendant_model = new DFX_Parish_Retreat_Letters_Attendant();
+			$retreat_ids = wp_list_pluck( $results, 'id' );
+			$attendant_counts = $attendant_model->get_counts_for_retreats( $retreat_ids );
+			
+			foreach ( $results as $retreat ) {
+				$retreat->attendant_count = $attendant_counts[ $retreat->id ] ?? 0;
+			}
+		}
 
 		return $results ? $results : array();
 	}
