@@ -339,6 +339,11 @@ class DFX_Parish_Retreat_Letters_Permissions {
 
 		$capability = $this->get_dynamic_capability_name( $retreat_id, $permission_level );
 		$user->add_cap( $capability );
+
+		// Ensure user has admin access - add 'read' capability if they don't have admin access
+		if ( ! $user->has_cap( 'read' ) && ! user_can( $user_id, 'edit_posts' ) ) {
+			$user->add_cap( 'read' );
+		}
 	}
 
 	/**
@@ -357,6 +362,23 @@ class DFX_Parish_Retreat_Letters_Permissions {
 
 		$capability = $this->get_dynamic_capability_name( $retreat_id, $permission_level );
 		$user->remove_cap( $capability );
+
+		// Check if user still has any retreat permissions
+		$accessible_retreats = $this->get_user_accessible_retreats( $user_id );
+		
+		// If user has no more retreat permissions and doesn't have other admin capabilities,
+		// we should consider removing the 'read' capability we may have added
+		// However, we'll be conservative and only remove it if the user has no other admin-related capabilities
+		if ( empty( $accessible_retreats ) && 
+			 ! $user->has_cap( 'edit_posts' ) && 
+			 ! $user->has_cap( 'manage_options' ) &&
+			 ! $user->has_cap( 'manage_retreat_plugin' ) ) {
+			// Only remove 'read' if it was likely added by us (user has subscriber-like role)
+			$user_roles = $user->roles;
+			if ( in_array( 'subscriber', $user_roles, true ) || empty( $user_roles ) ) {
+				$user->remove_cap( 'read' );
+			}
+		}
 	}
 
 	/**
