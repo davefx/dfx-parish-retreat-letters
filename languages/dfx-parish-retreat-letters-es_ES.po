@@ -23,6 +23,100 @@ msgstr "DFX Cartas de Retiro Parroquial"
 msgid "https://github.com/davefx/dfx-parish-retreat-letters"
 msgstr "https://github.com/davefx/dfx-parish-retreat-letters"
 
+#. Admin menu title
+msgid "Retreats"
+msgstr "Retiros"
+
+msgid "All Retreats"
+msgstr "Todos los Retiros"
+
+msgid "Add New"
+msgstr "Añadir Nuevo"
+
+msgid "Add New Retreat"
+msgstr "Añadir Nuevo Retiro"
+
+msgid "Edit Retreat"
+msgstr "Editar Retiro"
+
+msgid "Retreat Name"
+msgstr "Nombre del Retiro"
+
+msgid "Location"
+msgstr "Ubicación"
+
+msgid "Start Date"
+msgstr "Fecha de Inicio"
+
+msgid "End Date"
+msgstr "Fecha de Fin"
+
+msgid "Actions"
+msgstr "Acciones"
+
+msgid "Edit"
+msgstr "Editar"
+
+msgid "Delete"
+msgstr "Eliminar"
+
+msgid "Cancel"
+msgstr "Cancelar"
+
+msgid "Update Retreat"
+msgstr "Actualizar Retiro"
+
+msgid "Add Retreat"
+msgstr "Añadir Retiro"
+
+msgid "required"
+msgstr "requerido"
+
+msgid "Search Retreats:"
+msgstr "Buscar Retiros:"
+
+msgid "Search Retreats"
+msgstr "Buscar Retiros"
+
+msgid "Total retreats: %d"
+msgstr "Total de retiros: %d"
+
+msgid "Name"
+msgstr "Nombre"
+
+msgid "No retreats found for your search."
+msgstr "No se encontraron retiros para tu búsqueda."
+
+msgid "No retreats found."
+msgstr "No se encontraron retiros."
+
+msgid "Add the first retreat"
+msgstr "Añadir el primer retiro"
+
+msgid "Are you sure you want to delete this retreat?"
+msgstr "¿Estás seguro de que quieres eliminar este retiro?"
+
+msgid "Security check failed."
+msgstr "La verificación de seguridad falló."
+
+msgid "Retreat deleted successfully."
+msgstr "Retiro eliminado con éxito."
+
+msgid "Error deleting retreat."
+msgstr "Error al eliminar el retiro."
+
+msgid "Retreat updated successfully."
+msgstr "Retiro actualizado con éxito."
+
+msgid "Error updating retreat. Please check your data."
+msgstr "Error al actualizar el retiro. Por favor verifica tus datos."
+
+msgid "Retreat created successfully."
+msgstr "Retiro creado con éxito."
+
+msgid "Error creating retreat. Please check your data."
+msgstr "Error al crear el retiro. Por favor verifica tus datos."
+
 #. Description of the plugin/theme
 msgid "A WordPress plugin for managing parish retreat letters."
 msgstr "Un plugin de WordPress para gestionar cartas de retiro parroquial."
