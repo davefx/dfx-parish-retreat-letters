@@ -9,6 +9,41 @@
     'use strict';
 
     $(document).ready(function() {
+        // Check if dfxRetreatsAdmin is available
+        if (typeof dfxRetreatsAdmin === 'undefined') {
+            console.warn('dfxRetreatsAdmin is not defined. Admin functionality may be limited.');
+            // Create a fallback object to prevent errors
+            window.dfxRetreatsAdmin = {
+                ajaxurl: (typeof ajaxurl !== 'undefined') ? ajaxurl : '/wp-admin/admin-ajax.php',
+                nonce: '',
+                messages: {
+                    confirmDelete: 'Are you sure you want to delete this item?',
+                    confirmDeleteAttendant: 'Are you sure you want to delete this attendant?',
+                    confirmDeleteMessage: 'Are you sure you want to delete this message?',
+                    deleteRetreatTitle: 'Delete Retreat - Confirmation Required',
+                    deleteWarning: 'WARNING: This action cannot be undone!',
+                    deleteWarningAttendants: 'All attendants for this retreat will be permanently deleted',
+                    deleteWarningLetters: 'All letters and related information will be permanently deleted',
+                    deleteWarningPermanent: 'This action is irreversible and cannot be restored',
+                    typeRetreatName: 'To confirm deletion, please type the exact retreat name below:',
+                    retreatNamePlaceholder: 'Type retreat name here...',
+                    deleteButton: 'Delete Forever',
+                    cancelButton: 'Cancel',
+                    deleting: 'Deleting...',
+                    deleteError: 'Error deleting item. Please try again.',
+                    generating: 'Generating URL...',
+                    generateError: 'Error generating message URL. Please try again.',
+                    urlGenerated: 'Message URL generated successfully!',
+                    urlCopied: 'URL copied to clipboard!',
+                    copyError: 'Failed to copy URL. Please copy it manually.',
+                    printing: 'Preparing for print...',
+                    printError: 'Error preparing message for print. Please try again.',
+                    downloading: 'Downloading...',
+                    downloadError: 'Error downloading file. Please try again.',
+                    messageDeleted: 'Message deleted successfully.'
+                }
+            };
+        }
         // Add modal styles
         if (!$('#dfx-modal-styles').length) {
             $('<style id="dfx-modal-styles">' +
@@ -152,20 +187,32 @@
             var attendantId = $(this).data('attendant-id');
             var $row = $(this).closest('tr');
             
-            if (!confirm(dfxRetreatsAdmin.messages.confirmDeleteAttendant || dfxRetreatsAdmin.messages.confirmDelete)) {
+            // Check if dfxRetreatsAdmin is available
+            var confirmMessage = (typeof dfxRetreatsAdmin !== 'undefined' && dfxRetreatsAdmin.messages && dfxRetreatsAdmin.messages.confirmDeleteAttendant) 
+                ? dfxRetreatsAdmin.messages.confirmDeleteAttendant 
+                : 'Are you sure you want to delete this attendant?';
+            
+            if (!confirm(confirmMessage)) {
                 return;
             }
             
             // Disable button and show loading state
             $(this).prop('disabled', true).text('Deleting...');
             
+            var ajaxUrl = (typeof dfxRetreatsAdmin !== 'undefined' && dfxRetreatsAdmin.ajaxurl) 
+                ? dfxRetreatsAdmin.ajaxurl 
+                : (typeof ajaxurl !== 'undefined' ? ajaxurl : '/wp-admin/admin-ajax.php');
+            var nonce = (typeof dfxRetreatsAdmin !== 'undefined' && dfxRetreatsAdmin.nonce) 
+                ? dfxRetreatsAdmin.nonce 
+                : '';
+            
             $.ajax({
-                url: dfxRetreatsAdmin.ajaxurl,
+                url: ajaxUrl,
                 type: 'POST',
                 data: {
                     action: 'dfx_delete_attendant',
                     attendant_id: attendantId,
-                    nonce: dfxRetreatsAdmin.nonce
+                    nonce: nonce
                 },
                 success: function(response) {
                     if (response.success) {
@@ -174,7 +221,8 @@
                             $(this).remove();
                             
                             // Show success message
-                            $('<div class="notice notice-success is-dismissible"><p>' + response.data.message + '</p></div>')
+                            var successMessage = response.data.message || 'Attendant deleted successfully.';
+                            $('<div class="notice notice-success is-dismissible"><p>' + successMessage + '</p></div>')
                                 .insertAfter('.wp-header-end')
                                 .delay(3000)
                                 .fadeOut();
@@ -220,16 +268,34 @@
             var attendantId = $(this).data('attendant-id');
             var $button = $(this);
             
+            // Get localized text with fallbacks
+            var generatingText = (typeof dfxRetreatsAdmin !== 'undefined' && dfxRetreatsAdmin.messages && dfxRetreatsAdmin.messages.generating) 
+                ? dfxRetreatsAdmin.messages.generating 
+                : 'Generating URL...';
+            var urlGeneratedText = (typeof dfxRetreatsAdmin !== 'undefined' && dfxRetreatsAdmin.messages && dfxRetreatsAdmin.messages.urlGenerated) 
+                ? dfxRetreatsAdmin.messages.urlGenerated 
+                : 'Message URL generated successfully!';
+            var generateErrorText = (typeof dfxRetreatsAdmin !== 'undefined' && dfxRetreatsAdmin.messages && dfxRetreatsAdmin.messages.generateError) 
+                ? dfxRetreatsAdmin.messages.generateError 
+                : 'Error generating message URL. Please try again.';
+            
             // Disable button and show loading state
-            $button.prop('disabled', true).text(dfxRetreatsAdmin.messages.generating);
+            $button.prop('disabled', true).text(generatingText);
+            
+            var ajaxUrl = (typeof dfxRetreatsAdmin !== 'undefined' && dfxRetreatsAdmin.ajaxurl) 
+                ? dfxRetreatsAdmin.ajaxurl 
+                : (typeof ajaxurl !== 'undefined' ? ajaxurl : '/wp-admin/admin-ajax.php');
+            var nonce = (typeof dfxRetreatsAdmin !== 'undefined' && dfxRetreatsAdmin.nonce) 
+                ? dfxRetreatsAdmin.nonce 
+                : '';
             
             $.ajax({
-                url: dfxRetreatsAdmin.ajaxurl,
+                url: ajaxUrl,
                 type: 'POST',
                 data: {
                     action: 'dfx_generate_message_url',
                     attendant_id: attendantId,
-                    nonce: dfxRetreatsAdmin.nonce
+                    nonce: nonce
                 },
                 success: function(response) {
                     if (response.success) {
@@ -239,7 +305,7 @@
                         $button.replaceWith(newButton);
                         
                         // Show success message
-                        $('<div class="notice notice-success is-dismissible"><p>' + dfxRetreatsAdmin.messages.urlGenerated + '</p></div>')
+                        $('<div class="notice notice-success is-dismissible"><p>' + urlGeneratedText + '</p></div>')
                             .insertAfter('.wp-header-end')
                             .delay(3000)
                             .fadeOut();
@@ -247,13 +313,13 @@
                         // Auto-copy URL to clipboard
                         copyToClipboard(response.data.url);
                     } else {
-                        alert(response.data.message || dfxRetreatsAdmin.messages.generateError);
+                        alert(response.data.message || generateErrorText);
                         // Re-enable button
                         $button.prop('disabled', false).text('Generate Message URL');
                     }
                 },
                 error: function() {
-                    alert(dfxRetreatsAdmin.messages.generateError);
+                    alert(generateErrorText);
                     // Re-enable button
                     $button.prop('disabled', false).text('Generate Message URL');
                 }
@@ -267,10 +333,15 @@
             var url = $(this).data('url');
             var $button = $(this);
             
+            // Get localized text with fallbacks
+            var urlCopiedText = (typeof dfxRetreatsAdmin !== 'undefined' && dfxRetreatsAdmin.messages && dfxRetreatsAdmin.messages.urlCopied) 
+                ? dfxRetreatsAdmin.messages.urlCopied 
+                : 'URL copied to clipboard!';
+            
             if (copyToClipboard(url)) {
                 // Temporarily change button text
                 var originalText = $button.text();
-                $button.text(dfxRetreatsAdmin.messages.urlCopied);
+                $button.text(urlCopiedText);
                 setTimeout(function() {
                     $button.text(originalText);
                 }, 2000);
@@ -284,28 +355,43 @@
             var messageId = $(this).data('message-id');
             var $button = $(this);
             
+            // Get localized text with fallbacks
+            var printingText = (typeof dfxRetreatsAdmin !== 'undefined' && dfxRetreatsAdmin.messages && dfxRetreatsAdmin.messages.printing) 
+                ? dfxRetreatsAdmin.messages.printing 
+                : 'Preparing for print...';
+            var printErrorText = (typeof dfxRetreatsAdmin !== 'undefined' && dfxRetreatsAdmin.messages && dfxRetreatsAdmin.messages.printError) 
+                ? dfxRetreatsAdmin.messages.printError 
+                : 'Error preparing message for print. Please try again.';
+            
             // Disable button and show loading state
-            $button.prop('disabled', true).text(dfxRetreatsAdmin.messages.printing);
+            $button.prop('disabled', true).text(printingText);
+            
+            var ajaxUrl = (typeof dfxRetreatsAdmin !== 'undefined' && dfxRetreatsAdmin.ajaxurl) 
+                ? dfxRetreatsAdmin.ajaxurl 
+                : (typeof ajaxurl !== 'undefined' ? ajaxurl : '/wp-admin/admin-ajax.php');
+            var nonce = (typeof dfxRetreatsAdmin !== 'undefined' && dfxRetreatsAdmin.nonce) 
+                ? dfxRetreatsAdmin.nonce 
+                : '';
             
             $.ajax({
-                url: dfxRetreatsAdmin.ajaxurl,
+                url: ajaxUrl,
                 type: 'POST',
                 data: {
                     action: 'dfx_print_message',
                     message_id: messageId,
-                    nonce: dfxRetreatsAdmin.nonce
+                    nonce: nonce
                 },
                 success: function(response) {
                     if (response.success) {
                         showPrintModal(response.data.html);
                     } else {
-                        alert(response.data.message || dfxRetreatsAdmin.messages.printError);
+                        alert(response.data.message || printErrorText);
                     }
                     // Re-enable button
                     $button.prop('disabled', false).text('Print');
                 },
                 error: function() {
-                    alert(dfxRetreatsAdmin.messages.printError);
+                    alert(printErrorText);
                     // Re-enable button
                     $button.prop('disabled', false).text('Print');
                 }
@@ -319,20 +405,35 @@
             var messageId = $(this).data('message-id');
             var $row = $(this).closest('tr');
             
-            if (!confirm(dfxRetreatsAdmin.messages.confirmDeleteMessage)) {
+            // Get localized text with fallbacks
+            var confirmMessage = (typeof dfxRetreatsAdmin !== 'undefined' && dfxRetreatsAdmin.messages && dfxRetreatsAdmin.messages.confirmDeleteMessage) 
+                ? dfxRetreatsAdmin.messages.confirmDeleteMessage 
+                : 'Are you sure you want to delete this message? This action cannot be undone.';
+            var messageDeletedText = (typeof dfxRetreatsAdmin !== 'undefined' && dfxRetreatsAdmin.messages && dfxRetreatsAdmin.messages.messageDeleted) 
+                ? dfxRetreatsAdmin.messages.messageDeleted 
+                : 'Message deleted successfully.';
+            
+            if (!confirm(confirmMessage)) {
                 return;
             }
             
             // Disable button and show loading state
             $(this).prop('disabled', true).text('Deleting...');
             
+            var ajaxUrl = (typeof dfxRetreatsAdmin !== 'undefined' && dfxRetreatsAdmin.ajaxurl) 
+                ? dfxRetreatsAdmin.ajaxurl 
+                : (typeof ajaxurl !== 'undefined' ? ajaxurl : '/wp-admin/admin-ajax.php');
+            var nonce = (typeof dfxRetreatsAdmin !== 'undefined' && dfxRetreatsAdmin.nonce) 
+                ? dfxRetreatsAdmin.nonce 
+                : '';
+            
             $.ajax({
-                url: dfxRetreatsAdmin.ajaxurl,
+                url: ajaxUrl,
                 type: 'POST',
                 data: {
                     action: 'dfx_delete_message',
                     message_id: messageId,
-                    nonce: dfxRetreatsAdmin.nonce
+                    nonce: nonce
                 },
                 success: function(response) {
                     if (response.success) {
@@ -341,7 +442,8 @@
                             $(this).remove();
                             
                             // Show success message
-                            $('<div class="notice notice-success is-dismissible"><p>' + dfxRetreatsAdmin.messages.messageDeleted + '</p></div>')
+                            var successMessage = response.data.message || messageDeletedText;
+                            $('<div class="notice notice-success is-dismissible"><p>' + successMessage + '</p></div>')
                                 .insertAfter('.wp-header-end')
                                 .delay(3000)
                                 .fadeOut();

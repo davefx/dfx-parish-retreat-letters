@@ -197,7 +197,29 @@ class DFX_Parish_Retreat_Letters_Admin {
 	 * @param string $hook_suffix The current admin page.
 	 */
 	public function enqueue_admin_scripts( $hook_suffix ) {
-		if ( strpos( $hook_suffix, 'dfx-retreats' ) === false && strpos( $hook_suffix, 'dfx-messages' ) === false && strpos( $hook_suffix, 'dfx-privacy' ) === false ) {
+		// Check for our admin pages - be more flexible with the hook detection
+		$our_pages = array( 'dfx-retreats', 'dfx-messages', 'dfx-privacy' );
+		$is_our_page = false;
+		
+		foreach ( $our_pages as $page ) {
+			if ( strpos( $hook_suffix, $page ) !== false ) {
+				$is_our_page = true;
+				break;
+			}
+		}
+		
+		// Also check for query parameters that indicate our pages
+		if ( ! $is_our_page && isset( $_GET['page'] ) ) {
+			$page_param = sanitize_text_field( $_GET['page'] );
+			foreach ( $our_pages as $page ) {
+				if ( strpos( $page_param, $page ) !== false ) {
+					$is_our_page = true;
+					break;
+				}
+			}
+		}
+		
+		if ( ! $is_our_page ) {
 			return;
 		}
 
