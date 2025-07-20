@@ -2038,6 +2038,17 @@ class DFX_Parish_Retreat_Letters_Admin {
 			if ( ! $this->permissions->current_user_can_manage_retreat( $retreat_id ) ) {
 				wp_die( __( 'You do not have permission to modify this retreat.', 'dfx-parish-retreat-letters' ) );
 			}
+
+			// Handle CSV export early, before any HTML output
+			$action = sanitize_text_field( $_POST['action'] ?? '' );
+			if ( $action === 'export_csv' ) {
+				if ( ! wp_verify_nonce( $_POST['_wpnonce'] ?? '', 'dfx_prl_attendants_action' ) ) {
+					wp_die( __( 'Security check failed.', 'dfx-parish-retreat-letters' ) );
+				}
+				$this->export_attendants_csv( $retreat_id );
+				// The export method calls exit, so this won't be reached
+			}
+
 			$this->handle_attendant_list_actions( $retreat_id );
 		}
 
@@ -2167,8 +2178,6 @@ class DFX_Parish_Retreat_Letters_Admin {
 			} else {
 				$this->add_admin_notice( __( 'Error deleting attendant.', 'dfx-parish-retreat-letters' ), 'error' );
 			}
-		} elseif ( $action === 'export_csv' ) {
-			$this->export_attendants_csv( $retreat_id );
 		}
 	}
 
@@ -2710,6 +2719,11 @@ class DFX_Parish_Retreat_Letters_Admin {
 		$retreat = $this->retreat_model->get( $retreat_id );
 		if ( ! $retreat ) {
 			return;
+		}
+
+		// Clear any existing output buffers to prevent HTML from mixing with CSV
+		while ( ob_get_level() ) {
+			ob_end_clean();
 		}
 
 		$csv_data = $this->attendant_model->export_csv_data( $retreat_id );
