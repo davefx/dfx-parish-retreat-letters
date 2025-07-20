@@ -79,17 +79,17 @@ class DFX_Parish_Retreat_Letters_GDPR {
 	 */
 	private function init_hooks() {
 		// Schedule daily cleanup if not already scheduled
-		if ( ! wp_next_scheduled( 'dfx_daily_gdpr_cleanup' ) ) {
-			wp_schedule_event( time(), 'daily', 'dfx_daily_gdpr_cleanup' );
+		if ( ! wp_next_scheduled( 'dfx_prl_daily_gdpr_cleanup' ) ) {
+			wp_schedule_event( time(), 'daily', 'dfx_prl_daily_gdpr_cleanup' );
 		}
 
-		add_action( 'dfx_daily_gdpr_cleanup', array( $this, 'run_daily_cleanup' ) );
+		add_action( 'dfx_prl_daily_gdpr_cleanup', array( $this, 'run_daily_cleanup' ) );
 		add_action( 'admin_init', array( $this, 'maybe_anonymize_ips' ) );
 		
 		// Only add AJAX hooks in admin
 		if ( is_admin() ) {
-			add_action( 'wp_ajax_dfx_export_personal_data', array( $this, 'ajax_export_personal_data' ) );
-			add_action( 'wp_ajax_dfx_erase_personal_data', array( $this, 'ajax_erase_personal_data' ) );
+			add_action( 'wp_ajax_dfx_prl_export_personal_data', array( $this, 'ajax_export_personal_data' ) );
+			add_action( 'wp_ajax_dfx_prl_erase_personal_data', array( $this, 'ajax_erase_personal_data' ) );
 		}
 	}
 
@@ -106,7 +106,7 @@ class DFX_Parish_Retreat_Letters_GDPR {
 		$this->cleanup_old_audit_logs( 730 );
 
 		// Clean up old messages based on retention policy
-		$retention_days = get_option( 'dfx_message_retention_days', 365 );
+		$retention_days = get_option( 'dfx_prl_message_retention_days', 365 );
 		if ( $retention_days > 0 ) {
 			$this->cleanup_old_messages( $retention_days );
 		}
@@ -125,13 +125,13 @@ class DFX_Parish_Retreat_Letters_GDPR {
 	 */
 	public function maybe_anonymize_ips() {
 		// Only run once per day
-		$last_run = get_option( 'dfx_last_ip_anonymization', 0 );
+		$last_run = get_option( 'dfx_prl_last_ip_anonymization', 0 );
 		if ( time() - $last_run < DAY_IN_SECONDS ) {
 			return;
 		}
 
 		$anonymized_count = $this->security->anonymize_old_ip_addresses( 30 );
-		update_option( 'dfx_last_ip_anonymization', time() );
+		update_option( 'dfx_prl_last_ip_anonymization', time() );
 
 		if ( $anonymized_count > 0 ) {
 			$this->log_audit_event( 'ip_anonymization', array(
@@ -289,7 +289,7 @@ class DFX_Parish_Retreat_Letters_GDPR {
 	 * @return int Number of logs deleted.
 	 */
 	public function cleanup_old_audit_logs( $retention_days ) {
-		$logs = get_option( 'dfx_audit_logs', array() );
+		$logs = get_option( 'dfx_prl_audit_logs', array() );
 		$cutoff_time = time() - ( $retention_days * DAY_IN_SECONDS );
 		$original_count = count( $logs );
 
@@ -298,7 +298,7 @@ class DFX_Parish_Retreat_Letters_GDPR {
 			return isset( $log['timestamp'] ) && $log['timestamp'] > $cutoff_time;
 		} );
 
-		update_option( 'dfx_audit_logs', $logs );
+		update_option( 'dfx_prl_audit_logs', $logs );
 
 		return $original_count - count( $logs );
 	}
@@ -311,7 +311,7 @@ class DFX_Parish_Retreat_Letters_GDPR {
 	 * @param array  $data       Event data.
 	 */
 	public function log_audit_event( $event_type, $data = array() ) {
-		$logs = get_option( 'dfx_audit_logs', array() );
+		$logs = get_option( 'dfx_prl_audit_logs', array() );
 
 		$log_entry = array(
 			'timestamp' => time(),
@@ -329,7 +329,7 @@ class DFX_Parish_Retreat_Letters_GDPR {
 			$logs = array_slice( $logs, -10000 );
 		}
 
-		update_option( 'dfx_audit_logs', $logs );
+		update_option( 'dfx_prl_audit_logs', $logs );
 	}
 
 	/**
@@ -350,7 +350,7 @@ class DFX_Parish_Retreat_Letters_GDPR {
 		);
 
 		$args = wp_parse_args( $args, $defaults );
-		$logs = get_option( 'dfx_audit_logs', array() );
+		$logs = get_option( 'dfx_prl_audit_logs', array() );
 
 		// Apply filters
 		if ( $args['event_type'] ) {
@@ -402,7 +402,7 @@ class DFX_Parish_Retreat_Letters_GDPR {
 			wp_die( __( 'Insufficient permissions.', 'dfx-parish-retreat-letters' ) );
 		}
 
-		if ( ! wp_verify_nonce( $_POST['nonce'] ?? '', 'dfx_gdpr_nonce' ) ) {
+		if ( ! wp_verify_nonce( $_POST['nonce'] ?? '', 'dfx_prl_gdpr_nonce' ) ) {
 			wp_die( __( 'Security check failed.', 'dfx-parish-retreat-letters' ) );
 		}
 
@@ -436,7 +436,7 @@ class DFX_Parish_Retreat_Letters_GDPR {
 			wp_die( __( 'Insufficient permissions.', 'dfx-parish-retreat-letters' ) );
 		}
 
-		if ( ! wp_verify_nonce( $_POST['nonce'] ?? '', 'dfx_gdpr_nonce' ) ) {
+		if ( ! wp_verify_nonce( $_POST['nonce'] ?? '', 'dfx_prl_gdpr_nonce' ) ) {
 			wp_die( __( 'Security check failed.', 'dfx-parish-retreat-letters' ) );
 		}
 
@@ -471,9 +471,9 @@ class DFX_Parish_Retreat_Letters_GDPR {
 	 */
 	public function get_retention_settings() {
 		return array(
-			'message_retention_days' => get_option( 'dfx_message_retention_days', 365 ),
+			'message_retention_days' => get_option( 'dfx_prl_message_retention_days', 365 ),
 			'ip_anonymization_days' => 30, // Fixed at 30 days for GDPR compliance
-			'audit_log_retention_days' => get_option( 'dfx_audit_log_retention_days', 730 ),
+			'audit_log_retention_days' => get_option( 'dfx_prl_audit_log_retention_days', 730 ),
 		);
 	}
 
@@ -490,7 +490,7 @@ class DFX_Parish_Retreat_Letters_GDPR {
 		if ( isset( $settings['message_retention_days'] ) ) {
 			$days = absint( $settings['message_retention_days'] );
 			if ( $days >= 30 && $days <= 3650 ) { // Between 30 days and 10 years
-				update_option( 'dfx_message_retention_days', $days );
+				update_option( 'dfx_prl_message_retention_days', $days );
 			} else {
 				$updated = false;
 			}
@@ -499,7 +499,7 @@ class DFX_Parish_Retreat_Letters_GDPR {
 		if ( isset( $settings['audit_log_retention_days'] ) ) {
 			$days = absint( $settings['audit_log_retention_days'] );
 			if ( $days >= 365 && $days <= 3650 ) { // Between 1 year and 10 years
-				update_option( 'dfx_audit_log_retention_days', $days );
+				update_option( 'dfx_prl_audit_log_retention_days', $days );
 			} else {
 				$updated = false;
 			}
@@ -522,12 +522,12 @@ class DFX_Parish_Retreat_Letters_GDPR {
 		$status = array(
 			'encryption_enabled' => $this->security->verify_security_requirements(),
 			'ip_anonymization_active' => true, // Always active
-			'retention_policy_configured' => get_option( 'dfx_message_retention_days', false ) !== false,
+			'retention_policy_configured' => get_option( 'dfx_prl_message_retention_days', false ) !== false,
 			'audit_logging_active' => true, // Always active
-			'last_cleanup' => get_option( 'dfx_last_gdpr_cleanup', 0 ),
+			'last_cleanup' => get_option( 'dfx_prl_last_gdpr_cleanup', 0 ),
 			'messages_count' => $this->get_total_messages_count(),
 			'files_count' => $this->get_total_files_count(),
-			'audit_logs_count' => count( get_option( 'dfx_audit_logs', array() ) ),
+			'audit_logs_count' => count( get_option( 'dfx_prl_audit_logs', array() ) ),
 		);
 
 		return $status;

@@ -9,11 +9,11 @@
     'use strict';
 
     $(document).ready(function() {
-        // Check if dfxRetreatsAdmin is available
-        if (typeof dfxRetreatsAdmin === 'undefined') {
-            console.warn('dfxRetreatsAdmin is not defined. Admin functionality may be limited.');
+        // Check if dfxPRLAdmin is available
+        if (typeof dfxPRLAdmin === 'undefined') {
+            console.warn('dfxPRLAdmin is not defined. Admin functionality may be limited.');
             // Create a fallback object to prevent errors
-            window.dfxRetreatsAdmin = {
+            window.dfxPRLAdmin = {
                 ajaxurl: (typeof ajaxurl !== 'undefined') ? ajaxurl : '/wp-admin/admin-ajax.php',
                 nonce: '',
                 messages: {
@@ -45,29 +45,29 @@
             };
         }
         // Add modal styles
-        if (!$('#dfx-modal-styles').length) {
-            $('<style id="dfx-modal-styles">' +
-                '.dfx-modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 100000; display: none; }' +
-                '.dfx-modal-dialog { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #fff; border-radius: 4px; box-shadow: 0 4px 20px rgba(0,0,0,0.3); max-width: 500px; width: 90%; }' +
-                '.dfx-modal-header { padding: 20px 20px 10px; border-bottom: 1px solid #ddd; position: relative; }' +
-                '.dfx-modal-header h3 { margin: 0; font-size: 18px; color: #d63638; }' +
-                '.dfx-modal-close { position: absolute; top: 15px; right: 20px; background: none; border: none; font-size: 24px; line-height: 1; cursor: pointer; color: #666; padding: 0; }' +
-                '.dfx-modal-close:hover { color: #000; }' +
-                '.dfx-modal-body { padding: 20px; }' +
-                '.dfx-warning-message { background: #fff8e5; border: 1px solid #f0b849; border-radius: 4px; padding: 15px; margin-bottom: 20px; }' +
-                '.dfx-warning-message p { margin: 0 0 10px; }' +
-                '.dfx-warning-message ul { margin: 0; padding-left: 20px; }' +
-                '.dfx-confirmation-section p { margin: 10px 0; }' +
-                '.dfx-confirmation-section input { width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px; }' +
-                '.dfx-modal-footer { padding: 15px 20px; border-top: 1px solid #ddd; text-align: right; }' +
-                '.dfx-modal-footer .button { margin-left: 10px; }' +
-                '#dfx-print-log-modal .dfx-modal-dialog { max-width: 700px; }' +
-                '#dfx-print-log-modal .dfx-modal-body table { margin: 0; }' +
-                '#dfx-print-log-modal .dfx-modal-body th, #dfx-print-log-modal .dfx-modal-body td { padding: 8px 12px; }' +
+        if (!$('#dfx-prl-modal-styles').length) {
+            $('<style id="dfx-prl-modal-styles">' +
+                '.dfx-prl-modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 100000; display: none; }' +
+                '.dfx-prl-modal-dialog { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #fff; border-radius: 4px; box-shadow: 0 4px 20px rgba(0,0,0,0.3); max-width: 500px; width: 90%; }' +
+                '.dfx-prl-modal-header { padding: 20px 20px 10px; border-bottom: 1px solid #ddd; position: relative; }' +
+                '.dfx-prl-modal-header h3 { margin: 0; font-size: 18px; color: #d63638; }' +
+                '.dfx-prl-modal-close { position: absolute; top: 15px; right: 20px; background: none; border: none; font-size: 24px; line-height: 1; cursor: pointer; color: #666; padding: 0; }' +
+                '.dfx-prl-modal-close:hover { color: #000; }' +
+                '.dfx-prl-modal-body { padding: 20px; }' +
+                '.dfx-prl-warning-message { background: #fff8e5; border: 1px solid #f0b849; border-radius: 4px; padding: 15px; margin-bottom: 20px; }' +
+                '.dfx-prl-warning-message p { margin: 0 0 10px; }' +
+                '.dfx-prl-warning-message ul { margin: 0; padding-left: 20px; }' +
+                '.dfx-prl-confirmation-section p { margin: 10px 0; }' +
+                '.dfx-prl-confirmation-section input { width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px; }' +
+                '.dfx-prl-modal-footer { padding: 15px 20px; border-top: 1px solid #ddd; text-align: right; }' +
+                '.dfx-prl-modal-footer .button { margin-left: 10px; }' +
+                '#dfx-prl-print-log-modal .dfx-prl-modal-dialog { max-width: 700px; }' +
+                '#dfx-prl-print-log-modal .dfx-prl-modal-body table { margin: 0; }' +
+                '#dfx-prl-print-log-modal .dfx-prl-modal-body th, #dfx-prl-print-log-modal .dfx-prl-modal-body td { padding: 8px 12px; }' +
             '</style>').appendTo('head');
         }
         // Handle delete retreat button clicks
-        $('.dfx-delete-retreat').on('click', function(e) {
+        $('.dfx-prl-delete-retreat').on('click', function(e) {
             e.preventDefault();
             
             var retreatId = $(this).data('retreat-id');
@@ -83,29 +83,29 @@
         function showDeleteRetreatModal(retreatId, retreatName, $row, $button) {
             // Create modal HTML
             var modalHtml = 
-                '<div id="dfx-delete-retreat-modal" class="dfx-modal-overlay">' +
-                    '<div class="dfx-modal-dialog">' +
-                        '<div class="dfx-modal-header">' +
-                            '<h3>' + dfxRetreatsAdmin.messages.deleteRetreatTitle + '</h3>' +
+                '<div id="dfx-prl-delete-retreat-modal" class="dfx-prl-modal-overlay">' +
+                    '<div class="dfx-prl-modal-dialog">' +
+                        '<div class="dfx-prl-modal-header">' +
+                            '<h3>' + dfxPRLAdmin.messages.deleteRetreatTitle + '</h3>' +
                         '</div>' +
-                        '<div class="dfx-modal-body">' +
-                            '<div class="dfx-warning-message">' +
-                                '<p><strong>' + dfxRetreatsAdmin.messages.deleteWarning + '</strong></p>' +
+                        '<div class="dfx-prl-modal-body">' +
+                            '<div class="dfx-prl-warning-message">' +
+                                '<p><strong>' + dfxPRLAdmin.messages.deleteWarning + '</strong></p>' +
                                 '<ul>' +
-                                    '<li>' + dfxRetreatsAdmin.messages.deleteWarningAttendants + '</li>' +
-                                    '<li>' + dfxRetreatsAdmin.messages.deleteWarningLetters + '</li>' +
-                                    '<li>' + dfxRetreatsAdmin.messages.deleteWarningPermanent + '</li>' +
+                                    '<li>' + dfxPRLAdmin.messages.deleteWarningAttendants + '</li>' +
+                                    '<li>' + dfxPRLAdmin.messages.deleteWarningLetters + '</li>' +
+                                    '<li>' + dfxPRLAdmin.messages.deleteWarningPermanent + '</li>' +
                                 '</ul>' +
                             '</div>' +
-                            '<div class="dfx-confirmation-section">' +
-                                '<p>' + dfxRetreatsAdmin.messages.typeRetreatName + '</p>' +
+                            '<div class="dfx-prl-confirmation-section">' +
+                                '<p>' + dfxPRLAdmin.messages.typeRetreatName + '</p>' +
                                 '<p><strong>' + retreatName + '</strong></p>' +
-                                '<input type="text" id="dfx-retreat-name-confirm" placeholder="' + dfxRetreatsAdmin.messages.retreatNamePlaceholder + '" />' +
+                                '<input type="text" id="dfx-prl-retreat-name-confirm" placeholder="' + dfxPRLAdmin.messages.retreatNamePlaceholder + '" />' +
                             '</div>' +
                         '</div>' +
-                        '<div class="dfx-modal-footer">' +
-                            '<button type="button" id="dfx-confirm-delete" class="button button-primary" disabled>' + dfxRetreatsAdmin.messages.deleteButton + '</button>' +
-                            '<button type="button" id="dfx-cancel-delete" class="button">' + dfxRetreatsAdmin.messages.cancelButton + '</button>' +
+                        '<div class="dfx-prl-modal-footer">' +
+                            '<button type="button" id="dfx-prl-confirm-delete" class="button button-primary" disabled>' + dfxPRLAdmin.messages.deleteButton + '</button>' +
+                            '<button type="button" id="dfx-prl-cancel-delete" class="button">' + dfxPRLAdmin.messages.cancelButton + '</button>' +
                         '</div>' +
                     '</div>' +
                 '</div>';
@@ -113,9 +113,9 @@
             // Add modal to body
             $('body').append(modalHtml);
             
-            var $modal = $('#dfx-delete-retreat-modal');
-            var $confirmInput = $('#dfx-retreat-name-confirm');
-            var $confirmButton = $('#dfx-confirm-delete');
+            var $modal = $('#dfx-prl-delete-retreat-modal');
+            var $confirmInput = $('#dfx-prl-retreat-name-confirm');
+            var $confirmButton = $('#dfx-prl-confirm-delete');
             
             // Show modal
             $modal.fadeIn();
@@ -132,7 +132,7 @@
             });
             
             // Handle cancel
-            $('#dfx-cancel-delete, .dfx-modal-overlay').on('click', function(e) {
+            $('#dfx-prl-cancel-delete, .dfx-prl-modal-overlay').on('click', function(e) {
                 if (e.target === this) {
                     $modal.fadeOut(function() {
                         $modal.remove();
@@ -147,16 +147,16 @@
                 });
                 
                 // Disable button and show loading state
-                $button.prop('disabled', true).text(dfxRetreatsAdmin.messages.deleting);
+                $button.prop('disabled', true).text(dfxPRLAdmin.messages.deleting);
                 
                 $.ajax({
-                    url: dfxRetreatsAdmin.ajaxurl,
+                    url: dfxPRLAdmin.ajaxurl,
                     type: 'POST',
                     data: {
-                        action: 'dfx_delete_retreat',
+                        action: 'dfx_prl_delete_retreat',
                         retreat_id: retreatId,
                         retreat_name: retreatName,
-                        nonce: dfxRetreatsAdmin.nonce
+                        nonce: dfxPRLAdmin.nonce
                     },
                     success: function(response) {
                         if (response.success) {
@@ -171,30 +171,30 @@
                                     .fadeOut();
                             });
                         } else {
-                            alert(response.data.message || dfxRetreatsAdmin.messages.deleteError);
+                            alert(response.data.message || dfxPRLAdmin.messages.deleteError);
                             // Re-enable button
-                            $button.prop('disabled', false).text(dfxRetreatsAdmin.messages.deleteButton);
+                            $button.prop('disabled', false).text(dfxPRLAdmin.messages.deleteButton);
                         }
                     },
                     error: function() {
-                        alert(dfxRetreatsAdmin.messages.deleteError);
+                        alert(dfxPRLAdmin.messages.deleteError);
                         // Re-enable button
-                        $button.prop('disabled', false).text(dfxRetreatsAdmin.messages.deleteButton);
+                        $button.prop('disabled', false).text(dfxPRLAdmin.messages.deleteButton);
                     }
                 });
             });
         }
 
         // Handle delete attendant button clicks
-        $('.dfx-delete-attendant').on('click', function(e) {
+        $('.dfx-prl-delete-attendant').on('click', function(e) {
             e.preventDefault();
             
             var attendantId = $(this).data('attendant-id');
             var $row = $(this).closest('tr');
             
-            // Check if dfxRetreatsAdmin is available
-            var confirmMessage = (typeof dfxRetreatsAdmin !== 'undefined' && dfxRetreatsAdmin.messages && dfxRetreatsAdmin.messages.confirmDeleteAttendant) 
-                ? dfxRetreatsAdmin.messages.confirmDeleteAttendant 
+            // Check if dfxPRLAdmin is available
+            var confirmMessage = (typeof dfxPRLAdmin !== 'undefined' && dfxPRLAdmin.messages && dfxPRLAdmin.messages.confirmDeleteAttendant)
+                ? dfxPRLAdmin.messages.confirmDeleteAttendant
                 : 'Are you sure you want to delete this attendant?';
             
             if (!confirm(confirmMessage)) {
@@ -204,18 +204,18 @@
             // Disable button and show loading state
             $(this).prop('disabled', true).text('Deleting...');
             
-            var ajaxUrl = (typeof dfxRetreatsAdmin !== 'undefined' && dfxRetreatsAdmin.ajaxurl) 
-                ? dfxRetreatsAdmin.ajaxurl 
+            var ajaxUrl = (typeof dfxPRLAdmin !== 'undefined' && dfxPRLAdmin.ajaxurl)
+                ? dfxPRLAdmin.ajaxurl
                 : (typeof ajaxurl !== 'undefined' ? ajaxurl : '/wp-admin/admin-ajax.php');
-            var nonce = (typeof dfxRetreatsAdmin !== 'undefined' && dfxRetreatsAdmin.nonce) 
-                ? dfxRetreatsAdmin.nonce 
+            var nonce = (typeof dfxPRLAdmin !== 'undefined' && dfxPRLAdmin.nonce)
+                ? dfxPRLAdmin.nonce
                 : '';
             
             $.ajax({
                 url: ajaxUrl,
                 type: 'POST',
                 data: {
-                    action: 'dfx_delete_attendant',
+                    action: 'dfx_prl_delete_attendant',
                     attendant_id: attendantId,
                     nonce: nonce
                 },
@@ -235,7 +235,7 @@
                     } else {
                         alert(response.data.message || 'Error deleting attendant.');
                         // Re-enable button
-                        $('.dfx-delete-attendant[data-attendant-id="' + attendantId + '"]')
+                        $('.dfx-prl-delete-attendant[data-attendant-id="' + attendantId + '"]')
                             .prop('disabled', false)
                             .text('Delete');
                     }
@@ -243,7 +243,7 @@
                 error: function() {
                     alert('Error deleting attendant. Please try again.');
                     // Re-enable button
-                    $('.dfx-delete-attendant[data-attendant-id="' + attendantId + '"]')
+                    $('.dfx-prl-delete-attendant[data-attendant-id="' + attendantId + '"]')
                         .prop('disabled', false)
                         .text('Delete');
                 }
@@ -267,45 +267,45 @@
         $('.notice.is-dismissible').delay(5000).fadeOut();
 
         // Handle generate message URL button clicks
-        $('.dfx-generate-url').on('click', function(e) {
+        $('.dfx-prl-generate-url').on('click', function(e) {
             e.preventDefault();
             
             var attendantId = $(this).data('attendant-id');
             var $button = $(this);
             
             // Get localized text with fallbacks
-            var generatingText = (typeof dfxRetreatsAdmin !== 'undefined' && dfxRetreatsAdmin.messages && dfxRetreatsAdmin.messages.generating) 
-                ? dfxRetreatsAdmin.messages.generating 
+            var generatingText = (typeof dfxPRLAdmin !== 'undefined' && dfxPRLAdmin.messages && dfxPRLAdmin.messages.generating)
+                ? dfxPRLAdmin.messages.generating
                 : 'Generating URL...';
-            var urlGeneratedText = (typeof dfxRetreatsAdmin !== 'undefined' && dfxRetreatsAdmin.messages && dfxRetreatsAdmin.messages.urlGenerated) 
-                ? dfxRetreatsAdmin.messages.urlGenerated 
+            var urlGeneratedText = (typeof dfxPRLAdmin !== 'undefined' && dfxPRLAdmin.messages && dfxPRLAdmin.messages.urlGenerated)
+                ? dfxPRLAdmin.messages.urlGenerated
                 : 'Message URL generated successfully!';
-            var generateErrorText = (typeof dfxRetreatsAdmin !== 'undefined' && dfxRetreatsAdmin.messages && dfxRetreatsAdmin.messages.generateError) 
-                ? dfxRetreatsAdmin.messages.generateError 
+            var generateErrorText = (typeof dfxPRLAdmin !== 'undefined' && dfxPRLAdmin.messages && dfxPRLAdmin.messages.generateError)
+                ? dfxPRLAdmin.messages.generateError
                 : 'Error generating message URL. Please try again.';
             
             // Disable button and show loading state
             $button.prop('disabled', true).text(generatingText);
             
-            var ajaxUrl = (typeof dfxRetreatsAdmin !== 'undefined' && dfxRetreatsAdmin.ajaxurl) 
-                ? dfxRetreatsAdmin.ajaxurl 
+            var ajaxUrl = (typeof dfxPRLAdmin !== 'undefined' && dfxPRLAdmin.ajaxurl)
+                ? dfxPRLAdmin.ajaxurl
                 : (typeof ajaxurl !== 'undefined' ? ajaxurl : '/wp-admin/admin-ajax.php');
-            var nonce = (typeof dfxRetreatsAdmin !== 'undefined' && dfxRetreatsAdmin.nonce) 
-                ? dfxRetreatsAdmin.nonce 
+            var nonce = (typeof dfxPRLAdmin !== 'undefined' && dfxPRLAdmin.nonce)
+                ? dfxPRLAdmin.nonce
                 : '';
             
             $.ajax({
                 url: ajaxUrl,
                 type: 'POST',
                 data: {
-                    action: 'dfx_generate_message_url',
+                    action: 'dfx_prl_generate_message_url',
                     attendant_id: attendantId,
                     nonce: nonce
                 },
                 success: function(response) {
                     if (response.success) {
                         // Replace button with copy URL button
-                        var newButton = '<button type="button" class="button button-small button-primary dfx-copy-url" data-url="' + response.data.url + '">' +
+                        var newButton = '<button type="button" class="button button-small button-primary dfx-prl-copy-url" data-url="' + response.data.url + '">' +
                                        'Copy Message URL</button>';
                         $button.replaceWith(newButton);
                         
@@ -332,15 +332,15 @@
         });
 
         // Handle copy URL button clicks (using event delegation for dynamically added buttons)
-        $(document).on('click', '.dfx-copy-url', function(e) {
+        $(document).on('click', '.dfx-prl-copy-url', function(e) {
             e.preventDefault();
             
             var url = $(this).data('url');
             var $button = $(this);
             
             // Get localized text with fallbacks
-            var urlCopiedText = (typeof dfxRetreatsAdmin !== 'undefined' && dfxRetreatsAdmin.messages && dfxRetreatsAdmin.messages.urlCopied) 
-                ? dfxRetreatsAdmin.messages.urlCopied 
+            var urlCopiedText = (typeof dfxPRLAdmin !== 'undefined' && dfxPRLAdmin.messages && dfxPRLAdmin.messages.urlCopied)
+                ? dfxPRLAdmin.messages.urlCopied
                 : 'URL copied to clipboard!';
             
             if (copyToClipboard(url)) {
@@ -354,35 +354,35 @@
         });
 
         // Handle print message button clicks
-        $('.dfx-print-message').on('click', function(e) {
+        $('.dfx-prl-print-message').on('click', function(e) {
             e.preventDefault();
             
             var messageId = $(this).data('message-id');
             var $button = $(this);
             
             // Get localized text with fallbacks
-            var printingText = (typeof dfxRetreatsAdmin !== 'undefined' && dfxRetreatsAdmin.messages && dfxRetreatsAdmin.messages.printing) 
-                ? dfxRetreatsAdmin.messages.printing 
+            var printingText = (typeof dfxPRLAdmin !== 'undefined' && dfxPRLAdmin.messages && dfxPRLAdmin.messages.printing)
+                ? dfxPRLAdmin.messages.printing
                 : 'Preparing for print...';
-            var printErrorText = (typeof dfxRetreatsAdmin !== 'undefined' && dfxRetreatsAdmin.messages && dfxRetreatsAdmin.messages.printError) 
-                ? dfxRetreatsAdmin.messages.printError 
+            var printErrorText = (typeof dfxPRLAdmin !== 'undefined' && dfxPRLAdmin.messages && dfxPRLAdmin.messages.printError)
+                ? dfxPRLAdmin.messages.printError
                 : 'Error preparing message for print. Please try again.';
             
             // Disable button and show loading state
             $button.prop('disabled', true).text(printingText);
             
-            var ajaxUrl = (typeof dfxRetreatsAdmin !== 'undefined' && dfxRetreatsAdmin.ajaxurl) 
-                ? dfxRetreatsAdmin.ajaxurl 
+            var ajaxUrl = (typeof dfxPRLAdmin !== 'undefined' && dfxPRLAdmin.ajaxurl)
+                ? dfxPRLAdmin.ajaxurl
                 : (typeof ajaxurl !== 'undefined' ? ajaxurl : '/wp-admin/admin-ajax.php');
-            var nonce = (typeof dfxRetreatsAdmin !== 'undefined' && dfxRetreatsAdmin.nonce) 
-                ? dfxRetreatsAdmin.nonce 
+            var nonce = (typeof dfxPRLAdmin !== 'undefined' && dfxPRLAdmin.nonce)
+                ? dfxPRLAdmin.nonce
                 : '';
             
             $.ajax({
                 url: ajaxUrl,
                 type: 'POST',
                 data: {
-                    action: 'dfx_print_message',
+                    action: 'dfx_prl_print_message',
                     message_id: messageId,
                     nonce: nonce
                 },
@@ -405,18 +405,18 @@
         });
 
         // Handle delete message button clicks
-        $('.dfx-delete-message').on('click', function(e) {
+        $('.dfx-prl-delete-message').on('click', function(e) {
             e.preventDefault();
             
             var messageId = $(this).data('message-id');
             var $row = $(this).closest('tr');
             
             // Get localized text with fallbacks
-            var confirmMessage = (typeof dfxRetreatsAdmin !== 'undefined' && dfxRetreatsAdmin.messages && dfxRetreatsAdmin.messages.confirmDeleteMessage) 
-                ? dfxRetreatsAdmin.messages.confirmDeleteMessage 
+            var confirmMessage = (typeof dfxPRLAdmin !== 'undefined' && dfxPRLAdmin.messages && dfxPRLAdmin.messages.confirmDeleteMessage)
+                ? dfxPRLAdmin.messages.confirmDeleteMessage
                 : 'Are you sure you want to delete this message? This action cannot be undone.';
-            var messageDeletedText = (typeof dfxRetreatsAdmin !== 'undefined' && dfxRetreatsAdmin.messages && dfxRetreatsAdmin.messages.messageDeleted) 
-                ? dfxRetreatsAdmin.messages.messageDeleted 
+            var messageDeletedText = (typeof dfxPRLAdmin !== 'undefined' && dfxPRLAdmin.messages && dfxPRLAdmin.messages.messageDeleted)
+                ? dfxPRLAdmin.messages.messageDeleted
                 : 'Message deleted successfully.';
             
             if (!confirm(confirmMessage)) {
@@ -426,18 +426,18 @@
             // Disable button and show loading state
             $(this).prop('disabled', true).text('Deleting...');
             
-            var ajaxUrl = (typeof dfxRetreatsAdmin !== 'undefined' && dfxRetreatsAdmin.ajaxurl) 
-                ? dfxRetreatsAdmin.ajaxurl 
+            var ajaxUrl = (typeof dfxPRLAdmin !== 'undefined' && dfxPRLAdmin.ajaxurl)
+                ? dfxPRLAdmin.ajaxurl
                 : (typeof ajaxurl !== 'undefined' ? ajaxurl : '/wp-admin/admin-ajax.php');
-            var nonce = (typeof dfxRetreatsAdmin !== 'undefined' && dfxRetreatsAdmin.nonce) 
-                ? dfxRetreatsAdmin.nonce 
+            var nonce = (typeof dfxPRLAdmin !== 'undefined' && dfxPRLAdmin.nonce)
+                ? dfxPRLAdmin.nonce
                 : '';
             
             $.ajax({
                 url: ajaxUrl,
                 type: 'POST',
                 data: {
-                    action: 'dfx_delete_message',
+                    action: 'dfx_prl_delete_message',
                     message_id: messageId,
                     nonce: nonce
                 },
@@ -457,7 +457,7 @@
                     } else {
                         alert(response.data.message || 'Error deleting message.');
                         // Re-enable button
-                        $('.dfx-delete-message[data-message-id="' + messageId + '"]')
+                        $('.dfx-prl-delete-message[data-message-id="' + messageId + '"]')
                             .prop('disabled', false)
                             .text('Delete');
                     }
@@ -465,7 +465,7 @@
                 error: function() {
                     alert('Error deleting message. Please try again.');
                     // Re-enable button
-                    $('.dfx-delete-message[data-message-id="' + messageId + '"]')
+                    $('.dfx-prl-delete-message[data-message-id="' + messageId + '"]')
                         .prop('disabled', false)
                         .text('Delete');
                 }
@@ -473,16 +473,16 @@
         });
 
         // Handle view print log clicks
-        $('.dfx-view-print-log').on('click', function(e) {
+        $('.dfx-prl-view-print-log').on('click', function(e) {
             e.preventDefault();
             
             var messageId = $(this).data('message-id');
             
-            var ajaxUrl = (typeof dfxRetreatsAdmin !== 'undefined' && dfxRetreatsAdmin.ajaxurl) 
-                ? dfxRetreatsAdmin.ajaxurl 
+            var ajaxUrl = (typeof dfxPRLAdmin !== 'undefined' && dfxPRLAdmin.ajaxurl)
+                ? dfxPRLAdmin.ajaxurl
                 : (typeof ajaxurl !== 'undefined' ? ajaxurl : '/wp-admin/admin-ajax.php');
-            var nonce = (typeof dfxRetreatsAdmin !== 'undefined' && dfxRetreatsAdmin.nonce) 
-                ? dfxRetreatsAdmin.nonce 
+            var nonce = (typeof dfxPRLAdmin !== 'undefined' && dfxPRLAdmin.nonce)
+                ? dfxPRLAdmin.nonce
                 : '';
             
             // Show loading state
@@ -492,7 +492,7 @@
                 url: ajaxUrl,
                 type: 'POST',
                 data: {
-                    action: 'dfx_get_print_log',
+                    action: 'dfx_prl_get_print_log',
                     message_id: messageId,
                     nonce: nonce
                 },
@@ -514,19 +514,19 @@
         // Function to show print log modal
         function showPrintLogModal(messageId, data, loading) {
             // Remove existing modal if any
-            $('#dfx-print-log-modal').remove();
+            $('#dfx-prl-print-log-modal').remove();
             
             var modalHtml = '';
             
             if (loading) {
                 modalHtml = 
-                    '<div id="dfx-print-log-modal" class="dfx-modal-overlay">' +
-                        '<div class="dfx-modal-dialog">' +
-                            '<div class="dfx-modal-header">' +
+                    '<div id="dfx-prl-print-log-modal" class="dfx-prl-modal-overlay">' +
+                        '<div class="dfx-prl-modal-dialog">' +
+                            '<div class="dfx-prl-modal-header">' +
                                 '<h3>Print History</h3>' +
-                                '<button type="button" class="dfx-modal-close" aria-label="Close">&times;</button>' +
+                                '<button type="button" class="dfx-prl-modal-close" aria-label="Close">&times;</button>' +
                             '</div>' +
-                            '<div class="dfx-modal-body">' +
+                            '<div class="dfx-prl-modal-body">' +
                                 '<p>Loading print history...</p>' +
                             '</div>' +
                         '</div>' +
@@ -559,13 +559,13 @@
                 }
                 
                 modalHtml = 
-                    '<div id="dfx-print-log-modal" class="dfx-modal-overlay">' +
-                        '<div class="dfx-modal-dialog" style="max-width: 700px;">' +
-                            '<div class="dfx-modal-header">' +
+                    '<div id="dfx-prl-print-log-modal" class="dfx-prl-modal-overlay">' +
+                        '<div class="dfx-prl-modal-dialog" style="max-width: 700px;">' +
+                            '<div class="dfx-prl-modal-header">' +
                                 '<h3>Print History (Total: ' + data.total_count + ')</h3>' +
-                                '<button type="button" class="dfx-modal-close" aria-label="Close">&times;</button>' +
+                                '<button type="button" class="dfx-prl-modal-close" aria-label="Close">&times;</button>' +
                             '</div>' +
-                            '<div class="dfx-modal-body">' +
+                            '<div class="dfx-prl-modal-body">' +
                                 logsTable +
                             '</div>' +
                         '</div>' +
@@ -573,16 +573,16 @@
             }
             
             $('body').append(modalHtml);
-            $('#dfx-print-log-modal').show();
+            $('#dfx-prl-print-log-modal').show();
             
             // Handle close button clicks
-            $('.dfx-modal-close').on('click', function(e) {
+            $('.dfx-prl-modal-close').on('click', function(e) {
                 e.preventDefault();
                 closePrintLogModal();
             });
             
             // Handle backdrop clicks
-            $('#dfx-print-log-modal').on('click', function(e) {
+            $('#dfx-prl-print-log-modal').on('click', function(e) {
                 if (e.target === this) {
                     closePrintLogModal();
                 }
@@ -591,7 +591,7 @@
 
         // Function to close print log modal
         function closePrintLogModal() {
-            $('#dfx-print-log-modal').fadeOut(200, function() {
+            $('#dfx-prl-print-log-modal').fadeOut(200, function() {
                 $(this).remove();
             });
         }

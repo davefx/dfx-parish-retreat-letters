@@ -35,7 +35,7 @@ function dfx_parish_retreat_letters_uninstall() {
 	$database->drop_tables();
 	
 	// Clean up scheduled tasks
-	wp_clear_scheduled_hook( 'dfx_retreat_cleanup_hook' );
+	wp_clear_scheduled_hook( 'dfx_prl_retreat_cleanup_hook' );
 	
 	// Clean up custom capabilities from all roles
 	$roles = wp_roles();
@@ -61,7 +61,7 @@ function dfx_parish_retreat_letters_uninstall() {
 	// Clean up any remaining options
 	delete_option( 'dfx_parish_retreat_letters_db_version' );
 	delete_option( 'dfx_parish_retreat_letters_encryption_key' );
-	delete_transient( 'dfx_admin_notices' );
+	delete_transient( 'dfx_prl_admin_notices' );
 	delete_transient( 'dfx_prl_message_rate_limit_violations' );
 	
 	// Clean up any remaining rate limit transients
