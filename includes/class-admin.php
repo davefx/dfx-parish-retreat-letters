@@ -2005,7 +2005,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 			printf(
 				'<div class="notice notice-%s is-dismissible"><p>%s</p></div>',
 				esc_attr( $notice['type'] ),
-				esc_html( $notice['message'] )
+				wp_kses_post( $notice['message'] )
 			);
 		}
 
