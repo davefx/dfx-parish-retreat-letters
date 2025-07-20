@@ -176,13 +176,13 @@ DFX Parish Retreat Letters is a professional-grade retreat management system tha
 #### Database Schema
 The plugin creates and manages several custom database tables:
 
-- **`{prefix}_dfx_retreats`**: Core retreat information with status tracking
-- **`{prefix}_dfx_attendants`**: Encrypted attendant personal information
-- **`{prefix}_dfx_confidential_messages`**: AES-256 encrypted message content
-- **`{prefix}_dfx_message_files`**: Encrypted file attachments with secure storage
-- **`{prefix}_dfx_message_print_log`**: Comprehensive audit trail for message printing
-- **`{prefix}_dfx_retreat_permissions`**: Three-tier authorization system data
-- **`{prefix}_dfx_retreat_invitations`**: Secure invitation token management
+- **`{prefix}_dfx_prl_retreats`**: Core retreat information with status tracking
+- **`{prefix}_dfx_prl_attendants`**: Encrypted attendant personal information
+- **`{prefix}_dfx_prl_confidential_messages`**: AES-256 encrypted message content
+- **`{prefix}_dfx_prl_message_files`**: Encrypted file attachments with secure storage
+- **`{prefix}_dfx_prl_message_print_log`**: Comprehensive audit trail for message printing
+- **`{prefix}_dfx_prl_retreat_permissions`**: Three-tier authorization system data
+- **`{prefix}_dfx_prl_retreat_invitations`**: Secure invitation token management
 
 #### Core Classes and Design Patterns
 
@@ -227,16 +227,16 @@ $audit->log_permission_check($user_id, $action, $resource_id)
 ##### Custom Hooks and Filters
 ```php
 // Customize encryption parameters
-add_filter('dfx_retreat_letters_encryption_config', $callback);
+add_filter('dfx_prl_retreat_letters_encryption_config', $callback);
 
 // Extend GDPR compliance features
-add_action('dfx_retreat_letters_gdpr_data_export', $callback);
+add_action('dfx_prl_retreat_letters_gdpr_data_export', $callback);
 
 // Customize permission logic
-add_filter('dfx_retreat_letters_user_permissions', $callback);
+add_filter('dfx_prl_retreat_letters_user_permissions', $callback);
 
 // Extend audit logging
-add_action('dfx_retreat_letters_audit_log', $callback);
+add_action('dfx_prl_retreat_letters_audit_log', $callback);
 ```
 
 ##### API Endpoints

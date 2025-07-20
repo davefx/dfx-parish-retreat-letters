@@ -347,12 +347,12 @@ class DFX_Parish_Retreat_Letters {
 	private function init_public_hooks() {
 		add_action( 'wp_loaded', array( $this, 'handle_message_url_routing' ) );
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_public_scripts' ) );
-		add_action( 'wp_ajax_nopriv_dfx_submit_message', array( $this, 'handle_message_submission' ) );
-		add_action( 'wp_ajax_dfx_submit_message', array( $this, 'handle_message_submission' ) );
+		add_action( 'wp_ajax_nopriv_dfx_prl_submit_message', array( $this, 'handle_message_submission' ) );
+		add_action( 'wp_ajax_dfx_prl_submit_message', array( $this, 'handle_message_submission' ) );
 		
 		// Schedule cleanup tasks
 		add_action( 'init', array( $this, 'schedule_cleanup_tasks' ) );
-		add_action( 'dfx_retreat_cleanup_hook', array( $this, 'run_cleanup_tasks' ) );
+		add_action( 'dfx_prl_retreat_cleanup_hook', array( $this, 'run_cleanup_tasks' ) );
 	}
 
 	/**
@@ -538,7 +538,7 @@ class DFX_Parish_Retreat_Letters {
 			<div class="dfx-message-form-content">
 				<h1><?php esc_html_e( 'Send a Confidential Message', 'dfx-parish-retreat-letters' ); ?></h1>
 				
-				<div class="dfx-retreat-info">
+				<div class="dfx-prl-retreat-info">
 					<h2><?php esc_html_e( 'For Retreat Attendant', 'dfx-parish-retreat-letters' ); ?></h2>
 					<p><strong><?php echo esc_html( $attendant->name . ' ' . $attendant->surnames ); ?></strong></p>
 					<p><?php echo esc_html( $attendant->retreat_name ); ?> - <?php echo esc_html( $attendant->retreat_location ); ?></p>
@@ -554,11 +554,11 @@ class DFX_Parish_Retreat_Letters {
 				<div id="dfx-message-notices"></div>
 
 				<form id="dfx-message-form" enctype="multipart/form-data">
-					<?php wp_nonce_field( 'dfx_submit_message', 'message_nonce' ); ?>
-					<input type="hidden" name="action" value="dfx_submit_message">
+					<?php wp_nonce_field( 'dfx_prl_submit_message', 'message_nonce' ); ?>
+					<input type="hidden" name="action" value="dfx_prl_submit_message">
 					<input type="hidden" name="attendant_id" value="<?php echo esc_attr( $attendant->id ); ?>">
 
-					<div class="dfx-form-group">
+					<div class="dfx-prl-form-group">
 						<label for="sender_name"><?php esc_html_e( 'Your Name', 'dfx-parish-retreat-letters' ); ?> <span class="required">*</span></label>
 						<input type="text" id="sender_name" name="sender_name" required maxlength="255" placeholder="<?php esc_attr_e( 'Enter your name', 'dfx-parish-retreat-letters' ); ?>">
 					</div>
@@ -577,7 +577,7 @@ class DFX_Parish_Retreat_Letters {
 						</div>
 					</div>
 
-					<div class="dfx-form-group" id="dfx-text-group">
+					<div class="dfx-prl-form-group" id="dfx-text-group">
 						<label for="message_content"><?php esc_html_e( 'Your Message', 'dfx-parish-retreat-letters' ); ?> <span class="required">*</span></label>
 						<div id="dfx-editor-container">
 							<div class="dfx-editor-toolbar">
@@ -595,7 +595,7 @@ class DFX_Parish_Retreat_Letters {
 						<p class="dfx-help-text"><?php esc_html_e( 'You can use the toolbar to format your text, create lists, and paste images. HTML is allowed but will be filtered for security.', 'dfx-parish-retreat-letters' ); ?></p>
 					</div>
 
-					<div class="dfx-form-group" id="dfx-file-group" style="display: none;">
+					<div class="dfx-prl-form-group" id="dfx-file-group" style="display: none;">
 						<label for="message_files"><?php esc_html_e( 'Attach Files', 'dfx-parish-retreat-letters' ); ?> <span class="required">*</span></label>
 						<input type="file" id="message_files" name="message_files[]" multiple accept=".pdf,.doc,.docx,.txt,.jpg,.jpeg,.png,.gif">
 						<p class="dfx-help-text">
@@ -604,7 +604,7 @@ class DFX_Parish_Retreat_Letters {
 						<div id="dfx-file-list"></div>
 					</div>
 
-					<div class="dfx-form-group">
+					<div class="dfx-prl-form-group">
 						<div class="dfx-captcha-container">
 							<label for="captcha_answer"><?php esc_html_e( 'Security Check', 'dfx-parish-retreat-letters' ); ?> <span class="required">*</span></label>
 							<div id="dfx-captcha-question"></div>
@@ -613,7 +613,7 @@ class DFX_Parish_Retreat_Letters {
 						</div>
 					</div>
 
-					<div class="dfx-form-group">
+					<div class="dfx-prl-form-group">
 						<button type="submit" id="dfx-submit-btn" class="dfx-submit-button">
 							<span class="dfx-submit-text"><?php esc_html_e( 'Send Confidential Message', 'dfx-parish-retreat-letters' ); ?></span>
 							<span class="dfx-loading-spinner" style="display: none;">
@@ -623,7 +623,7 @@ class DFX_Parish_Retreat_Letters {
 					</div>
 				</form>
 
-				<div class="dfx-privacy-notice">
+				<div class="dfx-prl-privacy-notice">
 					<h3><?php esc_html_e( 'Privacy & Security', 'dfx-parish-retreat-letters' ); ?></h3>
 					<ul>
 						<li><?php esc_html_e( 'Your message will be encrypted and stored securely.', 'dfx-parish-retreat-letters' ); ?></li>
@@ -652,7 +652,7 @@ class DFX_Parish_Retreat_Letters {
 			text-align: center;
 		}
 
-		.dfx-retreat-info {
+		.dfx-prl-retreat-info {
 			background: #f8f9fa;
 			padding: 1rem;
 			border-radius: 4px;
@@ -660,7 +660,7 @@ class DFX_Parish_Retreat_Letters {
 			border-left: 4px solid #007cba;
 		}
 
-		.dfx-retreat-info h2 {
+		.dfx-prl-retreat-info h2 {
 			margin-top: 0;
 			color: #007cba;
 			font-size: 1.1rem;
@@ -713,11 +713,11 @@ class DFX_Parish_Retreat_Letters {
 			margin: 0;
 		}
 
-		.dfx-form-group {
+		.dfx-prl-form-group {
 			margin-bottom: 1.5rem;
 		}
 
-		.dfx-form-group label {
+		.dfx-prl-form-group label {
 			display: block;
 			margin-bottom: 0.5rem;
 			font-weight: 600;
@@ -728,9 +728,9 @@ class DFX_Parish_Retreat_Letters {
 			color: #d63384;
 		}
 
-		.dfx-form-group input[type="text"],
-		.dfx-form-group textarea,
-		.dfx-form-group input[type="file"] {
+		.dfx-prl-form-group input[type="text"],
+		.dfx-prl-form-group textarea,
+		.dfx-prl-form-group input[type="file"] {
 			width: 100%;
 			padding: 0.75rem;
 			border: 1px solid #ddd;
@@ -738,7 +738,7 @@ class DFX_Parish_Retreat_Letters {
 			font-size: 1rem;
 		}
 
-		.dfx-form-group textarea {
+		.dfx-prl-form-group textarea {
 			resize: vertical;
 			min-height: 150px;
 		}
@@ -864,23 +864,23 @@ class DFX_Parish_Retreat_Letters {
 			cursor: not-allowed;
 		}
 
-		.dfx-privacy-notice {
+		.dfx-prl-privacy-notice {
 			margin-top: 2rem;
 			padding: 1rem;
 			background: #f8f9fa;
 			border-radius: 4px;
 		}
 
-		.dfx-privacy-notice h3 {
+		.dfx-prl-privacy-notice h3 {
 			margin-top: 0;
 			color: #333;
 		}
 
-		.dfx-privacy-notice ul {
+		.dfx-prl-privacy-notice ul {
 			margin-bottom: 0;
 		}
 
-		.dfx-privacy-notice li {
+		.dfx-prl-privacy-notice li {
 			margin-bottom: 0.5rem;
 		}
 
@@ -1458,7 +1458,7 @@ class DFX_Parish_Retreat_Letters {
 	 */
 	public function handle_message_submission() {
 		// Verify nonce
-		if ( ! wp_verify_nonce( $_POST['message_nonce'] ?? '', 'dfx_submit_message' ) ) {
+		if ( ! wp_verify_nonce( $_POST['message_nonce'] ?? '', 'dfx_prl_submit_message' ) ) {
 			wp_send_json_error( array( 'message' => __( 'Security check failed.', 'dfx-parish-retreat-letters' ) ) );
 		}
 
@@ -1664,13 +1664,13 @@ class DFX_Parish_Retreat_Letters {
 			wp_die( __( 'Invalid print request.', 'dfx-parish-retreat-letters' ) );
 		}
 
-		$message_id = get_transient( 'dfx_print_token_' . $token );
+		$message_id = get_transient( 'dfx_prl_print_token_' . $token );
 		if ( ! $message_id ) {
 			wp_die( __( 'Print token expired or invalid.', 'dfx-parish-retreat-letters' ) );
 		}
 
 		// Delete the token after use
-		delete_transient( 'dfx_print_token_' . $token );
+		delete_transient( 'dfx_prl_print_token_' . $token );
 
 		// Initialize models
 		$message_model = new DFX_Parish_Retreat_Letters_ConfidentialMessage();
@@ -1890,8 +1890,8 @@ class DFX_Parish_Retreat_Letters {
 	 * @since 1.3.0
 	 */
 	public function schedule_cleanup_tasks() {
-		if ( ! wp_next_scheduled( 'dfx_retreat_cleanup_hook' ) ) {
-			wp_schedule_event( time(), 'daily', 'dfx_retreat_cleanup_hook' );
+		if ( ! wp_next_scheduled( 'dfx_prl_retreat_cleanup_hook' ) ) {
+			wp_schedule_event( time(), 'daily', 'dfx_prl_retreat_cleanup_hook' );
 		}
 	}
 

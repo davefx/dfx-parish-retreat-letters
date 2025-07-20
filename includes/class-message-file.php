@@ -65,7 +65,7 @@ class DFX_Parish_Retreat_Letters_MessageFile {
 	 */
 	private function init_upload_directory() {
 		$wp_upload_dir = wp_upload_dir();
-		$this->upload_dir = $wp_upload_dir['basedir'] . '/dfx-confidential-files';
+		$this->upload_dir = $wp_upload_dir['basedir'] . '/dfx-prl-confidential-files';
 
 		// Create directory if it doesn't exist
 		if ( ! file_exists( $this->upload_dir ) ) {
@@ -314,7 +314,7 @@ class DFX_Parish_Retreat_Letters_MessageFile {
 	 * @param int $user_id User ID.
 	 */
 	private function log_file_access( $file_id, $user_id ) {
-		$access_log = get_option( 'dfx_file_access_log', array() );
+		$access_log = get_option( 'dfx_prl_file_access_log', array() );
 		
 		$access_log[] = array(
 			'file_id'    => $file_id,
@@ -329,7 +329,7 @@ class DFX_Parish_Retreat_Letters_MessageFile {
 			$access_log = array_slice( $access_log, -1000 );
 		}
 
-		update_option( 'dfx_file_access_log', $access_log );
+		update_option( 'dfx_prl_file_access_log', $access_log );
 	}
 
 	/**

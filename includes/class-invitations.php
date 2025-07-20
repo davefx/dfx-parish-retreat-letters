@@ -504,19 +504,19 @@ class DFX_Parish_Retreat_Letters_Invitations {
 
 		get_header();
 		?>
-		<div class="dfx-invitation-container">
-			<div class="dfx-invitation-content">
+		<div class="dfx-prl-invitation-container">
+			<div class="dfx-prl-invitation-content">
 				<h1><?php esc_html_e( 'Retreat Invitation', 'dfx-parish-retreat-letters' ); ?></h1>
 				
 				<?php if ( $error_message ) : ?>
-					<div class="dfx-error-notice">
+					<div class="dfx-prl-error-notice">
 						<?php echo esc_html( $error_message ); ?>
 					</div>
 				<?php endif; ?>
 
-				<div class="dfx-invitation-details">
+				<div class="dfx-prl-invitation-details">
 					<h2><?php esc_html_e( 'You have been invited to:', 'dfx-parish-retreat-letters' ); ?></h2>
-					<div class="dfx-retreat-info">
+					<div class="dfx-prl-retreat-info">
 						<h3><?php echo esc_html( $retreat->name ); ?></h3>
 						<p><strong><?php esc_html_e( 'Location:', 'dfx-parish-retreat-letters' ); ?></strong> <?php echo esc_html( $retreat->location ); ?></p>
 						<p><strong><?php esc_html_e( 'Dates:', 'dfx-parish-retreat-letters' ); ?></strong> 
@@ -527,29 +527,29 @@ class DFX_Parish_Retreat_Letters_Invitations {
 					</div>
 				</div>
 
-				<form method="post" class="dfx-invitation-form">
+				<form method="post" class="dfx-prl-invitation-form">
 					<?php wp_nonce_field( 'accept_invitation_' . $invitation->token, 'invitation_nonce' ); ?>
 					
 					<h3><?php esc_html_e( 'Complete Your Profile', 'dfx-parish-retreat-letters' ); ?></h3>
 					
-					<div class="dfx-form-group">
+					<div class="dfx-prl-form-group">
 						<label for="first_name"><?php esc_html_e( 'First Name', 'dfx-parish-retreat-letters' ); ?></label>
 						<input type="text" id="first_name" name="first_name" value="<?php echo esc_attr( $_POST['first_name'] ?? '' ); ?>" required>
 					</div>
 
-					<div class="dfx-form-group">
+					<div class="dfx-prl-form-group">
 						<label for="last_name"><?php esc_html_e( 'Last Name', 'dfx-parish-retreat-letters' ); ?></label>
 						<input type="text" id="last_name" name="last_name" value="<?php echo esc_attr( $_POST['last_name'] ?? '' ); ?>" required>
 					</div>
 
-					<div class="dfx-form-group">
-						<button type="submit" class="dfx-accept-button">
+					<div class="dfx-prl-form-group">
+						<button type="submit" class="dfx-prl-accept-button">
 							<?php esc_html_e( 'Accept Invitation', 'dfx-parish-retreat-letters' ); ?>
 						</button>
 					</div>
 				</form>
 
-				<div class="dfx-invitation-info">
+				<div class="dfx-prl-invitation-info">
 					<h3><?php esc_html_e( 'What happens next?', 'dfx-parish-retreat-letters' ); ?></h3>
 					<ul>
 						<li><?php esc_html_e( 'A user account will be created for you automatically', 'dfx-parish-retreat-letters' ); ?></li>
@@ -561,7 +561,7 @@ class DFX_Parish_Retreat_Letters_Invitations {
 		</div>
 
 		<style>
-		.dfx-invitation-container {
+		.dfx-prl-invitation-container {
 			max-width: 600px;
 			margin: 2rem auto;
 			padding: 2rem;
@@ -570,13 +570,13 @@ class DFX_Parish_Retreat_Letters_Invitations {
 			border-radius: 8px;
 		}
 
-		.dfx-invitation-content h1 {
+		.dfx-prl-invitation-content h1 {
 			text-align: center;
 			color: #333;
 			margin-bottom: 2rem;
 		}
 
-		.dfx-error-notice {
+		.dfx-prl-error-notice {
 			background: #f8d7da;
 			color: #721c24;
 			padding: 1rem;
@@ -585,7 +585,7 @@ class DFX_Parish_Retreat_Letters_Invitations {
 			margin-bottom: 1.5rem;
 		}
 
-		.dfx-retreat-info {
+		.dfx-prl-retreat-info {
 			background: #f8f9fa;
 			padding: 1.5rem;
 			border-radius: 4px;
@@ -593,23 +593,23 @@ class DFX_Parish_Retreat_Letters_Invitations {
 			margin: 1rem 0;
 		}
 
-		.dfx-retreat-info h3 {
+		.dfx-prl-retreat-info h3 {
 			margin-top: 0;
 			color: #007cba;
 		}
 
-		.dfx-form-group {
+		.dfx-prl-form-group {
 			margin-bottom: 1.5rem;
 		}
 
-		.dfx-form-group label {
+		.dfx-prl-form-group label {
 			display: block;
 			margin-bottom: 0.5rem;
 			font-weight: 600;
 			color: #333;
 		}
 
-		.dfx-form-group input {
+		.dfx-prl-form-group input {
 			width: 100%;
 			padding: 0.75rem;
 			border: 1px solid #ddd;
@@ -617,7 +617,7 @@ class DFX_Parish_Retreat_Letters_Invitations {
 			font-size: 1rem;
 		}
 
-		.dfx-accept-button {
+		.dfx-prl-accept-button {
 			background: #007cba;
 			color: white;
 			padding: 1rem 2rem;
@@ -628,27 +628,27 @@ class DFX_Parish_Retreat_Letters_Invitations {
 			width: 100%;
 		}
 
-		.dfx-accept-button:hover {
+		.dfx-prl-accept-button:hover {
 			background: #005a87;
 		}
 
-		.dfx-invitation-info {
+		.dfx-prl-invitation-info {
 			margin-top: 2rem;
 			padding: 1rem;
 			background: #e7f3ff;
 			border-radius: 4px;
 		}
 
-		.dfx-invitation-info h3 {
+		.dfx-prl-invitation-info h3 {
 			margin-top: 0;
 			color: #0073aa;
 		}
 
-		.dfx-invitation-info ul {
+		.dfx-prl-invitation-info ul {
 			margin-bottom: 0;
 		}
 
-		.dfx-invitation-info li {
+		.dfx-prl-invitation-info li {
 			margin-bottom: 0.5rem;
 		}
 		</style>

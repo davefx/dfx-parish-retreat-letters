@@ -764,7 +764,7 @@ class DFX_Parish_Retreat_Letters_Database {
 	 *     
 	 *     // Example: Create a new table
 	 *     $charset_collate = $wpdb->get_charset_collate();
-	 *     $sql = "CREATE TABLE {$wpdb->prefix}dfx_new_table (...) $charset_collate;";
+	 *     $sql = "CREATE TABLE {$wpdb->prefix}dfx_prl_new_table (...) $charset_collate;";
 	 *     require_once ABSPATH . 'wp-admin/includes/upgrade.php';
 	 *     dbDelta( $sql );
 	 * }
