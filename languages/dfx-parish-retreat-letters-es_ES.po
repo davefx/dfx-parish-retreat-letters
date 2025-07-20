@@ -26,10 +26,10 @@ msgstr "https://github.com/davefx/dfx-parish-retreat-letters"
 #: includes/class-admin.php:166
 #: includes/class-admin.php:167
 #: includes/class-admin.php:553
-#: includes/class-admin.php:2786
-#: includes/class-admin.php:2948
-#: includes/class-admin.php:3090
-#: includes/class-admin.php:3304
+#: includes/class-admin.php:2802
+#: includes/class-admin.php:2964
+#: includes/class-admin.php:3106
+#: includes/class-admin.php:3320
 msgid "Retreats"
 msgstr "Retiros"
 
@@ -40,7 +40,7 @@ msgstr "Todos los Retiros"
 
 #: includes/class-admin.php:189
 #: includes/class-admin.php:555
-#: includes/class-admin.php:2951
+#: includes/class-admin.php:2967
 msgid "Add New"
 msgstr "Añadir Nuevo"
 
@@ -75,20 +75,20 @@ msgstr "Fecha de fin"
 #: includes/class-admin.php:598
 #: includes/class-admin.php:790
 #: includes/class-admin.php:844
-#: includes/class-admin.php:2838
-#: includes/class-admin.php:3370
+#: includes/class-admin.php:2854
+#: includes/class-admin.php:3386
 msgid "Actions"
 msgstr "Acciones"
 
 #: includes/class-admin.php:630
-#: includes/class-admin.php:2880
-#: includes/class-admin.php:2951
+#: includes/class-admin.php:2896
+#: includes/class-admin.php:2967
 msgid "Edit"
 msgstr "Editar"
 
 #: includes/class-admin.php:642
-#: includes/class-admin.php:2904
-#: includes/class-admin.php:3434
+#: includes/class-admin.php:2920
+#: includes/class-admin.php:3458
 msgid "Delete"
 msgstr "Eliminar"
 
@@ -96,8 +96,8 @@ msgstr "Eliminar"
 #: includes/class-admin.php:744
 #: includes/class-admin.php:867
 #: includes/class-admin.php:1437
-#: includes/class-admin.php:3068
-#: includes/class-admin.php:3161
+#: includes/class-admin.php:3084
+#: includes/class-admin.php:3177
 msgid "Cancel"
 msgstr "Cancelar"
 
@@ -113,13 +113,13 @@ msgstr "Añadir retiro"
 #: includes/class-admin.php:702
 #: includes/class-admin.php:710
 #: includes/class-admin.php:718
-#: includes/class-admin.php:2962
-#: includes/class-admin.php:2970
 #: includes/class-admin.php:2978
 #: includes/class-admin.php:2986
 #: includes/class-admin.php:2994
 #: includes/class-admin.php:3002
-#: includes/class-admin.php:3148
+#: includes/class-admin.php:3010
+#: includes/class-admin.php:3018
+#: includes/class-admin.php:3164
 msgid "required"
 msgstr "obligatorio"
 
@@ -140,10 +140,10 @@ msgstr "Total de retiros: %d"
 #: includes/class-admin.php:839
 #: includes/class-admin.php:909
 #: includes/class-admin.php:1477
-#: includes/class-admin.php:2460
-#: includes/class-admin.php:2833
-#: includes/class-admin.php:2962
-#: includes/class-admin.php:3102
+#: includes/class-admin.php:2469
+#: includes/class-admin.php:2849
+#: includes/class-admin.php:2978
+#: includes/class-admin.php:3118
 #: includes/class-attendant.php:299
 msgid "Name"
 msgstr "Nombre"
@@ -167,23 +167,24 @@ msgstr "¿Estás seguro de que quieres eliminar este retiro?"
 #: includes/class-admin.php:453
 #: includes/class-admin.php:476
 #: includes/class-admin.php:516
-#: includes/class-admin.php:2158
-#: includes/class-admin.php:2184
-#: includes/class-admin.php:2226
-#: includes/class-admin.php:2691
-#: includes/class-admin.php:2747
-#: includes/class-admin.php:3176
-#: includes/class-admin.php:3465
-#: includes/class-admin.php:3487
-#: includes/class-admin.php:3516
-#: includes/class-admin.php:3538
-#: includes/class-admin.php:3571
-#: includes/class-admin.php:3609
-#: includes/class-admin.php:3656
-#: includes/class-admin.php:3704
-#: includes/class-admin.php:3746
-#: includes/class-admin.php:3779
-#: includes/class-admin.php:3828
+#: includes/class-admin.php:2046
+#: includes/class-admin.php:2169
+#: includes/class-admin.php:2193
+#: includes/class-admin.php:2235
+#: includes/class-admin.php:2700
+#: includes/class-admin.php:2763
+#: includes/class-admin.php:3192
+#: includes/class-admin.php:3489
+#: includes/class-admin.php:3511
+#: includes/class-admin.php:3540
+#: includes/class-admin.php:3562
+#: includes/class-admin.php:3595
+#: includes/class-admin.php:3633
+#: includes/class-admin.php:3680
+#: includes/class-admin.php:3728
+#: includes/class-admin.php:3770
+#: includes/class-admin.php:3803
+#: includes/class-admin.php:3852
 #: includes/class-dfx-parish-retreat-letters.php:1462
 #: includes/class-gdpr.php:406
 #: includes/class-gdpr.php:440
@@ -277,83 +278,83 @@ msgstr "Falló la verificación del nombre del retiro. Eliminación cancelada po
 
 #: includes/class-admin.php:597
 #: includes/class-admin.php:636
-#: includes/class-admin.php:2788
-#: includes/class-admin.php:2950
-#: includes/class-admin.php:3092
+#: includes/class-admin.php:2804
+#: includes/class-admin.php:2966
+#: includes/class-admin.php:3108
 msgid "Attendants"
 msgstr "Asistentes"
 
-#: includes/class-admin.php:2779
-#: includes/class-admin.php:2940
+#: includes/class-admin.php:2795
+#: includes/class-admin.php:2956
 msgid "Add New Attendant"
 msgstr "Añadir nuevo asistente"
 
-#: includes/class-admin.php:2940
+#: includes/class-admin.php:2956
 msgid "Edit Attendant"
 msgstr "Editar asistente"
 
-#: includes/class-admin.php:2463
-#: includes/class-admin.php:2834
-#: includes/class-admin.php:2970
-#: includes/class-admin.php:3103
+#: includes/class-admin.php:2472
+#: includes/class-admin.php:2850
+#: includes/class-admin.php:2986
+#: includes/class-admin.php:3119
 #: includes/class-attendant.php:300
 msgid "Surnames"
 msgstr "Apellidos"
 
-#: includes/class-admin.php:2466
-#: includes/class-admin.php:2835
-#: includes/class-admin.php:2978
-#: includes/class-admin.php:3104
+#: includes/class-admin.php:2475
+#: includes/class-admin.php:2851
+#: includes/class-admin.php:2994
+#: includes/class-admin.php:3120
 #: includes/class-attendant.php:301
 msgid "Date of Birth"
 msgstr "Fecha de nacimiento"
 
-#: includes/class-admin.php:2836
+#: includes/class-admin.php:2852
 msgid "Emergency Contact"
 msgstr "Contacto de emergencia"
 
-#: includes/class-admin.php:2469
-#: includes/class-admin.php:2986
-#: includes/class-admin.php:3105
+#: includes/class-admin.php:2478
+#: includes/class-admin.php:3002
+#: includes/class-admin.php:3121
 #: includes/class-attendant.php:302
 msgid "Emergency Contact Name"
 msgstr "Nombre del contacto de emergencia"
 
-#: includes/class-admin.php:2472
-#: includes/class-admin.php:2994
-#: includes/class-admin.php:3106
+#: includes/class-admin.php:2481
+#: includes/class-admin.php:3010
+#: includes/class-admin.php:3122
 #: includes/class-attendant.php:303
 msgid "Emergency Contact Surname"
 msgstr "Apellido del contacto de emergencia"
 
-#: includes/class-admin.php:2475
-#: includes/class-admin.php:3002
-#: includes/class-admin.php:3107
+#: includes/class-admin.php:2484
+#: includes/class-admin.php:3018
+#: includes/class-admin.php:3123
 #: includes/class-attendant.php:304
 msgid "Emergency Contact Phone"
 msgstr "Teléfono del contacto de emergencia"
 
-#: includes/class-admin.php:3066
+#: includes/class-admin.php:3082
 msgid "Add Attendant"
 msgstr "Añadir asistente"
 
-#: includes/class-admin.php:3066
+#: includes/class-admin.php:3082
 msgid "Update Attendant"
 msgstr "Actualizar asistente"
 
-#: includes/class-admin.php:2798
+#: includes/class-admin.php:2814
 msgid "Search Attendants:"
 msgstr "Buscar asistentes:"
 
-#: includes/class-admin.php:2800
+#: includes/class-admin.php:2816
 msgid "Search Attendants"
 msgstr "Buscar asistentes"
 
-#: includes/class-admin.php:2810
+#: includes/class-admin.php:2826
 msgid "Export CSV"
 msgstr "Exportar CSV"
 
-#: includes/class-admin.php:3006
+#: includes/class-admin.php:3022
 msgid "Enter phone number with area code."
 msgstr "Ingrese el número de teléfono con cualquier prefijo necesario."
 
@@ -366,69 +367,69 @@ msgstr[0] "%d asistente"
 msgstr[1] "%d asistentes"
 
 #. translators: %s: Retreat name
-#: includes/class-admin.php:2772
+#: includes/class-admin.php:2788
 #, php-format
 msgid "Attendants for %s"
 msgstr "Asistentes para %s"
 
 #: includes/class-admin.php:2023
-#: includes/class-admin.php:2070
-#: includes/class-admin.php:2133
+#: includes/class-admin.php:2081
+#: includes/class-admin.php:2144
 msgid "Invalid retreat ID."
 msgstr "ID de retiro inválido."
 
 #: includes/class-admin.php:525
 #: includes/class-admin.php:2033
-#: includes/class-admin.php:2080
-#: includes/class-admin.php:2138
+#: includes/class-admin.php:2091
+#: includes/class-admin.php:2149
 #: includes/class-invitations.php:467
 msgid "Retreat not found."
 msgstr "Retiro no encontrado."
 
-#: includes/class-admin.php:2101
+#: includes/class-admin.php:2112
 msgid "Invalid retreat or attendant ID."
 msgstr "ID de retiro o asistente inválido."
 
-#: includes/class-admin.php:2113
+#: includes/class-admin.php:2124
 msgid "Retreat or attendant not found, or attendant does not belong to this retreat."
 msgstr "Retiro o asistente no encontrado, o el asistente no pertenece a este retiro."
 
-#: includes/class-admin.php:2808
+#: includes/class-admin.php:2824
 #, php-format
 msgid "Total attendants: %d"
 msgstr "Total de asistentes: %d"
 
-#: includes/class-admin.php:2210
+#: includes/class-admin.php:2219
 msgid "Attendant created successfully."
 msgstr "Asistente creado con éxito."
 
-#: includes/class-admin.php:2200
+#: includes/class-admin.php:2209
 msgid "Attendant updated successfully."
 msgstr "Asistente actualizado con éxito."
 
-#: includes/class-admin.php:2166
-#: includes/class-admin.php:2697
+#: includes/class-admin.php:2177
+#: includes/class-admin.php:2706
 msgid "Attendant deleted successfully."
 msgstr "Asistente eliminado con éxito."
 
-#: includes/class-admin.php:2204
+#: includes/class-admin.php:2213
 msgid "Error updating attendant. Please check your data."
 msgstr "Error al actualizar el asistente. Por favor verifica tus datos."
 
-#: includes/class-admin.php:2168
-#: includes/class-admin.php:2699
+#: includes/class-admin.php:2179
+#: includes/class-admin.php:2708
 msgid "Error deleting attendant."
 msgstr "Error al eliminar el asistente."
 
-#: includes/class-admin.php:2914
+#: includes/class-admin.php:2930
 msgid "No attendants found for your search."
 msgstr "No se encontraron asistentes para tu búsqueda."
 
-#: includes/class-admin.php:2916
+#: includes/class-admin.php:2932
 msgid "No attendants found for this retreat."
 msgstr "No se encontraron asistentes para este retiro."
 
-#: includes/class-admin.php:2918
+#: includes/class-admin.php:2934
 msgid "Add the first attendant"
 msgstr "Añadir el primer asistente"
 
@@ -436,51 +437,51 @@ msgstr "Añadir el primer asistente"
 msgid "Manage Attendants"
 msgstr "Gestionar Asistentes"
 
-#: includes/class-admin.php:2813
-#: includes/class-admin.php:3093
+#: includes/class-admin.php:2829
+#: includes/class-admin.php:3109
 msgid "Import CSV"
 msgstr "Importar CSV"
 
-#: includes/class-admin.php:3085
+#: includes/class-admin.php:3101
 msgid "Import Attendants from CSV"
 msgstr "Importar Asistentes desde CSV"
 
-#: includes/class-admin.php:3099
+#: includes/class-admin.php:3115
 msgid "CSV Import Instructions"
 msgstr "Instrucciones de Importación CSV"
 
-#: includes/class-admin.php:3148
+#: includes/class-admin.php:3164
 msgid "CSV File"
 msgstr "Archivo CSV"
 
-#: includes/class-admin.php:3152
+#: includes/class-admin.php:3168
 msgid "Select a CSV file to import. Maximum file size: 2MB."
 msgstr "Selecciona un archivo CSV para importar. Tamaño máximo de archivo: 2MB."
 
-#: includes/class-admin.php:3159
+#: includes/class-admin.php:3175
 msgid "Import Attendants"
 msgstr "Importar Asistentes"
 
-#: includes/class-admin.php:2236
+#: includes/class-admin.php:2245
 msgid "Please select a valid CSV file."
 msgstr "Por favor selecciona un archivo CSV válido."
 
-#: includes/class-admin.php:2245
+#: includes/class-admin.php:2254
 msgid "CSV file is too large. Maximum size is 2MB."
 msgstr "El archivo CSV es demasiado grande. El tamaño máximo es 2MB."
 
-#: includes/class-admin.php:2251
+#: includes/class-admin.php:2260
 msgid "Unable to read CSV file."
 msgstr "No se puede leer el archivo CSV."
 
 #. translators: %d: Number of imported attendants
-#: includes/class-admin.php:2322
+#: includes/class-admin.php:2331
 #, php-format
 msgid "Successfully imported %d attendants."
 msgstr "%d asistentes importados con éxito."
 
 #. translators: %d: Number of errors
-#: includes/class-admin.php:2332
+#: includes/class-admin.php:2341
 #, php-format
 msgid "%d rows had errors and were not imported."
 msgstr "%d filas tuvieron errores y no fueron importadas."
@@ -489,132 +490,132 @@ msgstr "%d filas tuvieron errores y no fueron importadas."
 msgid "Are you sure you want to delete this attendant?"
 msgstr "¿Estás seguro de que quieres eliminar este asistente?"
 
-#: includes/class-admin.php:2266
+#: includes/class-admin.php:2275
 msgid "CSV file appears to be empty or invalid."
 msgstr "El archivo CSV parece estar vacío o no es válido."
 
 #. translators: %s: List of missing field names
-#: includes/class-admin.php:2280
+#: includes/class-admin.php:2289
 #, php-format
 msgid "Required fields missing from CSV: %s"
 msgstr "Faltan campos requeridos en el CSV: %s"
 
-#: includes/class-admin.php:2302
+#: includes/class-admin.php:2311
 #, php-format
 msgid "Line %d: Invalid data format"
 msgstr "Línea %d: Formato de datos inválido"
 
-#: includes/class-admin.php:2312
+#: includes/class-admin.php:2321
 #, php-format
 msgid "Line %d: Failed to create attendant"
 msgstr "Línea %d: Error al crear asistente"
 
-#: includes/class-admin.php:2338
+#: includes/class-admin.php:2347
 msgid "Error details:"
 msgstr "Detalles del error:"
 
-#: includes/class-admin.php:2341
+#: includes/class-admin.php:2350
 msgid "...and more errors."
 msgstr "...y más errores."
 
-#: includes/class-admin.php:3100
+#: includes/class-admin.php:3116
 msgid "Your CSV file should contain the following required columns. Column order is flexible and the system will automatically identify columns by their names:"
 msgstr "Tu archivo CSV debe contener las siguientes columnas obligatorias. El orden de las columnas es flexible y el sistema identificará automáticamente las columnas por sus nombres:"
 
-#: includes/class-admin.php:3102
+#: includes/class-admin.php:3118
 msgid "(or \"Nombre\")"
 msgstr "(o \"Nombre\")"
 
-#: includes/class-admin.php:3103
+#: includes/class-admin.php:3119
 msgid "(or \"Apellidos\")"
 msgstr "(o \"Apellidos\")"
 
-#: includes/class-admin.php:3104
+#: includes/class-admin.php:3120
 msgid "(or \"Fecha de Nacimiento\")"
 msgstr "(o \"Fecha de Nacimiento\")"
 
-#: includes/class-admin.php:3105
+#: includes/class-admin.php:3121
 msgid "(or \"Nombre del Contacto de Emergencia\")"
 msgstr "(o \"Nombre del Contacto de Emergencia\")"
 
-#: includes/class-admin.php:3106
+#: includes/class-admin.php:3122
 msgid "(or \"Apellido del Contacto de Emergencia\")"
 msgstr "(o \"Apellido del Contacto de Emergencia\")"
 
-#: includes/class-admin.php:3107
+#: includes/class-admin.php:3123
 msgid "(or \"Teléfono del Contacto de Emergencia\")"
 msgstr "(o \"Teléfono del Contacto de Emergencia\")"
 
-#: includes/class-admin.php:3109
+#: includes/class-admin.php:3125
 msgid "Additional features:"
 msgstr "Características adicionales:"
 
-#: includes/class-admin.php:3111
+#: includes/class-admin.php:3127
 msgid "Column order can be any order"
 msgstr "Las columnas pueden estar en cualquier orden"
 
-#: includes/class-admin.php:3112
+#: includes/class-admin.php:3128
 msgid "Extra columns are allowed and will be ignored"
 msgstr "Se permiten columnas adicionales y serán ignoradas"
 
-#: includes/class-admin.php:3113
+#: includes/class-admin.php:3129
 msgid "Date formats supported: YYYY-MM-DD, DD/MM/YYYY, MM/DD/YYYY, DD-MM-YYYY, MM-DD-YYYY, DD.MM.YYYY"
 msgstr "Formatos de fecha soportados: AAAA-MM-DD, DD/MM/AAAA, MM/DD/AAAA, DD-MM-AAAA, MM-DD-AAAA, DD.MM.AAAA"
 
-#: includes/class-admin.php:3114
+#: includes/class-admin.php:3130
 msgid "Column names can be in English or Spanish"
 msgstr "Los nombres de las columnas pueden estar en inglés o español"
 
-#: includes/class-admin.php:3115
+#: includes/class-admin.php:3131
 msgid "The first row must contain column headers"
 msgstr "La primera fila debe contener los encabezados de las columnas"
 
-#: includes/class-admin.php:3133
+#: includes/class-admin.php:3149
 msgid "Date Format Preference"
 msgstr "Preferencia de Formato de Fecha"
 
-#: includes/class-admin.php:2356
-#: includes/class-admin.php:2362
-#: includes/class-admin.php:3138
+#: includes/class-admin.php:2365
+#: includes/class-admin.php:2371
+#: includes/class-admin.php:3154
 msgid "DD/MM/YYYY (Day/Month/Year)"
 msgstr "DD/MM/AAAA (Día/Mes/Año)"
 
-#: includes/class-admin.php:2359
-#: includes/class-admin.php:3139
+#: includes/class-admin.php:2368
+#: includes/class-admin.php:3155
 msgid "MM/DD/YYYY (Month/Day/Year)"
 msgstr "MM/DD/AAAA (Mes/Día/Año)"
 
-#: includes/class-admin.php:3142
+#: includes/class-admin.php:3158
 msgid "This preference is used to interpret ambiguous dates like \"01/10/2025\". Unambiguous dates are always parsed correctly regardless of this setting."
 msgstr "Esta preferencia se utiliza para interpretar fechas ambiguas como \"01/10/2025\". Las fechas no ambiguas siempre se analizan correctamente independientemente de esta configuración."
 
-#: includes/class-admin.php:3118
+#: includes/class-admin.php:3134
 msgid "Important Note about Date Formats:"
 msgstr "Nota Importante sobre Formatos de Fecha:"
 
-#: includes/class-admin.php:3119
+#: includes/class-admin.php:3135
 msgid "For ambiguous dates like \"01/10/2025\", the system cannot determine if this means \"January 10th\" or \"October 1st\". To avoid confusion:"
 msgstr "Para fechas ambiguas como \"01/10/2025\", el sistema no puede determinar si esto significa \"10 de enero\" o \"1 de octubre\". Para evitar confusión:"
 
-#: includes/class-admin.php:3121
+#: includes/class-admin.php:3137
 msgid "Use unambiguous formats like YYYY-MM-DD (2025-01-10)"
 msgstr "Use formatos no ambiguos como AAAA-MM-DD (2025-01-10)"
 
-#: includes/class-admin.php:3122
+#: includes/class-admin.php:3138
 msgid "Set your preferred date format below to ensure consistent interpretation"
 msgstr "Configure su formato de fecha preferido abajo para asegurar una interpretación consistente"
 
 #. translators: %1$d: Number of ambiguous dates, %2$s: Current preference
-#: includes/class-admin.php:2368
+#: includes/class-admin.php:2377
 #, php-format
 msgid "Warning: %1$d ambiguous date(s) were interpreted using your current preference (%2$s)."
 msgstr "Advertencia: %1$d fecha(s) ambigua(s) fueron interpretadas usando su preferencia actual (%2$s)."
 
-#: includes/class-admin.php:2374
+#: includes/class-admin.php:2383
 msgid "Ambiguous dates found:"
 msgstr "Fechas ambiguas encontradas:"
 
-#: includes/class-admin.php:2377
+#: includes/class-admin.php:2386
 msgid "To avoid ambiguity in future imports, consider using YYYY-MM-DD format."
 msgstr "Para evitar ambigüedad en futuras importaciones, considere usar el formato AAAA-MM-DD."
 
@@ -710,7 +711,7 @@ msgstr "Su mensaje ha sido enviado exitosamente y almacenado de forma segura."
 msgid "An error occurred while sending your message."
 msgstr "Ocurrió un error al enviar su mensaje."
 
-#: includes/class-admin.php:4229
+#: includes/class-admin.php:4253
 #: includes/class-dfx-parish-retreat-letters.php:1424
 msgid "A network error occurred. Please try again."
 msgstr "Ocurrió un error de red. Por favor inténtelo de nuevo."
@@ -752,24 +753,24 @@ msgstr "Demasiadas solicitudes. Por favor espere antes de intentar de nuevo."
 msgid "Rate Limit Exceeded"
 msgstr "Límite de solicitudes excedido"
 
-#: includes/class-admin.php:2893
-#: includes/class-admin.php:3047
+#: includes/class-admin.php:2909
+#: includes/class-admin.php:3063
 msgid "Generate Message URL"
 msgstr "Generar URL de Mensaje"
 
-#: includes/class-admin.php:3212
+#: includes/class-admin.php:3228
 msgid "Message URL generated successfully."
 msgstr "URL de mensaje generada correctamente."
 
-#: includes/class-admin.php:3206
+#: includes/class-admin.php:3222
 msgid "Failed to generate message URL."
 msgstr "Error al generar la URL del mensaje."
 
-#: includes/class-admin.php:3181
+#: includes/class-admin.php:3197
 msgid "Invalid attendant ID."
 msgstr "ID de asistente no válido."
 
-#: includes/class-admin.php:3187
+#: includes/class-admin.php:3203
 msgid "Attendant not found."
 msgstr "Asistente no encontrado."
 
@@ -786,7 +787,7 @@ msgstr "El contenido del archivo está cifrado y no puede ser exportado por razo
 msgid "Please provide an identifier (name or email)."
 msgstr "Por favor proporcione un identificador (nombre o correo electrónico)."
 
-#: includes/class-admin.php:4202
+#: includes/class-admin.php:4226
 #: includes/class-gdpr.php:451
 msgid "Please type \"ERASE\" to confirm data deletion."
 msgstr "Por favor escriba \"BORRAR\" para confirmar la eliminación de datos."
@@ -823,8 +824,8 @@ msgid "Error preparing message for print. Please try again."
 msgstr "Error al preparar el mensaje para imprimir. Por favor inténtelo de nuevo."
 
 #: includes/class-admin.php:332
-#: includes/class-admin.php:3473
-#: includes/class-admin.php:3558
+#: includes/class-admin.php:3497
+#: includes/class-admin.php:3582
 msgid "Message deleted successfully."
 msgstr "Mensaje eliminado exitosamente."
 
@@ -844,7 +845,7 @@ msgstr "Introduzca su nombre"
 msgid "Choose message type:"
 msgstr "Seleccione el tipo de mensaje:"
 
-#: includes/class-admin.php:3380
+#: includes/class-admin.php:3396
 #: includes/class-dfx-parish-retreat-letters.php:571
 msgid "Text Message"
 msgstr "Mensaje de texto"
@@ -922,45 +923,39 @@ msgstr "Error en la verificación de seguridad. Por favor, actualiza la página.
 msgid "Security check error. Please try again."
 msgstr "Error en la verificación de seguridad. Por favor, inténtalo de nuevo."
 
-#: includes/class-admin.php:3369
+#: includes/class-admin.php:3385
 msgid "Print Status"
 msgstr "Estado de Impresión"
 
-#: includes/class-admin.php:3395
+#: includes/class-admin.php:3411
 msgid "Printed"
 msgstr "Impreso"
 
-#: includes/class-admin.php:3410
+#: includes/class-admin.php:3434
 msgid "Not Printed"
 msgstr "No Impreso"
 
-#. translators: %1$d: Print count, %2$s: First print date
-#: includes/class-admin.php:3400
-#, php-format
-msgid "Printed %1$d time(s), first: %2$s"
-msgstr "Impreso %1$d vez(es), por primera vez: %2$s"
-
-#: includes/class-admin.php:3411
+#: includes/class-admin.php:3435
 msgid "Not printed"
 msgstr "No impreso"
 
-#: includes/class-admin.php:3416
+#: includes/class-admin.php:3440
 msgid "Print"
 msgstr "Imprimir"
 
-#: includes/class-admin.php:3384
+#: includes/class-admin.php:3400
 msgid "Files"
 msgstr "Archivos"
 
-#: includes/class-admin.php:3383
+#: includes/class-admin.php:3399
 msgid "Message with Files"
 msgstr "Mensaje con Archivos"
 
-#: includes/class-admin.php:3329
+#: includes/class-admin.php:3345
 msgid "Messages with Files"
 msgstr "Mensajes con Archivos"
 
-#: includes/class-admin.php:3910
+#: includes/class-admin.php:3934
 msgid "Encrypted Files"
 msgstr "Archivos cifrados"
 
@@ -976,7 +971,7 @@ msgstr "Solicitud de impresión no válida."
 msgid "Print token expired or invalid."
 msgstr "Token de impresión caducado o no válido."
 
-#: includes/class-admin.php:3549
+#: includes/class-admin.php:3573
 #: includes/class-dfx-parish-retreat-letters.php:1682
 msgid "Message not found."
 msgstr "Mensaje no encontrado."
@@ -1027,212 +1022,212 @@ msgstr "Mensaje enviado exitosamente con %d archivo(s)."
 msgid "Note: Some files could not be uploaded: %s"
 msgstr "Nota: Algunos archivos no pudieron subirse: %s"
 
-#: includes/class-admin.php:3407
+#: includes/class-admin.php:3431
 msgid "Click to view print history"
-msgstr "Haga clic para ver el historial de impresión"
+msgstr "Haz clic para ver el historial de impresión"
 
-#: includes/class-admin.php:3587
-#: includes/class-admin.php:4021
+#: includes/class-admin.php:3611
+#: includes/class-admin.php:4045
 #: includes/class-print-log.php:462
 msgid "Unknown User"
 msgstr "Usuario Desconocido"
 
 #: includes/class-admin.php:197
 #: includes/class-admin.php:198
-#: includes/class-admin.php:3865
+#: includes/class-admin.php:3889
 msgid "Privacy & Compliance"
 msgstr "Privacidad y Cumplimiento"
 
-#: includes/class-admin.php:3872
+#: includes/class-admin.php:3896
 msgid "Compliance Status Overview"
 msgstr "Resumen del Estado de Cumplimiento"
 
-#: includes/class-admin.php:3876
+#: includes/class-admin.php:3900
 msgid "Encryption"
 msgstr "Cifrado"
 
-#: includes/class-admin.php:3877
+#: includes/class-admin.php:3901
 msgid "AES-256 encryption active"
 msgstr "Cifrado AES-256 activo"
 
-#: includes/class-admin.php:3877
+#: includes/class-admin.php:3901
 msgid "Encryption requirements not met"
 msgstr "Los requisitos de cifrado no se cumplen"
 
-#: includes/class-admin.php:3882
+#: includes/class-admin.php:3906
 msgid "IP Anonymization"
 msgstr "Anonimización de IP"
 
-#: includes/class-admin.php:3883
+#: includes/class-admin.php:3907
 msgid "IPs anonymized after 30 days"
 msgstr "IPs anonimizadas después de 30 días"
 
-#: includes/class-admin.php:3888
+#: includes/class-admin.php:3912
 msgid "Data Retention"
 msgstr "Retención de Datos"
 
-#: includes/class-admin.php:3889
+#: includes/class-admin.php:3913
 msgid "Policy configured"
 msgstr "Política configurada"
 
-#: includes/class-admin.php:3889
+#: includes/class-admin.php:3913
 msgid "Policy needs configuration"
 msgstr "La política necesita configuración"
 
-#: includes/class-admin.php:3894
+#: includes/class-admin.php:3918
 msgid "Audit Logging"
 msgstr "Registro de Auditoría"
 
-#: includes/class-admin.php:3895
+#: includes/class-admin.php:3919
 msgid "All actions are logged"
 msgstr "Todas las acciones son registradas"
 
-#: includes/class-admin.php:3902
+#: includes/class-admin.php:3926
 msgid "Data Statistics"
 msgstr "Estadísticas de Datos"
 
 #: includes/class-admin.php:208
-#: includes/class-admin.php:3018
-#: includes/class-admin.php:3291
-#: includes/class-admin.php:3906
+#: includes/class-admin.php:3034
+#: includes/class-admin.php:3307
+#: includes/class-admin.php:3930
 msgid "Confidential Messages"
 msgstr "Mensajes Confidenciales"
 
-#: includes/class-admin.php:3914
+#: includes/class-admin.php:3938
 msgid "Audit Log Entries"
 msgstr "Entradas del Registro de Auditoría"
 
-#: includes/class-admin.php:3918
+#: includes/class-admin.php:3942
 msgid "Last Cleanup"
 msgstr "Última Limpieza"
 
-#: includes/class-admin.php:3917
+#: includes/class-admin.php:3941
 msgid "Never"
 msgstr "Nunca"
 
-#: includes/class-admin.php:3928
+#: includes/class-admin.php:3952
 msgid "Data Retention Policy"
 msgstr "Política de Retención de Datos"
 
-#: includes/class-admin.php:3933
+#: includes/class-admin.php:3957
 msgid "Message Retention Period"
 msgstr "Período de Retención de Mensajes"
 
-#: includes/class-admin.php:3937
+#: includes/class-admin.php:3961
 msgid "Number of days to keep confidential messages (30-3650 days). Set to 0 to keep indefinitely."
 msgstr "Número de días para mantener los mensajes confidenciales (30-3650 días). Establecer a 0 para mantener indefinidamente."
 
-#: includes/class-admin.php:3942
+#: includes/class-admin.php:3966
 msgid "Audit Log Retention Period"
 msgstr "Período de Retención del Registro de Auditoría"
 
-#: includes/class-admin.php:3946
+#: includes/class-admin.php:3970
 msgid "Number of days to keep audit logs (365-3650 days)."
 msgstr "Número de días para mantener los registros de auditoría (365-3650 días)."
 
-#: includes/class-admin.php:3951
+#: includes/class-admin.php:3975
 msgid "IP Address Anonymization"
 msgstr "Anonimización de Direcciones IP"
 
-#: includes/class-admin.php:3954
+#: includes/class-admin.php:3978
 msgid "30 days (Fixed for GDPR compliance)"
 msgstr "30 días (Fijo para cumplimiento RGPD)"
 
-#: includes/class-admin.php:3955
+#: includes/class-admin.php:3979
 msgid "IP addresses are automatically anonymized after 30 days to comply with GDPR requirements."
 msgstr "Las direcciones IP se anonimizan automáticamente después de 30 días para cumplir con los requisitos del RGPD."
 
-#: includes/class-admin.php:3962
+#: includes/class-admin.php:3986
 msgid "Update Retention Settings"
 msgstr "Actualizar Configuración de Retención"
 
-#: includes/class-admin.php:3967
+#: includes/class-admin.php:3991
 msgid "Privacy Tools"
 msgstr "Herramientas de Privacidad"
 
-#: includes/class-admin.php:3970
+#: includes/class-admin.php:3994
 msgid "Manual Cleanup"
 msgstr "Limpieza Manual"
 
-#: includes/class-admin.php:3971
+#: includes/class-admin.php:3995
 msgid "Run manual privacy cleanup to anonymize old IP addresses and clean up expired data."
 msgstr "Ejecutar limpieza manual de privacidad para anonimizar direcciones IP antiguas y limpiar datos caducados."
 
-#: includes/class-admin.php:3975
+#: includes/class-admin.php:3999
 msgid "Run Cleanup Now"
 msgstr "Ejecutar Limpieza Ahora"
 
-#: includes/class-admin.php:3975
+#: includes/class-admin.php:3999
 msgid "Are you sure you want to run the privacy cleanup?"
 msgstr "¿Está seguro de que desea ejecutar la limpieza de privacidad?"
 
-#: includes/class-admin.php:3980
+#: includes/class-admin.php:4004
 msgid "Personal Data Export/Erasure"
 msgstr "Exportación/Borrado de Datos Personales"
 
-#: includes/class-admin.php:3981
+#: includes/class-admin.php:4005
 msgid "Export or erase personal data by sender name for GDPR compliance."
 msgstr "Exportar o borrar datos personales por nombre del remitente para cumplimiento RGPD."
 
-#: includes/class-admin.php:3985
+#: includes/class-admin.php:4009
 msgid "Export Personal Data"
 msgstr "Exportar Datos Personales"
 
-#: includes/class-admin.php:3986
-#: includes/class-admin.php:3992
+#: includes/class-admin.php:4010
+#: includes/class-admin.php:4016
 msgid "Enter sender name or email"
 msgstr "Ingrese nombre del remitente o email"
 
-#: includes/class-admin.php:3987
+#: includes/class-admin.php:4011
 msgid "Export Data"
 msgstr "Exportar Datos"
 
-#: includes/class-admin.php:3991
+#: includes/class-admin.php:4015
 msgid "Erase Personal Data"
 msgstr "Borrar Datos Personales"
 
-#: includes/class-admin.php:3993
+#: includes/class-admin.php:4017
 msgid "Type ERASE to confirm"
 msgstr "Escriba BORRAR para confirmar"
 
-#: includes/class-admin.php:3994
+#: includes/class-admin.php:4018
 msgid "Erase Data"
 msgstr "Borrar Datos"
 
-#: includes/class-admin.php:4001
+#: includes/class-admin.php:4025
 msgid "Recent Audit Activity"
 msgstr "Actividad de Auditoría Reciente"
 
-#: includes/class-admin.php:4005
+#: includes/class-admin.php:4029
 msgid "Date/Time"
 msgstr "Fecha/Hora"
 
-#: includes/class-admin.php:4006
+#: includes/class-admin.php:4030
 msgid "Event Type"
 msgstr "Tipo de Evento"
 
 #: includes/class-admin.php:786
-#: includes/class-admin.php:4007
+#: includes/class-admin.php:4031
 msgid "User"
 msgstr "Usuario"
 
-#: includes/class-admin.php:4008
+#: includes/class-admin.php:4032
 msgid "Details"
 msgstr "Detalles"
 
-#: includes/class-admin.php:4023
+#: includes/class-admin.php:4047
 msgid "System"
 msgstr "Sistema"
 
-#: includes/class-admin.php:4032
+#: includes/class-admin.php:4056
 msgid "No additional details"
 msgstr "Sin detalles adicionales"
 
-#: includes/class-admin.php:4040
+#: includes/class-admin.php:4064
 msgid "No audit logs found."
 msgstr "No se encontraron registros de auditoría."
 
-#: includes/class-admin.php:3849
+#: includes/class-admin.php:3873
 msgid "Privacy cleanup completed successfully."
 msgstr "Limpieza de privacidad completada exitosamente."
 
@@ -1258,7 +1253,7 @@ msgstr "Otorgado Por"
 #: includes/class-admin.php:1425
 #: includes/class-admin.php:1488
 #: includes/class-admin.php:1789
-#: includes/class-admin.php:3676
+#: includes/class-admin.php:3700
 #: includes/class-invitations.php:502
 #: includes/class-invitations.php:684
 msgid "Retreat Manager"
@@ -1272,7 +1267,7 @@ msgstr "Gestor de Retiro"
 #: includes/class-admin.php:1426
 #: includes/class-admin.php:1489
 #: includes/class-admin.php:1790
-#: includes/class-admin.php:3677
+#: includes/class-admin.php:3701
 #: includes/class-invitations.php:503
 #: includes/class-invitations.php:685
 msgid "Message Manager"
@@ -1467,222 +1462,222 @@ msgstr "No tienes permiso para ver este retiro."
 msgid "You do not have permission to modify this retreat."
 msgstr "No tienes permiso para modificar este retiro."
 
-#: includes/class-admin.php:2075
+#: includes/class-admin.php:2086
 msgid "You do not have permission to add attendants to this retreat."
 msgstr "No tienes permiso para añadir asistentes a este retiro."
 
-#: includes/class-admin.php:2106
+#: includes/class-admin.php:2117
 msgid "You do not have permission to edit attendants for this retreat."
 msgstr "No tienes permiso para editar asistentes de este retiro."
 
-#: includes/class-admin.php:2837
-#: includes/class-admin.php:2886
-#: includes/class-admin.php:3022
+#: includes/class-admin.php:2853
+#: includes/class-admin.php:2902
+#: includes/class-admin.php:3038
 msgid "Messages"
 msgstr "Mensajes"
 
 #. translators: %d: Number of messages
-#: includes/class-admin.php:2868
+#: includes/class-admin.php:2884
 #, php-format
 msgid "%d message"
 msgid_plural "%d messages"
 msgstr[0] "%d mensaje"
 msgstr[1] "%d mensajes"
 
-#: includes/class-admin.php:2874
+#: includes/class-admin.php:2890
 msgid "No messages"
 msgstr "N"
 
-#: includes/class-admin.php:2897
-#: includes/class-admin.php:3054
+#: includes/class-admin.php:2913
+#: includes/class-admin.php:3070
 msgid "Copy Message URL"
 msgstr "Copiar URL de mensajes"
 
 #. translators: %d: Number of messages
-#: includes/class-admin.php:3030
+#: includes/class-admin.php:3046
 #, php-format
 msgid "View %d message"
 msgid_plural "View %d messages"
 msgstr[0] "Ver %d mensaje"
 msgstr[1] "Ver %d mensajes"
 
-#: includes/class-admin.php:3037
+#: includes/class-admin.php:3053
 msgid "No messages received yet."
 msgstr "No se han recibido mensajes aún."
 
-#: includes/class-admin.php:3042
+#: includes/class-admin.php:3058
 msgid "Message URL"
 msgstr "URL de mensajes"
 
-#: includes/class-admin.php:3050
+#: includes/class-admin.php:3066
 msgid "Generate a secure URL that can be shared with this attendant to receive confidential messages."
 msgstr "Genera una URL segura que se puede compartir con este asistente para recibir mensajes confidenciales."
 
-#: includes/class-admin.php:3057
+#: includes/class-admin.php:3073
 msgid "Share this secure URL with the attendant to receive confidential messages."
 msgstr "Comparte esta URL segura con el asistente para recibir mensajes confidenciales."
 
 #. translators: %s: Attendant name
-#: includes/class-admin.php:3287
+#: includes/class-admin.php:3303
 #, php-format
 msgid "Messages for %s"
 msgstr "Mensajes para %s"
 
-#: includes/class-admin.php:3316
+#: includes/class-admin.php:3332
 msgid "Security Notice:"
 msgstr "Aviso de seguridad:"
 
-#: includes/class-admin.php:3316
+#: includes/class-admin.php:3332
 msgid "Message content is encrypted and can only be viewed when printed. This page shows metadata only for privacy and security compliance."
 msgstr "El contenido del mensaje está cifrado y solo se puede ver al imprimir. Esta página muestra solo metadatos para el cumplimiento de privacidad y seguridad."
 
-#: includes/class-admin.php:3327
+#: includes/class-admin.php:3343
 msgid "All Types"
 msgstr "Todos los Tipos"
 
-#: includes/class-admin.php:3328
+#: includes/class-admin.php:3344
 msgid "Text Messages"
 msgstr "Mensajes de Texto"
 
-#: includes/class-admin.php:3332
+#: includes/class-admin.php:3348
 msgid "Filter"
 msgstr "Filtrar"
 
-#: includes/class-admin.php:3336
+#: includes/class-admin.php:3352
 msgid "Search Messages:"
 msgstr "Buscar Mensajes:"
 
-#: includes/class-admin.php:3337
+#: includes/class-admin.php:3353
 msgid "Search by sender..."
 msgstr "Buscar por remitente..."
 
-#: includes/class-admin.php:3338
+#: includes/class-admin.php:3354
 msgid "Search Messages"
 msgstr "Buscar Mensajes"
 
-#: includes/class-admin.php:3347
+#: includes/class-admin.php:3363
 #, php-format
 msgid "Total messages: %d"
 msgstr "Mensajes totales: %d"
 
-#: includes/class-admin.php:3366
+#: includes/class-admin.php:3382
 msgid "From"
 msgstr "De"
 
-#: includes/class-admin.php:3367
+#: includes/class-admin.php:3383
 msgid "Type"
 msgstr "Tipo"
 
-#: includes/class-admin.php:3368
+#: includes/class-admin.php:3384
 msgid "Submitted"
 msgstr "Enviado"
 
-#: includes/class-admin.php:3377
+#: includes/class-admin.php:3393
 msgid "Anonymous"
 msgstr "Anónimo"
 
-#: includes/class-admin.php:3381
+#: includes/class-admin.php:3397
 msgid "Text"
 msgstr "Texto"
 
-#: includes/class-admin.php:3444
+#: includes/class-admin.php:3468
 msgid "No messages found for your search/filter criteria."
 msgstr "No se encontraron mensajes para sus criterios de búsqueda/filtro."
 
-#: includes/class-admin.php:3446
+#: includes/class-admin.php:3470
 msgid "No confidential messages have been received yet."
 msgstr "No se han recibido mensajes confidenciales aún."
 
-#: includes/class-admin.php:3475
-#: includes/class-admin.php:3560
+#: includes/class-admin.php:3499
+#: includes/class-admin.php:3584
 msgid "Error deleting message."
 msgstr "Error al eliminar el mensaje."
 
-#: includes/class-admin.php:3492
-#: includes/class-admin.php:3543
-#: includes/class-admin.php:3576
+#: includes/class-admin.php:3516
+#: includes/class-admin.php:3567
+#: includes/class-admin.php:3600
 msgid "Invalid message ID."
 msgstr "ID de mensaje no válido."
 
-#: includes/class-admin.php:3521
+#: includes/class-admin.php:3545
 msgid "Invalid file ID."
 msgstr "ID de archivo no válido."
 
-#: includes/class-admin.php:3528
+#: includes/class-admin.php:3552
 msgid "File not found or access denied."
 msgstr "Archivo no encontrado o acceso denegado."
 
-#: includes/class-admin.php:3554
+#: includes/class-admin.php:3578
 msgid "You do not have permission to delete messages for this retreat."
 msgstr "No tienes permiso para eliminar mensajes de este retiro."
 
-#: includes/class-admin.php:3614
-#: includes/class-admin.php:3668
-#: includes/class-admin.php:3716
-#: includes/class-admin.php:3759
-#: includes/class-admin.php:3790
+#: includes/class-admin.php:3638
+#: includes/class-admin.php:3692
+#: includes/class-admin.php:3740
+#: includes/class-admin.php:3783
+#: includes/class-admin.php:3814
 msgid "Permission denied."
 msgstr "Permiso denegado."
 
-#: includes/class-admin.php:3619
+#: includes/class-admin.php:3643
 msgid "Search term must be at least 2 characters."
 msgstr "El término de búsqueda debe tener al menos 2 caracteres."
 
-#: includes/class-admin.php:3664
-#: includes/class-admin.php:3712
-#: includes/class-admin.php:3755
-#: includes/class-admin.php:3786
+#: includes/class-admin.php:3688
+#: includes/class-admin.php:3736
+#: includes/class-admin.php:3779
+#: includes/class-admin.php:3810
 msgid "Invalid parameters."
 msgstr "Parametros no válidos."
 
-#: includes/class-admin.php:3681
+#: includes/class-admin.php:3705
 #, php-format
 msgid "Permission granted to %s as %s."
 msgstr "Permiso otorgado a %s como %s."
 
-#: includes/class-admin.php:3693
+#: includes/class-admin.php:3717
 msgid "Failed to grant permission."
 msgstr "Fallo al otorgar el permiso."
 
-#: includes/class-admin.php:3721
+#: includes/class-admin.php:3745
 msgid "You cannot revoke your own permissions."
 msgstr "No puedes revocar tus propios permisos."
 
-#: includes/class-admin.php:3730
+#: includes/class-admin.php:3754
 #, php-format
 msgid "Permission revoked from %s."
 msgstr "Permiso revocado de %s."
 
-#: includes/class-admin.php:3735
+#: includes/class-admin.php:3759
 msgid "Failed to revoke permission."
 msgstr "Fallo al revocar el permiso."
 
-#: includes/class-admin.php:3797
+#: includes/class-admin.php:3821
 msgid "Invitation cancelled successfully."
 msgstr "Invitación cancelada correctamente."
 
-#: includes/class-admin.php:3799
+#: includes/class-admin.php:3823
 msgid "Failed to cancel invitation."
 msgstr "Fallo al cancelar la invitación."
 
-#: includes/class-admin.php:3841
+#: includes/class-admin.php:3865
 msgid "Retention settings updated successfully."
 msgstr "Ajustes de retención actualizados exitosamente."
 
-#: includes/class-admin.php:3843
+#: includes/class-admin.php:3867
 msgid "Error updating retention settings. Please check your values."
 msgstr "Error al actualizar la configuración de retención. Por favor, revise sus valores."
 
-#: includes/class-admin.php:4175
-#: includes/class-admin.php:4197
+#: includes/class-admin.php:4199
+#: includes/class-admin.php:4221
 msgid "Please enter a sender name or email."
 msgstr "Por favor, introduzca un nombre de remitente o correo electrónico."
 
-#: includes/class-admin.php:4206
+#: includes/class-admin.php:4230
 msgid "Are you sure you want to permanently erase all data for this identifier? This action cannot be undone."
 msgstr "¿Está seguro de que desea eliminar permanentemente todos los datos para este identificador? Esta acción no se puede deshacer."
 
-#: includes/class-admin.php:4225
+#: includes/class-admin.php:4249
 msgid "An error occurred during data erasure."
 msgstr "Ha ocurrido un error durante el borrado de datos."
 
@@ -1883,3 +1878,17 @@ msgid ""
 "Best regards,\n"
 "%s"
 msgstr ""
+
+#. translators: %1$s is the retreat name, %2$s is the current date (YYYY-MM-DD)
+#: includes/class-admin.php:2731
+#, php-format
+msgid "retreat-%1$s-attendants-%2$s.csv"
+msgstr "retiro-%1$s-asistentes-%2$s.csv"
+
+#. translators: %1$d: Print count, %2$s: First print date
+#: includes/class-admin.php:3416
+#, php-format
+msgid "Printed %1$d time, first: %2$s."
+msgid_plural "Printed %1$d times, first: %2$s."
+msgstr[0] "Impreso %1$d vez, por primera vez el %2$s."
+msgstr[1] "Impreso %1$d veces, por primera vez el %2$s."

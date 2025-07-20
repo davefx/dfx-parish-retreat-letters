@@ -2268,7 +2268,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 		$ambiguous_dates = array();
 
 		// Read header row for field mapping
-		$headers = fgetcsv( $handle );
+		$headers = fgetcsv($handle, 0, ',', '"', '\\');
 		$line_number++;
 		
 		if ( ! $headers ) {
@@ -2295,7 +2295,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 			return;
 		}
 
-		while ( ( $row = fgetcsv( $handle ) ) !== false ) {
+		while ( ( $row = fgetcsv($handle, 0, ',', '"', '\\') ) !== false ) {
 			$line_number++;
 
 			// Skip empty rows
@@ -2727,7 +2727,9 @@ class DFX_Parish_Retreat_Letters_Admin {
 		}
 
 		$csv_data = $this->attendant_model->export_csv_data( $retreat_id );
-		$filename = 'retreat-' . sanitize_file_name( $retreat->name ) . '-attendants-' . date( 'Y-m-d' ) . '.csv';
+		// translators: %1$s is the retreat name, %2$s is the current date (YYYY-MM-DD)
+		$filename = sprintf(__('retreat-%1$s-attendants-%2$s.csv', 'dfx-parish-retreat-letters'),
+			sanitize_file_name( $retreat->name ), date( 'Y-m-d' ) );
 
 		header( 'Content-Type: text/csv' );
 		header( 'Content-Disposition: attachment; filename="' . $filename . '"' );
@@ -2740,11 +2742,11 @@ class DFX_Parish_Retreat_Letters_Admin {
 		fprintf( $output, chr(0xEF).chr(0xBB).chr(0xBF) );
 
 		// Write headers
-		fputcsv( $output, $csv_data['headers'] );
+		fputcsv($output, $csv_data['headers'], ',', '"', '\\');
 
 		// Write data
 		foreach ( $csv_data['rows'] as $row ) {
-			fputcsv( $output, $row );
+			fputcsv($output, $row, ',', '"', '\\');
 		}
 
 		fclose( $output );
@@ -3411,9 +3413,17 @@ class DFX_Parish_Retreat_Letters_Admin {
 												<?php
 												printf(
 													/* translators: %1$d: Print count, %2$s: First print date */
-													esc_html__( 'Printed %1$d time(s), first: %2$s', 'dfx-parish-retreat-letters' ),
+													esc_html( _n(
+														'Printed %1$d time, first: %2$s.',
+														'Printed %1$d times, first: %2$s.',
+														$message->print_count,
+														'dfx-parish-retreat-letters'
+													) ),
 													$message->print_count,
-													date_i18n( get_option( 'date_format' ) . ' ' . get_option( 'time_format' ), strtotime( $message->first_printed_at ) )
+													date_i18n(
+														get_option( 'date_format' ) . ' ' . get_option( 'time_format' ),
+														strtotime( $message->first_printed_at )
+													)
 												);
 												?>
 											</a>
