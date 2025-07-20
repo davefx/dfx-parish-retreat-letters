@@ -2149,6 +2149,11 @@ class DFX_Parish_Retreat_Letters_Admin {
 			wp_die( __( 'Retreat not found.', 'dfx-parish-retreat-letters' ) );
 		}
 
+		// Check permissions - only retreat managers and plugin administrators can import attendants
+		if ( ! $this->permissions->current_user_can_manage_retreat( $retreat_id ) ) {
+			wp_die( __( 'You do not have permission to import attendants for this retreat.', 'dfx-parish-retreat-letters' ) );
+		}
+
 		// Handle form submission
 		if ( ( $_SERVER['REQUEST_METHOD'] ?? '' ) === 'POST' ) {
 			$this->handle_csv_import( $retreat_id );
