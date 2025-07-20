@@ -8,7 +8,7 @@ A comprehensive, security-focused WordPress plugin designed for parishes and org
 
 DFX Parish Retreat Letters is a professional-grade retreat management system that provides churches and organizations with enterprise-level security and functionality for managing retreat programs. The plugin features a complete retreat lifecycle management system, secure confidential messaging with military-grade encryption, and a sophisticated three-tier authorization system designed to protect sensitive spiritual and personal communications.
 
-## 🔐 Core Features
+## Core Features
 
 ### Comprehensive Retreat Management System
 - **Complete Retreat Lifecycle Management**: Create, edit, organize, and track retreats from planning to completion
@@ -22,7 +22,7 @@ DFX Parish Retreat Letters is a professional-grade retreat management system tha
 - **Bulk Operations**: Import/export attendant data via CSV with data validation
 - **Personal Information Security**: Encrypted storage of sensitive personal data with GDPR compliance
 
-### 🛡️ Secure Confidential Message System
+### Secure Confidential Message System
 - **Privacy-Compliant Messaging**: Full adherence to Spanish privacy laws (LOPD-GDD) and European GDPR regulations
 - **Cryptographically Secure URLs**: Unique, unguessable URLs generated for each attendant using cryptographic tokens
 - **Military-Grade Encryption**: AES-256-CBC encryption for all message content and file attachments
@@ -31,7 +31,7 @@ DFX Parish Retreat Letters is a professional-grade retreat management system tha
 - **Complete Audit Trails**: Comprehensive logging of all message operations, access attempts, and administrative actions
 - **Secure File Storage**: Encrypted file storage outside web directory with access control protection
 
-### 👥 Three-Tier Authorization System
+### Three-Tier Authorization System
 - **Plugin Administrators**: Global access to all functionality with complete system control
 - **Retreat Managers**: Full control over assigned retreats with permission delegation capabilities
 - **Message Managers**: Specialized message-only access with read-only attendant information
@@ -39,7 +39,7 @@ DFX Parish Retreat Letters is a professional-grade retreat management system tha
 - **Hierarchical Permissions**: Sophisticated permission inheritance with granular access control
 - **Complete Audit Logging**: Track all administrative actions with user attribution and timestamps
 
-## 🔒 Enterprise Security & Compliance
+## Enterprise Security & Compliance
 
 ### Advanced Security Features
 - **Enterprise-Grade Encryption**: AES-256-CBC encryption for all sensitive data storage and transmission
@@ -58,7 +58,7 @@ DFX Parish Retreat Letters is a professional-grade retreat management system tha
 - **Consent Management**: Integrated consent tracking and privacy policy compliance
 - **Data Export/Portability**: GDPR Article 20 compliance with secure data export functionality
 
-## 🏗️ Technical Architecture
+## Technical Architecture
 
 ### WordPress Integration Excellence
 - **Custom Post Types**: Seamless integration with WordPress content management system
@@ -76,7 +76,7 @@ DFX Parish Retreat Letters is a professional-grade retreat management system tha
 - **Database Schema Management**: Automated database migrations with version control and rollback capabilities
 - **Security-First Development**: Security considerations integrated into every aspect of the codebase
 
-## 📋 System Requirements
+## System Requirements
 
 ### Minimum Requirements
 - **WordPress**: 5.0 or higher (WordPress 6.0+ recommended for optimal performance)
@@ -92,7 +92,7 @@ DFX Parish Retreat Letters is a professional-grade retreat management system tha
 - **Database Security**: Secure database configuration with strong passwords and restricted access
 - **Backup Strategy**: Regular automated backups of database and uploaded files
 
-## 🚀 Installation & Setup
+## Installation & Setup
 
 ### Quick Installation
 1. **Download Plugin**: Download the latest release from the official repository
@@ -127,7 +127,7 @@ DFX Parish Retreat Letters is a professional-grade retreat management system tha
 - Configure consent management settings
 - Test data export and erasure functionality
 
-## 📖 Usage Guide
+## Usage Guide
 
 ### For Plugin Administrators
 
@@ -169,7 +169,7 @@ DFX Parish Retreat Letters is a professional-grade retreat management system tha
 - **Secure Printing**: Encrypted message content only accessible through controlled printing system
 - **Access Logging**: All message access attempts logged for security and compliance
 
-## 🧑‍💻 Developer Information
+## Developer Information
 
 ### Plugin Architecture
 
@@ -257,7 +257,7 @@ The plugin provides secure REST API endpoints for:
 - **Secure Communications**: HTTPS enforcement and secure token generation
 - **Audit Logging**: Complete forensic-level activity logging
 
-## 📂 Plugin Structure
+## Plugin Structure
 
 ```
 dfx-parish-retreat-letters/
@@ -286,7 +286,7 @@ dfx-parish-retreat-letters/
 └── README.md                         # This comprehensive documentation
 ```
 
-## 🌍 Internationalization
+## Internationalization
 
 The plugin is fully translation-ready and includes professional translations:
 
@@ -300,7 +300,7 @@ The plugin is fully translation-ready and includes professional translations:
 3. Place translation files in the `languages/` directory
 4. Follow WordPress translation standards and guidelines
 
-## 📜 License
+## License
 
 This plugin is licensed under the **GNU General Public License v3.0 or later**.
 
@@ -311,9 +311,10 @@ This plugin is licensed under the **GNU General Public License v3.0 or later**.
 
 For complete license terms, see [LICENSE](LICENSE) file or visit [GNU GPL v3](https://www.gnu.org/licenses/gpl-3.0.html).
 
-## 👨‍💻 Author & Support
+## Author & Support
 
-**DaveFX**
+**David Marín Carreño (DaveFX)**
+- **Website**: [davefx.com](https://davefx.com)
 - **GitHub Profile**: [@davefx](https://github.com/davefx)
 - **Project Repository**: [dfx-parish-retreat-letters](https://github.com/davefx/dfx-parish-retreat-letters)
 - **Issue Tracking**: Report bugs and feature requests through GitHub Issues
@@ -327,36 +328,37 @@ Contributions are welcome! Please:
 4. Follow WordPress coding standards
 5. Include appropriate tests and documentation
 
-## 📈 Changelog
+## Changelog
 
-### 1.3.0 (Current)
-- **Major Feature**: Complete three-tier authorization system implementation
-- **Security Enhancement**: Advanced GDPR compliance with automated data retention
-- **New Feature**: User invitation system with secure token authentication
-- **Security**: Enhanced audit logging with forensic-level detail
-- **Architecture**: Database schema optimization and migration system
+### 25.7.19 (Foundation Release)
 
-### 1.2.0
-- **Major Feature**: Secure confidential message system with AES-256 encryption
-- **Security Enhancement**: Complete GDPR compliance implementation
-- **New Feature**: Encrypted file handling and secure storage system
-- **Security**: Print-only message access with comprehensive audit trails
-- **Privacy**: IP address anonymization and data retention policies
+#### Major Features
+- Complete three-tier authorization system
+- Secure confidential message system using AES-256 encryption
+- Advanced attendant management with bulk operations
+- User invitation system with secure token authentication
 
-### 1.1.0
-- **Major Feature**: Advanced attendant management with bulk operations
-- **Enhancement**: CSV import/export functionality with data validation
-- **Security**: Enhanced encryption for personal information storage
-- **Feature**: Retreat-attendant association management
-- **Improvement**: Responsive admin interface with modern UX/UI
+#### Security & Privacy Enhancements
+- Full GDPR compliance with automated data retention policies
+- Enhanced encryption for personal information and secure file storage
+- Print-only message access with comprehensive audit trails
+- Forensic-level audit logging
+- IP address anonymization
+- Foundation-level security implementation with modern PHP practices
 
-### 1.0.0 (Foundation Release)
-- **Initial Release**: Core plugin architecture with OOP and singleton patterns
-- **Feature**: Basic retreat and attendant management
-- **Internationalization**: Complete i18n support with Spanish translations
-- **Standards**: WordPress coding standards compliance
-- **Security**: Foundation security implementation with modern PHP practices
+#### Architecture & Development
+- Core plugin architecture using OOP and singleton patterns
+- Database schema optimization and integrated migration system
+- Full compliance with WordPress coding standards
 
+#### Features & Improvements
+- Retreat-attendant association management
+- CSV import/export with data validation
+- Basic retreat and attendant management
+- Responsive admin interface with modern UX/UI
+
+#### Internationalization
+- Complete i18n support, including Spanish translations
 ---
 
 **DFX Parish Retreat Letters** - Enterprise-grade retreat management for the modern parish.
