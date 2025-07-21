@@ -391,4 +391,16 @@ class DFX_Parish_Retreat_Letters_Attendant {
 		$parsed_date = date_parse( $date );
 		return checkdate( $parsed_date['month'], $parsed_date['day'], $parsed_date['year'] );
 	}
+
+	public function exists( $retreat_id, $name, $surnames, $date_of_birth ) {
+		global $wpdb;
+
+		$exists = $wpdb->get_var( $wpdb->prepare(
+			"SELECT COUNT(*) FROM {$this->database->get_attendants_table()} 
+			WHERE retreat_id = %d AND name = %s AND surnames = %s AND date_of_birth = %s",
+			$retreat_id, $name, $surnames, $date_of_birth
+		) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+
+		return (bool) $exists;
+	}
 }

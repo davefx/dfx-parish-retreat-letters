@@ -1981,11 +1981,12 @@ class DFX_Parish_Retreat_Letters_Admin {
 	 * @param string $message Notice message.
 	 * @param string $type    Notice type (success, error, warning, info).
 	 */
-	private function add_admin_notice( $message, $type = 'info' ) {
+	private function add_admin_notice( $message, $type = 'info', $is_dismissible = true ) {
 		$notices = get_transient( 'dfx_prl_admin_notices' ) ?: array();
 		$notices[] = array(
 			'message' => $message,
 			'type'    => $type,
+			'dismissible' => $is_dismissible,
 		);
 		set_transient( 'dfx_prl_admin_notices', $notices, 30 );
 	}
@@ -1995,7 +1996,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 	 *
 	 * @since 1.0.0
 	 */
-	private function display_admin_notices() {
+	private function display_admin_notices($is_dismissible = true) {
 		$notices = get_transient( 'dfx_prl_admin_notices' );
 		if ( ! $notices ) {
 			return;
@@ -2003,8 +2004,9 @@ class DFX_Parish_Retreat_Letters_Admin {
 
 		foreach ( $notices as $notice ) {
 			printf(
-				'<div class="notice notice-%s is-dismissible"><p>%s</p></div>',
+				'<div class="notice notice-%s %s"><p>%s</p></div>',
 				esc_attr( $notice['type'] ),
+				$notice['dismissible'] && $is_dismissible ? 'is-dismissible' : '',
 				wp_kses_post( $notice['message'] )
 			);
 		}
@@ -2157,6 +2159,10 @@ class DFX_Parish_Retreat_Letters_Admin {
 		// Handle form submission
 		if ( ( $_SERVER['REQUEST_METHOD'] ?? '' ) === 'POST' ) {
 			$this->handle_csv_import( $retreat_id );
+
+			// Show admin notices
+			$this->display_admin_notices( false );
+
 			return;
 		}
 
@@ -2267,6 +2273,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 		}
 
 		$imported = 0;
+		$skipped = 0;
 		$errors = 0;
 		$line_number = 0;
 		$error_details = array();
@@ -2319,6 +2326,13 @@ class DFX_Parish_Retreat_Letters_Admin {
 
 			$mapped_data['retreat_id'] = $retreat_id;
 
+			// Check for existing attendant with the same name and date of birth
+			if ( $this->attendant_model->exists( $retreat_id, $mapped_data['name'], $mapped_data['surnames'], $mapped_data['date_of_birth'] ) ) {
+				$skipped++;
+				$error_details[] = sprintf( __( 'Line %d: Attendant with the same name and date of birth already exists', 'dfx-parish-retreat-letters' ), $line_number );
+				continue;
+			}
+
 			if ( $this->attendant_model->create( $mapped_data ) ) {
 				$imported++;
 			} else {
@@ -2337,6 +2351,17 @@ class DFX_Parish_Retreat_Letters_Admin {
 					$imported
 				), 
 				'success' 
+			);
+		}
+
+		if ( $skipped > 0 ) {
+			$this->add_admin_notice(
+				sprintf(
+					/* translators: %d: Number of skipped attendants */
+					__( '%d rows were skipped because they already exist.', 'dfx-parish-retreat-letters' ),
+					$skipped
+				),
+				'info'
 			);
 		}
 
@@ -2409,41 +2434,42 @@ class DFX_Parish_Retreat_Letters_Admin {
 		
 		// Define field mappings for English and Spanish
 		$field_mappings = array(
-			'name' => array(
-				'en' => array( 'name', 'first name', 'nombre' ),
-				'es' => array( 'nombre' ),
-			),
-			'surnames' => array(
-				'en' => array( 'surnames', 'last name', 'surname', 'apellidos' ),
-				'es' => array( 'apellidos' ),
-			),
-			'date_of_birth' => array(
-				'en' => array( 'date of birth', 'birth date', 'dob', 'birthdate', 'fecha de nacimiento' ),
-				'es' => array( 'fecha de nacimiento' ),
-			),
-			'emergency_contact_name' => array(
-				'en' => array( 'emergency contact name', 'emergency name', 'contact name', 'nombre del contacto de emergencia' ),
-				'es' => array( 'nombre del contacto de emergencia', 'contacto emergencia nombre' ),
-			),
-			'emergency_contact_surname' => array(
-				'en' => array( 'emergency contact surname', 'emergency surname', 'contact surname', 'apellido del contacto de emergencia' ),
-				'es' => array( 'apellido del contacto de emergencia', 'contacto emergencia apellido' ),
-			),
-			'emergency_contact_phone' => array(
-				'en' => array( 'emergency contact phone', 'emergency phone', 'contact phone', 'phone', 'teléfono del contacto de emergencia' ),
-				'es' => array( 'teléfono del contacto de emergencia', 'contacto emergencia teléfono', 'teléfono' ),
-			),
+			/* translators: JSON string with list of allowed headers for field name. */
+			'name' => json_decode( __('["name", "first name"]', 'dfx-parish-retreat-letters' ), true ),
+			/* translators: JSON string with list of allowed headers for field surname */
+			'surnames' => json_decode( __('["surname", "surnames", "last name"]', 'dfx-parish-retreat-letters' ), true ),
+			/* translators: JSON string with list of allowed headers for field date_of_birth */
+			'date_of_birth' => json_decode( __('["date of birth", "birth date", "dob", "birthdate"]', 'dfx-parish-retreat-letters' ), true ),
+			/* translators: JSON string with list of allowed headers for field emergency_contact_name */
+			'emergency_contact_name' => json_decode( __('["emergency contact name", "emergency name", "contact name","emergency contact first name", "emergency first name", "contact first name"]', 'dfx-parish-retreat-letters' ), true ),
+			/* translators: JSON string with list of allowed headers for field emergency_contact_surname */
+			'emergency_contact_surname' => json_decode( __('["emergency contact surname", "emergency surname", "contact surname", "emergency contact last name", "emergency last name", "contact last name"]', 'dfx-parish-retreat-letters' ), true ),
+			/* translators: JSON string with list of allowed headers for field emergency_contact_phone */
+			'emergency_contact_phone' => json_decode( __('["emergency contact phone", "emergency phone", "contact phone", "phone"]', 'dfx-parish-retreat-letters' ), true ),
 		);
 
 		// Normalize headers (lowercase, trim)
 		$normalized_headers = array_map( function( $header ) {
+			// Remove any BOM (Byte Order Mark) if present
+			$header = preg_replace( '/^\xEF\xBB\xBF/', '', $header );
+			// Convert accents to ASCII, lowercase, and trim whitespace
+			$header = remove_accents( $header );
+			$header = preg_replace( '/\s+/', ' ', $header ); // Replace multiple spaces with single space
 			return strtolower( trim( $header ) );
 		}, $headers );
 
+		$normalized_field_mappings = array_map( function( $names ) {
+			return array_map( function( $name ) {
+				// Convert accents to ASCII, lowercase, and trim whitespace
+				$name = remove_accents( $name );
+				$name = preg_replace( '/\s+/', ' ', $name ); // Replace multiple spaces with single space
+				return strtolower( trim( $name ) );
+			}, $names );
+		}, $field_mappings );
+
 		// Map each field
-		foreach ( $field_mappings as $field => $mappings ) {
-			$all_possible_names = array_merge( $mappings['en'], $mappings['es'] );
-			
+		foreach ( $normalized_field_mappings as $field => $all_possible_names ) {
+
 			foreach ( $normalized_headers as $index => $header ) {
 				if ( in_array( $header, $all_possible_names, true ) ) {
 					$field_map[ $field ] = $index;
