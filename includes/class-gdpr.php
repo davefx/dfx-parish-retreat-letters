@@ -158,13 +158,13 @@ class DFX_Parish_Retreat_Letters_GDPR {
 
 		// Find messages by sender name or email
 		$messages = $wpdb->get_results( $wpdb->prepare(
-			"SELECT m.*, a.name as attendant_name, a.surnames as attendant_surnames, r.name as retreat_name
-			 FROM {$this->database->get_messages_table()} m
-			 INNER JOIN {$this->database->get_attendants_table()} a ON m.attendant_id = a.id
-			 INNER JOIN {$this->database->get_retreats_table()} r ON a.retreat_id = r.id
-			 WHERE m.sender_name LIKE %s",
+			'SELECT m.*, a.name as attendant_name, a.surnames as attendant_surnames, r.name as retreat_name
+			 FROM ' . $this->database->get_messages_table() . ' m
+			 INNER JOIN ' . $this->database->get_attendants_table() . ' a ON m.attendant_id = a.id
+			 INNER JOIN ' . $this->database->get_retreats_table() . ' r ON a.retreat_id = r.id
+			 WHERE m.sender_name LIKE %s',
 			'%' . $wpdb->esc_like( $identifier ) . '%'
-		) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
 
 		foreach ( $messages as $message ) {
 			$export_data['messages'][] = array(
@@ -178,9 +178,9 @@ class DFX_Parish_Retreat_Letters_GDPR {
 
 			// Get files for this message
 			$files = $wpdb->get_results( $wpdb->prepare(
-				"SELECT * FROM {$this->database->get_message_files_table()} WHERE message_id = %d",
+				'SELECT * FROM ' . $this->database->get_message_files_table() . ' WHERE message_id = %d',
 				$message->id
-			) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
 
 			foreach ( $files as $file ) {
 				$export_data['files'][] = array(
@@ -222,10 +222,10 @@ class DFX_Parish_Retreat_Letters_GDPR {
 
 		// Find messages by sender name
 		$messages = $wpdb->get_results( $wpdb->prepare(
-			"SELECT m.id FROM {$this->database->get_messages_table()} m
-			 WHERE m.sender_name LIKE %s",
+			'SELECT m.id FROM ' . $this->database->get_messages_table() . ' m
+			 WHERE m.sender_name LIKE %s',
 			'%' . $wpdb->esc_like( $identifier ) . '%'
-		) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
 
 		// Erase each message and its associated data
 		$message_model = new DFX_Parish_Retreat_Letters_ConfidentialMessage();
@@ -233,9 +233,9 @@ class DFX_Parish_Retreat_Letters_GDPR {
 		foreach ( $messages as $message ) {
 			// Get file count before deletion
 			$file_count = $wpdb->get_var( $wpdb->prepare(
-				"SELECT COUNT(*) FROM {$this->database->get_message_files_table()} WHERE message_id = %d",
+				'SELECT COUNT(*) FROM ' . $this->database->get_message_files_table() . ' WHERE message_id = %d',
 				$message->id
-			) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
 
 			// Delete the message (this will cascade to files and print logs)
 			if ( $message_model->delete( $message->id ) ) {
@@ -318,7 +318,7 @@ class DFX_Parish_Retreat_Letters_GDPR {
 			'event_type' => $event_type,
 			'user_id' => get_current_user_id(),
 			'ip_address' => $this->security->get_user_ip(),
-			'user_agent' => $_SERVER['HTTP_USER_AGENT'] ?? 'unknown',
+			'user_agent' => isset( $_SERVER['HTTP_USER_AGENT'] ) ? sanitize_text_field( wp_unslash( $_SERVER['HTTP_USER_AGENT'] ) ) : 'unknown',
 			'data' => $data,
 		);
 
@@ -414,7 +414,7 @@ class DFX_Parish_Retreat_Letters_GDPR {
 		$export_data = $this->export_personal_data( $identifier );
 
 		// Generate export file
-		$filename = 'personal-data-export-' . sanitize_file_name( $identifier ) . '-' . date( 'Y-m-d-H-i-s' ) . '.json';
+		$filename = 'personal-data-export-' . sanitize_file_name( $identifier ) . '-' . gmdate( 'Y-m-d-H-i-s' ) . '.json';
 		$export_json = wp_json_encode( $export_data, JSON_PRETTY_PRINT );
 
 		// Set headers for download
@@ -542,8 +542,8 @@ class DFX_Parish_Retreat_Letters_GDPR {
 	private function get_total_messages_count() {
 		global $wpdb;
 		return (int) $wpdb->get_var( 
-			"SELECT COUNT(*) FROM {$this->database->get_messages_table()}"
-		); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			'SELECT COUNT(*) FROM ' . $this->database->get_messages_table()
+		); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
 	}
 
 	/**
@@ -555,7 +555,7 @@ class DFX_Parish_Retreat_Letters_GDPR {
 	private function get_total_files_count() {
 		global $wpdb;
 		return (int) $wpdb->get_var( 
-			"SELECT COUNT(*) FROM {$this->database->get_message_files_table()}"
-		); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			'SELECT COUNT(*) FROM ' . $this->database->get_message_files_table()
+		); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
 	}
 }
