@@ -80,7 +80,7 @@ class DFX_Parish_Retreat_Letters_Permissions {
 	 * @return bool True if user has global plugin management access.
 	 */
 	public function current_user_can_manage_plugin() {
-		return current_user_can( 'manage_retreat_plugin' );
+		return current_user_can( 'manage_retreat_plugin' ) || current_user_can( 'manage_options' );
 	}
 
 	/**
