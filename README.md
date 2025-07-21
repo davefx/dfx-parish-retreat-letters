@@ -330,7 +330,7 @@ Contributions are welcome! Please:
 
 ## Changelog
 
-### 25.7.19 (Foundation Release)
+### 25.7.21 (Foundation Release)
 
 #### Major Features
 - Complete three-tier authorization system
