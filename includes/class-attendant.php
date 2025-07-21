@@ -349,20 +349,35 @@ class DFX_Parish_Retreat_Letters_Attendant {
 	 * @return bool True if valid, false otherwise.
 	 */
 	private function validate_attendant_data( $data ) {
+		$admin_manager = DFX_Parish_Retreat_Letters_Admin::get_instance();
+
+
 		// Check required fields
 		if ( empty( $data['retreat_id'] ) || empty( $data['name'] ) || empty( $data['surnames'] ) || 
 			 empty( $data['date_of_birth'] ) || empty( $data['emergency_contact_name'] ) || 
 			 empty( $data['emergency_contact_surname'] ) || empty( $data['emergency_contact_phone'] ) ) {
+			$admin_manager->add_admin_notice(
+				__( 'All fields are required.', 'dfx-parish-retreat-letters' ),
+				'error'
+			);
 			return false;
 		}
 
 		// Validate date format
 		if ( ! $this->is_valid_date( $data['date_of_birth'] ) ) {
+			$admin_manager->add_admin_notice(
+				__( 'Invalid date of birth format. Please use YYYY-MM-DD.', 'dfx-parish-retreat-letters' ),
+				'error'
+			);
 			return false;
 		}
 
 		// Basic phone number validation (allows various formats)
 		if ( ! preg_match( '/^[\d\s\-\+\(\)\.]+$/', $data['emergency_contact_phone'] ) ) {
+			$admin_manager->add_admin_notice(
+				__( 'Invalid emergency contact phone number format.', 'dfx-parish-retreat-letters' ),
+				'error'
+			);
 			return false;
 		}
 
@@ -374,6 +389,10 @@ class DFX_Parish_Retreat_Letters_Attendant {
 		) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 
 		if ( ! $retreat_exists ) {
+			$admin_manager->add_admin_notice(
+				__( 'The specified retreat does not exist.', 'dfx-parish-retreat-letters' ),
+				'error'
+			);
 			return false;
 		}
 
