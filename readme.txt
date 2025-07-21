@@ -1,14 +1,13 @@
 === DFX Parish Retreat Letters ===
-Contributors: (this should be a list of wordpress.org userid's)
-Donate link: https://example.com/
-Tags: tag1, tag2
-Requires at least: 4.7
-Tested up to: 5.4
-Stable tag: 4.3
-Requires PHP: 7.0
-License: GPLv2 or later
-License URI: https://www.gnu.org/licenses/gpl-2.0.html
-Here is a short description of the plugin.  This should be no more than 150 characters.  No markup here.
+Contributors: davefx
+Tags: parish, retreat, letters, confidential, GDPR
+Requires at least: 5.0
+Tested up to: 6.8
+Stable tag: 25.7.21
+Requires PHP: 7.4
+License: GPLv3 or later
+License URI: https://www.gnu.org/licenses/gpl-3.0.html
+Let parishes manage retreat programs with confidentiality, GDPR compliance, and advanced user management capabilities.
 
 # DFX Parish Retreat Letters
 
