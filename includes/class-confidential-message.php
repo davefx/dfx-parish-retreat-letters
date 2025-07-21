@@ -100,12 +100,12 @@ class DFX_Parish_Retreat_Letters_ConfidentialMessage {
 		global $wpdb;
 
 		$result = $wpdb->get_row( $wpdb->prepare(
-			"SELECT m.*, a.retreat_id 
-			 FROM {$this->database->get_messages_table()} m
-			 INNER JOIN {$this->database->get_attendants_table()} a ON m.attendant_id = a.id
-			 WHERE m.id = %d",
+			'SELECT m.*, a.retreat_id 
+			 FROM ' . $this->database->get_messages_table() . ' m
+			 INNER JOIN ' . $this->database->get_attendants_table() . ' a ON m.attendant_id = a.id
+			 WHERE m.id = %d',
 			$id
-		) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
 
 		return $result;
 	}
@@ -191,17 +191,17 @@ class DFX_Parish_Retreat_Letters_ConfidentialMessage {
 		// Calculate offset
 		$offset = ( absint( $args['page'] ) - 1 ) * absint( $args['per_page'] );
 
-		$sql = "SELECT m.*, a.name as attendant_name, a.surnames as attendant_surnames, 
+		$sql = 'SELECT m.*, a.name as attendant_name, a.surnames as attendant_surnames, 
 				       r.name as retreat_name, r.id as retreat_id,
-				       (SELECT COUNT(*) FROM {$this->database->get_message_files_table()} f WHERE f.message_id = m.id) as file_count,
-				       (SELECT COUNT(*) FROM {$this->database->get_message_print_log_table()} p WHERE p.message_id = m.id) as print_count,
-				       (SELECT MIN(printed_at) FROM {$this->database->get_message_print_log_table()} p WHERE p.message_id = m.id) as first_printed_at
-				FROM {$this->database->get_messages_table()} m
-				INNER JOIN {$this->database->get_attendants_table()} a ON m.attendant_id = a.id
-				INNER JOIN {$this->database->get_retreats_table()} r ON a.retreat_id = r.id
-				WHERE {$where_clause} 
-				ORDER BY {$orderby} {$order} 
-				LIMIT %d OFFSET %d";
+				       (SELECT COUNT(*) FROM ' . $this->database->get_message_files_table() . ' f WHERE f.message_id = m.id) as file_count,
+				       (SELECT COUNT(*) FROM ' . $this->database->get_message_print_log_table() . ' p WHERE p.message_id = m.id) as print_count,
+				       (SELECT MIN(printed_at) FROM ' . $this->database->get_message_print_log_table() . ' p WHERE p.message_id = m.id) as first_printed_at
+				FROM ' . $this->database->get_messages_table() . ' m
+				INNER JOIN ' . $this->database->get_attendants_table() . ' a ON m.attendant_id = a.id
+				INNER JOIN ' . $this->database->get_retreats_table() . ' r ON a.retreat_id = r.id
+				WHERE ' . $where_clause . ' 
+				ORDER BY ' . $orderby . ' ' . $order . ' 
+				LIMIT %d OFFSET %d';
 
 		$where_values[] = absint( $args['per_page'] );
 		$where_values[] = $offset;
@@ -242,16 +242,16 @@ class DFX_Parish_Retreat_Letters_ConfidentialMessage {
 			$where_values[] = $search_term;
 		}
 
-		$sql = "SELECT COUNT(*) 
-				FROM {$this->database->get_messages_table()} m
-				INNER JOIN {$this->database->get_attendants_table()} a ON m.attendant_id = a.id
-				WHERE {$where_clause}";
+		$sql = 'SELECT COUNT(*) 
+				FROM ' . $this->database->get_messages_table() . ' m
+				INNER JOIN ' . $this->database->get_attendants_table() . ' a ON m.attendant_id = a.id
+				WHERE ' . $where_clause;
 
 		if ( ! empty( $where_values ) ) {
 			$sql = $wpdb->prepare( $sql, $where_values ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 		}
 
-		$count = $wpdb->get_var( $sql ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		$count = $wpdb->get_var( $sql ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.PreparedSQL.NotPrepared
 
 		return (int) $count;
 	}
@@ -319,17 +319,17 @@ class DFX_Parish_Retreat_Letters_ConfidentialMessage {
 		// Calculate offset
 		$offset = ( absint( $args['page'] ) - 1 ) * absint( $args['per_page'] );
 
-		$sql = "SELECT m.*, a.name as attendant_name, a.surnames as attendant_surnames, 
+		$sql = 'SELECT m.*, a.name as attendant_name, a.surnames as attendant_surnames, 
 				       r.name as retreat_name, r.id as retreat_id,
-				       (SELECT COUNT(*) FROM {$this->database->get_message_files_table()} f WHERE f.message_id = m.id) as file_count,
-				       (SELECT COUNT(*) FROM {$this->database->get_message_print_log_table()} p WHERE p.message_id = m.id) as print_count,
-				       (SELECT MIN(printed_at) FROM {$this->database->get_message_print_log_table()} p WHERE p.message_id = m.id) as first_printed_at
-				FROM {$this->database->get_messages_table()} m
-				INNER JOIN {$this->database->get_attendants_table()} a ON m.attendant_id = a.id
-				INNER JOIN {$this->database->get_retreats_table()} r ON a.retreat_id = r.id
-				WHERE {$where_clause} 
-				ORDER BY {$orderby} {$order} 
-				LIMIT %d OFFSET %d";
+				       (SELECT COUNT(*) FROM ' . $this->database->get_message_files_table() . ' f WHERE f.message_id = m.id) as file_count,
+				       (SELECT COUNT(*) FROM ' . $this->database->get_message_print_log_table() . ' p WHERE p.message_id = m.id) as print_count,
+				       (SELECT MIN(printed_at) FROM ' . $this->database->get_message_print_log_table() . ' p WHERE p.message_id = m.id) as first_printed_at
+				FROM ' . $this->database->get_messages_table() . ' m
+				INNER JOIN ' . $this->database->get_attendants_table() . ' a ON m.attendant_id = a.id
+				INNER JOIN ' . $this->database->get_retreats_table() . ' r ON a.retreat_id = r.id
+				WHERE ' . $where_clause . ' 
+				ORDER BY ' . $orderby . ' ' . $order . ' 
+				LIMIT %d OFFSET %d';
 
 		$where_values[] = absint( $args['per_page'] );
 		$where_values[] = $offset;
@@ -377,10 +377,10 @@ class DFX_Parish_Retreat_Letters_ConfidentialMessage {
 			$where_values[] = $search_term;
 		}
 
-		$sql = "SELECT COUNT(*) 
-				FROM {$this->database->get_messages_table()} m
-				INNER JOIN {$this->database->get_attendants_table()} a ON m.attendant_id = a.id
-				WHERE {$where_clause}";
+		$sql = 'SELECT COUNT(*) 
+				FROM ' . $this->database->get_messages_table() . ' m
+				INNER JOIN ' . $this->database->get_attendants_table() . ' a ON m.attendant_id = a.id
+				WHERE ' . $where_clause;
 
 		if ( ! empty( $where_values ) ) {
 			$sql = $wpdb->prepare( $sql, $where_values ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
@@ -429,32 +429,32 @@ class DFX_Parish_Retreat_Letters_ConfidentialMessage {
 
 		// Total messages
 		$stats['total_messages'] = (int) $wpdb->get_var( 
-			"SELECT COUNT(*) FROM {$this->database->get_messages_table()}"
-		); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			'SELECT COUNT(*) FROM ' . $this->database->get_messages_table()
+		); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
 
 		// Messages by type
 		$stats['text_messages'] = (int) $wpdb->get_var( $wpdb->prepare(
-			"SELECT COUNT(*) FROM {$this->database->get_messages_table()} WHERE message_type = %s",
+			'SELECT COUNT(*) FROM ' . $this->database->get_messages_table() . ' WHERE message_type = %s',
 			'text'
-		) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
 
 		$stats['file_messages'] = (int) $wpdb->get_var( $wpdb->prepare(
-			"SELECT COUNT(*) FROM {$this->database->get_messages_table()} WHERE message_type = %s",
+			'SELECT COUNT(*) FROM ' . $this->database->get_messages_table() . ' WHERE message_type = %s',
 			'file'
-		) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
 
 		// Printed vs unprinted
 		$stats['printed_messages'] = (int) $wpdb->get_var(
-			"SELECT COUNT(DISTINCT message_id) FROM {$this->database->get_message_print_log_table()}"
-		); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			'SELECT COUNT(DISTINCT message_id) FROM ' . $this->database->get_message_print_log_table()
+		); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
 
 		$stats['unprinted_messages'] = $stats['total_messages'] - $stats['printed_messages'];
 
 		// Messages from last 30 days
 		$stats['recent_messages'] = (int) $wpdb->get_var(
-			"SELECT COUNT(*) FROM {$this->database->get_messages_table()} 
-			 WHERE submitted_at >= DATE_SUB(NOW(), INTERVAL 30 DAY)"
-		); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			'SELECT COUNT(*) FROM ' . $this->database->get_messages_table() . ' 
+			 WHERE submitted_at >= DATE_SUB(NOW(), INTERVAL 30 DAY)'
+		); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
 
 		return $stats;
 	}
@@ -496,9 +496,9 @@ class DFX_Parish_Retreat_Letters_ConfidentialMessage {
 		// Check if attendant exists
 		global $wpdb;
 		$attendant_exists = $wpdb->get_var( $wpdb->prepare(
-			"SELECT COUNT(*) FROM {$this->database->get_attendants_table()} WHERE id = %d",
+			'SELECT COUNT(*) FROM ' . $this->database->get_attendants_table() . ' WHERE id = %d',
 			$data['attendant_id']
-		) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
 
 		if ( ! $attendant_exists ) {
 			return false;
@@ -521,9 +521,9 @@ class DFX_Parish_Retreat_Letters_ConfidentialMessage {
 
 		// Get messages to delete
 		$message_ids = $wpdb->get_col( $wpdb->prepare(
-			"SELECT id FROM {$this->database->get_messages_table()} WHERE submitted_at < %s",
+			'SELECT id FROM ' . $this->database->get_messages_table() . ' WHERE submitted_at < %s',
 			$cutoff_date
-		) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
 
 		$deleted_count = 0;
 		foreach ( $message_ids as $message_id ) {

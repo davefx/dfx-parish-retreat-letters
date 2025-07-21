@@ -333,9 +333,9 @@ class DFX_Parish_Retreat_Letters_Invitations {
 		global $wpdb;
 
 		$invitation = $wpdb->get_row( $wpdb->prepare(
-			"SELECT * FROM {$this->database->get_invitations_table()} WHERE id = %d",
+			'SELECT * FROM ' . $this->database->get_invitations_table() . ' WHERE id = %d',
 			$invitation_id
-		) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
 
 		if ( ! $invitation || $invitation->status !== self::STATUS_PENDING ) {
 			return false;
@@ -384,13 +384,13 @@ class DFX_Parish_Retreat_Letters_Invitations {
 		}
 
 		$invitations = $wpdb->get_results( $wpdb->prepare(
-			"SELECT i.*, ib.display_name as invited_by_name
-			 FROM {$this->database->get_invitations_table()} i
-			 INNER JOIN {$wpdb->users} ib ON i.invited_by = ib.ID
-			 {$where_clause}
-			 ORDER BY i.invited_at DESC",
+			'SELECT i.*, ib.display_name as invited_by_name
+			 FROM ' . $this->database->get_invitations_table() . ' i
+			 INNER JOIN ' . $wpdb->users . ' ib ON i.invited_by = ib.ID
+			 ' . $where_clause . '
+			 ORDER BY i.invited_at DESC',
 			...$params
-		) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
 
 		return $invitations ? $invitations : array();
 	}
@@ -402,7 +402,7 @@ class DFX_Parish_Retreat_Letters_Invitations {
 	 */
 	public function handle_invitation_routes() {
 		// Check if we're on an invitation URL: /retreat-invitation/[token]
-		$request_uri = $_SERVER['REQUEST_URI'] ?? '';
+		$request_uri = isset( $_SERVER['REQUEST_URI'] ) ? sanitize_text_field( wp_unslash( $_SERVER['REQUEST_URI'] ) ) : '';
 		
 		if ( ! is_string( $request_uri ) || empty( $request_uri ) ) {
 			return;
@@ -414,7 +414,7 @@ class DFX_Parish_Retreat_Letters_Invitations {
 		}
 		
 		// Get the site's base path
-		$site_url = parse_url( home_url(), PHP_URL_PATH );
+		$site_url = wp_parse_url( home_url(), PHP_URL_PATH );
 		$site_path = ( is_string( $site_url ) && ! empty( $site_url ) ) ? $site_url : '/';
 		
 		if ( $site_path !== '/' ) {
@@ -459,19 +459,19 @@ class DFX_Parish_Retreat_Letters_Invitations {
 		// Get retreat details
 		global $wpdb;
 		$retreat = $wpdb->get_row( $wpdb->prepare(
-			"SELECT * FROM {$this->database->get_retreats_table()} WHERE id = %d",
+			'SELECT * FROM ' . $this->database->get_retreats_table() . ' WHERE id = %d',
 			$invitation->retreat_id
-		) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
 
 		if ( ! $retreat ) {
 			wp_die( __( 'Retreat not found.', 'dfx-parish-retreat-letters' ) );
 		}
 
 		// Handle form submission
-		if ( $_POST && wp_verify_nonce( $_POST['invitation_nonce'] ?? '', 'accept_invitation_' . $token ) ) {
+		if ( ! empty( $_POST ) && isset( $_POST['invitation_nonce'] ) && wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['invitation_nonce'] ) ), 'accept_invitation_' . $token ) ) {
 			$user_data = array(
-				'first_name' => sanitize_text_field( $_POST['first_name'] ?? '' ),
-				'last_name'  => sanitize_text_field( $_POST['last_name'] ?? '' ),
+				'first_name' => isset( $_POST['first_name'] ) ? sanitize_text_field( wp_unslash( $_POST['first_name'] ) ) : '',
+				'last_name'  => isset( $_POST['last_name'] ) ? sanitize_text_field( wp_unslash( $_POST['last_name'] ) ) : '',
 			);
 
 			$result = $this->accept_invitation( $token, $user_data );
@@ -534,12 +534,12 @@ class DFX_Parish_Retreat_Letters_Invitations {
 					
 					<div class="dfx-prl-form-group">
 						<label for="first_name"><?php esc_html_e( 'First Name', 'dfx-parish-retreat-letters' ); ?></label>
-						<input type="text" id="first_name" name="first_name" value="<?php echo esc_attr( $_POST['first_name'] ?? '' ); ?>" required>
+						<input type="text" id="first_name" name="first_name" value="<?php echo esc_attr( isset( $_POST['first_name'] ) ? sanitize_text_field( wp_unslash( $_POST['first_name'] ) ) : '' ); ?>" required>
 					</div>
 
 					<div class="dfx-prl-form-group">
 						<label for="last_name"><?php esc_html_e( 'Last Name', 'dfx-parish-retreat-letters' ); ?></label>
-						<input type="text" id="last_name" name="last_name" value="<?php echo esc_attr( $_POST['last_name'] ?? '' ); ?>" required>
+						<input type="text" id="last_name" name="last_name" value="<?php echo esc_attr( isset( $_POST['last_name'] ) ? sanitize_text_field( wp_unslash( $_POST['last_name'] ) ) : '' ); ?>" required>
 					</div>
 
 					<div class="dfx-prl-form-group">
@@ -672,9 +672,9 @@ class DFX_Parish_Retreat_Letters_Invitations {
 		// Get retreat details
 		global $wpdb;
 		$retreat = $wpdb->get_row( $wpdb->prepare(
-			"SELECT name, location, start_date, end_date FROM {$this->database->get_retreats_table()} WHERE id = %d",
+			'SELECT name, location, start_date, end_date FROM ' . $this->database->get_retreats_table() . ' WHERE id = %d',
 			$retreat_id
-		) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
 
 		if ( ! $retreat ) {
 			return false;
@@ -776,9 +776,9 @@ Best regards,
 		do {
 			$token = $this->security->generate_secure_token();
 			$exists = $wpdb->get_var( $wpdb->prepare(
-				"SELECT COUNT(*) FROM {$this->database->get_invitations_table()} WHERE token = %s",
+				'SELECT COUNT(*) FROM ' . $this->database->get_invitations_table() . ' WHERE token = %s',
 				$token
-			) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
 		} while ( $exists > 0 );
 
 		return $token;
@@ -815,9 +815,9 @@ Best regards,
 		global $wpdb;
 
 		return $wpdb->get_row( $wpdb->prepare(
-			"SELECT * FROM {$this->database->get_invitations_table()} WHERE token = %s",
+			'SELECT * FROM ' . $this->database->get_invitations_table() . ' WHERE token = %s',
 			$token
-		) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
 	}
 
 	/**
@@ -833,13 +833,13 @@ Best regards,
 		global $wpdb;
 
 		return $wpdb->get_row( $wpdb->prepare(
-			"SELECT * FROM {$this->database->get_invitations_table()} 
-			 WHERE retreat_id = %d AND email = %s AND permission_level = %s AND status = %s",
+			'SELECT * FROM ' . $this->database->get_invitations_table() . ' 
+			 WHERE retreat_id = %d AND email = %s AND permission_level = %s AND status = %s',
 			$retreat_id,
 			$email,
 			$permission_level,
 			self::STATUS_PENDING
-		) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
 	}
 
 	/**
@@ -871,16 +871,16 @@ Best regards,
 
 		// Mark expired invitations
 		$wpdb->query(
-			"UPDATE {$this->database->get_invitations_table()} 
-			 SET status = 'expired' 
-			 WHERE status = 'pending' AND expires_at < NOW()"
-		); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			'UPDATE ' . $this->database->get_invitations_table() . ' 
+			 SET status = \'expired\' 
+			 WHERE status = \'pending\' AND expires_at < NOW()'
+		); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
 
 		// Delete old invitations (older than 1 year)
 		$deleted = $wpdb->query(
-			"DELETE FROM {$this->database->get_invitations_table()} 
-			 WHERE status IN ('expired', 'cancelled') AND invited_at < DATE_SUB(NOW(), INTERVAL 1 YEAR)"
-		); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			'DELETE FROM ' . $this->database->get_invitations_table() . ' 
+			 WHERE status IN (\'expired\', \'cancelled\') AND invited_at < DATE_SUB(NOW(), INTERVAL 1 YEAR)'
+		); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
 
 		return $deleted ? $deleted : 0;
 	}
