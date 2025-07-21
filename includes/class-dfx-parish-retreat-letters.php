@@ -402,7 +402,7 @@ class DFX_Parish_Retreat_Letters {
 	 */
 	public function handle_message_url_routing() {
 		// Check if we're on a message URL pattern: /messages/[token] or /print/[token]
-		$request_uri = $_SERVER['REQUEST_URI'] ?? '';
+		$request_uri = sanitize_text_field( wp_unslash( $_SERVER['REQUEST_URI'] ?? '' ) );
 		
 		// Ensure we have a valid string
 		if ( ! is_string( $request_uri ) || empty( $request_uri ) ) {
@@ -416,7 +416,7 @@ class DFX_Parish_Retreat_Letters {
 		}
 		
 		// Get the site's base path
-		$site_url = parse_url( home_url(), PHP_URL_PATH );
+		$site_url = wp_parse_url( home_url(), PHP_URL_PATH );
 		$site_path = ( is_string( $site_url ) && ! empty( $site_url ) ) ? $site_url : '/';
 		
 		// Normalize paths and ensure site_path is a string
@@ -516,12 +516,12 @@ class DFX_Parish_Retreat_Letters {
 		global $wpdb;
 		
 		$attendant = $wpdb->get_row( $wpdb->prepare(
-			"SELECT a.*, r.name as retreat_name, r.location as retreat_location, r.start_date, r.end_date, r.custom_message
-			 FROM {$this->database->get_attendants_table()} a
-			 INNER JOIN {$this->database->get_retreats_table()} r ON a.retreat_id = r.id
-			 WHERE a.message_url_token = %s",
+			'SELECT a.*, r.name as retreat_name, r.location as retreat_location, r.start_date, r.end_date, r.custom_message
+			 FROM ' . $this->database->get_attendants_table() . ' a
+			 INNER JOIN ' . $this->database->get_retreats_table() . ' r ON a.retreat_id = r.id
+			 WHERE a.message_url_token = %s',
 			$token
-		) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
 
 		return $attendant;
 	}
@@ -949,7 +949,7 @@ class DFX_Parish_Retreat_Letters {
 	 */
 	public function enqueue_public_scripts() {
 		// Only enqueue on message URLs
-		$request_uri = $_SERVER['REQUEST_URI'] ?? '';
+		$request_uri = sanitize_text_field( wp_unslash( $_SERVER['REQUEST_URI'] ?? '' ) );
 		
 		// Ensure we have a valid string
 		if ( ! is_string( $request_uri ) || empty( $request_uri ) ) {
@@ -962,7 +962,7 @@ class DFX_Parish_Retreat_Letters {
 		}
 		
 		// Get the site's base path (same logic as handle_message_url_routing)
-		$site_url = parse_url( home_url(), PHP_URL_PATH );
+		$site_url = wp_parse_url( home_url(), PHP_URL_PATH );
 		$site_path = ( is_string( $site_url ) && ! empty( $site_url ) ) ? $site_url : '/';
 		
 		// Normalize paths and ensure site_path is a string
@@ -1458,7 +1458,7 @@ class DFX_Parish_Retreat_Letters {
 	 */
 	public function handle_message_submission() {
 		// Verify nonce
-		if ( ! wp_verify_nonce( $_POST['message_nonce'] ?? '', 'dfx_prl_submit_message' ) ) {
+		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['message_nonce'] ?? '' ) ), 'dfx_prl_submit_message' ) ) {
 			wp_send_json_error( array( 'message' => __( 'Security check failed.', 'dfx-parish-retreat-letters' ) ) );
 		}
 
