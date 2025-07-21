@@ -187,7 +187,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 				'dfx-prl-retreats',
 				__( 'Add New Retreat', 'dfx-parish-retreat-letters' ),
 				__( 'Add New', 'dfx-parish-retreat-letters' ),
-				'manage_retreat_plugin',
+				'read', // Use basic capability since we already check permissions above
 				'dfx-prl-retreats-add',
 				array( $this, 'retreat_add_page' )
 			);
@@ -196,7 +196,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 				'dfx-prl-retreats',
 				__( 'Privacy & Compliance', 'dfx-parish-retreat-letters' ),
 				__( 'Privacy & Compliance', 'dfx-parish-retreat-letters' ),
-				'manage_retreat_plugin',
+				'read', // Use basic capability since we already check permissions above
 				'dfx-prl-privacy',
 				array( $this, 'privacy_compliance_page' )
 			);
