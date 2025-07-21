@@ -68,7 +68,10 @@ class DFX_Parish_Retreat_Letters_Permissions {
 	 */
 	private function __construct() {
 		$this->database = DFX_Parish_Retreat_Letters_Database::get_instance();
-		
+
+		// Maybe add capabilities to admin role
+		add_action( 'admin_init', array( $this, 'maybe_add_admin_capabilities' ), 10, 0 );
+
 		// Initialize WooCommerce admin access handling
 		$this->init_woocommerce_handling();
 	}
@@ -80,7 +83,8 @@ class DFX_Parish_Retreat_Letters_Permissions {
 	 * @return bool True if user has global plugin management access.
 	 */
 	public function current_user_can_manage_plugin() {
-		return current_user_can( 'manage_retreat_plugin' ) || current_user_can( 'manage_options' );
+		// If the user is an administrator, they can manage the plugin
+		return current_user_can( 'manage_options' ) || current_user_can( 'manage_retreat_plugin' ) ;
 	}
 
 	/**
@@ -535,6 +539,33 @@ class DFX_Parish_Retreat_Letters_Permissions {
 
 		// Add a high priority action to handle admin_init and remove WooCommerce restrictions
 		add_action( 'admin_init', array( $this, 'handle_woocommerce_admin_restriction' ), 5 );
+	}
+
+	/**
+	 * Maybe add capabilities to the admin role for retreat management.
+	 *
+	 * @since 1.3.0
+	 */
+	public function maybe_add_admin_capabilities() {
+		// Check if the current user is an administrator
+		if ( ! current_user_can( 'manage_options' ) ) {
+			return;
+		}
+
+		// Get the administrator role
+		$admin_role = get_role( 'administrator' );
+		if ( ! $admin_role ) {
+			return;
+		}
+
+		// Check if the role already has the capability
+		if ( $admin_role->has_cap( 'manage_retreat_plugin' ) ) {
+			return; // Already has the capability
+		}
+
+		// Add capabilities for retreat management
+		$admin_role->add_cap( 'manage_retreat_plugin' );
+
 	}
 
 	/**

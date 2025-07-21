@@ -1981,7 +1981,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 	 * @param string $message Notice message.
 	 * @param string $type    Notice type (success, error, warning, info).
 	 */
-	private function add_admin_notice( $message, $type = 'info', $is_dismissible = true ) {
+	public function add_admin_notice( $message, $type = 'info', $is_dismissible = true ) {
 		$notices = get_transient( 'dfx_prl_admin_notices' ) ?: array();
 		$notices[] = array(
 			'message' => $message,
@@ -2231,6 +2231,9 @@ class DFX_Parish_Retreat_Letters_Admin {
 				wp_redirect( admin_url( 'admin.php?page=dfx-prl-retreats&action=attendants&retreat_id=' . $retreat_id ) );
 				exit;
 			} else {
+				// Handle creation error
+				$this->display_admin_notices( false );
+
 			}
 		}
 	}
