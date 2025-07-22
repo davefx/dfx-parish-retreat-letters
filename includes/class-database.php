@@ -642,17 +642,11 @@ class DFX_Parish_Retreat_Letters_Database {
 	 * Force a database upgrade (useful for development and testing).
 	 *
 	 * @since 1.0.0
-	 * @param bool $force_recreate Whether to drop and recreate all tables.
 	 */
-	public function force_upgrade( $force_recreate = false ) {
-		if ( $force_recreate ) {
-			$this->drop_tables();
-			$this->setup_tables();
-		} else {
-			$current_version = $this->get_database_version();
-			delete_option( self::DB_VERSION_OPTION );
-			$this->upgrade_database( $current_version );
-		}
+	public function force_upgrade() {
+		$current_version = $this->get_database_version();
+		delete_option( self::DB_VERSION_OPTION );
+		$this->upgrade_database( $current_version );
 	}
 
 	/**
