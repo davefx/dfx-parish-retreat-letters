@@ -488,11 +488,14 @@ class DFX_Parish_Retreat_Letters {
 	private function get_attendant_by_token( $token ) {
 		global $wpdb;
 		
+		$attendants_table = $this->database->get_attendants_table();
+		$retreats_table = $this->database->get_retreats_table();
+
 		$attendant = $wpdb->get_row( $wpdb->prepare(
-			'SELECT a.*, r.name as retreat_name, r.location as retreat_location, r.start_date, r.end_date, r.custom_message
-			 FROM ' . $this->database->get_attendants_table() . ' a
-			 INNER JOIN ' . $this->database->get_retreats_table() . ' r ON a.retreat_id = r.id
-			 WHERE a.message_url_token = %s',
+			"SELECT a.*, r.name as retreat_name, r.location as retreat_location, r.start_date, r.end_date, r.custom_message
+			 FROM `{$attendants_table}` a
+			 INNER JOIN `{$retreats_table}` r ON a.retreat_id = r.id
+			 WHERE a.message_url_token = %s", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 			$token
 		) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
 
@@ -1462,8 +1465,8 @@ class DFX_Parish_Retreat_Letters {
     }
 
 		// Validate CAPTCHA
-		$user_answer = sanitize_text_field( $_POST['captcha_answer'] ?? '' );
-		$captcha_token = sanitize_text_field( $_POST['captcha_token'] ?? '' );
+		$user_answer = sanitize_text_field( wp_unslash( $_POST['captcha_answer'] ?? '' ) );
+		$captcha_token = sanitize_text_field( wp_unslash( $_POST['captcha_token'] ?? '' ) );
 		
 		if ( empty( $user_answer ) || empty( $captcha_token ) ) {
 			wp_send_json_error( array( 'message' => __( 'Please complete the security check.', 'dfx-parish-retreat-letters' ) ) );
@@ -1481,13 +1484,13 @@ class DFX_Parish_Retreat_Letters {
 		}
 
 		// Validate sender name (now required)
-		$sender_name = sanitize_text_field( $_POST['sender_name'] ?? '' );
+		$sender_name = sanitize_text_field( wp_unslash( $_POST['sender_name'] ?? '' ) );
 		if ( empty( trim( $sender_name ) ) ) {
 			wp_send_json_error( array( 'message' => __( 'Sender name is required.', 'dfx-parish-retreat-letters' ) ) );
 		}
 
 		// Validate message mode
-		$message_mode = sanitize_text_field( $_POST['message_mode'] ?? 'text' );
+		$message_mode = sanitize_text_field( wp_unslash( $_POST['message_mode'] ?? 'text' ) );
 		if ( ! in_array( $message_mode, array( 'text', 'file' ), true ) ) {
 			wp_send_json_error( array( 'message' => __( 'Invalid message mode.', 'dfx-parish-retreat-letters' ) ) );
 		}
@@ -1498,7 +1501,7 @@ class DFX_Parish_Retreat_Letters {
 		
 		if ( $message_mode === 'text' ) {
 			// Validate message content
-			$content = wp_kses_post( $_POST['message_content'] ?? '' );
+			$content = wp_kses_post( wp_unslash( $_POST['message_content'] ?? '' ) );
 			
 			// Check if content has actual text, not just HTML tags
 			$text_content = trim( wp_strip_all_tags( $content ) );
@@ -1508,7 +1511,7 @@ class DFX_Parish_Retreat_Letters {
 			$message_type = 'text';
 		} else {
 			// Validate file upload
-			if ( empty( $_FILES['message_files']['name'][0] ) ) {
+			if ( ! isset( $_FILES['message_files'] ) || empty( $_FILES['message_files']['name'][0] ) ) {
 				wp_send_json_error( array( 'message' => __( 'At least one file is required.', 'dfx-parish-retreat-letters' ) ) );
 			}
 			$content = __( 'File upload message', 'dfx-parish-retreat-letters' );
