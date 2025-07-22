@@ -26,13 +26,19 @@ if ( ! defined( 'WPINC' ) ) {
  * Currently plugin version.
  * Rename this for your plugin and update it as you release new versions.
  */
-define( 'DFX_PARISH_RETREAT_LETTERS_VERSION', '25.7.22' );
+if ( ! defined( 'DFX_PARISH_RETREAT_LETTERS_VERSION' ) ) {
+    define( 'DFX_PARISH_RETREAT_LETTERS_VERSION', '25.7.22' );
+}
 
 /**
  * Define plugin constants.
  */
-define( 'DFX_PARISH_RETREAT_LETTERS_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
-define( 'DFX_PARISH_RETREAT_LETTERS_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
+if ( ! defined( 'DFX_PARISH_RETREAT_LETTERS_PLUGIN_DIR' ) ) {
+    define( 'DFX_PARISH_RETREAT_LETTERS_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
+}
+if ( ! defined( 'DFX_PARISH_RETREAT_LETTERS_PLUGIN_URL' ) ) {
+    define( 'DFX_PARISH_RETREAT_LETTERS_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
+}
 define( 'DFX_PARISH_RETREAT_LETTERS_PLUGIN_BASENAME', plugin_basename( __FILE__ ) );
 
 /**

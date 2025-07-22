@@ -884,4 +884,24 @@ Best regards,
 
 		return $deleted ? $deleted : 0;
 	}
+
+	/**
+	 * Delete all invitations for a specific retreat.
+	 * This method implements cascade delete functionality to replace database foreign key constraints.
+	 *
+	 * @since 1.4.0
+	 * @param int $retreat_id Retreat ID.
+	 * @return bool True on success, false on failure.
+	 */
+	public function delete_by_retreat( $retreat_id ) {
+		global $wpdb;
+
+		$result = $wpdb->delete(
+			$this->database->get_invitations_table(),
+			array( 'retreat_id' => $retreat_id ),
+			array( '%d' )
+		);
+
+		return $result !== false;
+	}
 }

@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.3/phpunit.xsd"
+         bootstrap="tests/bootstrap.php"
+         backupGlobals="false"
+         colors="true"
+         convertErrorsToExceptions="true"
+         convertNoticesToExceptions="true"
+         convertWarningsToExceptions="true"
+         processIsolation="false"
+         stopOnFailure="false"
+         cacheResult="false">
+    <testsuites>
+        <testsuite name="integration">
+            <directory suffix="Test.php">./tests/integration/</directory>
+            <file>./tests/unit/BasicInfrastructureTest.php</file>
+            <file>./tests/unit/ComprehensiveInfrastructureTest.php</file>
+        </testsuite>
+    </testsuites>
+    <coverage processUncoveredFiles="true">
+        <include>
+            <directory suffix=".php">./includes/</directory>
+            <file>./dfx-parish-retreat-letters.php</file>
+        </include>
+        <exclude>
+            <directory>./vendor/</directory>
+            <directory>./tests/</directory>
+        </exclude>
+    </coverage>
+    <php>
+        <const name="WP_TESTS_DOMAIN" value="example.org"/>
+        <const name="WP_TESTS_EMAIL" value="admin@example.org"/>
+        <const name="WP_TESTS_TITLE" value="Test"/>
+        <const name="WP_MEMORY_LIMIT" value="256M"/>
+        <env name="WP_TESTS_DIR" value="/tmp/wordpress-tests-lib"/>
+        <env name="WP_CORE_DIR" value="/tmp/wordpress/"/>
+    </php>
+</phpunit>

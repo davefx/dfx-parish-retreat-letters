@@ -534,4 +534,70 @@ class DFX_Parish_Retreat_Letters_ConfidentialMessage {
 
 		return $deleted_count;
 	}
+
+	/**
+	 * Delete all messages for a specific attendant.
+	 * This method implements cascade delete functionality to replace database foreign key constraints.
+	 *
+	 * @since 1.4.0
+	 * @param int $attendant_id Attendant ID.
+	 * @return int Number of messages deleted.
+	 */
+	public function delete_by_attendant( $attendant_id ) {
+		global $wpdb;
+
+		// Get all message IDs for this attendant
+		$message_ids = $wpdb->get_col( $wpdb->prepare(
+			'SELECT id FROM ' . $this->database->get_messages_table() . ' WHERE attendant_id = %d',
+			$attendant_id
+		) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
+
+		$deleted_count = 0;
+		foreach ( $message_ids as $message_id ) {
+			if ( $this->delete( $message_id ) ) {
+				$deleted_count++;
+			}
+		}
+
+		return $deleted_count;
+	}
+
+	/**
+	 * Delete all messages for multiple attendants.
+	 * This method implements cascade delete functionality to replace database foreign key constraints.
+	 *
+	 * @since 1.4.0
+	 * @param array $attendant_ids Array of attendant IDs.
+	 * @return int Number of messages deleted.
+	 */
+	public function delete_by_attendants( $attendant_ids ) {
+		if ( empty( $attendant_ids ) || ! is_array( $attendant_ids ) ) {
+			return 0;
+		}
+
+		$attendant_ids = array_map( 'absint', $attendant_ids );
+		$attendant_ids = array_filter( $attendant_ids ); // Remove any zeros
+
+		if ( empty( $attendant_ids ) ) {
+			return 0;
+		}
+
+		global $wpdb;
+
+		// Get all message IDs for these attendants
+		$placeholders = implode( ',', array_fill( 0, count( $attendant_ids ), '%d' ) );
+		$message_ids = $wpdb->get_col( $wpdb->prepare(
+			'SELECT id FROM ' . $this->database->get_messages_table() . " WHERE attendant_id IN ({$placeholders})",
+			$attendant_ids
+		) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.PreparedSQL.NotPrepared
+
+		$deleted_count = 0;
+		foreach ( $message_ids as $message_id ) {
+			if ( $this->delete( $message_id ) ) {
+				$deleted_count++;
+			}
+		}
+
+		return $deleted_count;
+	}
 }

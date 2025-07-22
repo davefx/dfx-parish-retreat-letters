@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/8.5/phpunit.xsd"
+         bootstrap="tests/bootstrap-brain-monkey.php"
+         backupGlobals="false"
+         colors="true"
+         convertErrorsToExceptions="true"
+         convertNoticesToExceptions="true"
+         convertWarningsToExceptions="true"
+         processIsolation="false"
+         stopOnFailure="false">
+    <testsuites>
+        <testsuite name="advanced">
+            <file>./tests/unit/DatabaseTest.php</file>
+            <file>./tests/unit/RetreatTest.php</file>
+            <file>./tests/unit/AttendantTest.php</file>
+            <file>./tests/unit/SecurityTest.php</file>
+            <file>./tests/unit/ConfidentialMessageTest.php</file>
+            <file>./tests/unit/AdminTest.php</file>
+            <file>./tests/unit/GDPRTest.php</file>
+            <file>./tests/unit/PermissionsTest.php</file>
+            <file>./tests/unit/InvitationsTest.php</file>
+            <file>./tests/unit/MessageFileTest.php</file>
+            <file>./tests/unit/PrintLogTest.php</file>
+            <file>./tests/unit/DFXParishRetreatLettersTest.php</file>
+        </testsuite>
+    </testsuites>
+</phpunit>
