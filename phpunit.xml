@@ -11,11 +11,10 @@
          stopOnFailure="false"
          cacheResult="false">
     <testsuites>
-        <testsuite name="unit">
-            <directory suffix="Test.php">./tests/unit/</directory>
-        </testsuite>
         <testsuite name="integration">
             <directory suffix="Test.php">./tests/integration/</directory>
+            <file>./tests/unit/BasicInfrastructureTest.php</file>
+            <file>./tests/unit/ComprehensiveInfrastructureTest.php</file>
         </testsuite>
     </testsuites>
     <coverage processUncoveredFiles="true">

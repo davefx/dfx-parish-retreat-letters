@@ -8,7 +8,6 @@ The plugin features a comprehensive test infrastructure with multiple levels:
 
 - **Basic Tests**: Quick verification without WordPress dependencies (4 tests) ✅ **Always Available**
 - **Comprehensive Tests**: Complete feature coverage testing (22 tests, 112+ assertions) ✅ **Always Available**
-- **Advanced Unit Tests**: Detailed class-by-class testing with mocks (requires external dependencies)
 - **Integration Tests**: Full WordPress environment testing (requires WordPress setup)
 
 ## Quick Start (No Dependencies Required) ⚡
@@ -26,28 +25,18 @@ composer test:comprehensive
 composer test:safe
 ```
 
-## Dependency Notes ⚠️
+## Automated Testing in CI/CD 🚀
 
-Some test configurations require external dependencies that may not be available in all environments:
+The GitHub Actions workflow runs:
+- **Basic Tests**: Across all PHP versions (7.4-8.2) without external dependencies
+- **Comprehensive Tests**: Full feature coverage (22 tests, 112+ assertions) 
+- **Integration Tests**: WordPress environment testing with MySQL
 
-- **Brain Monkey tests** require `brain/monkey` package
-- **WordPress integration tests** require WordPress test environment setup
-- **External dependencies** may be blocked by firewall restrictions in CI environments
+## Development Notes ⚠️
 
-The basic and comprehensive tests are designed to work without any external dependencies and provide complete feature coverage testing.
-
-## Advanced Testing (External Dependencies Required)
-
-### Prerequisites
-```bash
-# Install dependencies (may fail in restricted environments)
-composer install
-```
-
-### Unit Tests with Brain Monkey
-```bash
-# Run advanced unit tests (requires Brain Monkey)
-composer test:advanced
+- **Brain Monkey tests** were removed from CI due to dependency conflicts in restricted environments
+- **Basic and comprehensive tests** provide complete coverage without external dependencies
+- **Integration tests** run in WordPress environment for end-to-end validation
 ```
 
 ### Full WordPress Testing

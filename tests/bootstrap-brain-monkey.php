@@ -29,7 +29,8 @@ if (file_exists(dirname(__DIR__) . '/vendor/autoload.php')) {
 }
 
 // Initialize Brain Monkey - this must be done BEFORE any WordPress functions are defined
-require_once dirname(__DIR__) . '/vendor/brain/monkey/inc/bootstrap.php';
+// Load Brain Monkey functions
+require_once dirname(__DIR__) . '/vendor/brain/monkey/inc/api.php';
 
 // Only define WordPress functions if they don't exist and Brain Monkey hasn't loaded
 // Brain Monkey will handle WordPress function mocking
