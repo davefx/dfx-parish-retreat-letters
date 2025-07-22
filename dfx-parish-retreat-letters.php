@@ -3,7 +3,7 @@
  * Plugin Name: DFX Parish Retreat Letters
  * Plugin URI: https://github.com/davefx/dfx-parish-retreat-letters
  * Description: A WordPress plugin for managing parish retreat letters.
- * Version: 25.7.21
+ * Version: 25.7.22
  * Author: DaveFX
  * Author URI: https://github.com/davefx
  * Text Domain: dfx-parish-retreat-letters
@@ -26,7 +26,7 @@ if ( ! defined( 'WPINC' ) ) {
  * Currently plugin version.
  * Rename this for your plugin and update it as you release new versions.
  */
-define( 'DFX_PARISH_RETREAT_LETTERS_VERSION', '25.7.21' );
+define( 'DFX_PARISH_RETREAT_LETTERS_VERSION', '25.7.22' );
 
 /**
  * Define plugin constants.
@@ -41,7 +41,7 @@ define( 'DFX_PARISH_RETREAT_LETTERS_PLUGIN_BASENAME', plugin_basename( __FILE__ 
 function activate_dfx_parish_retreat_letters() {
 	require_once plugin_dir_path( __FILE__ ) . 'includes/class-database.php';
 	$database = DFX_Parish_Retreat_Letters_Database::get_instance();
-	$database->create_tables();
+	$database->setup_tables();
 }
 
 /**
