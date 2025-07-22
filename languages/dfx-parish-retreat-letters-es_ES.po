@@ -254,11 +254,11 @@ msgstr "Esta acción es irreversible y no se puede restaurar"
 
 #: includes/class-admin.php:317
 msgid "To confirm deletion, please type the exact retreat name below:"
-msgstr "Para confirmar la eliminación, escriba el nombre exacto del retiro a continuación:"
+msgstr "Para confirmar la eliminación, escribe el nombre exacto del retiro a continuación:"
 
 #: includes/class-admin.php:318
 msgid "Type retreat name here..."
-msgstr "Escriba el nombre del retiro aquí..."
+msgstr "Escribe el nombre del retiro aquí..."
 
 #: includes/class-admin.php:319
 msgid "Delete Forever"
@@ -356,7 +356,7 @@ msgstr "Exportar CSV"
 
 #: includes/class-admin.php:3056
 msgid "Enter phone number with area code."
-msgstr "Ingrese el número de teléfono con cualquier prefijo necesario."
+msgstr "Introduce el número de teléfono con cualquier prefijo necesario."
 
 #. translators: %d: Number of attendants
 #: includes/class-admin.php:621
@@ -599,17 +599,17 @@ msgstr "Para fechas ambiguas como \"01/10/2025\", el sistema no puede determinar
 
 #: includes/class-admin.php:3171
 msgid "Use unambiguous formats like YYYY-MM-DD (2025-01-10)"
-msgstr "Use formatos no ambiguos como AAAA-MM-DD (2025-01-10)"
+msgstr "Usa formatos no ambiguos como AAAA-MM-DD (2025-01-10)"
 
 #: includes/class-admin.php:3172
 msgid "Set your preferred date format below to ensure consistent interpretation"
-msgstr "Configure su formato de fecha preferido abajo para asegurar una interpretación consistente"
+msgstr "Configura el formato de fecha preferido abajo para asegurar una interpretación consistente"
 
 #. translators: %1$d: Number of ambiguous dates, %2$s: Current preference
 #: includes/class-admin.php:2410
 #, php-format
 msgid "Warning: %1$d ambiguous date(s) were interpreted using your current preference (%2$s)."
-msgstr "Advertencia: %1$d fecha(s) ambigua(s) fueron interpretadas usando su preferencia actual (%2$s)."
+msgstr "Advertencia: %1$d fecha(s) ambigua(s) fueron interpretadas usando la preferencia actual (%2$s)."
 
 #: includes/class-admin.php:2416
 msgid "Ambiguous dates found:"
@@ -629,11 +629,11 @@ msgstr "Para el Asistente del Retiro"
 
 #: includes/class-dfx-parish-retreat-letters.php:581
 msgid "Your Message"
-msgstr "Su Mensaje"
+msgstr "Tu Mensaje"
 
 #: includes/class-dfx-parish-retreat-letters.php:592
 msgid "Write your confidential message here..."
-msgstr "Escriba su mensaje confidencial aquí..."
+msgstr "Escribe tu mensaje confidencial aquí..."
 
 #: includes/class-dfx-parish-retreat-letters.php:584
 msgid "Bold"
@@ -649,7 +649,7 @@ msgstr "Subrayado"
 
 #: includes/class-dfx-parish-retreat-letters.php:595
 msgid "You can use the toolbar to format your text, create lists, and paste images. HTML is allowed but will be filtered for security."
-msgstr "Puede usar la barra de herramientas para formatear su texto, crear listas y pegar imágenes. HTML está permitido pero será filtrado por seguridad."
+msgstr "Puedes usar la barra de herramientas para formatear tu texto, crear listas y pegar imágenes. HTML está permitido pero será filtrado por seguridad."
 
 #: includes/class-dfx-parish-retreat-letters.php:602
 msgid "Allowed file types: PDF, DOC, DOCX, TXT, JPG, PNG, GIF. Maximum 5MB per file."
@@ -673,11 +673,11 @@ msgstr "Privacidad y Seguridad"
 
 #: includes/class-dfx-parish-retreat-letters.php:629
 msgid "Your message will be encrypted and stored securely."
-msgstr "Su mensaje será cifrado y almacenado de forma segura."
+msgstr "Tu mensaje será cifrado y almacenado de forma segura."
 
 #: includes/class-dfx-parish-retreat-letters.php:630
 msgid "Only authorized retreat administrators can access your message."
-msgstr "Solo los administradores autorizados del retiro pueden acceder a su mensaje."
+msgstr "Solo los administradores autorizados del retiro pueden acceder a tu mensaje."
 
 #: includes/class-dfx-parish-retreat-letters.php:631
 msgid "Messages can only be viewed when printed - no content is displayed on screen."
@@ -685,7 +685,7 @@ msgstr "Los mensajes solo se pueden ver cuando se imprimen - no se muestra conte
 
 #: includes/class-dfx-parish-retreat-letters.php:632
 msgid "Your IP address will be anonymized after 30 days for privacy compliance."
-msgstr "Su dirección IP será anonimizada después de 30 días para cumplir con la privacidad."
+msgstr "Tu dirección IP será anonimizada después de 30 días para cumplir con la privacidad."
 
 #: includes/class-dfx-parish-retreat-letters.php:633
 msgid "All data is handled in accordance with GDPR and Spanish privacy laws."
@@ -693,7 +693,7 @@ msgstr "Todos los datos se manejan de acuerdo con el RGPD y las leyes de privaci
 
 #: includes/class-dfx-parish-retreat-letters.php:1278
 msgid "Please solve: "
-msgstr "Por favor resuelva: "
+msgstr "Por favor resuelve: "
 
 #: includes/class-dfx-parish-retreat-letters.php:1313
 msgid "Remove"
@@ -705,11 +705,11 @@ msgstr "Respuesta de seguridad incorrecta. Por favor inténtelo de nuevo."
 
 #: includes/class-dfx-parish-retreat-letters.php:1410
 msgid "Your message has been sent successfully and securely stored."
-msgstr "Su mensaje ha sido enviado exitosamente y almacenado de forma segura."
+msgstr "Tu mensaje ha sido enviado exitosamente y almacenado de forma segura."
 
 #: includes/class-dfx-parish-retreat-letters.php:1415
 msgid "An error occurred while sending your message."
-msgstr "Ocurrió un error al enviar su mensaje."
+msgstr "Ocurrió un error al enviar el mensaje."
 
 #: includes/class-admin.php:4287
 #: includes/class-dfx-parish-retreat-letters.php:1424
@@ -785,12 +785,12 @@ msgstr "El contenido del archivo está cifrado y no puede ser exportado por razo
 #: includes/class-gdpr.php:411
 #: includes/class-gdpr.php:447
 msgid "Please provide an identifier (name or email)."
-msgstr "Por favor proporcione un identificador (nombre o correo electrónico)."
+msgstr "Por favor proporciona un identificador (nombre o correo electrónico)."
 
 #: includes/class-admin.php:4260
 #: includes/class-gdpr.php:451
 msgid "Please type \"ERASE\" to confirm data deletion."
-msgstr "Por favor escriba \"BORRAR\" para confirmar la eliminación de datos."
+msgstr "Por favor escribe \"BORRAR\" para confirmar la eliminación de datos."
 
 #: includes/class-gdpr.php:458
 #, php-format
@@ -835,15 +835,15 @@ msgstr "DFX Cartas de Retiro Parroquial: La extensión OpenSSL es necesaria para
 
 #: includes/class-dfx-parish-retreat-letters.php:562
 msgid "Your Name"
-msgstr "Su Nombre"
+msgstr "Tu Nombre"
 
 #: includes/class-dfx-parish-retreat-letters.php:563
 msgid "Enter your name"
-msgstr "Introduzca su nombre"
+msgstr "Introduce tu nombre"
 
 #: includes/class-dfx-parish-retreat-letters.php:567
 msgid "Choose message type:"
-msgstr "Seleccione el tipo de mensaje:"
+msgstr "Selecciona el tipo de mensaje:"
 
 #: includes/class-admin.php:3430
 #: includes/class-dfx-parish-retreat-letters.php:571
@@ -860,11 +860,11 @@ msgstr "Adjuntar archivos"
 
 #: includes/class-dfx-parish-retreat-letters.php:1353
 msgid "Please enter a message."
-msgstr "Por favor introduzca un mensaje."
+msgstr "Por favor introduce un mensaje."
 
 #: includes/class-dfx-parish-retreat-letters.php:1359
 msgid "Please select at least one file."
-msgstr "Por favor seleccione un archivo."
+msgstr "Por favor selecciona un archivo."
 
 #: includes/class-dfx-parish-retreat-letters.php:1494
 msgid "Sender name is required."
@@ -1176,7 +1176,7 @@ msgstr "Exportar Datos Personales"
 #: includes/class-admin.php:4044
 #: includes/class-admin.php:4050
 msgid "Enter sender name or email"
-msgstr "Ingrese nombre del remitente o email"
+msgstr "Introduce nombre del remitente o email"
 
 #: includes/class-admin.php:4045
 msgid "Export Data"
@@ -1188,7 +1188,7 @@ msgstr "Borrar Datos Personales"
 
 #: includes/class-admin.php:4051
 msgid "Type ERASE to confirm"
-msgstr "Escriba BORRAR para confirmar"
+msgstr "Escribe BORRAR para confirmar"
 
 #: includes/class-admin.php:4052
 msgid "Erase Data"
@@ -1342,7 +1342,7 @@ msgstr "La búsqueda falló. Por favor inténtelo de nuevo."
 
 #: includes/class-admin.php:1810
 msgid "Please select a role first."
-msgstr "Por favor seleccione un rol primero."
+msgstr "Por favor selecciona un rol primero."
 
 #: includes/class-admin.php:1282
 #: includes/class-admin.php:1847
@@ -1452,7 +1452,7 @@ msgstr "Caduca"
 
 #: includes/class-admin.php:1179
 msgid "Please select a role."
-msgstr "Por favor, seleccione un perfil."
+msgstr "Por favor, selecciona un perfil."
 
 #: includes/class-admin.php:2030
 msgid "You do not have permission to view this retreat."
@@ -1671,11 +1671,11 @@ msgstr "Error al actualizar la configuración de retención. Por favor, revise s
 #: includes/class-admin.php:4233
 #: includes/class-admin.php:4255
 msgid "Please enter a sender name or email."
-msgstr "Por favor, introduzca un nombre de remitente o correo electrónico."
+msgstr "Por favor, introduce un nombre de remitente o correo electrónico."
 
 #: includes/class-admin.php:4264
 msgid "Are you sure you want to permanently erase all data for this identifier? This action cannot be undone."
-msgstr "¿Está seguro de que desea eliminar permanentemente todos los datos para este identificador? Esta acción no se puede deshacer."
+msgstr "¿Estás seguro de que desea eliminar permanentemente todos los datos para este identificador? Esta acción no se puede deshacer."
 
 #: includes/class-admin.php:4283
 msgid "An error occurred during data erasure."
@@ -1781,7 +1781,7 @@ msgstr "¿Qué sucede a continuación?"
 
 #: includes/class-invitations.php:555
 msgid "A user account will be created for you automatically"
-msgstr "Se creará automáticamente una cuenta de usuario para usted"
+msgstr "Se creará automáticamente una cuenta de usuario para ti"
 
 #: includes/class-invitations.php:556
 msgid "You will receive login credentials via email"
@@ -1799,7 +1799,7 @@ msgstr "Invitación para gestionar el retiro: %s"
 #: includes/class-invitations.php:736
 #, php-format
 msgid "Welcome to %s - Your account details"
-msgstr "Bienvenido a %s - Detalles de su cuenta"
+msgstr "Bienvenido a %s - Detalles de tu cuenta"
 
 #: includes/class-invitations.php:741
 #, php-format
@@ -1822,7 +1822,7 @@ msgid ""
 msgstr ""
 "Bienvenido %s,\n"
 "\n"
-"¡Su cuenta se ha creado exitosamente!\n"
+"¡Tu cuenta se ha creado exitosamente!\n"
 "\n"
 "Detalles de Inicio de Sesión:\n"
 "Nombre de Usuario: %s\n"
@@ -1831,7 +1831,7 @@ msgstr ""
 "\n"
 "URL de Inicio de Sesión: %s\n"
 "\n"
-"Por seguridad, por favor cambie su contraseña después de su primer inicio de sesión.\n"
+"Por seguridad, por favor cambia tu contraseña después de tu primer inicio de sesión.\n"
 "\n"
 "Saludos cordiales,\n"
 "%s"
