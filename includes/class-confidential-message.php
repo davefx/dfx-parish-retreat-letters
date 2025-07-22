@@ -99,11 +99,14 @@ class DFX_Parish_Retreat_Letters_ConfidentialMessage {
 	public function get( $id ) {
 		global $wpdb;
 
+		$messages_table = $this->database->get_messages_table();
+		$attendants_table = $this->database->get_attendants_table();
+
 		$result = $wpdb->get_row( $wpdb->prepare(
-			'SELECT m.*, a.retreat_id 
-			 FROM ' . $this->database->get_messages_table() . ' m
-			 INNER JOIN ' . $this->database->get_attendants_table() . ' a ON m.attendant_id = a.id
-			 WHERE m.id = %d',
+			"SELECT m.*, a.retreat_id 
+			 FROM `{$messages_table}` m
+			 INNER JOIN `{$attendants_table}` a ON m.attendant_id = a.id
+			 WHERE m.id = %d", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 			$id
 		) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
 
@@ -426,34 +429,36 @@ class DFX_Parish_Retreat_Letters_ConfidentialMessage {
 		global $wpdb;
 
 		$stats = array();
+		$messages_table = $this->database->get_messages_table();
 
 		// Total messages
 		$stats['total_messages'] = (int) $wpdb->get_var( 
-			'SELECT COUNT(*) FROM ' . $this->database->get_messages_table()
+			"SELECT COUNT(*) FROM `{$messages_table}`" // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 		); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
 
 		// Messages by type
 		$stats['text_messages'] = (int) $wpdb->get_var( $wpdb->prepare(
-			'SELECT COUNT(*) FROM ' . $this->database->get_messages_table() . ' WHERE message_type = %s',
+			"SELECT COUNT(*) FROM `{$messages_table}` WHERE message_type = %s", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 			'text'
 		) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
 
 		$stats['file_messages'] = (int) $wpdb->get_var( $wpdb->prepare(
-			'SELECT COUNT(*) FROM ' . $this->database->get_messages_table() . ' WHERE message_type = %s',
+			"SELECT COUNT(*) FROM `{$messages_table}` WHERE message_type = %s", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 			'file'
 		) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
 
 		// Printed vs unprinted
+		$print_log_table = $this->database->get_message_print_log_table();
 		$stats['printed_messages'] = (int) $wpdb->get_var(
-			'SELECT COUNT(DISTINCT message_id) FROM ' . $this->database->get_message_print_log_table()
+			"SELECT COUNT(DISTINCT message_id) FROM `{$print_log_table}`" // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 		); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
 
 		$stats['unprinted_messages'] = $stats['total_messages'] - $stats['printed_messages'];
 
 		// Messages from last 30 days
 		$stats['recent_messages'] = (int) $wpdb->get_var(
-			'SELECT COUNT(*) FROM ' . $this->database->get_messages_table() . ' 
-			 WHERE submitted_at >= DATE_SUB(NOW(), INTERVAL 30 DAY)'
+			"SELECT COUNT(*) FROM `{$messages_table}` 
+			 WHERE submitted_at >= DATE_SUB(NOW(), INTERVAL 30 DAY)" // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 		); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
 
 		return $stats;
@@ -495,8 +500,9 @@ class DFX_Parish_Retreat_Letters_ConfidentialMessage {
 
 		// Check if attendant exists
 		global $wpdb;
+		$attendants_table = $this->database->get_attendants_table();
 		$attendant_exists = $wpdb->get_var( $wpdb->prepare(
-			'SELECT COUNT(*) FROM ' . $this->database->get_attendants_table() . ' WHERE id = %d',
+			"SELECT COUNT(*) FROM `{$attendants_table}` WHERE id = %d", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 			$data['attendant_id']
 		) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
 
@@ -518,10 +524,11 @@ class DFX_Parish_Retreat_Letters_ConfidentialMessage {
 		global $wpdb;
 
 		$cutoff_date = gmdate( 'Y-m-d H:i:s', strtotime( "-{$days_old} days" ) );
+		$messages_table = $this->database->get_messages_table();
 
 		// Get messages to delete
 		$message_ids = $wpdb->get_col( $wpdb->prepare(
-			'SELECT id FROM ' . $this->database->get_messages_table() . ' WHERE submitted_at < %s',
+			"SELECT id FROM `{$messages_table}` WHERE submitted_at < %s", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 			$cutoff_date
 		) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
 
