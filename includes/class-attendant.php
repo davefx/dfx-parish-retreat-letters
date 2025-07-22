@@ -131,7 +131,8 @@ class DFX_Parish_Retreat_Letters_Attendant {
 	}
 
 	/**
-	 * Delete an attendant.
+	 * Delete an attendant with cascade delete for related messages.
+	 * This method implements cascade delete functionality to replace database foreign key constraints.
 	 *
 	 * @since 1.0.0
 	 * @param int $id Attendant ID.
@@ -140,6 +141,11 @@ class DFX_Parish_Retreat_Letters_Attendant {
 	public function delete( $id ) {
 		global $wpdb;
 
+		// First delete all messages for this attendant (cascade delete)
+		$message_model = new DFX_Parish_Retreat_Letters_ConfidentialMessage();
+		$message_model->delete_by_attendant( $id );
+
+		// Then delete the attendant
 		$result = $wpdb->delete(
 			$this->database->get_attendants_table(),
 			array( 'id' => $id ),
@@ -275,7 +281,8 @@ class DFX_Parish_Retreat_Letters_Attendant {
 	}
 
 	/**
-	 * Delete all attendants for a specific retreat.
+	 * Delete all attendants for a specific retreat with cascade delete for related messages.
+	 * This method implements cascade delete functionality to replace database foreign key constraints.
 	 *
 	 * @since 1.0.0
 	 * @param int $retreat_id Retreat ID.
@@ -284,6 +291,19 @@ class DFX_Parish_Retreat_Letters_Attendant {
 	public function delete_by_retreat( $retreat_id ) {
 		global $wpdb;
 
+		// First get all attendant IDs for this retreat
+		$attendant_ids = $wpdb->get_col( $wpdb->prepare(
+			'SELECT id FROM ' . $this->database->get_attendants_table() . ' WHERE retreat_id = %d',
+			$retreat_id
+		) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
+
+		// Delete all messages for these attendants (cascade delete)
+		if ( ! empty( $attendant_ids ) ) {
+			$message_model = new DFX_Parish_Retreat_Letters_ConfidentialMessage();
+			$message_model->delete_by_attendants( $attendant_ids );
+		}
+
+		// Then delete all attendants for this retreat
 		$result = $wpdb->delete(
 			$this->database->get_attendants_table(),
 			array( 'retreat_id' => $retreat_id ),

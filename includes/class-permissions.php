@@ -520,6 +520,45 @@ class DFX_Parish_Retreat_Letters_Permissions {
 	}
 
 	/**
+	 * Delete all permissions and audit logs for a specific retreat.
+	 * This method implements cascade delete functionality to replace database foreign key constraints.
+	 *
+	 * @since 1.4.0
+	 * @param int $retreat_id Retreat ID.
+	 * @return bool True on success, false on failure.
+	 */
+	public function delete_by_retreat( $retreat_id ) {
+		global $wpdb;
+
+		// First remove dynamic capabilities for all users with permissions on this retreat
+		$permissions = $wpdb->get_results( $wpdb->prepare(
+			"SELECT user_id, permission_level FROM {$this->database->get_permissions_table()} 
+			 WHERE retreat_id = %d AND is_active = 1",
+			$retreat_id
+		) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+
+		foreach ( $permissions as $permission ) {
+			$this->remove_dynamic_capability( $permission->user_id, $retreat_id, $permission->permission_level );
+		}
+
+		// Delete all permissions for this retreat (both active and inactive)
+		$permissions_deleted = $wpdb->delete(
+			$this->database->get_permissions_table(),
+			array( 'retreat_id' => $retreat_id ),
+			array( '%d' )
+		);
+
+		// Delete all audit log entries for this retreat
+		$audit_deleted = $wpdb->delete(
+			$this->database->get_audit_log_table(),
+			array( 'retreat_id' => $retreat_id ),
+			array( '%d' )
+		);
+
+		return $permissions_deleted !== false && $audit_deleted !== false;
+	}
+
+	/**
 	 * Ensure WooCommerce doesn't block admin access for users with retreat permissions.
 	 *
 	 * @since 1.3.0

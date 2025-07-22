@@ -13,6 +13,7 @@
         <testsuite name="comprehensive">
             <file>./tests/unit/BasicInfrastructureTest.php</file>
             <file>./tests/unit/ComprehensiveInfrastructureTest.php</file>
+            <file>./tests/unit/CascadeDeleteTest.php</file>
         </testsuite>
         <testsuite name="basic">
             <file>./tests/unit/BasicInfrastructureTest.php</file>

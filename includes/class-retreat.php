@@ -122,7 +122,15 @@ class DFX_Parish_Retreat_Letters_Retreat {
 	}
 
 	/**
-	 * Delete a retreat.
+	 * Delete a retreat with cascade delete for all related data.
+	 * This method implements cascade delete functionality to replace database foreign key constraints.
+	 * 
+	 * Deletes in this order:
+	 * 1. All messages for attendants in this retreat (which deletes files and print logs)
+	 * 2. All attendants for this retreat  
+	 * 3. All permissions and audit logs for this retreat
+	 * 4. All invitations for this retreat
+	 * 5. The retreat itself
 	 *
 	 * @since 1.0.0
 	 * @param int $id Retreat ID.
@@ -131,6 +139,19 @@ class DFX_Parish_Retreat_Letters_Retreat {
 	public function delete( $id ) {
 		global $wpdb;
 
+		// Delete all attendants for this retreat (which will cascade delete messages)
+		$attendant_model = new DFX_Parish_Retreat_Letters_Attendant();
+		$attendant_model->delete_by_retreat( $id );
+
+		// Delete all permissions and audit logs for this retreat
+		$permissions_model = new DFX_Parish_Retreat_Letters_Permissions();
+		$permissions_model->delete_by_retreat( $id );
+
+		// Delete all invitations for this retreat
+		$invitations_model = new DFX_Parish_Retreat_Letters_Invitations();
+		$invitations_model->delete_by_retreat( $id );
+
+		// Delete the retreat
 		$result = $wpdb->delete(
 			$this->database->get_retreats_table(),
 			array( 'id' => $id ),
