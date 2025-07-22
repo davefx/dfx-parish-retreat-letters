@@ -204,8 +204,7 @@ class DFX_Parish_Retreat_Letters_Database {
 			INDEX idx_retreat_id (retreat_id),
 			INDEX idx_name (name),
 			INDEX idx_surnames (surnames),
-			INDEX idx_message_url_token (message_url_token),
-			FOREIGN KEY (retreat_id) REFERENCES {$this->retreats_table}(id) ON DELETE CASCADE
+			INDEX idx_message_url_token (message_url_token)
 		) $charset_collate;";
 
 		dbDelta( $attendants_sql );
@@ -226,8 +225,7 @@ class DFX_Parish_Retreat_Letters_Database {
 			INDEX idx_attendant_id (attendant_id),
 			INDEX idx_submitted_at (submitted_at),
 			INDEX idx_message_type (message_type),
-			INDEX idx_ip_anonymized_at (ip_anonymized_at),
-			FOREIGN KEY (attendant_id) REFERENCES {$this->attendants_table}(id) ON DELETE CASCADE
+			INDEX idx_ip_anonymized_at (ip_anonymized_at)
 		) $charset_collate;";
 
 		dbDelta( $messages_sql );
@@ -246,8 +244,7 @@ class DFX_Parish_Retreat_Letters_Database {
 			PRIMARY KEY (id),
 			INDEX idx_message_id (message_id),
 			INDEX idx_file_type (file_type),
-			INDEX idx_uploaded_at (uploaded_at),
-			FOREIGN KEY (message_id) REFERENCES {$this->messages_table}(id) ON DELETE CASCADE
+			INDEX idx_uploaded_at (uploaded_at)
 		) $charset_collate;";
 
 		dbDelta( $files_sql );
@@ -263,9 +260,7 @@ class DFX_Parish_Retreat_Letters_Database {
 			PRIMARY KEY (id),
 			INDEX idx_message_id (message_id),
 			INDEX idx_user_id (user_id),
-			INDEX idx_printed_at (printed_at),
-			FOREIGN KEY (message_id) REFERENCES {$this->messages_table}(id) ON DELETE CASCADE,
-			FOREIGN KEY (user_id) REFERENCES {$wpdb->users}(ID) ON DELETE CASCADE
+			INDEX idx_printed_at (printed_at)
 		) $charset_collate;";
 
 		dbDelta( $print_log_sql );
@@ -287,10 +282,7 @@ class DFX_Parish_Retreat_Letters_Database {
 			INDEX idx_permission_level (permission_level),
 			INDEX idx_granted_by (granted_by),
 			INDEX idx_granted_at (granted_at),
-			INDEX idx_is_active (is_active),
-			FOREIGN KEY (user_id) REFERENCES {$wpdb->users}(ID) ON DELETE CASCADE,
-			FOREIGN KEY (retreat_id) REFERENCES {$this->retreats_table}(id) ON DELETE CASCADE,
-			FOREIGN KEY (granted_by) REFERENCES {$wpdb->users}(ID) ON DELETE RESTRICT
+			INDEX idx_is_active (is_active)
 		) $charset_collate;";
 
 		dbDelta( $permissions_sql );
@@ -318,10 +310,7 @@ class DFX_Parish_Retreat_Letters_Database {
 			INDEX idx_invited_by (invited_by),
 			INDEX idx_invited_at (invited_at),
 			INDEX idx_expires_at (expires_at),
-			INDEX idx_status (status),
-			FOREIGN KEY (retreat_id) REFERENCES {$this->retreats_table}(id) ON DELETE CASCADE,
-			FOREIGN KEY (invited_by) REFERENCES {$wpdb->users}(ID) ON DELETE CASCADE,
-			FOREIGN KEY (created_user_id) REFERENCES {$wpdb->users}(ID) ON DELETE SET NULL
+			INDEX idx_status (status)
 		) $charset_collate;";
 
 		dbDelta( $invitations_sql );
@@ -344,10 +333,7 @@ class DFX_Parish_Retreat_Letters_Database {
 			INDEX idx_action (action),
 			INDEX idx_permission_level (permission_level),
 			INDEX idx_performed_by (performed_by),
-			INDEX idx_performed_at (performed_at),
-			FOREIGN KEY (user_id) REFERENCES {$wpdb->users}(ID) ON DELETE CASCADE,
-			FOREIGN KEY (retreat_id) REFERENCES {$this->retreats_table}(id) ON DELETE CASCADE,
-			FOREIGN KEY (performed_by) REFERENCES {$wpdb->users}(ID) ON DELETE CASCADE
+			INDEX idx_performed_at (performed_at)
 		) $charset_collate;";
 
 		dbDelta( $audit_log_sql );
