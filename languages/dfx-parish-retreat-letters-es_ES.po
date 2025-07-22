@@ -603,13 +603,13 @@ msgstr "Use formatos no ambiguos como AAAA-MM-DD (2025-01-10)"
 
 #: includes/class-admin.php:3172
 msgid "Set your preferred date format below to ensure consistent interpretation"
-msgstr "Configure su formato de fecha preferido abajo para asegurar una interpretación consistente"
+msgstr "Configura tu formato de fecha preferido abajo para asegurar una interpretación consistente"
 
 #. translators: %1$d: Number of ambiguous dates, %2$s: Current preference
 #: includes/class-admin.php:2410
 #, php-format
 msgid "Warning: %1$d ambiguous date(s) were interpreted using your current preference (%2$s)."
-msgstr "Advertencia: %1$d fecha(s) ambigua(s) fueron interpretadas usando su preferencia actual (%2$s)."
+msgstr "Advertencia: %1$d fecha(s) ambigua(s) fueron interpretadas usando tu preferencia actual (%2$s)."
 
 #: includes/class-admin.php:2416
 msgid "Ambiguous dates found:"
@@ -677,7 +677,7 @@ msgstr "Tu mensaje será cifrado y almacenado de forma segura."
 
 #: includes/class-dfx-parish-retreat-letters.php:630
 msgid "Only authorized retreat administrators can access your message."
-msgstr "Solo los administradores autorizados del retiro pueden acceder a su mensaje."
+msgstr "Solo los administradores autorizados del retiro pueden acceder a tu mensaje."
 
 #: includes/class-dfx-parish-retreat-letters.php:631
 msgid "Messages can only be viewed when printed - no content is displayed on screen."
@@ -709,7 +709,7 @@ msgstr "Tu mensaje ha sido enviado exitosamente y almacenado de forma segura."
 
 #: includes/class-dfx-parish-retreat-letters.php:1415
 msgid "An error occurred while sending your message."
-msgstr "Ocurrió un error al enviar su mensaje."
+msgstr "Ocurrió un error al enviar tu mensaje."
 
 #: includes/class-admin.php:4287
 #: includes/class-dfx-parish-retreat-letters.php:1424
@@ -1831,7 +1831,7 @@ msgstr ""
 "\n"
 "URL de Inicio de Sesión: %s\n"
 "\n"
-"Por seguridad, por favor cambie su contraseña después de su primer inicio de sesión.\n"
+"Por seguridad, por favor cambia tu contraseña después de tu primer inicio de sesión.\n"
 "\n"
 "Saludos cordiales,\n"
 "%s"
