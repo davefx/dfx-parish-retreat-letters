@@ -133,6 +133,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 	 */
 	private function init_hooks() {
 		add_action( 'admin_menu', array( $this, 'add_admin_menu' ) );
+		add_action( 'admin_init', array( $this, 'handle_admin_form_submissions' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_scripts' ) );
 		add_action( 'wp_ajax_dfx_prl_delete_retreat', array( $this, 'ajax_delete_retreat' ) );
 		add_action( 'wp_ajax_dfx_prl_delete_attendant', array( $this, 'ajax_delete_attendant' ) );
@@ -149,6 +150,32 @@ class DFX_Parish_Retreat_Letters_Admin {
 		add_action( 'wp_ajax_dfx_prl_revoke_permission', array( $this, 'ajax_revoke_permission' ) );
 		add_action( 'wp_ajax_dfx_prl_send_invitation', array( $this, 'ajax_send_invitation' ) );
 		add_action( 'wp_ajax_dfx_prl_cancel_invitation', array( $this, 'ajax_cancel_invitation' ) );
+	}
+
+	/**
+	 * Handle admin form submissions early to avoid header conflicts.
+	 * 
+	 * @since 1.0.0
+	 */
+	public function handle_admin_form_submissions() {
+		// Only process on our plugin pages
+		if ( ! isset( $_GET['page'] ) || $_GET['page'] !== 'dfx-prl-retreats' ) {
+			return;
+		}
+
+		// Only process POST requests
+		if ( $_SERVER['REQUEST_METHOD'] !== 'POST' ) {
+			return;
+		}
+
+		$action = sanitize_text_field( $_GET['action'] ?? '' );
+		$retreat_id = absint( $_GET['retreat_id'] ?? 0 );
+
+		// Handle attendant add/edit form submissions
+		if ( in_array( $action, array( 'add_attendant', 'edit_attendant' ) ) ) {
+			$attendant_id = $action === 'edit_attendant' ? absint( $_GET['attendant_id'] ?? 0 ) : 0;
+			$this->handle_attendant_add_edit_submission( $retreat_id, $attendant_id );
+		}
 	}
 
 	/**
@@ -2093,12 +2120,6 @@ class DFX_Parish_Retreat_Letters_Admin {
 			wp_die( __( 'Retreat not found.', 'dfx-parish-retreat-letters' ) );
 		}
 
-		// Handle form submission
-		if ( ( $_SERVER['REQUEST_METHOD'] ?? '' ) === 'POST' ) {
-			$this->handle_attendant_add_edit_submission( $retreat_id );
-			return;
-		}
-
 		$this->render_attendant_add_edit_page( $retreat );
 	}
 
@@ -2124,12 +2145,6 @@ class DFX_Parish_Retreat_Letters_Admin {
 
 		if ( ! $retreat || ! $attendant || $attendant->retreat_id != $retreat_id ) {
 			wp_die( __( 'Retreat or attendant not found, or attendant does not belong to this retreat.', 'dfx-parish-retreat-letters' ) );
-		}
-
-		// Handle form submission
-		if ( ( $_SERVER['REQUEST_METHOD'] ?? '' ) === 'POST' ) {
-			$this->handle_attendant_add_edit_submission( $retreat_id, $attendant_id );
-			return;
 		}
 
 		$this->render_attendant_add_edit_page( $retreat, $attendant );
