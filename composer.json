@@ -1,0 +1,42 @@
+{
+    "name": "davefx/dfx-parish-retreat-letters",
+    "description": "A WordPress plugin for managing parish retreat letters with confidentiality and GDPR compliance",
+    "type": "wordpress-plugin",
+    "license": "GPL-3.0-or-later",
+    "authors": [
+        {
+            "name": "DaveFX",
+            "homepage": "https://github.com/davefx"
+        }
+    ],
+    "require": {
+        "php": ">=7.4"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^9.0",
+        "yoast/phpunit-polyfills": "^1.0",
+        "brain/monkey": "^2.6"
+    },
+    "autoload": {
+        "psr-4": {
+            "DFX_Parish_Retreat_Letters\\": "includes/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "DFX_Parish_Retreat_Letters\\Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "test": "phpunit",
+        "test:coverage": "phpunit --coverage-html coverage",
+        "test:unit": "phpunit --testsuite unit",
+        "test:integration": "phpunit --testsuite integration"
+    },
+    "config": {
+        "sort-packages": true,
+        "allow-plugins": {
+            "dealerdirect/phpcodesniffer-composer-installer": true
+        }
+    }
+}
