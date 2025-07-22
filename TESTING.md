@@ -6,33 +6,48 @@ This document describes how to run tests for the DFX Parish Retreat Letters Word
 
 The plugin features a comprehensive test infrastructure with multiple levels:
 
-- **Basic Tests**: Quick verification without WordPress dependencies (4 tests)
-- **Comprehensive Tests**: Complete feature coverage testing (22 tests, 112+ assertions)
-- **Advanced Unit Tests**: Detailed class-by-class testing with mocks and Brain Monkey (separate configuration)
-- **Integration Tests**: Full WordPress environment testing
+- **Basic Tests**: Quick verification without WordPress dependencies (4 tests) ✅ **Always Available**
+- **Comprehensive Tests**: Complete feature coverage testing (22 tests, 112+ assertions) ✅ **Always Available**
+- **Advanced Unit Tests**: Detailed class-by-class testing with mocks (requires external dependencies)
+- **Integration Tests**: Full WordPress environment testing (requires WordPress setup)
 
-## Quick Start
+## Quick Start (No Dependencies Required) ⚡
 
-### Basic Testing (No Dependencies Required)
-For quick verification that the test infrastructure is working:
+These tests work immediately without any setup or external dependencies:
 
 ```bash
-# Run basic tests (4 tests, ~11 assertions)
-phpunit --configuration phpunit-basic.xml --testsuite basic
+# Run basic infrastructure tests (4 tests, ~11 assertions)
+composer test:basic
 
-# Run comprehensive feature tests (22 tests, 112+ assertions)
-phpunit --configuration phpunit-basic.xml --testsuite comprehensive
+# Run comprehensive feature tests (22 tests, 112+ assertions)  
+composer test:comprehensive
+
+# Run safe default tests
+composer test:safe
 ```
 
-### Advanced Testing (External Dependencies Required)
-For unit tests with Brain Monkey mocking (requires composer dependencies):
+## Dependency Notes ⚠️
 
+Some test configurations require external dependencies that may not be available in all environments:
+
+- **Brain Monkey tests** require `brain/monkey` package
+- **WordPress integration tests** require WordPress test environment setup
+- **External dependencies** may be blocked by firewall restrictions in CI environments
+
+The basic and comprehensive tests are designed to work without any external dependencies and provide complete feature coverage testing.
+
+## Advanced Testing (External Dependencies Required)
+
+### Prerequisites
 ```bash
-# Install dependencies first
+# Install dependencies (may fail in restricted environments)
 composer install
+```
 
-# Run advanced unit tests
-phpunit --configuration phpunit-advanced.xml --testsuite advanced
+### Unit Tests with Brain Monkey
+```bash
+# Run advanced unit tests (requires Brain Monkey)
+composer test:advanced
 ```
 
 ### Full WordPress Testing

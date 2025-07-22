@@ -28,13 +28,14 @@
         }
     },
     "scripts": {
-        "test": "phpunit",
+        "test": "phpunit --configuration phpunit-basic.xml",
         "test:coverage": "phpunit --coverage-html coverage",
         "test:unit": "phpunit --testsuite unit",
         "test:integration": "phpunit --testsuite integration",
         "test:basic": "phpunit --configuration phpunit-basic.xml --testsuite basic",
         "test:comprehensive": "phpunit --configuration phpunit-basic.xml --testsuite comprehensive",
-        "test:advanced": "phpunit --configuration phpunit-advanced.xml --testsuite advanced"
+        "test:advanced": "phpunit --configuration phpunit-advanced.xml --testsuite advanced",
+        "test:safe": "phpunit --configuration phpunit-basic.xml --testsuite comprehensive"
     },
     "config": {
         "sort-packages": true,
