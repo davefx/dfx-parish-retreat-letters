@@ -158,24 +158,114 @@ class DFX_Parish_Retreat_Letters_Admin {
 	 * @since 1.0.0
 	 */
 	public function handle_admin_form_submissions() {
-		// Only process on our plugin pages
-		if ( ! isset( $_GET['page'] ) || $_GET['page'] !== 'dfx-prl-retreats' ) {
+		// Only process POST requests
+		if ( $_SERVER['REQUEST_METHOD'] !== 'POST' ) {
 			return;
 		}
 
-		// Only process POST requests
-		if ( $_SERVER['REQUEST_METHOD'] !== 'POST' ) {
+		// Check for our plugin pages
+		$page = sanitize_text_field( $_GET['page'] ?? '' );
+		$allowed_pages = array( 'dfx-prl-retreats', 'dfx-prl-retreats-add', 'dfx-prl-messages', 'dfx-prl-privacy' );
+		
+		if ( ! in_array( $page, $allowed_pages, true ) ) {
 			return;
 		}
 
 		$action = sanitize_text_field( $_GET['action'] ?? '' );
 		$retreat_id = absint( $_GET['retreat_id'] ?? 0 );
 
-		// Handle attendant add/edit form submissions
-		if ( in_array( $action, array( 'add_attendant', 'edit_attendant' ) ) ) {
-			$attendant_id = $action === 'edit_attendant' ? absint( $_GET['attendant_id'] ?? 0 ) : 0;
-			$this->handle_attendant_add_edit_submission( $retreat_id, $attendant_id );
+		// Handle different form submissions based on page and action
+		switch ( $page ) {
+			case 'dfx-prl-retreats':
+				$this->handle_retreats_page_submissions( $action, $retreat_id );
+				break;
+				
+			case 'dfx-prl-retreats-add':
+				$this->handle_retreat_add_edit_submissions();
+				break;
+				
+			case 'dfx-prl-messages':
+				$this->handle_messages_page_submissions();
+				break;
+				
+			case 'dfx-prl-privacy':
+				$this->handle_privacy_page_submissions();
+				break;
 		}
+	}
+
+	/**
+	 * Handle form submissions on the main retreats page.
+	 * 
+	 * @since 1.0.0
+	 * @param string $action The current action.
+	 * @param int $retreat_id The retreat ID.
+	 */
+	private function handle_retreats_page_submissions( $action, $retreat_id ) {
+		switch ( $action ) {
+			case 'add_attendant':
+				$this->handle_attendant_add_edit_submission( $retreat_id, 0 );
+				break;
+				
+			case 'edit_attendant':
+				$attendant_id = absint( $_GET['attendant_id'] ?? 0 );
+				$this->handle_attendant_add_edit_submission( $retreat_id, $attendant_id );
+				break;
+				
+			case 'attendants':
+				// Handle CSV export early (it calls exit)
+				$form_action = sanitize_text_field( $_POST['action'] ?? '' );
+				if ( $form_action === 'export_csv' ) {
+					if ( ! wp_verify_nonce( $_POST['_wpnonce'] ?? '', 'dfx_prl_attendants_action' ) ) {
+						wp_die( __( 'Security check failed.', 'dfx-parish-retreat-letters' ) );
+					}
+					if ( ! $this->permissions->current_user_can_manage_retreat( $retreat_id ) ) {
+						wp_die( __( 'You do not have permission to export attendants for this retreat.', 'dfx-parish-retreat-letters' ) );
+					}
+					$this->export_attendants_csv( $retreat_id );
+					// The export method calls exit, so this won't be reached
+				} else {
+					$this->handle_attendant_list_actions( $retreat_id );
+				}
+				break;
+				
+			case 'import_attendants':
+				$this->handle_csv_import( $retreat_id );
+				break;
+				
+			default:
+				// Main retreats list actions
+				$this->handle_list_page_actions();
+				break;
+		}
+	}
+
+	/**
+	 * Handle form submissions on the retreat add/edit page.
+	 * 
+	 * @since 1.0.0
+	 */
+	private function handle_retreat_add_edit_submissions() {
+		$retreat_id = absint( $_GET['edit'] ?? 0 );
+		$this->handle_add_edit_submission( $retreat_id );
+	}
+
+	/**
+	 * Handle form submissions on the messages page.
+	 * 
+	 * @since 1.0.0
+	 */
+	private function handle_messages_page_submissions() {
+		$this->handle_message_list_actions();
+	}
+
+	/**
+	 * Handle form submissions on the privacy page.
+	 * 
+	 * @since 1.0.0
+	 */
+	private function handle_privacy_page_submissions() {
+		$this->handle_privacy_compliance_actions();
 	}
 
 	/**
@@ -398,11 +488,6 @@ class DFX_Parish_Retreat_Letters_Admin {
 	 * @since 1.0.0
 	 */
 	private function display_retreats_list() {
-		// Handle form submissions
-		if ( ( $_SERVER['REQUEST_METHOD'] ?? '' ) === 'POST' ) {
-			$this->handle_list_page_actions();
-		}
-
 		// Get query parameters
 		$search   = sanitize_text_field( $_GET['s'] ?? '' );
 		$page_num = max( 1, absint( $_GET['paged'] ?? 1 ) );
@@ -463,7 +548,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 
 		// Handle form submission
 		if ( ( $_SERVER['REQUEST_METHOD'] ?? '' ) === 'POST' ) {
-			$this->handle_add_edit_submission( $retreat_id );
+			// Form submission already handled in admin_init, just return to prevent double processing
 			return;
 		}
 
@@ -2062,25 +2147,6 @@ class DFX_Parish_Retreat_Letters_Admin {
 			wp_die( __( 'Retreat not found.', 'dfx-parish-retreat-letters' ) );
 		}
 
-		// Handle form submissions (only for retreat managers)
-		if ( ( $_SERVER['REQUEST_METHOD'] ?? '' ) === 'POST' ) {
-			if ( ! $this->permissions->current_user_can_manage_retreat( $retreat_id ) ) {
-				wp_die( __( 'You do not have permission to modify this retreat.', 'dfx-parish-retreat-letters' ) );
-			}
-
-			// Handle CSV export early, before any HTML output
-			$action = sanitize_text_field( $_POST['action'] ?? '' );
-			if ( $action === 'export_csv' ) {
-				if ( ! wp_verify_nonce( $_POST['_wpnonce'] ?? '', 'dfx_prl_attendants_action' ) ) {
-					wp_die( __( 'Security check failed.', 'dfx-parish-retreat-letters' ) );
-				}
-				$this->export_attendants_csv( $retreat_id );
-				// The export method calls exit, so this won't be reached
-			}
-
-			$this->handle_attendant_list_actions( $retreat_id );
-		}
-
 		// Get query parameters
 		$search   = sanitize_text_field( $_GET['s'] ?? '' );
 		$page_num = max( 1, absint( $_GET['paged'] ?? 1 ) );
@@ -2173,11 +2239,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 
 		// Handle form submission
 		if ( ( $_SERVER['REQUEST_METHOD'] ?? '' ) === 'POST' ) {
-			$this->handle_csv_import( $retreat_id );
-
-			// Show admin notices
-			$this->display_admin_notices( false );
-
+			// Form submission already handled in admin_init, just return to prevent double processing
 			return;
 		}
 
@@ -3283,11 +3345,6 @@ class DFX_Parish_Retreat_Letters_Admin {
 	 * @since 1.2.0
 	 */
 	public function messages_list_page() {
-		// Handle form submissions
-		if ( ( $_SERVER['REQUEST_METHOD'] ?? '' ) === 'POST' ) {
-			$this->handle_message_list_actions();
-		}
-
 		// Get query parameters
 		$search = sanitize_text_field( $_GET['s'] ?? '' );
 		$retreat_id = absint( $_GET['retreat_id'] ?? 0 );
@@ -3879,7 +3936,8 @@ class DFX_Parish_Retreat_Letters_Admin {
 	public function privacy_compliance_page() {
 		// Handle form submissions
 		if ( ( $_SERVER['REQUEST_METHOD'] ?? '' ) === 'POST' ) {
-			$this->handle_privacy_compliance_actions();
+			// Form submission already handled in admin_init, just return to prevent double processing
+			return;
 		}
 
 		$compliance_status = $this->gdpr->get_privacy_compliance_status();
