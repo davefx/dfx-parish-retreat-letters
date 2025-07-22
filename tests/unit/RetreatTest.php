@@ -127,4 +127,224 @@ class RetreatTest extends TestCase {
         $result = $retreat->get(1);
         $this->assertEquals($expected_retreat, $result);
     }
+
+    /**
+     * Test retreat update functionality
+     */
+    public function test_update_retreat() {
+        // Mock the database instance
+        $database_mock = $this->createMock('DFX_Parish_Retreat_Letters_Database');
+        $database_mock->method('get_retreats_table')->willReturn('wp_dfx_retreats');
+        
+        // Mock global wpdb
+        global $wpdb;
+        $wpdb = $this->createMock('wpdb');
+        $wpdb->expects($this->once())
+             ->method('update')
+             ->willReturn(1);
+        
+        // Create retreat instance and inject mocked database
+        $retreat = new DFX_Parish_Retreat_Letters_Retreat();
+        
+        $reflection = new ReflectionClass($retreat);
+        $database_property = $reflection->getProperty('database');
+        $database_property->setAccessible(true);
+        $database_property->setValue($retreat, $database_mock);
+        
+        $update_data = [
+            'name' => 'Updated Retreat Name',
+            'location' => 'Updated Location',
+            'custom_message' => 'Updated message'
+        ];
+        
+        $result = $retreat->update(1, $update_data);
+        $this->assertTrue($result);
+    }
+
+    /**
+     * Test retreat deletion
+     */
+    public function test_delete_retreat() {
+        // Mock the database instance
+        $database_mock = $this->createMock('DFX_Parish_Retreat_Letters_Database');
+        $database_mock->method('get_retreats_table')->willReturn('wp_dfx_retreats');
+        
+        // Mock global wpdb
+        global $wpdb;
+        $wpdb = $this->createMock('wpdb');
+        $wpdb->expects($this->once())
+             ->method('delete')
+             ->willReturn(1);
+        
+        // Create retreat instance and inject mocked database
+        $retreat = new DFX_Parish_Retreat_Letters_Retreat();
+        
+        $reflection = new ReflectionClass($retreat);
+        $database_property = $reflection->getProperty('database');
+        $database_property->setAccessible(true);
+        $database_property->setValue($retreat, $database_mock);
+        
+        $result = $retreat->delete(1);
+        $this->assertTrue($result);
+    }
+
+    /**
+     * Test get all retreats
+     */
+    public function test_get_all_retreats() {
+        // Mock the database instance
+        $database_mock = $this->createMock('DFX_Parish_Retreat_Letters_Database');
+        $database_mock->method('get_retreats_table')->willReturn('wp_dfx_retreats');
+        
+        // Mock global wpdb
+        global $wpdb;
+        $wpdb = $this->createMock('wpdb');
+        
+        $expected_retreats = [
+            (object) [
+                'id' => 1,
+                'name' => 'Summer Retreat',
+                'location' => 'Mountain Lodge'
+            ],
+            (object) [
+                'id' => 2,
+                'name' => 'Winter Retreat',
+                'location' => 'City Center'
+            ]
+        ];
+        
+        $wpdb->expects($this->once())
+             ->method('get_results')
+             ->willReturn($expected_retreats);
+        
+        // Create retreat instance and inject mocked database
+        $retreat = new DFX_Parish_Retreat_Letters_Retreat();
+        
+        $reflection = new ReflectionClass($retreat);
+        $database_property = $reflection->getProperty('database');
+        $database_property->setAccessible(true);
+        $database_property->setValue($retreat, $database_mock);
+        
+        if (method_exists($retreat, 'get_all')) {
+            $result = $retreat->get_all();
+            $this->assertEquals($expected_retreats, $result);
+            $this->assertCount(2, $result);
+        } else {
+            $this->markTestSkipped('get_all method not found');
+        }
+    }
+
+    /**
+     * Test retreat data validation with invalid dates
+     */
+    public function test_validate_retreat_data_with_invalid_dates() {
+        $retreat = new DFX_Parish_Retreat_Letters_Retreat();
+        
+        $reflection = new ReflectionClass($retreat);
+        
+        if ($reflection->hasMethod('validate_retreat_data')) {
+            $method = $reflection->getMethod('validate_retreat_data');
+            $method->setAccessible(true);
+            
+            // Test with end date before start date
+            $invalid_data = [
+                'name' => 'Test Retreat',
+                'location' => 'Test Location',
+                'start_date' => '2024-01-03',
+                'end_date' => '2024-01-01', // Before start date
+                'custom_message' => 'Test message'
+            ];
+            
+            $this->assertFalse($method->invoke($retreat, $invalid_data));
+        } else {
+            $this->markTestSkipped('validate_retreat_data method not found');
+        }
+    }
+
+    /**
+     * Test retreat search functionality
+     */
+    public function test_search_retreats() {
+        // Mock the database instance
+        $database_mock = $this->createMock('DFX_Parish_Retreat_Letters_Database');
+        $database_mock->method('get_retreats_table')->willReturn('wp_dfx_retreats');
+        
+        // Mock global wpdb
+        global $wpdb;
+        $wpdb = $this->createMock('wpdb');
+        
+        $search_results = [
+            (object) [
+                'id' => 1,
+                'name' => 'Summer Retreat 2024',
+                'location' => 'Mountain Lodge'
+            ]
+        ];
+        
+        $wpdb->expects($this->once())
+             ->method('get_results')
+             ->willReturn($search_results);
+        
+        // Create retreat instance and inject mocked database
+        $retreat = new DFX_Parish_Retreat_Letters_Retreat();
+        
+        $reflection = new ReflectionClass($retreat);
+        $database_property = $reflection->getProperty('database');
+        $database_property->setAccessible(true);
+        $database_property->setValue($retreat, $database_mock);
+        
+        if (method_exists($retreat, 'search')) {
+            $search_term = 'Summer';
+            $results = $retreat->search($search_term);
+            
+            $this->assertIsArray($results);
+            $this->assertCount(1, $results);
+            $this->assertStringContains('Summer', $results[0]->name);
+        } else {
+            $this->markTestSkipped('search method not found');
+        }
+    }
+
+    /**
+     * Test get active retreats
+     */
+    public function test_get_active_retreats() {
+        // Mock the database instance
+        $database_mock = $this->createMock('DFX_Parish_Retreat_Letters_Database');
+        $database_mock->method('get_retreats_table')->willReturn('wp_dfx_retreats');
+        
+        // Mock global wpdb
+        global $wpdb;
+        $wpdb = $this->createMock('wpdb');
+        
+        $active_retreats = [
+            (object) [
+                'id' => 1,
+                'name' => 'Current Retreat',
+                'start_date' => '2024-06-01',
+                'end_date' => '2024-06-03'
+            ]
+        ];
+        
+        $wpdb->expects($this->once())
+             ->method('get_results')
+             ->willReturn($active_retreats);
+        
+        // Create retreat instance and inject mocked database
+        $retreat = new DFX_Parish_Retreat_Letters_Retreat();
+        
+        $reflection = new ReflectionClass($retreat);
+        $database_property = $reflection->getProperty('database');
+        $database_property->setAccessible(true);
+        $database_property->setValue($retreat, $database_mock);
+        
+        if (method_exists($retreat, 'get_active')) {
+            $results = $retreat->get_active();
+            
+            $this->assertIsArray($results);
+            $this->assertCount(1, $results);
+        } else {
+            $this->markTestSkipped('get_active method not found');
+        }
+    }
 }

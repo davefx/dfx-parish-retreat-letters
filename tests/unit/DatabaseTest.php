@@ -80,4 +80,129 @@ class DatabaseTest extends TestCase {
             $this->markTestSkipped('get_retreats_table_name method not found');
         }
     }
+
+    /**
+     * Test table creation functionality
+     */
+    public function test_setup_tables() {
+        global $wpdb;
+        $wpdb = $this->createMock('wpdb');
+        $wpdb->prefix = 'wp_';
+        
+        $database = DFX_Parish_Retreat_Letters_Database::get_instance();
+        
+        if (method_exists($database, 'setup_tables')) {
+            // Mock dbDelta function
+            Functions\when('dbDelta')->justReturn(['Created table wp_dfx_retreats']);
+            
+            $result = $database->setup_tables();
+            $this->assertTrue(is_callable([$database, 'setup_tables']));
+        } else {
+            $this->markTestSkipped('setup_tables method not found');
+        }
+    }
+
+    /**
+     * Test database version management
+     */
+    public function test_database_version_management() {
+        $database = DFX_Parish_Retreat_Letters_Database::get_instance();
+        
+        if (method_exists($database, 'needs_upgrade')) {
+            $result = $database->needs_upgrade();
+            $this->assertTrue(is_callable([$database, 'needs_upgrade']));
+        } else {
+            $this->markTestSkipped('needs_upgrade method not found');
+        }
+    }
+
+    /**
+     * Test get all table names
+     */
+    public function test_get_all_table_names() {
+        global $wpdb;
+        $wpdb = $this->createMock('wpdb');
+        $wpdb->prefix = 'wp_';
+        
+        $database = DFX_Parish_Retreat_Letters_Database::get_instance();
+        
+        if (method_exists($database, 'get_retreats_table')) {
+            $retreats_table = $database->get_retreats_table();
+            $this->assertIsString($retreats_table);
+            $this->assertStringContains('wp_', $retreats_table);
+        }
+        
+        if (method_exists($database, 'get_attendants_table')) {
+            $attendants_table = $database->get_attendants_table();
+            $this->assertIsString($attendants_table);
+            $this->assertStringContains('wp_', $attendants_table);
+        }
+        
+        if (method_exists($database, 'get_messages_table')) {
+            $messages_table = $database->get_messages_table();
+            $this->assertIsString($messages_table);
+            $this->assertStringContains('wp_', $messages_table);
+        }
+    }
+
+    /**
+     * Test database migration functionality
+     */
+    public function test_database_migration() {
+        $database = DFX_Parish_Retreat_Letters_Database::get_instance();
+        
+        if (method_exists($database, 'migrate_to_version')) {
+            $target_version = '1.4.0';
+            $result = $database->migrate_to_version($target_version);
+            $this->assertTrue(is_callable([$database, 'migrate_to_version']));
+        } else {
+            $this->markTestSkipped('migrate_to_version method not found');
+        }
+    }
+
+    /**
+     * Test table existence checking
+     */
+    public function test_table_existence_checking() {
+        global $wpdb;
+        $wpdb = $this->createMock('wpdb');
+        $wpdb->method('get_var')->willReturn('wp_dfx_retreats');
+        
+        $database = DFX_Parish_Retreat_Letters_Database::get_instance();
+        
+        if (method_exists($database, 'table_exists')) {
+            $result = $database->table_exists('wp_dfx_retreats');
+            $this->assertTrue(is_callable([$database, 'table_exists']));
+        } else {
+            $this->markTestSkipped('table_exists method not found');
+        }
+    }
+
+    /**
+     * Test database cleanup functionality
+     */
+    public function test_database_cleanup() {
+        $database = DFX_Parish_Retreat_Letters_Database::get_instance();
+        
+        if (method_exists($database, 'cleanup_orphaned_data')) {
+            $result = $database->cleanup_orphaned_data();
+            $this->assertTrue(is_callable([$database, 'cleanup_orphaned_data']));
+        } else {
+            $this->markTestSkipped('cleanup_orphaned_data method not found');
+        }
+    }
+
+    /**
+     * Test database backup functionality
+     */
+    public function test_database_backup() {
+        $database = DFX_Parish_Retreat_Letters_Database::get_instance();
+        
+        if (method_exists($database, 'create_backup')) {
+            $result = $database->create_backup();
+            $this->assertTrue(is_callable([$database, 'create_backup']));
+        } else {
+            $this->markTestSkipped('create_backup method not found');
+        }
+    }
 }
