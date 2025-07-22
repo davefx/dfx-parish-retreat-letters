@@ -450,16 +450,18 @@ class DFX_Parish_Retreat_Letters {
 			return;
 		}
 
-		// Rate limiting check
-		$ip_address = $this->security->get_user_ip();
-		if ( ! $this->security->check_rate_limit( $ip_address, 10, 60 ) ) {
-			// Rate limit exceeded
-			$this->security->log_rate_limit_violation( $ip_address, 'message_form_access' );
-			wp_die( 
-				esc_html__( 'Too many requests. Please wait before trying again.', 'dfx-parish-retreat-letters' ),
-				esc_html__( 'Rate Limit Exceeded', 'dfx-parish-retreat-letters' ),
-				array( 'response' => 429 )
-			);
+		// Rate limiting check (skip for logged-in users)
+		if ( ! is_user_logged_in() ) {
+			$ip_address = $this->security->get_user_ip();
+			if ( ! $this->security->check_rate_limit( $ip_address, 10, 60 ) ) {
+				// Rate limit exceeded
+				$this->security->log_rate_limit_violation( $ip_address, 'message_form_access' );
+				wp_die( 
+					esc_html__( 'Too many requests. Please wait before trying again.', 'dfx-parish-retreat-letters' ),
+					esc_html__( 'Rate Limit Exceeded', 'dfx-parish-retreat-letters' ),
+					array( 'response' => 429 )
+				);
+			}
 		}
 
 		// Set up WordPress environment for form
@@ -1218,7 +1220,23 @@ class DFX_Parish_Retreat_Letters {
 				
 				// Remove potentially dangerous elements and attributes
 				temp.find('script, style, meta, link').remove();
-				temp.find('*').removeAttr('style class id onclick onload onerror');
+				
+				// For images, preserve src attribute but validate it's a data URL
+				temp.find('img').each(function() {
+					var $img = $(this);
+					var src = $img.attr('src');
+					
+					// Remove all attributes first
+					$img.removeAttr('style class id onclick onload onerror');
+					
+					// Only keep src if it's a valid data URL (base64 image)
+					if (src && src.match(/^data:image\/(jpeg|jpg|png|gif|webp|bmp|svg\+xml);base64,[A-Za-z0-9+/=]+$/i)) {
+						$img.attr('src', src);
+					}
+				});
+				
+				// For all other elements, remove dangerous attributes
+				temp.find('*:not(img)').removeAttr('style class id onclick onload onerror');
 				
 				// Convert common formatting
 				temp.find('div').replaceWith(function() {
@@ -1433,12 +1451,15 @@ class DFX_Parish_Retreat_Letters {
 			wp_send_json_error( array( 'message' => __( 'Security check failed.', 'dfx-parish-retreat-letters' ) ) );
 		}
 
-		// Rate limiting - only check, don't increment yet
-		$ip_address = $this->security->get_user_ip();
-		if ( ! $this->security->is_within_rate_limit( $ip_address, 3, 60 ) ) {
-			$this->security->log_rate_limit_violation( $ip_address, 'message_submission' );
-			wp_send_json_error( array( 'message' => __( 'Too many submission attempts. Please wait before trying again.', 'dfx-parish-retreat-letters' ) ) );
-		}
+		// Rate limiting (skip for logged-in users)
+		if ( ! is_user_logged_in() ) {
+   		// Rate limiting - only check, don't increment yet
+	  	$ip_address = $this->security->get_user_ip();
+		  if ( ! $this->security->is_within_rate_limit( $ip_address, 3, 60 ) ) {
+			  $this->security->log_rate_limit_violation( $ip_address, 'message_submission' );
+			  wp_send_json_error( array( 'message' => __( 'Too many submission attempts. Please wait before trying again.', 'dfx-parish-retreat-letters' ) ) );
+      }
+    }
 
 		// Validate CAPTCHA
 		$user_answer = sanitize_text_field( $_POST['captcha_answer'] ?? '' );
