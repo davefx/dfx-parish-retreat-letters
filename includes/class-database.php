@@ -151,11 +151,19 @@ class DFX_Parish_Retreat_Letters_Database {
 	}
 
 	/**
-	 * Create all database tables for the current version.
+	 * Setup all database tables, columns, and capabilities for the current version.
+	 * 
+	 * This method ensures the database structure is complete and up-to-date using
+	 * WordPress's dbDelta function. It can be safely called multiple times as
+	 * dbDelta is idempotent (creates missing tables/columns without affecting existing data).
+	 * 
+	 * This method handles both fresh installations and upgrades, making it suitable
+	 * for fixing incomplete database structures regardless of the stored version.
 	 *
-	 * @since 1.0.0
+	 * @since 1.0.0 Originally create_tables()
+	 * @since 1.3.0 Renamed to setup_tables() and enhanced for comprehensive database setup
 	 */
-	public function create_tables() {
+	public function setup_tables() {
 		global $wpdb;
 
 		$charset_collate = $wpdb->get_charset_collate();
@@ -355,6 +363,16 @@ class DFX_Parish_Retreat_Letters_Database {
 	}
 
 	/**
+	 * Backward compatibility alias for setup_tables().
+	 * 
+	 * @since 1.0.0
+	 * @deprecated 1.3.0 Use setup_tables() instead.
+	 */
+	public function create_tables() {
+		$this->setup_tables();
+	}
+
+	/**
 	 * Drop the retreats table.
 	 *
 	 * @since 1.0.0
@@ -461,7 +479,7 @@ class DFX_Parish_Retreat_Letters_Database {
 	}
 
 	/**
-	 * Check if the database tables exist.
+	 * Check if the basic database tables exist (for backward compatibility).
 	 *
 	 * @since 1.0.0
 	 * @return bool
@@ -491,6 +509,68 @@ class DFX_Parish_Retreat_Letters_Database {
 	}
 
 	/**
+	 * Check if the authorization system tables exist.
+	 *
+	 * @since 1.3.0
+	 * @return bool
+	 */
+	public function authorization_tables_exist() {
+		global $wpdb;
+		$permissions_exist = $wpdb->get_var( $wpdb->prepare( "SHOW TABLES LIKE %s", $this->permissions_table ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
+		$invitations_exist = $wpdb->get_var( $wpdb->prepare( "SHOW TABLES LIKE %s", $this->invitations_table ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
+		$audit_log_exist = $wpdb->get_var( $wpdb->prepare( "SHOW TABLES LIKE %s", $this->audit_log_table ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
+		
+		return $permissions_exist === $this->permissions_table && 
+		       $invitations_exist === $this->invitations_table && 
+		       $audit_log_exist === $this->audit_log_table;
+	}
+
+	/**
+	 * Check if the database structure is complete for the current version.
+	 * This is a comprehensive check that verifies all required tables, columns,
+	 * and capabilities exist for database version 1.3.0.
+	 *
+	 * @since 1.3.0
+	 * @return bool True if database structure is complete, false otherwise.
+	 */
+	public function is_database_structure_complete() {
+		global $wpdb;
+
+		// Check if all required tables exist
+		if ( ! $this->tables_exist() || ! $this->message_tables_exist() || ! $this->authorization_tables_exist() ) {
+			return false;
+		}
+
+		// Check if message_url_token column exists in attendants table
+		$column_exists = $wpdb->get_results( $wpdb->prepare(
+			"SHOW COLUMNS FROM {$this->attendants_table} LIKE %s",
+			'message_url_token'
+		) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+
+		if ( empty( $column_exists ) ) {
+			return false;
+		}
+
+		// Check if custom_message column exists in retreats table
+		$custom_message_exists = $wpdb->get_results( $wpdb->prepare(
+			"SHOW COLUMNS FROM {$this->retreats_table} LIKE %s",
+			'custom_message'
+		) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+
+		if ( empty( $custom_message_exists ) ) {
+			return false;
+		}
+
+		// Check if administrator role has the required capability
+		$admin_role = get_role( 'administrator' );
+		if ( ! $admin_role || ! $admin_role->has_cap( 'manage_retreat_plugin' ) ) {
+			return false;
+		}
+
+		return true;
+	}
+
+	/**
 	 * Get the current database version from the database.
 	 *
 	 * @since 1.0.0
@@ -513,32 +593,46 @@ class DFX_Parish_Retreat_Letters_Database {
 
 	/**
 	 * Check if a database upgrade is needed and perform it.
+	 * 
+	 * This method checks both the stored database version and the actual database
+	 * structure to determine if setup is needed. This handles cases where the
+	 * stored version might be correct but the actual structure is incomplete.
 	 *
 	 * @since 1.0.0
 	 */
 	public function maybe_upgrade_database() {
 		$current_version = $this->get_database_version();
 		
-		// If no version is stored or version is different, upgrade
-		if ( version_compare( $current_version, self::DB_VERSION, '<' ) ) {
+		// Check if version differs OR if database structure is incomplete
+		$version_differs = version_compare( $current_version, self::DB_VERSION, '<' );
+		$structure_incomplete = ! $this->is_database_structure_complete();
+		
+		if ( $version_differs || $structure_incomplete ) {
 			$this->upgrade_database( $current_version );
 		}
 	}
 
 	/**
 	 * Perform database upgrades based on the current version.
+	 * 
+	 * For fresh installations or incomplete structures, this method runs the
+	 * comprehensive setup_tables() method which uses dbDelta to ensure all
+	 * required tables and columns exist. For existing installations with 
+	 * complete structures, it runs only the necessary version-specific upgrades.
 	 *
 	 * @since 1.0.0
 	 * @param string $from_version The version to upgrade from.
 	 */
 	private function upgrade_database( $from_version ) {
-		// If upgrading from version 0.0.0 (fresh install) or no tables exist, create all tables
-		if ( $from_version === '0.0.0' || ! $this->tables_exist() ) {
-			$this->create_tables();
+		// If upgrading from version 0.0.0 (fresh install), no tables exist, or structure is incomplete,
+		// run the comprehensive setup which handles all tables and columns using dbDelta
+		if ( $from_version === '0.0.0' || ! $this->tables_exist() || ! $this->is_database_structure_complete() ) {
+			$this->setup_tables();
 			return;
 		}
 
-		// Version-specific upgrades
+		// For existing installations with complete basic structure, run only necessary version-specific upgrades
+		// This maintains backward compatibility for installations that were properly upgraded step-by-step
 		if ( version_compare( $from_version, '1.1.0', '<' ) ) {
 			$this->upgrade_to_1_1_0();
 		}
@@ -577,7 +671,7 @@ class DFX_Parish_Retreat_Letters_Database {
 	public function force_upgrade( $force_recreate = false ) {
 		if ( $force_recreate ) {
 			$this->drop_tables();
-			$this->create_tables();
+			$this->setup_tables();
 		} else {
 			$current_version = $this->get_database_version();
 			delete_option( self::DB_VERSION_OPTION );

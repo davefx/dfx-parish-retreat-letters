@@ -41,7 +41,7 @@ define( 'DFX_PARISH_RETREAT_LETTERS_PLUGIN_BASENAME', plugin_basename( __FILE__ 
 function activate_dfx_parish_retreat_letters() {
 	require_once plugin_dir_path( __FILE__ ) . 'includes/class-database.php';
 	$database = DFX_Parish_Retreat_Letters_Database::get_instance();
-	$database->create_tables();
+	$database->setup_tables();
 }
 
 /**
