@@ -198,9 +198,9 @@ class PluginIntegrationTest extends PHPUnit\Framework\TestCase {
         $this->assertTrue(defined('DFX_PARISH_RETREAT_LETTERS_PLUGIN_DIR'), 'Plugin directory constant should be defined');
         $this->assertTrue(defined('DFX_PARISH_RETREAT_LETTERS_PLUGIN_URL'), 'Plugin URL constant should be defined');
         
-        // Test that version follows semantic versioning pattern (PHPUnit 8.5 compatible)
+        // Test that version follows semantic versioning pattern (PHPUnit 9+ compatible)
         $version = DFX_PARISH_RETREAT_LETTERS_VERSION;
-        $this->assertRegExp('/^\d+\.\d+\.\d+$/', $version, 'Plugin version should follow semantic versioning');
+        $this->assertMatchesRegularExpression('/^\d+\.\d+\.\d+$/', $version, 'Plugin version should follow semantic versioning');
     }
 
     /**
