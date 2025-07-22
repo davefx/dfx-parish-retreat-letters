@@ -1218,7 +1218,23 @@ class DFX_Parish_Retreat_Letters {
 				
 				// Remove potentially dangerous elements and attributes
 				temp.find('script, style, meta, link').remove();
-				temp.find('*').removeAttr('style class id onclick onload onerror');
+				
+				// For images, preserve src attribute but validate it's a data URL
+				temp.find('img').each(function() {
+					var $img = $(this);
+					var src = $img.attr('src');
+					
+					// Remove all attributes first
+					$img.removeAttr('style class id onclick onload onerror');
+					
+					// Only keep src if it's a valid data URL (base64 image)
+					if (src && src.match(/^data:image\/(jpeg|jpg|png|gif|webp|bmp|svg\+xml);base64,[A-Za-z0-9+/=]+$/i)) {
+						$img.attr('src', src);
+					}
+				});
+				
+				// For all other elements, remove dangerous attributes
+				temp.find('*:not(img)').removeAttr('style class id onclick onload onerror');
 				
 				// Convert common formatting
 				temp.find('div').replaceWith(function() {
