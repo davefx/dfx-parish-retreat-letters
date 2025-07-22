@@ -2351,6 +2351,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 		}
 
 		$imported = 0;
+		$updated = 0;
 		$skipped = 0;
 		$errors = 0;
 		$line_number = 0;
@@ -2404,18 +2405,36 @@ class DFX_Parish_Retreat_Letters_Admin {
 
 			$mapped_data['retreat_id'] = $retreat_id;
 
-			// Check for existing attendant with the same name and date of birth
-			if ( $this->attendant_model->exists( $retreat_id, $mapped_data['name'], $mapped_data['surnames'], $mapped_data['date_of_birth'] ) ) {
-				$skipped++;
-				$error_details[] = sprintf( __( 'Line %d: Attendant with the same name and date of birth already exists', 'dfx-parish-retreat-letters' ), $line_number );
-				continue;
-			}
+			// Check if attendant already exists with the same name and date of birth
+			$existing_attendant_id = $this->attendant_model->get_id_by_identity( 
+				$retreat_id, 
+				$mapped_data['name'], 
+				$mapped_data['surnames'], 
+				$mapped_data['date_of_birth'] 
+			);
 
-			if ( $this->attendant_model->create( $mapped_data ) ) {
-				$imported++;
+			if ( $existing_attendant_id ) {
+				// Update emergency contact information for existing attendant
+				$emergency_contact_data = array(
+					'emergency_contact_name'    => $mapped_data['emergency_contact_name'],
+					'emergency_contact_surname' => $mapped_data['emergency_contact_surname'],
+					'emergency_contact_phone'   => $mapped_data['emergency_contact_phone'],
+				);
+
+				if ( $this->attendant_model->update_emergency_contact( $existing_attendant_id, $emergency_contact_data ) ) {
+					$updated++;
+				} else {
+					$errors++;
+					$error_details[] = sprintf( __( 'Line %d: Failed to update emergency contact for existing attendant', 'dfx-parish-retreat-letters' ), $line_number );
+				}
 			} else {
-				$errors++;
-				$error_details[] = sprintf( __( 'Line %d: Failed to create attendant', 'dfx-parish-retreat-letters' ), $line_number );
+				// Create new attendant
+				if ( $this->attendant_model->create( $mapped_data ) ) {
+					$imported++;
+				} else {
+					$errors++;
+					$error_details[] = sprintf( __( 'Line %d: Failed to create attendant', 'dfx-parish-retreat-letters' ), $line_number );
+				}
 			}
 		}
 
@@ -2425,10 +2444,21 @@ class DFX_Parish_Retreat_Letters_Admin {
 			$this->add_admin_notice( 
 				sprintf(
 					/* translators: %d: Number of imported attendants */
-					__( 'Successfully imported %d attendants.', 'dfx-parish-retreat-letters' ),
+					__( 'Successfully imported %d new attendants.', 'dfx-parish-retreat-letters' ),
 					$imported
 				), 
 				'success' 
+			);
+		}
+
+		if ( $updated > 0 ) {
+			$this->add_admin_notice(
+				sprintf(
+					/* translators: %d: Number of updated attendants */
+					__( 'Successfully updated emergency contact information for %d existing attendants.', 'dfx-parish-retreat-letters' ),
+					$updated
+				),
+				'success'
 			);
 		}
 
@@ -2436,7 +2466,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 			$this->add_admin_notice(
 				sprintf(
 					/* translators: %d: Number of skipped attendants */
-					__( '%d rows were skipped because they already exist.', 'dfx-parish-retreat-letters' ),
+					__( '%d rows were skipped due to data issues.', 'dfx-parish-retreat-letters' ),
 					$skipped
 				),
 				'info'
