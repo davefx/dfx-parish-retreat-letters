@@ -486,7 +486,7 @@ class ComprehensiveInfrastructureTest extends TestCase {
     /**
      * Test plugin activation and deactivation hooks
      */
-    public function testActivationAndDeactivationHooks() {
+    public function testActivationAndDeactivationHooks() {        
         // In test environment, these functions should exist
         $plugin_functions = [
             'activate_dfx_parish_retreat_letters',

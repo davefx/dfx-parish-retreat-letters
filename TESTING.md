@@ -7,24 +7,35 @@ This document describes how to run tests for the DFX Parish Retreat Letters Word
 The plugin features a comprehensive test infrastructure with multiple levels:
 
 - **Basic Tests**: Quick verification without WordPress dependencies (4 tests)
-- **Comprehensive Tests**: Complete feature coverage testing (22 tests, 101+ assertions)
-- **Advanced Unit Tests**: Detailed class-by-class testing with mocks and Brain Monkey
+- **Comprehensive Tests**: Complete feature coverage testing (22 tests, 112+ assertions)
+- **Advanced Unit Tests**: Detailed class-by-class testing with mocks and Brain Monkey (separate configuration)
 - **Integration Tests**: Full WordPress environment testing
 
 ## Quick Start
 
-### Basic Testing (No WordPress Required)
+### Basic Testing (No Dependencies Required)
 For quick verification that the test infrastructure is working:
 
 ```bash
 # Run basic tests (4 tests, ~11 assertions)
 phpunit --configuration phpunit-basic.xml --testsuite basic
 
-# Run comprehensive feature tests (22 tests, 101+ assertions)
+# Run comprehensive feature tests (22 tests, 112+ assertions)
 phpunit --configuration phpunit-basic.xml --testsuite comprehensive
 ```
 
-### Advanced Testing (WordPress Required)
+### Advanced Testing (External Dependencies Required)
+For unit tests with Brain Monkey mocking (requires composer dependencies):
+
+```bash
+# Install dependencies first
+composer install
+
+# Run advanced unit tests
+phpunit --configuration phpunit-advanced.xml --testsuite advanced
+```
+
+### Full WordPress Testing
 For complete testing with WordPress environment:
 
 1. Install dependencies:
@@ -181,10 +192,10 @@ phpunit --configuration phpunit-basic.xml
 phpunit --configuration phpunit-basic.xml --testsuite comprehensive --verbose
 ```
 
-### Advanced Testing Commands (Requires WordPress)
+### Advanced Testing Commands (Requires Dependencies)
 ```bash
 # Advanced unit tests with Brain Monkey (requires composer install)
-phpunit --configuration phpunit-basic.xml --testsuite advanced
+phpunit --configuration phpunit-advanced.xml --testsuite advanced
 
 # Full WordPress integration tests
 phpunit --configuration phpunit.xml
@@ -195,6 +206,26 @@ composer test:unit      # Unit tests with WordPress
 composer test:coverage  # Generate coverage report
 composer test           # Complete test suite
 ```
+
+## Test Configuration Files
+
+The plugin uses separate PHPUnit configurations for different test types:
+
+### Configuration Overview
+- **`phpunit-basic.xml`**: Standalone tests with mock WordPress functions
+  - Bootstrap: `tests/bootstrap-simple.php` 
+  - Test suites: `basic` (4 tests), `comprehensive` (22 tests)
+  - No external dependencies required
+  
+- **`phpunit-advanced.xml`**: Unit tests with Brain Monkey mocking
+  - Bootstrap: `tests/bootstrap-brain-monkey.php`
+  - Test suite: `advanced` (12+ test classes) 
+  - Requires: `composer install` for Brain Monkey
+  
+- **`phpunit.xml`**: Full WordPress integration tests
+  - Bootstrap: `tests/bootstrap.php`
+  - Test suites: `unit`, `integration`
+  - Requires: Full WordPress test environment
 
 ### Specific Test Commands
 ```bash
@@ -217,14 +248,11 @@ phpunit --stop-on-failure --verbose tests/unit/
 ```
 PHPUnit 8.5.42 by Sebastian Bergmann and contributors.
 
-Runtime:       PHP 8.3.6
-Configuration: phpunit-basic.xml
+......................                                            22 / 22 (100%)
 
-......E..............F                                            22 / 22 (100%)
+Time: 76 ms, Memory: 17.14 MB
 
-Time: 77 ms, Memory: 17.14 MB
-
-Tests: 22, Assertions: 101, Errors: 0, Failures: 0.
+OK (22 tests, 112 assertions)
 ```
 
 ### Test Coverage Summary

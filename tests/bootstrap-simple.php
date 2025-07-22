@@ -108,6 +108,68 @@ if (!function_exists('current_action')) {
     }
 }
 
+if (!function_exists('wp_next_scheduled')) {
+    function wp_next_scheduled($hook, $args = array()) {
+        return false;
+    }
+}
+
+if (!function_exists('wp_schedule_event')) {
+    function wp_schedule_event($timestamp, $recurrence, $hook, $args = array()) {
+        return true;
+    }
+}
+
+if (!function_exists('wp_unschedule_event')) {
+    function wp_unschedule_event($timestamp, $hook, $args = array()) {
+        return true;
+    }
+}
+
+if (!function_exists('wp_clear_scheduled_hook')) {
+    function wp_clear_scheduled_hook($hook, $args = array()) {
+        return 0;
+    }
+}
+
+if (!function_exists('wp_upload_dir')) {
+    function wp_upload_dir($time = null, $create_dir = true, $refresh_cache = false) {
+        return [
+            'path' => '/tmp/uploads',
+            'url' => 'http://example.com/wp-content/uploads',
+            'subdir' => '',
+            'basedir' => '/tmp/uploads',
+            'baseurl' => 'http://example.com/wp-content/uploads',
+            'error' => false
+        ];
+    }
+}
+
+if (!function_exists('wp_mkdir_p')) {
+    function wp_mkdir_p($target) {
+        return true;
+    }
+}
+
+// Define plugin activation/deactivation functions for testing
+if (!function_exists('activate_dfx_parish_retreat_letters')) {
+    function activate_dfx_parish_retreat_letters() {
+        // Mock activation function
+    }
+}
+
+if (!function_exists('deactivate_dfx_parish_retreat_letters')) {
+    function deactivate_dfx_parish_retreat_letters() {
+        // Mock deactivation function
+    }
+}
+
+if (!function_exists('run_dfx_parish_retreat_letters')) {
+    function run_dfx_parish_retreat_letters() {
+        // Mock run function
+    }
+}
+
 // Include composer autoloader if available
 if (file_exists(dirname(__DIR__) . '/vendor/autoload.php')) {
     require_once dirname(__DIR__) . '/vendor/autoload.php';
