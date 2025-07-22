@@ -151,7 +151,7 @@ class DFX_Parish_Retreat_Letters_Database {
 	}
 
 	/**
-	 * Create the retreats table.
+	 * Create all database tables for the current version.
 	 *
 	 * @since 1.0.0
 	 */
@@ -160,8 +160,10 @@ class DFX_Parish_Retreat_Letters_Database {
 
 		$charset_collate = $wpdb->get_charset_collate();
 
+		require_once ABSPATH . 'wp-admin/includes/upgrade.php';
+
 		// Create retreats table
-		$sql = "CREATE TABLE {$this->retreats_table} (
+		$retreats_sql = "CREATE TABLE {$this->retreats_table} (
 			id mediumint(9) NOT NULL AUTO_INCREMENT,
 			name varchar(255) NOT NULL,
 			location varchar(255) NOT NULL,
@@ -175,10 +177,9 @@ class DFX_Parish_Retreat_Letters_Database {
 			INDEX idx_end_date (end_date)
 		) $charset_collate;";
 
-		require_once ABSPATH . 'wp-admin/includes/upgrade.php';
-		dbDelta( $sql );
+		dbDelta( $retreats_sql );
 
-		// Create attendants table
+		// Create attendants table (with message_url_token from v1.2.0)
 		$attendants_sql = "CREATE TABLE {$this->attendants_table} (
 			id mediumint(9) NOT NULL AUTO_INCREMENT,
 			retreat_id mediumint(9) NOT NULL,
@@ -188,16 +189,166 @@ class DFX_Parish_Retreat_Letters_Database {
 			emergency_contact_name varchar(255) NOT NULL,
 			emergency_contact_surname varchar(255) NOT NULL,
 			emergency_contact_phone varchar(20) NOT NULL,
+			message_url_token VARCHAR(255) NULL DEFAULT NULL,
 			created_at datetime DEFAULT CURRENT_TIMESTAMP,
 			updated_at datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 			PRIMARY KEY (id),
 			INDEX idx_retreat_id (retreat_id),
 			INDEX idx_name (name),
 			INDEX idx_surnames (surnames),
+			INDEX idx_message_url_token (message_url_token),
 			FOREIGN KEY (retreat_id) REFERENCES {$this->retreats_table}(id) ON DELETE CASCADE
 		) $charset_collate;";
 
 		dbDelta( $attendants_sql );
+
+		// Create confidential messages table (from v1.2.0)
+		$messages_sql = "CREATE TABLE {$this->messages_table} (
+			id mediumint(9) NOT NULL AUTO_INCREMENT,
+			attendant_id mediumint(9) NOT NULL,
+			sender_name varchar(255) DEFAULT '',
+			encrypted_content longtext NOT NULL,
+			content_salt varchar(255) NOT NULL,
+			message_type enum('text','file') NOT NULL DEFAULT 'text',
+			ip_address varchar(45) DEFAULT NULL,
+			ip_hash varchar(255) DEFAULT NULL,
+			submitted_at datetime DEFAULT CURRENT_TIMESTAMP,
+			ip_anonymized_at datetime DEFAULT NULL,
+			PRIMARY KEY (id),
+			INDEX idx_attendant_id (attendant_id),
+			INDEX idx_submitted_at (submitted_at),
+			INDEX idx_message_type (message_type),
+			INDEX idx_ip_anonymized_at (ip_anonymized_at),
+			FOREIGN KEY (attendant_id) REFERENCES {$this->attendants_table}(id) ON DELETE CASCADE
+		) $charset_collate;";
+
+		dbDelta( $messages_sql );
+
+		// Create message files table (from v1.2.0)
+		$files_sql = "CREATE TABLE {$this->message_files_table} (
+			id mediumint(9) NOT NULL AUTO_INCREMENT,
+			message_id mediumint(9) NOT NULL,
+			original_filename varchar(255) NOT NULL,
+			encrypted_filename varchar(255) NOT NULL,
+			file_type varchar(50) NOT NULL,
+			file_size int(11) NOT NULL,
+			encrypted_file_path text NOT NULL,
+			file_salt varchar(255) NOT NULL,
+			uploaded_at datetime DEFAULT CURRENT_TIMESTAMP,
+			PRIMARY KEY (id),
+			INDEX idx_message_id (message_id),
+			INDEX idx_file_type (file_type),
+			INDEX idx_uploaded_at (uploaded_at),
+			FOREIGN KEY (message_id) REFERENCES {$this->messages_table}(id) ON DELETE CASCADE
+		) $charset_collate;";
+
+		dbDelta( $files_sql );
+
+		// Create message print log table (from v1.2.0)
+		$print_log_sql = "CREATE TABLE {$this->message_print_log_table} (
+			id mediumint(9) NOT NULL AUTO_INCREMENT,
+			message_id mediumint(9) NOT NULL,
+			user_id bigint(20) unsigned NOT NULL,
+			printed_at datetime DEFAULT CURRENT_TIMESTAMP,
+			ip_address varchar(45) DEFAULT NULL,
+			user_agent text DEFAULT NULL,
+			PRIMARY KEY (id),
+			INDEX idx_message_id (message_id),
+			INDEX idx_user_id (user_id),
+			INDEX idx_printed_at (printed_at),
+			FOREIGN KEY (message_id) REFERENCES {$this->messages_table}(id) ON DELETE CASCADE,
+			FOREIGN KEY (user_id) REFERENCES {$wpdb->users}(ID) ON DELETE CASCADE
+		) $charset_collate;";
+
+		dbDelta( $print_log_sql );
+
+		// Create retreat permissions table (from v1.3.0)
+		$permissions_sql = "CREATE TABLE {$this->permissions_table} (
+			id mediumint(9) NOT NULL AUTO_INCREMENT,
+			user_id bigint(20) unsigned NOT NULL,
+			retreat_id mediumint(9) NOT NULL,
+			permission_level enum('manager','message_manager') NOT NULL DEFAULT 'message_manager',
+			granted_by bigint(20) unsigned NOT NULL,
+			granted_at datetime DEFAULT CURRENT_TIMESTAMP,
+			revoked_at datetime DEFAULT NULL,
+			is_active tinyint(1) NOT NULL DEFAULT 1,
+			PRIMARY KEY (id),
+			UNIQUE KEY unique_active_permission (user_id, retreat_id, permission_level, is_active),
+			INDEX idx_user_id (user_id),
+			INDEX idx_retreat_id (retreat_id),
+			INDEX idx_permission_level (permission_level),
+			INDEX idx_granted_by (granted_by),
+			INDEX idx_granted_at (granted_at),
+			INDEX idx_is_active (is_active),
+			FOREIGN KEY (user_id) REFERENCES {$wpdb->users}(ID) ON DELETE CASCADE,
+			FOREIGN KEY (retreat_id) REFERENCES {$this->retreats_table}(id) ON DELETE CASCADE,
+			FOREIGN KEY (granted_by) REFERENCES {$wpdb->users}(ID) ON DELETE RESTRICT
+		) $charset_collate;";
+
+		dbDelta( $permissions_sql );
+
+		// Create retreat invitations table (from v1.3.0)
+		$invitations_sql = "CREATE TABLE {$this->invitations_table} (
+			id mediumint(9) NOT NULL AUTO_INCREMENT,
+			retreat_id mediumint(9) NOT NULL,
+			email varchar(255) NOT NULL,
+			name varchar(255) NOT NULL,
+			permission_level enum('manager','message_manager') NOT NULL DEFAULT 'message_manager',
+			token varchar(255) NOT NULL,
+			invited_by bigint(20) unsigned NOT NULL,
+			invited_at datetime DEFAULT CURRENT_TIMESTAMP,
+			expires_at datetime NOT NULL,
+			accepted_at datetime DEFAULT NULL,
+			status enum('pending','accepted','expired','cancelled') NOT NULL DEFAULT 'pending',
+			created_user_id bigint(20) unsigned DEFAULT NULL,
+			PRIMARY KEY (id),
+			UNIQUE KEY unique_token (token),
+			UNIQUE KEY unique_pending_invitation (retreat_id, email, permission_level, status),
+			INDEX idx_retreat_id (retreat_id),
+			INDEX idx_email (email),
+			INDEX idx_token (token),
+			INDEX idx_invited_by (invited_by),
+			INDEX idx_invited_at (invited_at),
+			INDEX idx_expires_at (expires_at),
+			INDEX idx_status (status),
+			FOREIGN KEY (retreat_id) REFERENCES {$this->retreats_table}(id) ON DELETE CASCADE,
+			FOREIGN KEY (invited_by) REFERENCES {$wpdb->users}(ID) ON DELETE CASCADE,
+			FOREIGN KEY (created_user_id) REFERENCES {$wpdb->users}(ID) ON DELETE SET NULL
+		) $charset_collate;";
+
+		dbDelta( $invitations_sql );
+
+		// Create permission audit log table (from v1.3.0)
+		$audit_log_sql = "CREATE TABLE {$this->audit_log_table} (
+			id mediumint(9) NOT NULL AUTO_INCREMENT,
+			user_id bigint(20) unsigned NOT NULL,
+			retreat_id mediumint(9) NOT NULL,
+			action enum('granted','revoked','invitation_sent','invitation_accepted','invitation_cancelled') NOT NULL,
+			permission_level enum('manager','message_manager') NOT NULL,
+			performed_by bigint(20) unsigned NOT NULL,
+			performed_at datetime DEFAULT CURRENT_TIMESTAMP,
+			details text DEFAULT NULL,
+			ip_address varchar(45) DEFAULT NULL,
+			user_agent text DEFAULT NULL,
+			PRIMARY KEY (id),
+			INDEX idx_user_id (user_id),
+			INDEX idx_retreat_id (retreat_id),
+			INDEX idx_action (action),
+			INDEX idx_permission_level (permission_level),
+			INDEX idx_performed_by (performed_by),
+			INDEX idx_performed_at (performed_at),
+			FOREIGN KEY (user_id) REFERENCES {$wpdb->users}(ID) ON DELETE CASCADE,
+			FOREIGN KEY (retreat_id) REFERENCES {$this->retreats_table}(id) ON DELETE CASCADE,
+			FOREIGN KEY (performed_by) REFERENCES {$wpdb->users}(ID) ON DELETE CASCADE
+		) $charset_collate;";
+
+		dbDelta( $audit_log_sql );
+
+		// Add the manage_retreat_plugin capability to administrator role (from v1.3.0)
+		$admin_role = get_role( 'administrator' );
+		if ( $admin_role ) {
+			$admin_role->add_cap( 'manage_retreat_plugin' );
+		}
 
 		// Store the database version for future upgrades
 		update_option( self::DB_VERSION_OPTION, self::DB_VERSION );
