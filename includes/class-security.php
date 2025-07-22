@@ -498,7 +498,53 @@ class DFX_Parish_Retreat_Letters_Security {
 	}
 
 	/**
-	 * Rate limiting check for IP address.
+	 * Check if IP address is within rate limit (without incrementing).
+	 *
+	 * @since 1.2.0
+	 * @param string $ip_address IP address to check.
+	 * @param int    $max_attempts Maximum attempts allowed.
+	 * @param int    $time_window Time window in minutes.
+	 * @return bool True if within rate limit, false if exceeded.
+	 */
+	public function is_within_rate_limit( $ip_address, $max_attempts = 5, $time_window = 60 ) {
+		$transient_key = 'dfx_prl_message_rate_limit_' . md5( $ip_address );
+		$attempts = get_transient( $transient_key );
+
+		if ( $attempts === false ) {
+			// No previous attempts recorded
+			return true;
+		}
+
+		return $attempts < $max_attempts;
+	}
+
+	/**
+	 * Increment rate limit counter for IP address.
+	 *
+	 * @since 1.2.0
+	 * @param string $ip_address IP address to increment.
+	 * @param int    $time_window Time window in minutes.
+	 * @return int New attempt count.
+	 */
+	public function increment_rate_limit( $ip_address, $time_window = 60 ) {
+		$transient_key = 'dfx_prl_message_rate_limit_' . md5( $ip_address );
+		$attempts = get_transient( $transient_key );
+
+		if ( $attempts === false ) {
+			// No previous attempts recorded
+			set_transient( $transient_key, 1, $time_window * 60 );
+			return 1;
+		}
+
+		// Increment attempts
+		$new_attempts = $attempts + 1;
+		set_transient( $transient_key, $new_attempts, $time_window * 60 );
+		return $new_attempts;
+	}
+
+	/**
+	 * Rate limiting check for IP address (legacy method for backwards compatibility).
+	 * This method both checks and increments - use is_within_rate_limit() and increment_rate_limit() instead.
 	 *
 	 * @since 1.2.0
 	 * @param string $ip_address IP address to check.
@@ -507,22 +553,70 @@ class DFX_Parish_Retreat_Letters_Security {
 	 * @return bool True if within rate limit, false if exceeded.
 	 */
 	public function check_rate_limit( $ip_address, $max_attempts = 5, $time_window = 60 ) {
-		$transient_key = 'dfx_prl_message_rate_limit_' . md5( $ip_address );
-		$attempts = get_transient( $transient_key );
-
-		if ( $attempts === false ) {
-			// No previous attempts recorded
-			set_transient( $transient_key, 1, $time_window * 60 );
-			return true;
-		}
-
-		if ( $attempts >= $max_attempts ) {
+		if ( ! $this->is_within_rate_limit( $ip_address, $max_attempts, $time_window ) ) {
 			return false;
 		}
 
-		// Increment attempts
-		set_transient( $transient_key, $attempts + 1, $time_window * 60 );
+		$this->increment_rate_limit( $ip_address, $time_window );
 		return true;
+	}
+
+	/**
+	 * Reset rate limit for a specific IP address.
+	 *
+	 * @since 1.2.0
+	 * @param string $ip_address IP address to reset.
+	 * @return bool True on success, false on failure.
+	 */
+	public function reset_rate_limit( $ip_address ) {
+		$transient_key = 'dfx_prl_message_rate_limit_' . md5( $ip_address );
+		return delete_transient( $transient_key );
+	}
+
+	/**
+	 * Reset all rate limits.
+	 *
+	 * @since 1.2.0
+	 * @return int Number of rate limits reset.
+	 */
+	public function reset_all_rate_limits() {
+		global $wpdb;
+		
+		// Delete all rate limit transients
+		$count = $wpdb->query( "DELETE FROM {$wpdb->options} WHERE option_name LIKE '_transient_dfx_prl_message_rate_limit_%'" );
+		// Also delete timeout transients
+		$wpdb->query( "DELETE FROM {$wpdb->options} WHERE option_name LIKE '_transient_timeout_dfx_prl_message_rate_limit_%'" );
+		
+		return $count ? $count : 0;
+	}
+
+	/**
+	 * Get current rate limit status for an IP address.
+	 *
+	 * @since 1.2.0
+	 * @param string $ip_address IP address to check.
+	 * @return array Array with 'attempts' and 'time_remaining' keys.
+	 */
+	public function get_rate_limit_status( $ip_address ) {
+		$transient_key = 'dfx_prl_message_rate_limit_' . md5( $ip_address );
+		$attempts = get_transient( $transient_key );
+		
+		if ( $attempts === false ) {
+			return array(
+				'attempts' => 0,
+				'time_remaining' => 0
+			);
+		}
+		
+		// Get the timeout for this transient
+		$timeout_key = '_transient_timeout_' . $transient_key;
+		$timeout = get_option( $timeout_key );
+		$time_remaining = $timeout ? max( 0, $timeout - time() ) : 0;
+		
+		return array(
+			'attempts' => $attempts,
+			'time_remaining' => $time_remaining
+		);
 	}
 
 	/**
