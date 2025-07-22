@@ -422,4 +422,66 @@ class DFX_Parish_Retreat_Letters_Attendant {
 
 		return (bool) $exists;
 	}
+
+	/**
+	 * Get attendant ID by identity (name, surname, date of birth).
+	 *
+	 * @since 1.0.0
+	 * @param int    $retreat_id      Retreat ID.
+	 * @param string $name            Attendant name.
+	 * @param string $surnames        Attendant surnames.
+	 * @param string $date_of_birth   Date of birth.
+	 * @return int|null The attendant ID or null if not found.
+	 */
+	public function get_id_by_identity( $retreat_id, $name, $surnames, $date_of_birth ) {
+		global $wpdb;
+
+		$attendant_id = $wpdb->get_var( $wpdb->prepare(
+			"SELECT id FROM {$this->database->get_attendants_table()} 
+			WHERE retreat_id = %d AND name = %s AND surnames = %s AND date_of_birth = %s",
+			$retreat_id, $name, $surnames, $date_of_birth
+		) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+
+		return $attendant_id ? (int) $attendant_id : null;
+	}
+
+	/**
+	 * Update emergency contact information for an attendant.
+	 *
+	 * @since 1.0.0
+	 * @param int   $id   Attendant ID.
+	 * @param array $data Emergency contact data.
+	 * @return bool True on success, false on failure.
+	 */
+	public function update_emergency_contact( $id, $data ) {
+		global $wpdb;
+
+		$sanitized_data = array(
+			'emergency_contact_name'    => sanitize_text_field( $data['emergency_contact_name'] ?? '' ),
+			'emergency_contact_surname' => sanitize_text_field( $data['emergency_contact_surname'] ?? '' ),
+			'emergency_contact_phone'   => sanitize_text_field( $data['emergency_contact_phone'] ?? '' ),
+		);
+
+		// Basic validation for emergency contact data
+		if ( empty( $sanitized_data['emergency_contact_name'] ) || 
+			 empty( $sanitized_data['emergency_contact_surname'] ) || 
+			 empty( $sanitized_data['emergency_contact_phone'] ) ) {
+			return false;
+		}
+
+		// Basic phone number validation (allows various formats)
+		if ( ! preg_match( '/^[\d\s\-\+\(\)\.]+$/', $sanitized_data['emergency_contact_phone'] ) ) {
+			return false;
+		}
+
+		$result = $wpdb->update(
+			$this->database->get_attendants_table(),
+			$sanitized_data,
+			array( 'id' => $id ),
+			array( '%s', '%s', '%s' ),
+			array( '%d' )
+		);
+
+		return $result !== false;
+	}
 }
