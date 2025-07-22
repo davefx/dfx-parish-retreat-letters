@@ -31,7 +31,8 @@
         "test": "phpunit",
         "test:coverage": "phpunit --coverage-html coverage",
         "test:unit": "phpunit --testsuite unit",
-        "test:integration": "phpunit --testsuite integration"
+        "test:integration": "phpunit --testsuite integration",
+        "test:basic": "phpunit --configuration phpunit-basic.xml"
     },
     "config": {
         "sort-packages": true,

@@ -8,16 +8,18 @@ The plugin uses PHPUnit for testing with both unit tests and integration tests:
 
 - **Unit Tests**: Test individual classes and methods in isolation using mocks
 - **Integration Tests**: Test the plugin functionality with a real WordPress environment
+- **Basic Tests**: Test core infrastructure without WordPress dependencies
 
-## Prerequisites
+## Quick Start
 
-- PHP 7.4 or higher
-- Composer
-- MySQL/MariaDB
-- WordPress test environment
+### Basic Testing (No WordPress Required)
+For quick verification that the test infrastructure is working:
 
-## Installation
+```bash
+phpunit --configuration phpunit-basic.xml
+```
 
+### Full Test Suite
 1. Install dependencies:
 ```bash
 composer install
@@ -28,18 +30,28 @@ composer install
 bin/install-wp-tests.sh wordpress_test root password localhost latest
 ```
 
-Replace the database credentials with your own:
-- `wordpress_test`: Test database name
-- `root`: Database user
-- `password`: Database password
-- `localhost`: Database host
-- `latest`: WordPress version (or specific version like `6.3`)
-
-## Running Tests
-
-### Run all tests:
+3. Run all tests:
 ```bash
 composer test
+```
+
+## Prerequisites
+
+- PHP 7.4 or higher
+- Composer
+- MySQL/MariaDB (for integration tests)
+- WordPress test environment (for full test suite)
+
+## Installation
+
+### For Development
+```bash
+composer install
+```
+
+### For CI/CD (Production)
+```bash
+composer install --no-dev
 ```
 
 ### Run only unit tests:
