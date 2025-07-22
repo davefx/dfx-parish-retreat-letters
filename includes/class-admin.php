@@ -150,6 +150,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 		add_action( 'wp_ajax_dfx_prl_revoke_permission', array( $this, 'ajax_revoke_permission' ) );
 		add_action( 'wp_ajax_dfx_prl_send_invitation', array( $this, 'ajax_send_invitation' ) );
 		add_action( 'wp_ajax_dfx_prl_cancel_invitation', array( $this, 'ajax_cancel_invitation' ) );
+		add_action( 'wp_ajax_dfx_prl_reset_rate_limits', array( $this, 'ajax_reset_rate_limits' ) );
 	}
 
 	/**
@@ -4136,6 +4137,12 @@ class DFX_Parish_Retreat_Letters_Admin {
 				</div>
 
 				<div class="dfx-prl-tool-section">
+					<h3><?php esc_html_e( 'Rate Limit Management', 'dfx-parish-retreat-letters' ); ?></h3>
+					<p><?php esc_html_e( 'Reset message submission rate limits to allow users to submit messages again after encountering errors.', 'dfx-parish-retreat-letters' ); ?></p>
+					<button type="button" id="reset-rate-limits-btn" class="button"><?php esc_html_e( 'Reset All Rate Limits', 'dfx-parish-retreat-letters' ); ?></button>
+				</div>
+
+				<div class="dfx-prl-tool-section">
 					<h3><?php esc_html_e( 'Personal Data Export/Erasure', 'dfx-parish-retreat-letters' ); ?></h3>
 					<p><?php esc_html_e( 'Export or erase personal data by sender name for GDPR compliance.', 'dfx-parish-retreat-letters' ); ?></p>
 					
@@ -4389,8 +4396,59 @@ class DFX_Parish_Retreat_Letters_Admin {
 					}
 				});
 			});
+
+			// Rate limit reset functionality
+			$('#reset-rate-limits-btn').click(function() {
+				if (!confirm('<?php esc_html_e( 'Are you sure you want to reset all rate limits? This will allow all IP addresses to submit messages again.', 'dfx-parish-retreat-letters' ); ?>')) {
+					return;
+				}
+
+				$.ajax({
+					url: ajaxurl,
+					type: 'POST',
+					data: {
+						action: 'dfx_prl_reset_rate_limits',
+						nonce: '<?php echo esc_attr( wp_create_nonce( 'dfx_prl_retreats_nonce' ) ); ?>'
+					},
+					success: function(response) {
+						if (response.success) {
+							alert(response.data.message);
+						} else {
+							alert(response.data.message || '<?php esc_html_e( 'An error occurred while resetting rate limits.', 'dfx-parish-retreat-letters' ); ?>');
+						}
+					},
+					error: function() {
+						alert('<?php esc_html_e( 'A network error occurred. Please try again.', 'dfx-parish-retreat-letters' ); ?>');
+					}
+				});
+			});
 		});
 		</script>
 		<?php
+	}
+
+	/**
+	 * AJAX handler for resetting rate limits.
+	 *
+	 * @since 1.2.0
+	 */
+	public function ajax_reset_rate_limits() {
+		if ( ! wp_verify_nonce( $_POST['nonce'] ?? '', 'dfx_prl_retreats_nonce' ) ) {
+			wp_die( __( 'Security check failed.', 'dfx-parish-retreat-letters' ) );
+		}
+
+		// Only plugin administrators can reset rate limits
+		if ( ! $this->permissions->current_user_can_manage_plugin() ) {
+			wp_send_json_error( array( 'message' => __( 'You do not have permission to reset rate limits.', 'dfx-parish-retreat-letters' ) ) );
+		}
+
+		$count = $this->security->reset_all_rate_limits();
+		
+		wp_send_json_success( array( 
+			'message' => sprintf(
+				__( 'Successfully reset %d rate limit(s).', 'dfx-parish-retreat-letters' ),
+				$count
+			)
+		) );
 	}
 }
