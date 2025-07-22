@@ -2231,9 +2231,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 				wp_redirect( admin_url( 'admin.php?page=dfx-prl-retreats&action=attendants&retreat_id=' . $retreat_id ) );
 				exit;
 			} else {
-				// Handle creation error
-				$this->display_admin_notices( false );
-
+				$this->add_admin_notice( __( 'Error creating attendant. Please check your data.', 'dfx-parish-retreat-letters' ), 'error' );
 			}
 		}
 	}
