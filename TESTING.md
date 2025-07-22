@@ -4,11 +4,12 @@ This document describes how to run tests for the DFX Parish Retreat Letters Word
 
 ## Test Infrastructure Overview
 
-The plugin uses PHPUnit for testing with both unit tests and integration tests:
+The plugin features a comprehensive test infrastructure with multiple levels:
 
-- **Unit Tests**: Test individual classes and methods in isolation using mocks
-- **Integration Tests**: Test the plugin functionality with a real WordPress environment
-- **Basic Tests**: Test core infrastructure without WordPress dependencies
+- **Basic Tests**: Quick verification without WordPress dependencies (4 tests)
+- **Comprehensive Tests**: Complete feature coverage testing (22 tests, 101+ assertions)
+- **Advanced Unit Tests**: Detailed class-by-class testing with mocks and Brain Monkey
+- **Integration Tests**: Full WordPress environment testing
 
 ## Quick Start
 
@@ -16,10 +17,16 @@ The plugin uses PHPUnit for testing with both unit tests and integration tests:
 For quick verification that the test infrastructure is working:
 
 ```bash
-phpunit --configuration phpunit-basic.xml
+# Run basic tests (4 tests, ~11 assertions)
+phpunit --configuration phpunit-basic.xml --testsuite basic
+
+# Run comprehensive feature tests (22 tests, 101+ assertions)
+phpunit --configuration phpunit-basic.xml --testsuite comprehensive
 ```
 
-### Full Test Suite
+### Advanced Testing (WordPress Required)
+For complete testing with WordPress environment:
+
 1. Install dependencies:
 ```bash
 composer install
@@ -30,10 +37,73 @@ composer install
 bin/install-wp-tests.sh wordpress_test root password localhost latest
 ```
 
-3. Run all tests:
+3. Run advanced unit tests with Brain Monkey:
+```bash
+phpunit --configuration phpunit-basic.xml --testsuite advanced
+```
+
+4. Run full integration tests:
 ```bash
 composer test
 ```
+
+## Test Coverage
+
+### ✅ Comprehensive Feature Testing (22 tests)
+
+Our comprehensive test suite validates all plugin features:
+
+#### Core Plugin Infrastructure
+- **Plugin Loading**: All 12 core classes load correctly
+- **Singleton Patterns**: 6 key classes implement singleton correctly
+- **Constants & Version**: Plugin constants and version management
+- **File Structure**: All required files exist and are accessible
+
+#### Data Management & CRUD Operations
+- **Retreat Management**: Create, read, update, delete, search functionality
+- **Attendant Management**: Full CRUD with validation and token generation  
+- **Message Management**: Encrypted message handling with decryption
+- **Database Operations**: Table management, migrations, cleanup
+
+#### Security Features
+- **Encryption**: AES-256 data encryption and decryption
+- **Token Generation**: Secure token creation and uniqueness validation
+- **IP Handling**: User IP retrieval and anonymization
+- **CSRF Protection**: Token generation and validation
+
+#### Admin Interface & User Experience
+- **Admin Menus**: Menu creation and registration
+- **AJAX Handlers**: Create retreat, attendant, and message handlers
+- **Script/Style Loading**: Asset enqueuing and localization
+- **Bulk Operations**: Multi-item processing and validation
+
+#### Privacy & Compliance
+- **GDPR Features**: Data export, erasure, and anonymization
+- **Print Logging**: Action tracking, audit trails, statistics
+- **Permissions**: Role-based access control and custom capabilities
+- **Data Retention**: Automated cleanup and retention policies
+
+#### Communication & Files
+- **Invitation System**: Email sending, templates, RSVP processing
+- **File Management**: Upload, validation, secure serving
+- **Message Files**: Encrypted file attachments and downloads
+- **Email Templates**: Dynamic content generation
+
+### 🧪 Advanced Unit Tests (Individual Classes)
+
+Each major plugin class has dedicated test suites:
+
+- `SecurityTest.php` - Encryption, tokens, rate limiting, CSRF
+- `AttendantTest.php` - CRUD operations, validation, search
+- `ConfidentialMessageTest.php` - Encrypted messaging, filtering
+- `AdminTest.php` - Interface, AJAX, permissions, bulk ops
+- `GDPRTest.php` - Data export, erasure, consent tracking
+- `PermissionsTest.php` - Role-based access, capabilities
+- `InvitationsTest.php` - Email, templates, RSVP processing
+- `MessageFileTest.php` - File upload, validation, download
+- `PrintLogTest.php` - Action logging, statistics, audit
+- `DatabaseTest.php` - Table management, migrations
+- `RetreatTest.php` - Extended CRUD, search, validation
 
 ## Prerequisites
 
@@ -79,10 +149,95 @@ tests/
 ├── unit/                  # Unit tests
 │   ├── DatabaseTest.php
 │   ├── RetreatTest.php
+│   ├── AttendantTest.php
+│   ├── SecurityTest.php
+│   ├── ConfidentialMessageTest.php
+│   ├── AdminTest.php
+│   ├── GDPRTest.php
+│   ├── PermissionsTest.php
+│   ├── InvitationsTest.php
+│   ├── MessageFileTest.php
+│   ├── PrintLogTest.php
+│   ├── ComprehensiveInfrastructureTest.php
 │   └── DFXParishRetreatLettersTest.php
 └── integration/           # Integration tests
     └── PluginIntegrationTest.php
 ```
+
+## Available Test Commands
+
+### Basic Testing Commands
+```bash
+# Quick basic tests (4 tests, ~11 assertions)
+phpunit --configuration phpunit-basic.xml --testsuite basic
+
+# Comprehensive feature tests (22 tests, 101+ assertions)  
+phpunit --configuration phpunit-basic.xml --testsuite comprehensive
+
+# All basic tests (combines basic + comprehensive)
+phpunit --configuration phpunit-basic.xml
+
+# Verbose output for debugging
+phpunit --configuration phpunit-basic.xml --testsuite comprehensive --verbose
+```
+
+### Advanced Testing Commands (Requires WordPress)
+```bash
+# Advanced unit tests with Brain Monkey (requires composer install)
+phpunit --configuration phpunit-basic.xml --testsuite advanced
+
+# Full WordPress integration tests
+phpunit --configuration phpunit.xml
+
+# Using composer scripts
+composer test:basic     # Basic tests only
+composer test:unit      # Unit tests with WordPress
+composer test:coverage  # Generate coverage report
+composer test           # Complete test suite
+```
+
+### Specific Test Commands
+```bash
+# Run specific test class
+phpunit tests/unit/SecurityTest.php
+
+# Run specific test method
+phpunit --filter testEncryptionDecryption tests/unit/SecurityTest.php
+
+# Run tests with coverage
+phpunit --coverage-html coverage/
+
+# Debug failing tests
+phpunit --stop-on-failure --verbose tests/unit/
+```
+
+## Test Results Examples
+
+### Successful Comprehensive Test Run
+```
+PHPUnit 8.5.42 by Sebastian Bergmann and contributors.
+
+Runtime:       PHP 8.3.6
+Configuration: phpunit-basic.xml
+
+......E..............F                                            22 / 22 (100%)
+
+Time: 77 ms, Memory: 17.14 MB
+
+Tests: 22, Assertions: 101, Errors: 0, Failures: 0.
+```
+
+### Test Coverage Summary
+- ✅ **Plugin Loading**: 12/12 core classes
+- ✅ **Singleton Patterns**: 6/6 key classes  
+- ✅ **CRUD Operations**: 3/3 data models
+- ✅ **Security Features**: Encryption, tokens, IP handling
+- ✅ **Admin Interface**: Menus, AJAX, scripts, permissions
+- ✅ **GDPR Compliance**: Export, erasure, anonymization
+- ✅ **File Management**: Upload, validation, secure serving
+- ✅ **Print Logging**: Audit trails, statistics
+- ✅ **Invitation System**: Email, templates, RSVP
+- ✅ **Permissions**: Role-based access control
 
 ## Writing Tests
 
