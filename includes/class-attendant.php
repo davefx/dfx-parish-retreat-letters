@@ -188,16 +188,24 @@ class DFX_Parish_Retreat_Letters_Attendant {
 		$orderby = in_array( $args['orderby'], $allowed_orderby, true ) ? $args['orderby'] : 'name';
 		$order = in_array( strtoupper( $args['order'] ), array( 'ASC', 'DESC' ), true ) ? strtoupper( $args['order'] ) : 'ASC';
 
-		// Calculate offset
-		$offset = ( absint( $args['page'] ) - 1 ) * absint( $args['per_page'] );
+		// Handle pagination - check if per_page is -1 (meaning get all records)
+		if ( $args['per_page'] === -1 ) {
+			// No pagination - get all records
+			$sql = "SELECT * FROM {$this->database->get_attendants_table()} 
+					WHERE {$where_clause} 
+					ORDER BY {$orderby} {$order}";
+		} else {
+			// Calculate offset for pagination
+			$offset = ( absint( $args['page'] ) - 1 ) * absint( $args['per_page'] );
 
-		$sql = "SELECT * FROM {$this->database->get_attendants_table()} 
-				WHERE {$where_clause} 
-				ORDER BY {$orderby} {$order} 
-				LIMIT %d OFFSET %d";
+			$sql = "SELECT * FROM {$this->database->get_attendants_table()} 
+					WHERE {$where_clause} 
+					ORDER BY {$orderby} {$order} 
+					LIMIT %d OFFSET %d";
 
-		$where_values[] = absint( $args['per_page'] );
-		$where_values[] = $offset;
+			$where_values[] = absint( $args['per_page'] );
+			$where_values[] = $offset;
+		}
 
 		$sql = $wpdb->prepare( $sql, $where_values ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 
