@@ -26,42 +26,13 @@ jobs:
         extensions: dom, curl, libxml, mbstring, zip, pcntl
 
     - name: Install dependencies
-      run: |
-        # Try to install all dependencies first
-        composer install --no-interaction --prefer-dist --optimize-autoloader || {
-          echo "Full dependency installation failed, trying minimal install..."
-          # If that fails, try installing just PHPUnit which is essential
-          composer install --no-dev --no-interaction --optimize-autoloader || {
-            echo "Even minimal install failed, trying to install just PHPUnit..."
-            composer require --dev phpunit/phpunit:^9.0 --no-interaction || {
-              echo "Unable to install dependencies. Checking if vendor directory exists..."
-              ls -la vendor/ || echo "No vendor directory found"
-              exit 1
-            }
-          }
-        }
+      run: composer install --no-interaction --prefer-dist --optimize-autoloader
 
     - name: Run basic infrastructure tests
-      run: |
-        if [ -f ./vendor/bin/phpunit ]; then
-          ./vendor/bin/phpunit --configuration phpunit-basic.xml --testsuite basic
-        elif command -v phpunit >/dev/null 2>&1; then
-          phpunit --configuration phpunit-basic.xml --testsuite basic
-        else
-          echo "❌ PHPUnit not found. Cannot run tests."
-          exit 1
-        fi
+      run: ./vendor/bin/phpunit --configuration phpunit-basic.xml --testsuite basic
 
     - name: Run comprehensive feature tests
-      run: |
-        if [ -f ./vendor/bin/phpunit ]; then
-          ./vendor/bin/phpunit --configuration phpunit-basic.xml --testsuite comprehensive
-        elif command -v phpunit >/dev/null 2>&1; then
-          phpunit --configuration phpunit-basic.xml --testsuite comprehensive
-        else
-          echo "❌ PHPUnit not found. Cannot run tests."
-          exit 1
-        fi
+      run: ./vendor/bin/phpunit --configuration phpunit-basic.xml --testsuite comprehensive
 
     - name: Verify test results
       run: |

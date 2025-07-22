@@ -25,11 +25,14 @@ jobs:
         php-version: ${{ matrix.php-version }}
         extensions: dom, curl, libxml, mbstring, zip, pcntl
 
+    - name: Install dependencies
+      run: composer install --no-interaction --prefer-dist --optimize-autoloader
+
     - name: Run basic infrastructure tests (4 tests)
-      run: phpunit --configuration phpunit-basic.xml --testsuite basic
+      run: ./vendor/bin/phpunit --configuration phpunit-basic.xml --testsuite basic
 
     - name: Run comprehensive feature tests (22 tests, 112+ assertions)
-      run: phpunit --configuration phpunit-basic.xml --testsuite comprehensive
+      run: ./vendor/bin/phpunit --configuration phpunit-basic.xml --testsuite comprehensive
 
   advanced-tests:
     name: Advanced Tests (With Dependencies)
@@ -77,7 +80,7 @@ jobs:
     - name: Run unit tests (if WordPress environment available)
       run: |
         if [ -f "/tmp/wordpress-tests-lib/includes/functions.php" ]; then
-          composer test:unit
+          ./vendor/bin/phpunit --testsuite unit
         else
           echo "WordPress test environment not available, skipping unit tests"
         fi
@@ -86,7 +89,7 @@ jobs:
     - name: Run integration tests (if WordPress environment available)
       run: |
         if [ -f "/tmp/wordpress-tests-lib/includes/functions.php" ]; then
-          composer test:integration
+          ./vendor/bin/phpunit --testsuite integration
         else
           echo "WordPress test environment not available, skipping integration tests"
         fi
