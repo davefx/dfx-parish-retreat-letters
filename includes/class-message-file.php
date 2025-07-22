@@ -140,7 +140,7 @@ class DFX_Parish_Retreat_Letters_MessageFile {
 			return $wpdb->insert_id;
 		} else {
 			// Clean up file if database insert failed
-			unlink( $file_path );
+			wp_delete_file( $file_path );
 			return false;
 		}
 	}
@@ -155,10 +155,11 @@ class DFX_Parish_Retreat_Letters_MessageFile {
 	public function get( $id ) {
 		global $wpdb;
 
+		$table_name = $this->database->get_message_files_table();
 		$result = $wpdb->get_row( $wpdb->prepare(
-			"SELECT * FROM {$this->database->get_message_files_table()} WHERE id = %d",
+			"SELECT * FROM `{$table_name}` WHERE id = %d", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 			$id
-		) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
 
 		return $result;
 	}
@@ -173,10 +174,11 @@ class DFX_Parish_Retreat_Letters_MessageFile {
 	public function get_by_message( $message_id ) {
 		global $wpdb;
 
+		$table_name = $this->database->get_message_files_table();
 		$results = $wpdb->get_results( $wpdb->prepare(
-			"SELECT * FROM {$this->database->get_message_files_table()} WHERE message_id = %d ORDER BY uploaded_at ASC",
+			"SELECT * FROM `{$table_name}` WHERE message_id = %d ORDER BY uploaded_at ASC", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 			$message_id
-		) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
 
 		return $results ? $results : array();
 	}
@@ -237,7 +239,7 @@ class DFX_Parish_Retreat_Letters_MessageFile {
 
 		// Delete file from filesystem
 		if ( file_exists( $file->encrypted_file_path ) ) {
-			unlink( $file->encrypted_file_path );
+			wp_delete_file( $file->encrypted_file_path );
 		}
 
 		// Delete database record
@@ -321,7 +323,7 @@ class DFX_Parish_Retreat_Letters_MessageFile {
 			'user_id'    => $user_id,
 			'timestamp'  => current_time( 'mysql' ),
 			'ip_address' => $this->security->get_user_ip(),
-			'user_agent' => $_SERVER['HTTP_USER_AGENT'] ?? 'unknown',
+			'user_agent' => isset( $_SERVER['HTTP_USER_AGENT'] ) ? sanitize_text_field( wp_unslash( $_SERVER['HTTP_USER_AGENT'] ) ) : 'unknown',
 		);
 
 		// Keep only last 1000 access logs
@@ -342,16 +344,17 @@ class DFX_Parish_Retreat_Letters_MessageFile {
 		global $wpdb;
 
 		$stats = array();
+		$table_name = $this->database->get_message_files_table();
 
 		// Total files
 		$stats['total_files'] = (int) $wpdb->get_var(
-			"SELECT COUNT(*) FROM {$this->database->get_message_files_table()}"
-		); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			"SELECT COUNT(*) FROM `{$table_name}`" // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
 
 		// Files by type
 		$file_types = $wpdb->get_results(
-			"SELECT file_type, COUNT(*) as count FROM {$this->database->get_message_files_table()} GROUP BY file_type"
-		); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			"SELECT file_type, COUNT(*) as count FROM `{$table_name}` GROUP BY file_type" // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
 
 		$stats['by_type'] = array();
 		foreach ( $file_types as $type_data ) {
@@ -360,8 +363,8 @@ class DFX_Parish_Retreat_Letters_MessageFile {
 
 		// Total storage used
 		$stats['total_size'] = (int) $wpdb->get_var(
-			"SELECT SUM(file_size) FROM {$this->database->get_message_files_table()}"
-		); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			"SELECT SUM(file_size) FROM `{$table_name}`" // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
 
 		return $stats;
 	}
@@ -381,16 +384,17 @@ class DFX_Parish_Retreat_Letters_MessageFile {
 
 		foreach ( $files_in_directory as $file_path ) {
 			$filename = basename( $file_path );
+			$table_name = $this->database->get_message_files_table();
 			
 			// Check if file exists in database
 			$exists = $wpdb->get_var( $wpdb->prepare(
-				"SELECT COUNT(*) FROM {$this->database->get_message_files_table()} WHERE encrypted_filename = %s",
+				"SELECT COUNT(*) FROM `{$table_name}` WHERE encrypted_filename = %s", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 				$filename
-			) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
 
 			if ( ! $exists ) {
 				// File not in database, remove it
-				if ( unlink( $file_path ) ) {
+				if ( wp_delete_file( $file_path ) ) {
 					$cleaned_count++;
 				}
 			}
@@ -432,10 +436,11 @@ class DFX_Parish_Retreat_Letters_MessageFile {
 
 		// Check if message exists
 		global $wpdb;
+		$messages_table = $this->database->get_messages_table();
 		$message_exists = $wpdb->get_var( $wpdb->prepare(
-			"SELECT COUNT(*) FROM {$this->database->get_messages_table()} WHERE id = %d",
+			"SELECT COUNT(*) FROM `{$messages_table}` WHERE id = %d", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 			$data['message_id']
-		) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
 
 		if ( ! $message_exists ) {
 			return false;
