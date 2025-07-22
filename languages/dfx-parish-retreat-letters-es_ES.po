@@ -356,7 +356,7 @@ msgstr "Exportar CSV"
 
 #: includes/class-admin.php:3056
 msgid "Enter phone number with area code."
-msgstr "Ingresa el número de teléfono con cualquier prefijo necesario."
+msgstr "Introduce el número de teléfono con cualquier prefijo necesario."
 
 #. translators: %d: Number of attendants
 #: includes/class-admin.php:621
@@ -599,17 +599,17 @@ msgstr "Para fechas ambiguas como \"01/10/2025\", el sistema no puede determinar
 
 #: includes/class-admin.php:3171
 msgid "Use unambiguous formats like YYYY-MM-DD (2025-01-10)"
-msgstr "Use formatos no ambiguos como AAAA-MM-DD (2025-01-10)"
+msgstr "Usa formatos no ambiguos como AAAA-MM-DD (2025-01-10)"
 
 #: includes/class-admin.php:3172
 msgid "Set your preferred date format below to ensure consistent interpretation"
-msgstr "Configura tu formato de fecha preferido abajo para asegurar una interpretación consistente"
+msgstr "Configura el formato de fecha preferido abajo para asegurar una interpretación consistente"
 
 #. translators: %1$d: Number of ambiguous dates, %2$s: Current preference
 #: includes/class-admin.php:2410
 #, php-format
 msgid "Warning: %1$d ambiguous date(s) were interpreted using your current preference (%2$s)."
-msgstr "Advertencia: %1$d fecha(s) ambigua(s) fueron interpretadas usando tu preferencia actual (%2$s)."
+msgstr "Advertencia: %1$d fecha(s) ambigua(s) fueron interpretadas usando la preferencia actual (%2$s)."
 
 #: includes/class-admin.php:2416
 msgid "Ambiguous dates found:"
@@ -709,7 +709,7 @@ msgstr "Tu mensaje ha sido enviado exitosamente y almacenado de forma segura."
 
 #: includes/class-dfx-parish-retreat-letters.php:1415
 msgid "An error occurred while sending your message."
-msgstr "Ocurrió un error al enviar tu mensaje."
+msgstr "Ocurrió un error al enviar el mensaje."
 
 #: includes/class-admin.php:4287
 #: includes/class-dfx-parish-retreat-letters.php:1424
@@ -1176,7 +1176,7 @@ msgstr "Exportar Datos Personales"
 #: includes/class-admin.php:4044
 #: includes/class-admin.php:4050
 msgid "Enter sender name or email"
-msgstr "Ingresa nombre del remitente o email"
+msgstr "Introduce nombre del remitente o email"
 
 #: includes/class-admin.php:4045
 msgid "Export Data"
@@ -1675,7 +1675,7 @@ msgstr "Por favor, introduce un nombre de remitente o correo electrónico."
 
 #: includes/class-admin.php:4264
 msgid "Are you sure you want to permanently erase all data for this identifier? This action cannot be undone."
-msgstr "¿Está seguro de que desea eliminar permanentemente todos los datos para este identificador? Esta acción no se puede deshacer."
+msgstr "¿Estás seguro de que desea eliminar permanentemente todos los datos para este identificador? Esta acción no se puede deshacer."
 
 #: includes/class-admin.php:4283
 msgid "An error occurred during data erasure."
@@ -1799,7 +1799,7 @@ msgstr "Invitación para gestionar el retiro: %s"
 #: includes/class-invitations.php:736
 #, php-format
 msgid "Welcome to %s - Your account details"
-msgstr "Bienvenido a %s - Detalles de su cuenta"
+msgstr "Bienvenido a %s - Detalles de tu cuenta"
 
 #: includes/class-invitations.php:741
 #, php-format
@@ -1822,7 +1822,7 @@ msgid ""
 msgstr ""
 "Bienvenido %s,\n"
 "\n"
-"¡Su cuenta se ha creado exitosamente!\n"
+"¡Tu cuenta se ha creado exitosamente!\n"
 "\n"
 "Detalles de Inicio de Sesión:\n"
 "Nombre de Usuario: %s\n"
