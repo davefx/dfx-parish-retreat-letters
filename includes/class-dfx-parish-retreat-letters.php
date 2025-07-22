@@ -37,16 +37,6 @@ class DFX_Parish_Retreat_Letters {
 	private static $instance = null;
 
 	/**
-	 * The loader that's responsible for maintaining and registering all hooks that power
-	 * the plugin.
-	 *
-	 * @since    1.0.0
-	 * @access   protected
-	 * @var      DFX_Parish_Retreat_Letters_I18n    $i18n    Manages plugin internationalization.
-	 */
-	protected $i18n;
-
-	/**
 	 * The database management instance.
 	 *
 	 * @since    1.0.0
@@ -152,7 +142,6 @@ class DFX_Parish_Retreat_Letters {
 		$this->plugin_name = 'dfx-parish-retreat-letters';
 
 		$this->load_dependencies();
-		$this->set_locale();
 		$this->init_database();
 		$this->init_security();
 		$this->init_gdpr();
@@ -199,12 +188,6 @@ class DFX_Parish_Retreat_Letters {
 	 * @access   private
 	 */
 	private function load_dependencies() {
-		/**
-		 * The class responsible for defining internationalization functionality
-		 * of the plugin.
-		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-i18n.php';
-
 		/**
 		 * The class responsible for defining database functionality
 		 * of the plugin.
@@ -261,19 +244,6 @@ class DFX_Parish_Retreat_Letters {
 		 * of the plugin.
 		 */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-admin.php';
-	}
-
-	/**
-	 * Define the locale for this plugin for internationalization.
-	 *
-	 * Uses the DFX_Parish_Retreat_Letters_I18n class in order to set the domain and to register the hook
-	 * with WordPress.
-	 *
-	 * @since    1.0.0
-	 * @access   private
-	 */
-	private function set_locale() {
-		$this->i18n = new DFX_Parish_Retreat_Letters_I18n();
 	}
 
 	/**
