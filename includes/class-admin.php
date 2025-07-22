@@ -2321,22 +2321,22 @@ class DFX_Parish_Retreat_Letters_Admin {
 	 * @param int $retreat_id Retreat ID.
 	 */
 	private function handle_csv_import( $retreat_id ) {
-		if ( ! wp_verify_nonce( $_POST['_wpnonce'] ?? '', 'dfx_prl_attendants_import' ) ) {
+		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['_wpnonce'] ?? '' ) ), 'dfx_prl_attendants_import' ) ) {
 			wp_die( __( 'Security check failed.', 'dfx-parish-retreat-letters' ) );
 		}
 
 		// Save the date format preference
-		$date_format_preference = sanitize_text_field( $_POST['date_format_preference'] ?? 'dmy' );
+		$date_format_preference = sanitize_text_field( wp_unslash( $_POST['date_format_preference'] ?? 'dmy' ) );
 		if ( in_array( $date_format_preference, array( 'dmy', 'mdy' ), true ) ) {
 			update_option( 'dfx_prl_retreat_letters_date_format', $date_format_preference );
 		}
 
-		if ( ! isset( $_FILES['csv_file'] ) || $_FILES['csv_file']['error'] !== UPLOAD_ERR_OK ) {
+		if ( ! isset( $_FILES['csv_file'] ) || ! isset( $_FILES['csv_file']['error'] ) || $_FILES['csv_file']['error'] !== UPLOAD_ERR_OK ) {
 			$this->add_admin_notice( __( 'Please select a valid CSV file.', 'dfx-parish-retreat-letters' ), 'error' );
 			return;
 		}
 
-		$file = $_FILES['csv_file'];
+		$file = array_map( 'sanitize_text_field', $_FILES['csv_file'] );
 		$file_path = $file['tmp_name'];
 
 		// Basic file validation
@@ -2345,7 +2345,11 @@ class DFX_Parish_Retreat_Letters_Admin {
 			return;
 		}
 
-		$handle = fopen( $file_path, 'r' );
+		// Initialize WordPress filesystem for compatibility, though we need to use direct file operations for CSV streaming
+		require_once ABSPATH . 'wp-admin/includes/file.php';
+		WP_Filesystem();
+
+		$handle = fopen( $file_path, 'r' ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fopen
 		if ( ! $handle ) {
 			$this->add_admin_notice( __( 'Unable to read CSV file.', 'dfx-parish-retreat-letters' ), 'error' );
 			return;
@@ -2365,7 +2369,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 		
 		if ( ! $headers ) {
 			$this->add_admin_notice( __( 'CSV file appears to be empty or invalid.', 'dfx-parish-retreat-letters' ), 'error' );
-			fclose( $handle );
+			fclose( $handle ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fclose
 			return;
 		}
 
@@ -2383,7 +2387,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 				), 
 				'error' 
 			);
-			fclose( $handle );
+			fclose( $handle ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fclose
 			return;
 		}
 
@@ -2439,7 +2443,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 			}
 		}
 
-		fclose( $handle );
+		fclose( $handle ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fclose
 
 		if ( $imported > 0 ) {
 			$this->add_admin_notice( 
@@ -2869,7 +2873,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 		$csv_data = $this->attendant_model->export_csv_data( $retreat_id );
 		// translators: %1$s is the retreat name, %2$s is the current date (YYYY-MM-DD)
 		$filename = sprintf(__('retreat-%1$s-attendants-%2$s.csv', 'dfx-parish-retreat-letters'),
-			sanitize_file_name( $retreat->name ), date( 'Y-m-d' ) );
+			sanitize_file_name( $retreat->name ), gmdate( 'Y-m-d' ) );
 
 		header( 'Content-Type: text/csv' );
 		header( 'Content-Disposition: attachment; filename="' . $filename . '"' );
@@ -2889,7 +2893,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 			fputcsv($output, $row, ',', '"', '\\');
 		}
 
-		fclose( $output );
+		fclose( $output ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fclose
 		exit;
 	}
 
