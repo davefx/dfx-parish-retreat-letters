@@ -166,9 +166,7 @@
                                 
                                 // Show success message
                                 $('<div class="notice notice-success is-dismissible"><p>' + response.data.message + '</p></div>')
-                                    .insertAfter('.wp-header-end')
-                                    .delay(3000)
-                                    .fadeOut();
+                                    .insertAfter('.wp-header-end');
                             });
                         } else {
                             alert(response.data.message || dfxPRLAdmin.messages.deleteError);
@@ -228,9 +226,7 @@
                             // Show success message
                             var successMessage = response.data.message || 'Attendant deleted successfully.';
                             $('<div class="notice notice-success is-dismissible"><p>' + successMessage + '</p></div>')
-                                .insertAfter('.wp-header-end')
-                                .delay(3000)
-                                .fadeOut();
+                                .insertAfter('.wp-header-end');
                         });
                     } else {
                         alert(response.data.message || 'Error deleting attendant.');
@@ -263,8 +259,8 @@
             }
         });
         
-        // Auto-dismiss notices
-        $('.notice.is-dismissible').delay(5000).fadeOut();
+        // Auto-dismiss notices - disabled to prevent automatic hiding
+        // $('.notice.is-dismissible').delay(5000).fadeOut();
 
         // Handle generate message URL button clicks
         $('.dfx-prl-generate-url').on('click', function(e) {
@@ -311,9 +307,7 @@
                         
                         // Show success message
                         $('<div class="notice notice-success is-dismissible"><p>' + urlGeneratedText + '</p></div>')
-                            .insertAfter('.wp-header-end')
-                            .delay(3000)
-                            .fadeOut();
+                            .insertAfter('.wp-header-end');
                             
                         // Auto-copy URL to clipboard
                         copyToClipboard(response.data.url);
@@ -450,9 +444,7 @@
                             // Show success message
                             var successMessage = response.data.message || messageDeletedText;
                             $('<div class="notice notice-success is-dismissible"><p>' + successMessage + '</p></div>')
-                                .insertAfter('.wp-header-end')
-                                .delay(3000)
-                                .fadeOut();
+                                .insertAfter('.wp-header-end');
                         });
                     } else {
                         alert(response.data.message || 'Error deleting message.');
