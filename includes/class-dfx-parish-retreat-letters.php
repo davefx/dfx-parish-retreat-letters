@@ -450,16 +450,18 @@ class DFX_Parish_Retreat_Letters {
 			return;
 		}
 
-		// Rate limiting check
-		$ip_address = $this->security->get_user_ip();
-		if ( ! $this->security->check_rate_limit( $ip_address, 10, 60 ) ) {
-			// Rate limit exceeded
-			$this->security->log_rate_limit_violation( $ip_address, 'message_form_access' );
-			wp_die( 
-				esc_html__( 'Too many requests. Please wait before trying again.', 'dfx-parish-retreat-letters' ),
-				esc_html__( 'Rate Limit Exceeded', 'dfx-parish-retreat-letters' ),
-				array( 'response' => 429 )
-			);
+		// Rate limiting check (skip for logged-in users)
+		if ( ! is_user_logged_in() ) {
+			$ip_address = $this->security->get_user_ip();
+			if ( ! $this->security->check_rate_limit( $ip_address, 10, 60 ) ) {
+				// Rate limit exceeded
+				$this->security->log_rate_limit_violation( $ip_address, 'message_form_access' );
+				wp_die( 
+					esc_html__( 'Too many requests. Please wait before trying again.', 'dfx-parish-retreat-letters' ),
+					esc_html__( 'Rate Limit Exceeded', 'dfx-parish-retreat-letters' ),
+					array( 'response' => 429 )
+				);
+			}
 		}
 
 		// Set up WordPress environment for form
@@ -1449,11 +1451,13 @@ class DFX_Parish_Retreat_Letters {
 			wp_send_json_error( array( 'message' => __( 'Security check failed.', 'dfx-parish-retreat-letters' ) ) );
 		}
 
-		// Rate limiting
-		$ip_address = $this->security->get_user_ip();
-		if ( ! $this->security->check_rate_limit( $ip_address, 3, 60 ) ) {
-			$this->security->log_rate_limit_violation( $ip_address, 'message_submission' );
-			wp_send_json_error( array( 'message' => __( 'Too many submission attempts. Please wait before trying again.', 'dfx-parish-retreat-letters' ) ) );
+		// Rate limiting (skip for logged-in users)
+		if ( ! is_user_logged_in() ) {
+			$ip_address = $this->security->get_user_ip();
+			if ( ! $this->security->check_rate_limit( $ip_address, 3, 60 ) ) {
+				$this->security->log_rate_limit_violation( $ip_address, 'message_submission' );
+				wp_send_json_error( array( 'message' => __( 'Too many submission attempts. Please wait before trying again.', 'dfx-parish-retreat-letters' ) ) );
+			}
 		}
 
 		// Validate CAPTCHA
