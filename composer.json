@@ -28,14 +28,14 @@
         }
     },
     "scripts": {
-        "test": "phpunit --configuration phpunit-basic.xml",
-        "test:coverage": "phpunit --coverage-html coverage",
-        "test:unit": "phpunit --testsuite unit",
-        "test:integration": "phpunit --testsuite integration",
-        "test:basic": "phpunit --configuration phpunit-basic.xml --testsuite basic",
-        "test:comprehensive": "phpunit --configuration phpunit-basic.xml --testsuite comprehensive",
-        "test:advanced": "phpunit --configuration phpunit-advanced.xml --testsuite advanced",
-        "test:safe": "phpunit --configuration phpunit-basic.xml --testsuite comprehensive"
+        "test": "./vendor/bin/phpunit --configuration phpunit-basic.xml",
+        "test:coverage": "./vendor/bin/phpunit --coverage-html coverage",
+        "test:unit": "./vendor/bin/phpunit --testsuite unit",
+        "test:integration": "./vendor/bin/phpunit --testsuite integration",
+        "test:basic": "./vendor/bin/phpunit --configuration phpunit-basic.xml --testsuite basic",
+        "test:comprehensive": "./vendor/bin/phpunit --configuration phpunit-basic.xml --testsuite comprehensive",
+        "test:advanced": "./vendor/bin/phpunit --configuration phpunit-advanced.xml --testsuite advanced",
+        "test:safe": "./vendor/bin/phpunit --configuration phpunit-basic.xml --testsuite comprehensive"
     },
     "config": {
         "sort-packages": true,

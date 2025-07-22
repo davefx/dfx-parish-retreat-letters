@@ -25,11 +25,43 @@ jobs:
         php-version: ${{ matrix.php-version }}
         extensions: dom, curl, libxml, mbstring, zip, pcntl
 
+    - name: Install dependencies
+      run: |
+        # Try to install all dependencies first
+        composer install --no-interaction --prefer-dist --optimize-autoloader || {
+          echo "Full dependency installation failed, trying minimal install..."
+          # If that fails, try installing just PHPUnit which is essential
+          composer install --no-dev --no-interaction --optimize-autoloader || {
+            echo "Even minimal install failed, trying to install just PHPUnit..."
+            composer require --dev phpunit/phpunit:^9.0 --no-interaction || {
+              echo "Unable to install dependencies. Checking if vendor directory exists..."
+              ls -la vendor/ || echo "No vendor directory found"
+              exit 1
+            }
+          }
+        }
+
     - name: Run basic infrastructure tests
-      run: ./vendor/bin/phpunit --configuration phpunit-basic.xml --testsuite basic || phpunit --configuration phpunit-basic.xml --testsuite basic
+      run: |
+        if [ -f ./vendor/bin/phpunit ]; then
+          ./vendor/bin/phpunit --configuration phpunit-basic.xml --testsuite basic
+        elif command -v phpunit >/dev/null 2>&1; then
+          phpunit --configuration phpunit-basic.xml --testsuite basic
+        else
+          echo "❌ PHPUnit not found. Cannot run tests."
+          exit 1
+        fi
 
     - name: Run comprehensive feature tests
-      run: ./vendor/bin/phpunit --configuration phpunit-basic.xml --testsuite comprehensive || phpunit --configuration phpunit-basic.xml --testsuite comprehensive
+      run: |
+        if [ -f ./vendor/bin/phpunit ]; then
+          ./vendor/bin/phpunit --configuration phpunit-basic.xml --testsuite comprehensive
+        elif command -v phpunit >/dev/null 2>&1; then
+          phpunit --configuration phpunit-basic.xml --testsuite comprehensive
+        else
+          echo "❌ PHPUnit not found. Cannot run tests."
+          exit 1
+        fi
 
     - name: Verify test results
       run: |

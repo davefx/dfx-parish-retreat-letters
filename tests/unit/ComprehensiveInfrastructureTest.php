@@ -435,7 +435,7 @@ class ComprehensiveInfrastructureTest extends TestCase {
             $version = DFX_PARISH_RETREAT_LETTERS_VERSION;
             
             // Test version format (should be semantic versioning)
-            $this->assertRegExp('/^\d+\.\d+\.\d+$/', $version, 'Version should follow semantic versioning');
+            $this->assertTrue(preg_match('/^\d+\.\d+\.\d+$/', $version) === 1, 'Version should follow semantic versioning');
             
             // Test version components
             $version_parts = explode('.', $version);
