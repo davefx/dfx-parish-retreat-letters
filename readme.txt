@@ -3,7 +3,7 @@ Contributors: davefx
 Tags: parish, retreat, letters, confidential, GDPR
 Requires at least: 5.0
 Tested up to: 6.8
-Stable tag: 25.7.22
+Stable tag: 25.7.23
 Requires PHP: 7.4
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
@@ -340,6 +340,19 @@ Contributions are welcome! Please:
 5. Include appropriate tests and documentation
 
 ## Changelog
+
+### 25.7.23
+
+- Fix: WordPress coding standards violations- security and best practices improvements
+- Fix: Image paste processing in public message submission frontend
+- Fix: Skip rate limits for logged-in WordPress users
+- Fix: rate limiting for unsuccessful message submissions
+- Fix: Change Spanish translations from formal to informal language in public message frontend
+- Fix: admin notices auto-hiding issue by removing automatic fadeOut
+- Feature: Implement CSV import merge functionality for attendant emergency contact data
+- Fix: CSV export pagination issue - handle per_page=-1 correctly
+- Fix: redirect issue by handling form submissions on admin_init hook
+- Fix: attendant creation error handling to prevent header conflicts
 
 ### 25.7.22
 
