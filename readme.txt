@@ -345,6 +345,7 @@ Contributions are welcome! Please:
 
 - Fix: Correcting formatting in outgoing mail messages
 - Fix: Adding missing translations
+- Fix: Removed foreign keys from old DB setups
 
 ### 25.7.23
 
