@@ -691,36 +691,48 @@ class DFX_Parish_Retreat_Letters_Invitations {
 			$retreat->name
 		);
 
-		$message = sprintf(
-			__( 'Hello %s,
-
-You have been invited to participate in the management of the following retreat:
-
-Retreat: %s
-Location: %s
-Dates: %s - %s
-Your Role: %s
-
-To accept this invitation and set up your account, please click the following link:
-%s
-
-This invitation will expire in 7 days.
-
-If you have any questions, please contact the retreat administrator.
-
-Best regards,
-%s', 'dfx-parish-retreat-letters' ),
-			$name,
-			$retreat->name,
-			$retreat->location,
-			date_i18n( get_option( 'date_format' ), strtotime( $retreat->start_date ) ),
-			date_i18n( get_option( 'date_format' ), strtotime( $retreat->end_date ) ),
-			$permission_name,
-			$invitation_url,
-			get_bloginfo( 'name' )
+		// Create HTML message
+		$message_html = sprintf(
+			'<p>%s</p>
+			<p>%s</p>
+			<div style="background: #f8f9fa; padding: 15px; border-radius: 4px; margin: 20px 0; border-left: 4px solid #007cba;">
+				<p><strong>%s:</strong> %s</p>
+				<p><strong>%s:</strong> %s</p>
+				<p><strong>%s:</strong> %s - %s</p>
+				<p><strong>%s:</strong> %s</p>
+			</div>
+			<p><a href="%s" style="background: #007cba; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; display: inline-block;">%s</a></p>
+			<p style="color: #666; font-size: 14px;"><em>%s</em></p>
+			<p>%s</p>
+			<p>%s<br>%s</p>',
+			sprintf( __( 'Hello %s,', 'dfx-parish-retreat-letters' ), $name ),
+			__( 'You have been invited to participate in the management of the following retreat:', 'dfx-parish-retreat-letters' ),
+			__( 'Retreat', 'dfx-parish-retreat-letters' ),
+			esc_html( $retreat->name ),
+			__( 'Location', 'dfx-parish-retreat-letters' ),
+			esc_html( $retreat->location ),
+			__( 'Dates', 'dfx-parish-retreat-letters' ),
+			esc_html( date_i18n( get_option( 'date_format' ), strtotime( $retreat->start_date ) ) ),
+			esc_html( date_i18n( get_option( 'date_format' ), strtotime( $retreat->end_date ) ) ),
+			__( 'Your Role', 'dfx-parish-retreat-letters' ),
+			esc_html( $permission_name ),
+			esc_url( $invitation_url ),
+			__( 'Accept Invitation', 'dfx-parish-retreat-letters' ),
+			__( 'This invitation will expire in 7 days.', 'dfx-parish-retreat-letters' ),
+			__( 'If you have any questions, please contact the retreat administrator.', 'dfx-parish-retreat-letters' ),
+			__( 'Best regards,', 'dfx-parish-retreat-letters' ),
+			esc_html( get_bloginfo( 'name' ) )
 		);
 
-		return wp_mail( $email, $subject, $message );
+		// Set content type to HTML
+		add_filter( 'wp_mail_content_type', array( $this, 'set_html_mail_content_type' ) );
+		
+		$result = wp_mail( $email, $subject, $message_html );
+		
+		// Remove content type filter
+		remove_filter( 'wp_mail_content_type', array( $this, 'set_html_mail_content_type' ) );
+
+		return $result;
 	}
 
 	/**
@@ -737,31 +749,42 @@ Best regards,
 			get_bloginfo( 'name' )
 		);
 
-		$message = sprintf(
-			__( 'Welcome %s,
-
-Your account has been created successfully!
-
-Login Details:
-Username: %s
-Email: %s
-Password: %s
-
-Login URL: %s
-
-For security, please change your password after your first login.
-
-Best regards,
-%s', 'dfx-parish-retreat-letters' ),
-			$user->display_name,
-			$user->user_login,
-			$user->user_email,
-			$password,
-			wp_login_url(),
-			get_bloginfo( 'name' )
+		// Create HTML message
+		$message_html = sprintf(
+			'<p>%s</p>
+			<p><strong>%s</strong></p>
+			<div style="background: #f8f9fa; padding: 15px; border-radius: 4px; margin: 20px 0; border-left: 4px solid #007cba;">
+				<p><strong>%s:</strong> %s</p>
+				<p><strong>%s:</strong> %s</p>
+				<p><strong>%s:</strong> <code style="background: #e9ecef; padding: 2px 6px; border-radius: 3px;">%s</code></p>
+			</div>
+			<p><a href="%s" style="background: #007cba; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; display: inline-block;">%s</a></p>
+			<p style="color: #dc3545; font-weight: bold;">%s</p>
+			<p>%s<br>%s</p>',
+			sprintf( __( 'Welcome %s,', 'dfx-parish-retreat-letters' ), $user->display_name ),
+			__( 'Your account has been created successfully!', 'dfx-parish-retreat-letters' ),
+			__( 'Username', 'dfx-parish-retreat-letters' ),
+			esc_html( $user->user_login ),
+			__( 'Email', 'dfx-parish-retreat-letters' ),
+			esc_html( $user->user_email ),
+			__( 'Password', 'dfx-parish-retreat-letters' ),
+			esc_html( $password ),
+			esc_url( wp_login_url() ),
+			__( 'Login Now', 'dfx-parish-retreat-letters' ),
+			__( 'For security, please change your password after your first login.', 'dfx-parish-retreat-letters' ),
+			__( 'Best regards,', 'dfx-parish-retreat-letters' ),
+			esc_html( get_bloginfo( 'name' ) )
 		);
 
-		return wp_mail( $user->user_email, $subject, $message );
+		// Set content type to HTML
+		add_filter( 'wp_mail_content_type', array( $this, 'set_html_mail_content_type' ) );
+		
+		$result = wp_mail( $user->user_email, $subject, $message_html );
+		
+		// Remove content type filter
+		remove_filter( 'wp_mail_content_type', array( $this, 'set_html_mail_content_type' ) );
+
+		return $result;
 	}
 
 	/**
@@ -883,6 +906,16 @@ Best regards,
 		); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
 
 		return $deleted ? $deleted : 0;
+	}
+
+	/**
+	 * Set HTML content type for wp_mail.
+	 *
+	 * @since 1.3.0
+	 * @return string HTML content type.
+	 */
+	public function set_html_mail_content_type() {
+		return 'text/html';
 	}
 
 	/**

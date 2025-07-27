@@ -1963,3 +1963,58 @@ msgstr "Se ha actualizado correctamente la información de contacto de emergenci
 #, php-format
 msgid "%d rows were skipped due to data issues."
 msgstr "Se han omitido %d filas debido a problemas de datos."
+
+# New HTML email translations
+#: includes/class-invitations.php:708
+#, php-format
+msgid "Hello %s,"
+msgstr "Hola %s,"
+
+#: includes/class-invitations.php:709
+msgid "You have been invited to participate in the management of the following retreat:"
+msgstr "Has sido invitado a participar en la gestión del siguiente retiro:"
+
+#: includes/class-invitations.php:710
+msgid "Retreat"
+msgstr "Retiro"
+
+#: includes/class-invitations.php:717
+msgid "Your Role"
+msgstr "Tu Función"
+
+#: includes/class-invitations.php:721
+msgid "This invitation will expire in 7 days."
+msgstr "Esta invitación caducará en 7 días."
+
+#: includes/class-invitations.php:722
+msgid "If you have any questions, please contact the retreat administrator."
+msgstr "Si tienes alguna pregunta, por favor contacta con el administrador del retiro."
+
+#: includes/class-invitations.php:723
+msgid "Best regards,"
+msgstr "Saludos cordiales,"
+
+#: includes/class-invitations.php:764
+#, php-format
+msgid "Welcome %s,"
+msgstr "Bienvenido %s,"
+
+#: includes/class-invitations.php:765
+msgid "Your account has been created successfully!"
+msgstr "¡Tu cuenta ha sido creada exitosamente!"
+
+#: includes/class-invitations.php:766
+msgid "Username"
+msgstr "Nombre de Usuario"
+
+#: includes/class-invitations.php:770
+msgid "Password"
+msgstr "Contraseña"
+
+#: includes/class-invitations.php:773
+msgid "Login Now"
+msgstr "Iniciar Sesión Ahora"
+
+#: includes/class-invitations.php:774
+msgid "For security, please change your password after your first login."
+msgstr "Por seguridad, por favor cambia tu contraseña después de tu primer inicio de sesión."
