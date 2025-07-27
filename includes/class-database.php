@@ -38,7 +38,7 @@ class DFX_Parish_Retreat_Letters_Database {
 	 * @since 1.0.0
 	 * @var string
 	 */
-	const DB_VERSION = '1.4.2';
+	const DB_VERSION = '1.4.3';
 
 	/**
 	 * The database version option name.
@@ -303,14 +303,14 @@ class DFX_Parish_Retreat_Letters_Database {
 			created_user_id bigint(20) unsigned DEFAULT NULL,
 			PRIMARY KEY (id),
 			UNIQUE KEY unique_token (token),
-			UNIQUE KEY unique_pending_invitation (retreat_id, email, permission_level, status),
 			INDEX idx_retreat_id (retreat_id),
 			INDEX idx_email (email),
 			INDEX idx_token (token),
 			INDEX idx_invited_by (invited_by),
 			INDEX idx_invited_at (invited_at),
 			INDEX idx_expires_at (expires_at),
-			INDEX idx_status (status)
+			INDEX idx_status (status),
+			INDEX idx_unique_pending (retreat_id, email, permission_level, status)
 		) $charset_collate;";
 
 		dbDelta( $invitations_sql );
@@ -634,10 +634,10 @@ class DFX_Parish_Retreat_Letters_Database {
 			}
 			
 			// Drop the foreign key constraint
-			$wpdb->query( $wpdb->prepare(
-				"ALTER TABLE %s DROP FOREIGN KEY `%s`", // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
-				$this->audit_log_table,
-				$constraint_name
+			$wpdb->query( sprintf(
+				"ALTER TABLE %s DROP FOREIGN KEY %s", // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+				esc_sql( $this->audit_log_table ),
+				esc_sql( $constraint_name )
 			) );
 			
 			// Log the removal if debug mode is enabled
@@ -646,6 +646,48 @@ class DFX_Parish_Retreat_Letters_Database {
 					'DFX Parish Retreat Letters: Removed foreign key constraint %s from audit log table',
 					$constraint_name
 				) );
+			}
+		}
+	}
+
+	/**
+	 * Fix invitations table unique constraint.
+	 * 
+	 * This method removes the problematic unique constraint that includes status
+	 * and prevents duplicate entries when updating invitations to cancelled status.
+	 *
+	 * @since 1.4.3
+	 */
+	private function fix_invitations_unique_constraint() {
+		global $wpdb;
+		
+		// Check if the invitations table exists
+		$table_exists = $wpdb->get_var( $wpdb->prepare( "SHOW TABLES LIKE %s", $this->invitations_table ) );
+		if ( $table_exists !== $this->invitations_table ) {
+			return; // Table doesn't exist, nothing to do
+		}
+		
+		// Check if the problematic unique constraint exists
+		$constraint_exists = $wpdb->get_var( $wpdb->prepare(
+			"SELECT COUNT(*) 
+			FROM INFORMATION_SCHEMA.STATISTICS 
+			WHERE TABLE_SCHEMA = DATABASE() 
+			AND TABLE_NAME = %s 
+			AND INDEX_NAME = 'unique_pending_invitation'",
+			$this->invitations_table
+		) );
+		
+		if ( $constraint_exists > 0 ) {
+			// Drop the problematic unique constraint
+			$wpdb->query( sprintf(
+				"ALTER TABLE %s DROP INDEX %s", // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+				esc_sql( $this->invitations_table ),
+				esc_sql( 'unique_pending_invitation' )
+			) );
+			
+			// Log the removal if debug mode is enabled
+			if ( defined( 'WP_DEBUG' ) && WP_DEBUG && function_exists( 'error_log' ) ) {
+				error_log( 'DFX Parish Retreat Letters: Removed problematic unique_pending_invitation constraint from invitations table' );
 			}
 		}
 	}
@@ -661,12 +703,17 @@ class DFX_Parish_Retreat_Letters_Database {
 	 * @since 1.0.0
 	 * @since 1.4.0 Simplified to always use comprehensive setup_tables() method
 	 * @since 1.4.1 Added foreign key constraint removal for audit log table
+	 * @since 1.4.3 Added invitations unique constraint fix
 	 * @param string $from_version The version to upgrade from.
 	 */
 	private function upgrade_database( $from_version ) {
 		// Remove foreign key constraints from audit log table before running setup
 		// This prevents issues with user_id = 0 in permission audit logs
 		$this->remove_audit_log_foreign_keys();
+		
+		// Fix the problematic unique constraint in invitations table
+		// This prevents duplicate entry errors when cancelling invitations
+		$this->fix_invitations_unique_constraint();
 		
 		// Always run the comprehensive setup which handles all tables and columns using dbDelta
 		// This is safer and simpler than incremental upgrades and works for both fresh installs
