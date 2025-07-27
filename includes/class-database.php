@@ -634,10 +634,10 @@ class DFX_Parish_Retreat_Letters_Database {
 			}
 			
 			// Drop the foreign key constraint
-			$wpdb->query( $wpdb->prepare(
-				"ALTER TABLE %s DROP FOREIGN KEY `%s`", // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
-				$this->audit_log_table,
-				$constraint_name
+			$wpdb->query( sprintf(
+				"ALTER TABLE %s DROP FOREIGN KEY %s", // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+				esc_sql( $this->audit_log_table ),
+				esc_sql( $constraint_name )
 			) );
 			
 			// Log the removal if debug mode is enabled
@@ -679,9 +679,10 @@ class DFX_Parish_Retreat_Letters_Database {
 		
 		if ( $constraint_exists > 0 ) {
 			// Drop the problematic unique constraint
-			$wpdb->query( $wpdb->prepare(
-				"ALTER TABLE %s DROP INDEX unique_pending_invitation", // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
-				$this->invitations_table
+			$wpdb->query( sprintf(
+				"ALTER TABLE %s DROP INDEX %s", // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+				esc_sql( $this->invitations_table ),
+				esc_sql( 'unique_pending_invitation' )
 			) );
 			
 			// Log the removal if debug mode is enabled
