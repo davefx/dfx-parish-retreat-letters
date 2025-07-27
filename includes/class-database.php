@@ -38,7 +38,7 @@ class DFX_Parish_Retreat_Letters_Database {
 	 * @since 1.0.0
 	 * @var string
 	 */
-	const DB_VERSION = '1.4.0';
+	const DB_VERSION = '1.4.1';
 
 	/**
 	 * The database version option name.
@@ -597,6 +597,60 @@ class DFX_Parish_Retreat_Letters_Database {
 	}
 
 	/**
+	 * Remove foreign key constraints from audit log table.
+	 * 
+	 * This method removes any existing foreign key constraints from the audit log table
+	 * that may have been created in older versions of the plugin. These constraints
+	 * can cause issues when logging permission actions with user_id = 0 (e.g., for invitations).
+	 *
+	 * @since 1.4.1
+	 */
+	private function remove_audit_log_foreign_keys() {
+		global $wpdb;
+		
+		// Check if the audit log table exists
+		$table_exists = $wpdb->get_var( $wpdb->prepare( "SHOW TABLES LIKE %s", $this->audit_log_table ) );
+		if ( $table_exists !== $this->audit_log_table ) {
+			return; // Table doesn't exist, nothing to do
+		}
+		
+		// Get all foreign key constraints for the audit log table
+		$constraints = $wpdb->get_results( $wpdb->prepare(
+			"SELECT CONSTRAINT_NAME 
+			FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE 
+			WHERE TABLE_SCHEMA = DATABASE() 
+			AND TABLE_NAME = %s 
+			AND REFERENCED_TABLE_NAME IS NOT NULL",
+			str_replace( $wpdb->prefix, '', $this->audit_log_table )
+		) );
+		
+		// Remove each foreign key constraint
+		foreach ( $constraints as $constraint ) {
+			$constraint_name = $constraint->CONSTRAINT_NAME;
+			
+			// Skip if it's not a foreign key constraint we want to remove
+			if ( strpos( $constraint_name, 'ibfk' ) === false && strpos( $constraint_name, 'fk_' ) === false ) {
+				continue;
+			}
+			
+			// Drop the foreign key constraint
+			$wpdb->query( $wpdb->prepare(
+				"ALTER TABLE %s DROP FOREIGN KEY `%s`", // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+				$this->audit_log_table,
+				$constraint_name
+			) );
+			
+			// Log the removal if debug mode is enabled
+			if ( defined( 'WP_DEBUG' ) && WP_DEBUG && function_exists( 'error_log' ) ) {
+				error_log( sprintf(
+					'DFX Parish Retreat Letters: Removed foreign key constraint %s from audit log table',
+					$constraint_name
+				) );
+			}
+		}
+	}
+
+	/**
 	 * Perform database upgrades based on the current version.
 	 * 
 	 * This method runs the comprehensive setup_tables() method which uses dbDelta 
@@ -606,9 +660,14 @@ class DFX_Parish_Retreat_Letters_Database {
 	 *
 	 * @since 1.0.0
 	 * @since 1.4.0 Simplified to always use comprehensive setup_tables() method
+	 * @since 1.4.1 Added foreign key constraint removal for audit log table
 	 * @param string $from_version The version to upgrade from.
 	 */
 	private function upgrade_database( $from_version ) {
+		// Remove foreign key constraints from audit log table before running setup
+		// This prevents issues with user_id = 0 in permission audit logs
+		$this->remove_audit_log_foreign_keys();
+		
 		// Always run the comprehensive setup which handles all tables and columns using dbDelta
 		// This is safer and simpler than incremental upgrades and works for both fresh installs
 		// and upgrades from any previous version
