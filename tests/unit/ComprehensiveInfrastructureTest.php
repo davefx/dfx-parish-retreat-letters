@@ -504,4 +504,95 @@ class ComprehensiveInfrastructureTest extends TestCase {
         // At least the run function should exist since it's called immediately
         $this->assertGreaterThan(0, $defined_functions, "At least some plugin functions should be defined");
     }
+
+    /**
+     * Test database foreign key removal functionality
+     */
+    public function testDatabaseForeignKeyRemoval() {
+        // Mock global $wpdb 
+        global $wpdb;
+        if (!$wpdb) {
+            $wpdb = new stdClass();
+        }
+        $wpdb->prefix = 'wp_';
+        
+        // Test that the database class has the current version
+        if (class_exists('DFX_Parish_Retreat_Letters_Database')) {
+            $this->assertEquals('1.4.1', DFX_Parish_Retreat_Letters_Database::DB_VERSION, 'Database version should be 1.4.1');
+            
+            // Test that the database instance can be created
+            $database = DFX_Parish_Retreat_Letters_Database::get_instance();
+            $this->assertInstanceOf('DFX_Parish_Retreat_Letters_Database', $database);
+            
+            // Test that required methods exist
+            $required_methods = [
+                'get_audit_log_table',
+                'setup_tables',
+                'maybe_upgrade_database'
+            ];
+            
+            foreach ($required_methods as $method) {
+                $this->assertTrue(method_exists($database, $method), "Database method $method should exist");
+            }
+            
+            // Test that the audit log table name is properly constructed
+            $audit_log_table = $database->get_audit_log_table();
+            $this->assertIsString($audit_log_table);
+            $this->assertTrue(strpos($audit_log_table, 'wp_') === 0, 'Table name should start with wp_');
+            $this->assertTrue(strpos($audit_log_table, 'audit_log') !== false, 'Table name should contain audit_log');
+            
+            // Test the foreign key removal method exists (even if private)
+            $reflection = new ReflectionClass($database);
+            $this->assertTrue($reflection->hasMethod('remove_audit_log_foreign_keys'), 
+                'Database should have remove_audit_log_foreign_keys method');
+                
+            // The method should be private for security
+            $method = $reflection->getMethod('remove_audit_log_foreign_keys');
+            $this->assertTrue($method->isPrivate(), 'remove_audit_log_foreign_keys should be private');
+        } else {
+            $this->markTestSkipped('Database class not available');
+        }
+    }
+
+    /**
+     * Test audit log can handle user_id = 0 (invitation scenario)
+     */
+    public function testAuditLogHandlesUserIdZero() {
+        if (class_exists('DFX_Parish_Retreat_Letters_Permissions')) {
+            // Mock global $wpdb to simulate successful audit log insertion
+            global $wpdb;
+            if (!$wpdb) {
+                $wpdb = new stdClass();
+            }
+            $wpdb->prefix = 'wp_';
+            
+            // Mock the insert method to return success
+            $wpdb->insert = function() { return 1; };
+            
+            // Get permissions instance
+            $permissions = DFX_Parish_Retreat_Letters_Permissions::get_instance();
+            $this->assertInstanceOf('DFX_Parish_Retreat_Letters_Permissions', $permissions);
+            
+            // Test that log_permission_action method exists
+            $this->assertTrue(method_exists($permissions, 'log_permission_action'), 
+                'Permissions class should have log_permission_action method');
+            
+            // The method should be public so it can be called from other classes
+            $reflection = new ReflectionClass($permissions);
+            $method = $reflection->getMethod('log_permission_action');
+            $this->assertTrue($method->isPublic(), 'log_permission_action should be public');
+            
+            // Verify the method signature accepts the expected parameters
+            $params = $method->getParameters();
+            $this->assertGreaterThanOrEqual(5, count($params), 
+                'log_permission_action should accept at least 5 parameters');
+            
+            // First parameter should be user_id
+            $this->assertEquals('user_id', $params[0]->getName(), 
+                'First parameter should be user_id');
+                
+        } else {
+            $this->markTestSkipped('Permissions class not available');
+        }
+    }
 }

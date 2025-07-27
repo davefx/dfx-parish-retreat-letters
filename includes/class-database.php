@@ -621,7 +621,7 @@ class DFX_Parish_Retreat_Letters_Database {
 			WHERE TABLE_SCHEMA = DATABASE() 
 			AND TABLE_NAME = %s 
 			AND REFERENCED_TABLE_NAME IS NOT NULL",
-			str_replace( $wpdb->prefix, '', $this->audit_log_table )
+			$this->audit_log_table
 		) );
 		
 		// Remove each foreign key constraint

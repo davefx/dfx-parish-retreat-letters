@@ -22,7 +22,7 @@ class DatabaseTest extends TestCase {
         Monkey\setUp();
         
         // Mock WordPress functions
-        Functions\when('get_option')->justReturn('1.4.0');
+        Functions\when('get_option')->justReturn('1.4.1');
         Functions\when('add_option')->justReturn(true);
         Functions\when('update_option')->justReturn(true);
     }
@@ -55,7 +55,7 @@ class DatabaseTest extends TestCase {
      * Test database version constant
      */
     public function test_database_version_constant() {
-        $this->assertEquals('1.4.0', DFX_Parish_Retreat_Letters_Database::DB_VERSION);
+        $this->assertEquals('1.4.1', DFX_Parish_Retreat_Letters_Database::DB_VERSION);
     }
 
     /**
@@ -152,7 +152,7 @@ class DatabaseTest extends TestCase {
         $database = DFX_Parish_Retreat_Letters_Database::get_instance();
         
         if (method_exists($database, 'migrate_to_version')) {
-            $target_version = '1.4.0';
+            $target_version = '1.4.1';
             $result = $database->migrate_to_version($target_version);
             $this->assertTrue(is_callable([$database, 'migrate_to_version']));
         } else {
@@ -189,6 +189,47 @@ class DatabaseTest extends TestCase {
             $this->assertTrue(is_callable([$database, 'cleanup_orphaned_data']));
         } else {
             $this->markTestSkipped('cleanup_orphaned_data method not found');
+        }
+    }
+
+    /**
+     * Test foreign key removal functionality
+     */
+    public function test_remove_audit_log_foreign_keys() {
+        global $wpdb;
+        $wpdb = $this->createMock('wpdb');
+        $wpdb->prefix = 'wp_';
+        
+        // Mock the audit log table name
+        $audit_log_table = 'wp_dfx_prl_permission_audit_log';
+        
+        // Mock get_var to simulate table existence check
+        $wpdb->method('get_var')
+             ->willReturn($audit_log_table);
+             
+        // Mock get_results to return foreign key constraints
+        $constraint = new stdClass();
+        $constraint->CONSTRAINT_NAME = 'wp_dfx_prl_permission_audit_log_ibfk_1';
+        $wpdb->method('get_results')
+             ->willReturn([$constraint]);
+             
+        // Mock the query method to simulate constraint removal
+        $wpdb->method('query')
+             ->willReturn(1);
+        
+        $database = DFX_Parish_Retreat_Letters_Database::get_instance();
+        
+        // Test that the remove_audit_log_foreign_keys method exists and can be called
+        $reflection = new ReflectionClass($database);
+        if ($reflection->hasMethod('remove_audit_log_foreign_keys')) {
+            $method = $reflection->getMethod('remove_audit_log_foreign_keys');
+            $method->setAccessible(true);
+            
+            // This should not throw an exception
+            $method->invoke($database);
+            $this->assertTrue(true); // If we get here, the method executed successfully
+        } else {
+            $this->markTestSkipped('remove_audit_log_foreign_keys method not found');
         }
     }
 
