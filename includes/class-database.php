@@ -38,7 +38,7 @@ class DFX_Parish_Retreat_Letters_Database {
 	 * @since 1.0.0
 	 * @var string
 	 */
-	const DB_VERSION = '1.4.1';
+	const DB_VERSION = '1.4.2';
 
 	/**
 	 * The database version option name.
