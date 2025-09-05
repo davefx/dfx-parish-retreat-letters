@@ -62,11 +62,11 @@ composer test:advanced                 # May fail in restricted environments
 ## Critical Timing & Cancellation Warnings
 
 **NEVER CANCEL** any of these operations:
-- `composer install`: Takes 15 seconds. **Set timeout to 60+ seconds**.
+- `composer install`: Takes 15 seconds on first run, ~0.4 seconds with cache. **Set timeout to 60+ seconds**.
 - All test suites: Complete in under 1 second each.
 - Plugin syntax checks: Complete in under 5 seconds.
 
-**Note**: This plugin has exceptionally fast operations compared to typical build systems.
+**Note**: This plugin has exceptionally fast operations compared to typical build systems. Most operations complete in under 1 second.
 
 ## Environment Limitations & Workarounds
 
@@ -77,17 +77,20 @@ composer test:advanced                 # May fail in restricted environments
 
 ### Working vs. Non-Working Features
 ✅ **Always Available**:
-- Basic infrastructure tests (4 tests)
-- Comprehensive feature tests (31 tests, 190+ assertions)
-- PHP syntax validation
-- Composer dependency management
+- Basic infrastructure tests (4 tests, 11 assertions)
+- Comprehensive feature tests (31 tests, 190 assertions)
+- PHP syntax validation for all files
+- Composer dependency management (fast with cache)
 - Plugin file structure validation
+- Individual file syntax checking
 
 ❌ **Requires Network/WordPress Environment**:
 - Integration tests with real WordPress
 - Coverage report generation (`composer test:coverage`)
 - Advanced unit tests with Brain Monkey (depends on environment)
 - WordPress test environment setup via `bin/install-wp-tests.sh`
+- Individual test file execution (requires WordPress functions)
+- WordPress.org downloads for test environment
 
 ### Alternative Validation Approach
 When full WordPress integration isn't available:
@@ -157,14 +160,15 @@ php validate-constraint-fixes.php
 
 ### Working with Tests
 ```bash
-# Run specific test file
-./vendor/bin/phpunit tests/unit/SecurityTest.php
+# Run test suites (always use these instead of individual files)
+./vendor/bin/phpunit --configuration phpunit-basic.xml --testsuite basic
+./vendor/bin/phpunit --configuration phpunit-basic.xml --testsuite comprehensive
 
 # Run with verbose output for debugging
 ./vendor/bin/phpunit --configuration phpunit-basic.xml --testsuite comprehensive --verbose
 
-# Test specific functionality
-./vendor/bin/phpunit --filter testEncryptionDecryption tests/unit/SecurityTest.php
+# Individual test files require WordPress environment (will fail in restricted environments)
+# Use test suites instead: --testsuite basic or --testsuite comprehensive
 ```
 
 ### Plugin Structure & Key Files
@@ -225,14 +229,18 @@ echo "✅ Plugin validated successfully"
 
 ### Debugging Test Failures
 ```bash
-# Run tests with detailed output
+# Run tests with detailed output  
 ./vendor/bin/phpunit --configuration phpunit-basic.xml --testsuite comprehensive --verbose
 
-# Check specific test class
-./vendor/bin/phpunit tests/unit/ComprehensiveInfrastructureTest.php --verbose
+# Check specific test suite only
+./vendor/bin/phpunit --configuration phpunit-basic.xml --testsuite basic
 
-# Verify plugin loading
-php -r "echo 'PHP version: ' . PHP_VERSION . PHP_EOL;"
+# Verify plugin loading (silent success expected outside WordPress)
+php -r "require_once 'dfx-parish-retreat-letters.php';"
+
+# Note: Individual test files require WordPress environment and will fail with:
+# "Could not find /tmp/wordpress-tests-lib/includes/functions.php"
+# This is expected behavior - use test suites instead.
 ```
 
 ### Validation Checklist
@@ -245,10 +253,20 @@ Before committing changes:
 
 ## Success Indicators
 A successful development environment will show:
-- ✅ Composer install completes in ~15 seconds
+- ✅ Composer install completes in ~15 seconds (first run) or ~0.4 seconds (with cache)
 - ✅ Basic tests: 4 tests, 11 assertions pass
-- ✅ Comprehensive tests: 31 tests, 190+ assertions pass  
+- ✅ Comprehensive tests: 31 tests, 190 assertions pass  
 - ✅ PHP syntax validation passes for all files
 - ✅ Plugin loads without fatal errors
+
+**Complete Validation Workflow** (copy-pasteable):
+```bash
+# Fresh environment setup and validation
+php --version                           # Should show PHP 7.4+
+composer install --no-interaction       # ~15s first run, ~0.4s with cache
+composer test:comprehensive             # 31 tests, 190 assertions
+php -l dfx-parish-retreat-letters.php   # No syntax errors
+echo "✅ Development environment ready"
+```
 
 **Remember**: This plugin emphasizes runtime validation over build processes. Focus on comprehensive test coverage and PHP best practices rather than complex build pipelines.
