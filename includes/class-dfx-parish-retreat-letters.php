@@ -1890,6 +1890,13 @@ class DFX_Parish_Retreat_Letters {
 		</head>
 		<body>
 			<?php
+			// Display sender name if available
+			if ( ! empty( $message->sender_name ) ) {
+				echo '<div class="sender-info" style="margin-bottom: 20px; font-weight: bold; border-bottom: 1px solid #ddd; padding-bottom: 10px;">';
+				echo esc_html__( 'From', 'dfx-parish-retreat-letters' ) . ': ' . esc_html( $message->sender_name );
+				echo '</div>';
+			}
+			
 			if ( $message->message_type === 'text' ) {
 				// For text messages, display the content
 				echo '<div class="message-content">';
