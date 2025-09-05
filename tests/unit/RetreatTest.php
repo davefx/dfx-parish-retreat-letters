@@ -347,4 +347,114 @@ class RetreatTest extends TestCase {
             $this->markTestSkipped('get_active method not found');
         }
     }
+
+    /**
+     * Test retreat creation with disclaimer fields
+     */
+    public function test_create_retreat_with_disclaimer_fields() {
+        // Add wp_kses_post mock for disclaimer text sanitization
+        Functions\when('wp_kses_post')->alias(function($text) {
+            return trim(strip_tags($text, '<p><br><strong><em>'));
+        });
+
+        // Mock the database instance  
+        $database_mock = $this->createMock('DFX_Parish_Retreat_Letters_Database');
+        $database_mock->method('get_retreats_table')->willReturn('wp_dfx_retreats');
+        
+        // Mock global wpdb
+        global $wpdb;
+        $wpdb = $this->createMock('wpdb');
+        $wpdb->insert_id = 123;
+        
+        // Expect insert to be called with disclaimer fields
+        $wpdb->expects($this->once())
+             ->method('insert')
+             ->with(
+                 'wp_dfx_retreats',
+                 $this->callback(function($data) {
+                     return isset($data['disclaimer_text']) && 
+                            isset($data['disclaimer_acceptance_text']) &&
+                            $data['disclaimer_text'] === 'Legal disclaimer text' &&
+                            $data['disclaimer_acceptance_text'] === 'I accept the terms';
+                 }),
+                 ['%s', '%s', '%s', '%s', '%s', '%s', '%s']
+             )
+             ->willReturn(true);
+        
+        // Create retreat instance and inject mocked database
+        $retreat = new DFX_Parish_Retreat_Letters_Retreat();
+        
+        $reflection = new ReflectionClass($retreat);
+        $database_property = $reflection->getProperty('database');
+        $database_property->setAccessible(true);
+        $database_property->setValue($retreat, $database_mock);
+        
+        // Test data with disclaimer fields
+        $retreat_data = [
+            'name' => 'Test Retreat',
+            'location' => 'Test Location', 
+            'start_date' => '2024-01-01',
+            'end_date' => '2024-01-03',
+            'custom_message' => 'Test message',
+            'disclaimer_text' => 'Legal disclaimer text',
+            'disclaimer_acceptance_text' => 'I accept the terms'
+        ];
+        
+        $result = $retreat->create($retreat_data);
+        $this->assertEquals(123, $result);
+    }
+
+    /**
+     * Test retreat creation with empty disclaimer fields (should work)
+     */
+    public function test_create_retreat_with_empty_disclaimer_fields() {
+        // Add wp_kses_post mock
+        Functions\when('wp_kses_post')->alias(function($text) {
+            return trim(strip_tags($text, '<p><br><strong><em>'));
+        });
+
+        // Mock the database instance
+        $database_mock = $this->createMock('DFX_Parish_Retreat_Letters_Database');
+        $database_mock->method('get_retreats_table')->willReturn('wp_dfx_retreats');
+        
+        // Mock global wpdb
+        global $wpdb;
+        $wpdb = $this->createMock('wpdb');
+        $wpdb->insert_id = 124;
+        
+        // Expect insert to be called with empty disclaimer fields
+        $wpdb->expects($this->once())
+             ->method('insert')
+             ->with(
+                 'wp_dfx_retreats',
+                 $this->callback(function($data) {
+                     return isset($data['disclaimer_text']) && 
+                            isset($data['disclaimer_acceptance_text']) &&
+                            $data['disclaimer_text'] === '' &&
+                            $data['disclaimer_acceptance_text'] === '';
+                 }),
+                 ['%s', '%s', '%s', '%s', '%s', '%s', '%s']
+             )
+             ->willReturn(true);
+        
+        // Create retreat instance and inject mocked database
+        $retreat = new DFX_Parish_Retreat_Letters_Retreat();
+        
+        $reflection = new ReflectionClass($retreat);
+        $database_property = $reflection->getProperty('database');
+        $database_property->setAccessible(true);
+        $database_property->setValue($retreat, $database_mock);
+        
+        // Test data without disclaimer fields (should default to empty)
+        $retreat_data = [
+            'name' => 'Test Retreat',
+            'location' => 'Test Location',
+            'start_date' => '2024-01-01', 
+            'end_date' => '2024-01-03',
+            'custom_message' => 'Test message'
+        ];
+        
+        $result = $retreat->create($retreat_data);
+        $this->assertEquals(124, $result);
+    }
 }

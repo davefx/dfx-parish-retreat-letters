@@ -492,7 +492,7 @@ class DFX_Parish_Retreat_Letters {
 		$retreats_table = $this->database->get_retreats_table();
 
 		$attendant = $wpdb->get_row( $wpdb->prepare(
-			"SELECT a.*, r.name as retreat_name, r.location as retreat_location, r.start_date, r.end_date, r.custom_message
+			"SELECT a.*, r.name as retreat_name, r.location as retreat_location, r.start_date, r.end_date, r.custom_message, r.disclaimer_text, r.disclaimer_acceptance_text
 			 FROM `{$attendants_table}` a
 			 INNER JOIN `{$retreats_table}` r ON a.retreat_id = r.id
 			 WHERE a.message_url_token = %s", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
@@ -588,6 +588,29 @@ class DFX_Parish_Retreat_Letters {
 							<input type="hidden" id="captcha_token" name="captcha_token">
 						</div>
 					</div>
+
+					<?php if ( ! empty( $attendant->disclaimer_text ) ) : ?>
+					<div class="dfx-prl-form-group">
+						<div class="dfx-disclaimer-container">
+							<h3><?php esc_html_e( 'Legal Disclaimer', 'dfx-parish-retreat-letters' ); ?></h3>
+							<div class="dfx-disclaimer-text">
+								<?php echo wp_kses_post( wpautop( $attendant->disclaimer_text ) ); ?>
+							</div>
+							<div class="dfx-disclaimer-acceptance">
+								<label class="dfx-checkbox-label">
+									<input type="checkbox" id="disclaimer_accepted" name="disclaimer_accepted" required>
+									<span class="required">*</span>
+									<?php 
+									$acceptance_text = ! empty( $attendant->disclaimer_acceptance_text ) 
+										? $attendant->disclaimer_acceptance_text 
+										: __( 'I accept the terms and conditions stated above', 'dfx-parish-retreat-letters' );
+									echo esc_html( $acceptance_text );
+									?>
+								</label>
+							</div>
+						</div>
+					</div>
+					<?php endif; ?>
 
 					<div class="dfx-prl-form-group">
 						<button type="submit" id="dfx-submit-btn" class="dfx-submit-button">
@@ -817,6 +840,68 @@ class DFX_Parish_Retreat_Letters {
 			font-weight: 600;
 			margin-bottom: 0.5rem;
 			color: #333;
+		}
+
+		.dfx-disclaimer-container {
+			background: #fffbe6;
+			padding: 1.5rem;
+			border-radius: 4px;
+			border: 2px solid #f4d03f;
+			margin-bottom: 1rem;
+		}
+
+		.dfx-disclaimer-container h3 {
+			margin-top: 0;
+			margin-bottom: 1rem;
+			color: #b7950b;
+			font-size: 1.1rem;
+		}
+
+		.dfx-disclaimer-text {
+			background: white;
+			padding: 1rem;
+			border-radius: 4px;
+			border: 1px solid #f4d03f;
+			margin-bottom: 1rem;
+			font-size: 0.95rem;
+			line-height: 1.6;
+		}
+
+		.dfx-disclaimer-text p {
+			margin-bottom: 0.75rem;
+		}
+
+		.dfx-disclaimer-text p:last-child {
+			margin-bottom: 0;
+		}
+
+		.dfx-disclaimer-acceptance {
+			padding: 0.75rem;
+			background: #fcf3cf;
+			border-radius: 4px;
+			border: 1px solid #f4d03f;
+		}
+
+		.dfx-checkbox-label {
+			display: flex;
+			align-items: flex-start;
+			gap: 0.75rem;
+			cursor: pointer;
+			font-weight: 600;
+			color: #7d6608;
+			line-height: 1.4;
+		}
+
+		.dfx-checkbox-label input[type="checkbox"] {
+			margin: 0;
+			transform: scale(1.2);
+			flex-shrink: 0;
+			margin-top: 0.1rem;
+		}
+
+		.dfx-checkbox-label .required {
+			color: #d63384;
+			flex-shrink: 0;
 		}
 
 		.dfx-submit-button {
@@ -1383,6 +1468,13 @@ class DFX_Parish_Retreat_Letters {
 					return;
 				}
 				
+				// Validate disclaimer if present
+				var disclaimerCheckbox = $('#disclaimer_accepted');
+				if (disclaimerCheckbox.length && !disclaimerCheckbox.is(':checked')) {
+					showNotice('<?php echo esc_js( __( 'Please accept the legal disclaimer to proceed.', 'dfx-parish-retreat-letters' ) ); ?>', 'error');
+					return;
+				}
+				
 				// Add message mode to form data
 				formData.append('message_mode', mode);
 				
@@ -1481,6 +1573,27 @@ class DFX_Parish_Retreat_Letters {
 		$attendant_id = absint( $_POST['attendant_id'] ?? 0 );
 		if ( ! $attendant_id ) {
 			wp_send_json_error( array( 'message' => __( 'Invalid attendant.', 'dfx-parish-retreat-letters' ) ) );
+		}
+
+		// Get attendant and retreat data to check for disclaimer requirements
+		global $wpdb;
+		$attendants_table = $this->database->get_attendants_table();
+		$retreats_table = $this->database->get_retreats_table();
+		
+		$retreat_data = $wpdb->get_row( $wpdb->prepare(
+			"SELECT r.disclaimer_text, r.disclaimer_acceptance_text
+			 FROM `{$attendants_table}` a
+			 INNER JOIN `{$retreats_table}` r ON a.retreat_id = r.id
+			 WHERE a.id = %d", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			$attendant_id
+		) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
+
+		// Validate disclaimer if required
+		if ( ! empty( $retreat_data->disclaimer_text ) ) {
+			$disclaimer_accepted = sanitize_text_field( wp_unslash( $_POST['disclaimer_accepted'] ?? '' ) );
+			if ( empty( $disclaimer_accepted ) || $disclaimer_accepted !== 'on' ) {
+				wp_send_json_error( array( 'message' => __( 'You must accept the legal disclaimer to proceed.', 'dfx-parish-retreat-letters' ) ) );
+			}
 		}
 
 		// Validate sender name (now required)

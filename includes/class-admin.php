@@ -590,11 +590,13 @@ class DFX_Parish_Retreat_Letters_Admin {
 		}
 
 		$data = array(
-			'name'           => sanitize_text_field( $_POST['name'] ?? '' ),
-			'location'       => sanitize_text_field( $_POST['location'] ?? '' ),
-			'start_date'     => sanitize_text_field( $_POST['start_date'] ?? '' ),
-			'end_date'       => sanitize_text_field( $_POST['end_date'] ?? '' ),
-			'custom_message' => wp_kses_post( $_POST['custom_message'] ?? '' ),
+			'name'                       => sanitize_text_field( $_POST['name'] ?? '' ),
+			'location'                   => sanitize_text_field( $_POST['location'] ?? '' ),
+			'start_date'                 => sanitize_text_field( $_POST['start_date'] ?? '' ),
+			'end_date'                   => sanitize_text_field( $_POST['end_date'] ?? '' ),
+			'custom_message'             => wp_kses_post( $_POST['custom_message'] ?? '' ),
+			'disclaimer_text'            => wp_kses_post( $_POST['disclaimer_text'] ?? '' ),
+			'disclaimer_acceptance_text' => sanitize_text_field( $_POST['disclaimer_acceptance_text'] ?? '' ),
 		);
 
 		if ( $retreat_id ) {
@@ -841,6 +843,24 @@ class DFX_Parish_Retreat_Letters_Admin {
 										<td>
 											<textarea id="custom_message" name="custom_message" rows="5" class="large-text" placeholder="<?php esc_attr_e( 'Optional message that will be displayed to senders in the letters form.', 'dfx-parish-retreat-letters' ); ?>"><?php echo esc_textarea( $retreat->custom_message ?? '' ); ?></textarea>
 											<p class="description"><?php esc_html_e( 'This message will be displayed before the message submission form for all attendants of this retreat. HTML is allowed.', 'dfx-parish-retreat-letters' ); ?></p>
+										</td>
+									</tr>
+									<tr>
+										<th scope="row">
+											<label for="disclaimer_text"><?php esc_html_e( 'Legal Disclaimer Text', 'dfx-parish-retreat-letters' ); ?></label>
+										</th>
+										<td>
+											<textarea id="disclaimer_text" name="disclaimer_text" rows="5" class="large-text" placeholder="<?php esc_attr_e( 'Optional legal disclaimer that users must accept before submitting messages.', 'dfx-parish-retreat-letters' ); ?>"><?php echo esc_textarea( $retreat->disclaimer_text ?? '' ); ?></textarea>
+											<p class="description"><?php esc_html_e( 'If provided, this disclaimer will be displayed in the message form and users must accept it to submit messages. HTML is allowed.', 'dfx-parish-retreat-letters' ); ?></p>
+										</td>
+									</tr>
+									<tr>
+										<th scope="row">
+											<label for="disclaimer_acceptance_text"><?php esc_html_e( 'Disclaimer Acceptance Text', 'dfx-parish-retreat-letters' ); ?></label>
+										</th>
+										<td>
+											<input type="text" id="disclaimer_acceptance_text" name="disclaimer_acceptance_text" value="<?php echo esc_attr( $retreat->disclaimer_acceptance_text ?? '' ); ?>" class="large-text" placeholder="<?php esc_attr_e( 'I accept the terms and conditions', 'dfx-parish-retreat-letters' ); ?>">
+											<p class="description"><?php esc_html_e( 'This text will appear next to the disclaimer acceptance checkbox. Only used if disclaimer text is provided.', 'dfx-parish-retreat-letters' ); ?></p>
 										</td>
 									</tr>
 								</tbody>
