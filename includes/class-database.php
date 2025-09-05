@@ -38,7 +38,7 @@ class DFX_Parish_Retreat_Letters_Database {
 	 * @since 1.0.0
 	 * @var string
 	 */
-	const DB_VERSION = '1.4.3';
+	const DB_VERSION = '1.4.4';
 
 	/**
 	 * The database version option name.
@@ -178,6 +178,8 @@ class DFX_Parish_Retreat_Letters_Database {
 			start_date date NOT NULL,
 			end_date date NOT NULL,
 			custom_message text NULL DEFAULT NULL,
+			disclaimer_text text NULL DEFAULT NULL,
+			disclaimer_acceptance_text varchar(500) NULL DEFAULT NULL,
 			created_at datetime DEFAULT CURRENT_TIMESTAMP,
 			updated_at datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 			PRIMARY KEY (id),
