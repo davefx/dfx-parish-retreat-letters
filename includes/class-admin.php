@@ -4507,7 +4507,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 	private function get_available_blocks() {
 		$blocks = get_posts( array(
 			'post_type'      => 'wp_block',
-			'post_status'    => 'publish',
+			'post_status'    => array( 'publish', 'private', 'draft' ),
 			'posts_per_page' => -1,
 			'orderby'        => 'title',
 			'order'          => 'ASC',
@@ -4515,7 +4515,11 @@ class DFX_Parish_Retreat_Letters_Admin {
 
 		$block_options = array();
 		foreach ( $blocks as $block ) {
-			$block_options[ $block->ID ] = $block->post_title;
+			$status_label = '';
+			if ( $block->post_status !== 'publish' ) {
+				$status_label = ' (' . ucfirst( $block->post_status ) . ')';
+			}
+			$block_options[ $block->ID ] = $block->post_title . $status_label;
 		}
 
 		return $block_options;
@@ -4535,13 +4539,29 @@ class DFX_Parish_Retreat_Letters_Admin {
 		echo '<select id="' . esc_attr( $name ) . '" name="' . esc_attr( $name ) . '" class="regular-text">';
 		echo '<option value="">' . esc_html( $default_text ) . '</option>';
 		
-		foreach ( $blocks as $block_id => $block_title ) {
-			$selected = selected( $selected_value, $block_id, false );
-			echo '<option value="' . esc_attr( $block_id ) . '"' . $selected . '>';
-			echo esc_html( $block_title );
-			echo '</option>';
+		if ( empty( $blocks ) ) {
+			echo '<option value="" disabled>' . esc_html__( 'No reusable blocks found - create one first', 'dfx-parish-retreat-letters' ) . '</option>';
+		} else {
+			foreach ( $blocks as $block_id => $block_title ) {
+				$selected = selected( $selected_value, $block_id, false );
+				echo '<option value="' . esc_attr( $block_id ) . '"' . $selected . '>';
+				echo esc_html( $block_title );
+				echo '</option>';
+			}
 		}
 		
 		echo '</select>';
+		
+		// Add helpful information about how to create reusable blocks
+		if ( empty( $blocks ) ) {
+			echo '<br><small class="description">';
+			echo wp_kses_post( 
+				sprintf( 
+					__( 'To create reusable blocks: Go to <strong>Appearance > Editor > Patterns</strong> or edit any page/post and create a block, then save it as a reusable block. <a href="%s" target="_blank">Learn more</a>', 'dfx-parish-retreat-letters' ),
+					'https://wordpress.org/documentation/article/reusable-blocks/'
+				)
+			);
+			echo '</small>';
+		}
 	}
 }
