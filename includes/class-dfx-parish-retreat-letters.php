@@ -1074,6 +1074,14 @@ class DFX_Parish_Retreat_Letters {
 			// Generate and display CAPTCHA immediately
 			generateCaptcha();
 			
+			// Initialize submit button state based on disclaimer
+			updateSubmitButtonState();
+			
+			// Handle disclaimer checkbox changes
+			$('#disclaimer_accepted').on('change', function() {
+				updateSubmitButtonState();
+			});
+			
 			// Message mode switching
 			$('input[name="message_mode"]').on('change', function() {
 				var mode = $(this).val();
@@ -1513,6 +1521,19 @@ class DFX_Parish_Retreat_Letters {
 						$('.dfx-loading-spinner').hide();
 					}
 				});
+			}
+
+			function updateSubmitButtonState() {
+				var submitBtn = $('#dfx-submit-btn');
+				var disclaimerCheckbox = $('#disclaimer_accepted');
+				
+				// If disclaimer checkbox exists and is not checked, disable submit button
+				if (disclaimerCheckbox.length && !disclaimerCheckbox.is(':checked')) {
+					submitBtn.prop('disabled', true);
+				} else {
+					// Enable submit button if no disclaimer or disclaimer is accepted
+					submitBtn.prop('disabled', false);
+				}
 			}
 
 			function showNotice(message, type) {
