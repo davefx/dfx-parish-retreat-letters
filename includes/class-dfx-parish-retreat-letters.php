@@ -2092,11 +2092,60 @@ class DFX_Parish_Retreat_Letters {
 	 * Render a custom header or footer block.
 	 *
 	 * @since 1.5.0
-	 * @param int|null $block_id WordPress post ID of the reusable block.
+	 * @param string|int|null $block_selection Block selection (prefixed or legacy format).
 	 * @return bool True if block was rendered, false otherwise.
 	 */
-	private function render_custom_block( $block_id ) {
-		if ( empty( $block_id ) || ! $this->theme_supports_blocks() ) {
+	private function render_custom_block( $block_selection ) {
+		if ( empty( $block_selection ) ) {
+			return false;
+		}
+
+		// Parse the selection to determine type and ID
+		$type = null;
+		$id = null;
+
+		if ( is_numeric( $block_selection ) ) {
+			// Legacy format - treat as reusable block
+			$type = 'block';
+			$id = absint( $block_selection );
+		} elseif ( strpos( $block_selection, 'block_' ) === 0 ) {
+			// Reusable block
+			$type = 'block';
+			$id = absint( str_replace( 'block_', '', $block_selection ) );
+		} elseif ( strpos( $block_selection, 'pattern_' ) === 0 ) {
+			// Block pattern post
+			$type = 'pattern';
+			$id = absint( str_replace( 'pattern_', '', $block_selection ) );
+		} elseif ( strpos( $block_selection, 'registered_' ) === 0 ) {
+			// Registered pattern
+			$type = 'registered_pattern';
+			$id = str_replace( 'registered_', '', $block_selection );
+		} else {
+			return false;
+		}
+
+		// Render based on type
+		switch ( $type ) {
+			case 'block':
+				return $this->render_reusable_block( $id );
+			case 'pattern':
+				return $this->render_pattern_post( $id );
+			case 'registered_pattern':
+				return $this->render_registered_pattern( $id );
+			default:
+				return false;
+		}
+	}
+
+	/**
+	 * Render a reusable block (wp_block post type).
+	 *
+	 * @since 1.5.1
+	 * @param int $block_id Block post ID.
+	 * @return bool True if rendered successfully, false otherwise.
+	 */
+	private function render_reusable_block( $block_id ) {
+		if ( ! $block_id ) {
 			return false;
 		}
 
@@ -2111,6 +2160,74 @@ class DFX_Parish_Retreat_Letters {
 		if ( ! empty( $block_content ) ) {
 			// Parse blocks and render them
 			$blocks = parse_blocks( $block_content );
+			foreach ( $blocks as $block ) {
+				echo render_block( $block );
+			}
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
+	 * Render a pattern post (wp_block_pattern post type if available).
+	 *
+	 * @since 1.5.1
+	 * @param int $pattern_id Pattern post ID.
+	 * @return bool True if rendered successfully, false otherwise.
+	 */
+	private function render_pattern_post( $pattern_id ) {
+		if ( ! $pattern_id || ! post_type_exists( 'wp_block_pattern' ) ) {
+			return false;
+		}
+
+		// Get the pattern post
+		$pattern_post = get_post( $pattern_id );
+		if ( ! $pattern_post || $pattern_post->post_type !== 'wp_block_pattern' ) {
+			return false;
+		}
+
+		// Parse and render the pattern content
+		$pattern_content = $pattern_post->post_content;
+		if ( ! empty( $pattern_content ) ) {
+			// Parse blocks and render them
+			$blocks = parse_blocks( $pattern_content );
+			foreach ( $blocks as $block ) {
+				echo render_block( $block );
+			}
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
+	 * Render a registered pattern.
+	 *
+	 * @since 1.5.1
+	 * @param string $pattern_name Pattern name.
+	 * @return bool True if rendered successfully, false otherwise.
+	 */
+	private function render_registered_pattern( $pattern_name ) {
+		if ( ! $pattern_name || ! function_exists( 'WP_Block_Patterns_Registry' ) ) {
+			return false;
+		}
+
+		$pattern_registry = WP_Block_Patterns_Registry::get_instance();
+		if ( ! method_exists( $pattern_registry, 'get_registered' ) ) {
+			return false;
+		}
+
+		$pattern = $pattern_registry->get_registered( $pattern_name );
+		if ( ! $pattern || ! isset( $pattern['content'] ) ) {
+			return false;
+		}
+
+		// Parse and render the pattern content
+		$pattern_content = $pattern['content'];
+		if ( ! empty( $pattern_content ) ) {
+			// Parse blocks and render them
+			$blocks = parse_blocks( $pattern_content );
 			foreach ( $blocks as $block ) {
 				echo render_block( $block );
 			}

@@ -597,8 +597,8 @@ class DFX_Parish_Retreat_Letters_Admin {
 			'custom_message'             => wp_kses_post( $_POST['custom_message'] ?? '' ),
 			'disclaimer_text'            => wp_kses_post( $_POST['disclaimer_text'] ?? '' ),
 			'disclaimer_acceptance_text' => sanitize_text_field( $_POST['disclaimer_acceptance_text'] ?? '' ),
-			'custom_header_block_id'     => ! empty( $_POST['custom_header_block_id'] ) ? absint( $_POST['custom_header_block_id'] ) : null,
-			'custom_footer_block_id'     => ! empty( $_POST['custom_footer_block_id'] ) ? absint( $_POST['custom_footer_block_id'] ) : null,
+			'custom_header_block_id'     => $this->parse_block_selection( $_POST['custom_header_block_id'] ?? '' ),
+			'custom_footer_block_id'     => $this->parse_block_selection( $_POST['custom_footer_block_id'] ?? '' ),
 		);
 
 		if ( $retreat_id ) {
@@ -4499,12 +4499,76 @@ class DFX_Parish_Retreat_Letters_Admin {
 	}
 
 	/**
-	 * Get available reusable blocks for header/footer selection.
+	 * Parse block selection from form input.
+	 * Handles both new prefixed format and legacy numeric format.
+	 *
+	 * @since 1.5.1
+	 * @param string $selection The block selection value from the form.
+	 * @return string|null The formatted block identifier or null if empty.
+	 */
+	private function parse_block_selection( $selection ) {
+		if ( empty( $selection ) ) {
+			return null;
+		}
+
+		// If it starts with a prefix, return as-is
+		if ( strpos( $selection, 'block_' ) === 0 || 
+			 strpos( $selection, 'pattern_' ) === 0 || 
+			 strpos( $selection, 'registered_' ) === 0 ) {
+			return sanitize_text_field( $selection );
+		}
+
+		// Legacy numeric format - convert to block_ prefix for backward compatibility
+		if ( is_numeric( $selection ) ) {
+			return 'block_' . absint( $selection );
+		}
+
+		return null;
+	}
+
+	/**
+	 * Get the actual block/pattern ID from a stored selection.
+	 * 
+	 * @since 1.5.1
+	 * @param string|null $selection The stored block selection.
+	 * @return int|string|null The actual ID or pattern name.
+	 */
+	private function get_block_id_from_selection( $selection ) {
+		if ( empty( $selection ) ) {
+			return null;
+		}
+
+		// Handle prefixed format
+		if ( strpos( $selection, 'block_' ) === 0 ) {
+			return absint( str_replace( 'block_', '', $selection ) );
+		}
+		
+		if ( strpos( $selection, 'pattern_' ) === 0 ) {
+			return absint( str_replace( 'pattern_', '', $selection ) );
+		}
+		
+		if ( strpos( $selection, 'registered_' ) === 0 ) {
+			return str_replace( 'registered_', '', $selection );
+		}
+
+		// Legacy numeric format
+		if ( is_numeric( $selection ) ) {
+			return absint( $selection );
+		}
+
+		return $selection;
+	}
+
+	/**
+	 * Get available reusable blocks and patterns for header/footer selection.
 	 *
 	 * @since 1.5.0
-	 * @return array Array of reusable blocks with id and title.
+	 * @return array Array of reusable blocks and patterns with id and title.
 	 */
 	private function get_available_blocks() {
+		$block_options = array();
+
+		// Get reusable blocks (wp_block post type)
 		$blocks = get_posts( array(
 			'post_type'      => 'wp_block',
 			'post_status'    => array( 'publish', 'private', 'draft' ),
@@ -4513,13 +4577,50 @@ class DFX_Parish_Retreat_Letters_Admin {
 			'order'          => 'ASC',
 		) );
 
-		$block_options = array();
 		foreach ( $blocks as $block ) {
 			$status_label = '';
 			if ( $block->post_status !== 'publish' ) {
 				$status_label = ' (' . ucfirst( $block->post_status ) . ')';
 			}
-			$block_options[ $block->ID ] = $block->post_title . $status_label;
+			$block_options[ 'block_' . $block->ID ] = $block->post_title . $status_label . ' [Reusable Block]';
+		}
+
+		// Get block patterns (wp_block_pattern post type, if it exists)
+		// This post type was introduced in WordPress 6.0+ for user-created patterns
+		if ( post_type_exists( 'wp_block_pattern' ) ) {
+			$patterns = get_posts( array(
+				'post_type'      => 'wp_block_pattern',
+				'post_status'    => array( 'publish', 'private', 'draft' ),
+				'posts_per_page' => -1,
+				'orderby'        => 'title',
+				'order'          => 'ASC',
+			) );
+
+			foreach ( $patterns as $pattern ) {
+				$status_label = '';
+				if ( $pattern->post_status !== 'publish' ) {
+					$status_label = ' (' . ucfirst( $pattern->post_status ) . ')';
+				}
+				$block_options[ 'pattern_' . $pattern->ID ] = $pattern->post_title . $status_label . ' [Block Pattern]';
+			}
+		}
+
+		// Try to get registered block patterns if the functions exist
+		if ( function_exists( 'WP_Block_Patterns_Registry' ) ) {
+			$pattern_registry = WP_Block_Patterns_Registry::get_instance();
+			if ( method_exists( $pattern_registry, 'get_all_registered' ) ) {
+				$registered_patterns = $pattern_registry->get_all_registered();
+				
+				foreach ( $registered_patterns as $pattern_name => $pattern_data ) {
+					// Focus on header and footer patterns
+					if ( isset( $pattern_data['categories'] ) && 
+						 ( in_array( 'header', $pattern_data['categories'] ) || 
+						   in_array( 'footer', $pattern_data['categories'] ) ) ) {
+						$title = isset( $pattern_data['title'] ) ? $pattern_data['title'] : $pattern_name;
+						$block_options[ 'registered_' . $pattern_name ] = $title . ' [Registered Pattern]';
+					}
+				}
+			}
 		}
 
 		return $block_options;
@@ -4530,20 +4631,31 @@ class DFX_Parish_Retreat_Letters_Admin {
 	 *
 	 * @since 1.5.0
 	 * @param string $name Field name.
-	 * @param int|null $selected_value Currently selected block ID.
+	 * @param string|int|null $selected_value Currently selected block ID or selection string.
 	 * @param string $default_text Default option text.
 	 */
 	private function render_block_selector( $name, $selected_value = null, $default_text = '' ) {
 		$blocks = $this->get_available_blocks();
 		
+		// Convert legacy numeric values to new format for comparison
+		$normalized_selected = null;
+		if ( ! empty( $selected_value ) ) {
+			if ( is_numeric( $selected_value ) ) {
+				// Legacy format - convert to new prefixed format
+				$normalized_selected = 'block_' . absint( $selected_value );
+			} else {
+				$normalized_selected = $selected_value;
+			}
+		}
+		
 		echo '<select id="' . esc_attr( $name ) . '" name="' . esc_attr( $name ) . '" class="regular-text">';
 		echo '<option value="">' . esc_html( $default_text ) . '</option>';
 		
 		if ( empty( $blocks ) ) {
-			echo '<option value="" disabled>' . esc_html__( 'No reusable blocks found - create one first', 'dfx-parish-retreat-letters' ) . '</option>';
+			echo '<option value="" disabled>' . esc_html__( 'No reusable blocks or patterns found - create one first', 'dfx-parish-retreat-letters' ) . '</option>';
 		} else {
 			foreach ( $blocks as $block_id => $block_title ) {
-				$selected = selected( $selected_value, $block_id, false );
+				$selected = selected( $normalized_selected, $block_id, false );
 				echo '<option value="' . esc_attr( $block_id ) . '"' . $selected . '>';
 				echo esc_html( $block_title );
 				echo '</option>';
@@ -4552,12 +4664,12 @@ class DFX_Parish_Retreat_Letters_Admin {
 		
 		echo '</select>';
 		
-		// Add helpful information about how to create reusable blocks
+		// Add helpful information about how to create reusable blocks and patterns
 		if ( empty( $blocks ) ) {
 			echo '<br><small class="description">';
 			echo wp_kses_post( 
 				sprintf( 
-					__( 'To create reusable blocks: Go to <strong>Appearance > Editor > Patterns</strong> or edit any page/post and create a block, then save it as a reusable block. <a href="%s" target="_blank">Learn more</a>', 'dfx-parish-retreat-letters' ),
+					__( 'To create reusable blocks: Go to <strong>Appearance > Editor > Patterns</strong> or edit any page/post and create a block, then save it as a reusable block. For block patterns, use the Site Editor. <a href="%s" target="_blank">Learn more</a>', 'dfx-parish-retreat-letters' ),
 					'https://wordpress.org/documentation/article/reusable-blocks/'
 				)
 			);
