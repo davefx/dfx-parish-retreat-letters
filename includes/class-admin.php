@@ -872,7 +872,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 										</th>
 										<td>
 											<?php $this->render_block_selector( 'custom_header_block_id', $retreat->custom_header_block_id ?? null, __( 'Use default WordPress header', 'dfx-parish-retreat-letters' ) ); ?>
-											<p class="description"><?php esc_html_e( 'Select a reusable block to display as custom header in the letters form page. Leave empty to use the default WordPress header.', 'dfx-parish-retreat-letters' ); ?></p>
+											<p class="description"><?php esc_html_e( 'Select a reusable block, template part, or pattern to display as custom header in the letters form page. Leave empty to use the default WordPress header.', 'dfx-parish-retreat-letters' ); ?></p>
 										</td>
 									</tr>
 									<tr>
@@ -881,7 +881,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 										</th>
 										<td>
 											<?php $this->render_block_selector( 'custom_footer_block_id', $retreat->custom_footer_block_id ?? null, __( 'Use default WordPress footer', 'dfx-parish-retreat-letters' ) ); ?>
-											<p class="description"><?php esc_html_e( 'Select a reusable block to display as custom footer in the letters form page. Leave empty to use the default WordPress footer.', 'dfx-parish-retreat-letters' ); ?></p>
+											<p class="description"><?php esc_html_e( 'Select a reusable block, template part, or pattern to display as custom footer in the letters form page. Leave empty to use the default WordPress footer.', 'dfx-parish-retreat-letters' ); ?></p>
 										</td>
 									</tr>
 									<?php endif; ?>
@@ -4513,6 +4513,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 
 		// If it starts with a prefix, return as-is
 		if ( strpos( $selection, 'block_' ) === 0 || 
+			 strpos( $selection, 'templatepart_' ) === 0 || 
 			 strpos( $selection, 'pattern_' ) === 0 || 
 			 strpos( $selection, 'registered_' ) === 0 ) {
 			return sanitize_text_field( $selection );
@@ -4543,6 +4544,10 @@ class DFX_Parish_Retreat_Letters_Admin {
 			return absint( str_replace( 'block_', '', $selection ) );
 		}
 		
+		if ( strpos( $selection, 'templatepart_' ) === 0 ) {
+			return absint( str_replace( 'templatepart_', '', $selection ) );
+		}
+		
 		if ( strpos( $selection, 'pattern_' ) === 0 ) {
 			return absint( str_replace( 'pattern_', '', $selection ) );
 		}
@@ -4560,10 +4565,10 @@ class DFX_Parish_Retreat_Letters_Admin {
 	}
 
 	/**
-	 * Get available reusable blocks and patterns for header/footer selection.
+	 * Get available reusable blocks, patterns, and template parts for header/footer selection.
 	 *
 	 * @since 1.5.0
-	 * @return array Array of reusable blocks and patterns with id and title.
+	 * @return array Array of reusable blocks, patterns, and template parts with id and title.
 	 */
 	private function get_available_blocks() {
 		$block_options = array();
@@ -4583,6 +4588,33 @@ class DFX_Parish_Retreat_Letters_Admin {
 				$status_label = ' (' . ucfirst( $block->post_status ) . ')';
 			}
 			$block_options[ 'block_' . $block->ID ] = $block->post_title . $status_label . ' [Reusable Block]';
+		}
+
+		// Get template parts (wp_template_part post type)
+		if ( post_type_exists( 'wp_template_part' ) ) {
+			$template_parts = get_posts( array(
+				'post_type'      => 'wp_template_part',
+				'post_status'    => array( 'publish', 'private', 'draft' ),
+				'posts_per_page' => -1,
+				'orderby'        => 'title',
+				'order'          => 'ASC',
+			) );
+
+			foreach ( $template_parts as $template_part ) {
+				$status_label = '';
+				if ( $template_part->post_status !== 'publish' ) {
+					$status_label = ' (' . ucfirst( $template_part->post_status ) . ')';
+				}
+				
+				// Get template part area for better identification
+				$area = get_post_meta( $template_part->ID, 'area', true );
+				$area_label = '';
+				if ( $area ) {
+					$area_label = ' (' . ucfirst( $area ) . ')';
+				}
+				
+				$block_options[ 'templatepart_' . $template_part->ID ] = $template_part->post_title . $status_label . $area_label . ' [Template Part]';
+			}
 		}
 
 		// Get block patterns (wp_block_pattern post type, if it exists)
@@ -4669,7 +4701,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 			echo '<br><small class="description">';
 			echo wp_kses_post( 
 				sprintf( 
-					__( 'To create reusable blocks: Go to <strong>Appearance > Editor > Patterns</strong> or edit any page/post and create a block, then save it as a reusable block. For block patterns, use the Site Editor. <a href="%s" target="_blank">Learn more</a>', 'dfx-parish-retreat-letters' ),
+					__( 'To create reusable blocks: Go to <strong>Appearance > Editor > Patterns</strong> or edit any page/post and create a block, then save it as a reusable block. For template parts, use <strong>Appearance > Editor > Patterns > Template Parts</strong>. For block patterns, use the Site Editor. <a href="%s" target="_blank">Learn more</a>', 'dfx-parish-retreat-letters' ),
 					'https://wordpress.org/documentation/article/reusable-blocks/'
 				)
 			);

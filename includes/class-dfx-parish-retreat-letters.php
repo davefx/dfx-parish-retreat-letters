@@ -2112,6 +2112,10 @@ class DFX_Parish_Retreat_Letters {
 			// Reusable block
 			$type = 'block';
 			$id = absint( str_replace( 'block_', '', $block_selection ) );
+		} elseif ( strpos( $block_selection, 'templatepart_' ) === 0 ) {
+			// Template part
+			$type = 'templatepart';
+			$id = absint( str_replace( 'templatepart_', '', $block_selection ) );
 		} elseif ( strpos( $block_selection, 'pattern_' ) === 0 ) {
 			// Block pattern post
 			$type = 'pattern';
@@ -2128,6 +2132,8 @@ class DFX_Parish_Retreat_Letters {
 		switch ( $type ) {
 			case 'block':
 				return $this->render_reusable_block( $id );
+			case 'templatepart':
+				return $this->render_template_part( $id );
 			case 'pattern':
 				return $this->render_pattern_post( $id );
 			case 'registered_pattern':
@@ -2160,6 +2166,38 @@ class DFX_Parish_Retreat_Letters {
 		if ( ! empty( $block_content ) ) {
 			// Parse blocks and render them
 			$blocks = parse_blocks( $block_content );
+			foreach ( $blocks as $block ) {
+				echo render_block( $block );
+			}
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
+	 * Render a template part (wp_template_part post type).
+	 *
+	 * @since 1.5.2
+	 * @param int $template_part_id Template part post ID.
+	 * @return bool True if rendered successfully, false otherwise.
+	 */
+	private function render_template_part( $template_part_id ) {
+		if ( ! $template_part_id ) {
+			return false;
+		}
+
+		// Get the template part post
+		$template_part_post = get_post( $template_part_id );
+		if ( ! $template_part_post || $template_part_post->post_type !== 'wp_template_part' ) {
+			return false;
+		}
+
+		// Parse and render the template part content
+		$template_content = $template_part_post->post_content;
+		if ( ! empty( $template_content ) ) {
+			// Parse blocks and render them
+			$blocks = parse_blocks( $template_content );
 			foreach ( $blocks as $block ) {
 				echo render_block( $block );
 			}
