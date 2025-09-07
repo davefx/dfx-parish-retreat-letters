@@ -865,7 +865,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 											<p class="description"><?php esc_html_e( 'This text will appear next to the disclaimer acceptance checkbox. Only used if disclaimer text is provided.', 'dfx-parish-retreat-letters' ); ?></p>
 										</td>
 									</tr>
-									<?php if ( function_exists( 'wp_is_block_theme' ) && ( wp_is_block_theme() || current_theme_supports( 'block-templates' ) ) ) : ?>
+									<?php if ( post_type_exists( 'wp_block' ) ) : ?>
 									<tr>
 										<th scope="row">
 											<label for="custom_header_block_id"><?php esc_html_e( 'Custom Header Block', 'dfx-parish-retreat-letters' ); ?></label>
