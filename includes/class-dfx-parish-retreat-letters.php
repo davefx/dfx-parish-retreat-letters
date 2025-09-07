@@ -478,8 +478,8 @@ class DFX_Parish_Retreat_Letters {
 		}
 		
 		if ( ! $custom_header_rendered ) {
-			// Include WordPress header as fallback
-			get_header();
+			// Include WordPress header as fallback (theme-agnostic)
+			$this->render_theme_header();
 		}
 		
 		// Display the form
@@ -492,8 +492,8 @@ class DFX_Parish_Retreat_Letters {
 		}
 		
 		if ( ! $custom_footer_rendered ) {
-			// Include WordPress footer as fallback
-			get_footer();
+			// Include WordPress footer as fallback (theme-agnostic)
+			$this->render_theme_footer();
 		}
 	}
 
@@ -2086,6 +2086,60 @@ class DFX_Parish_Retreat_Letters {
 		return function_exists( 'wp_is_block_theme' ) && wp_is_block_theme() ||
 			   current_theme_supports( 'block-templates' ) ||
 			   current_theme_supports( 'block-template-parts' );
+	}
+
+	/**
+	 * Check if the current theme is a block theme.
+	 *
+	 * @since 1.5.3
+	 * @return bool True if it's a block theme, false otherwise.
+	 */
+	private function is_block_theme() {
+		return function_exists( 'wp_is_block_theme' ) && wp_is_block_theme();
+	}
+
+	/**
+	 * Render theme-agnostic header.
+	 * For block themes: renders minimal HTML structure with wp_head()
+	 * For classic themes: uses get_header()
+	 *
+	 * @since 1.5.3
+	 */
+	private function render_theme_header() {
+		if ( $this->is_block_theme() ) {
+			?>
+			<!DOCTYPE html>
+			<html <?php language_attributes(); ?>>
+			<head>
+				<meta charset="<?php bloginfo( 'charset' ); ?>">
+				<meta name="viewport" content="width=device-width, initial-scale=1">
+				<?php wp_head(); ?>
+			</head>
+			<body <?php body_class(); ?>>
+			<?php wp_body_open(); ?>
+			<?php
+		} else {
+			get_header();
+		}
+	}
+
+	/**
+	 * Render theme-agnostic footer.
+	 * For block themes: renders minimal HTML structure with wp_footer()
+	 * For classic themes: uses get_footer()
+	 *
+	 * @since 1.5.3
+	 */
+	private function render_theme_footer() {
+		if ( $this->is_block_theme() ) {
+			?>
+			<?php wp_footer(); ?>
+			</body>
+			</html>
+			<?php
+		} else {
+			get_footer();
+		}
 	}
 
 	/**
