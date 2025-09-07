@@ -65,8 +65,10 @@ class DFX_Parish_Retreat_Letters_Retreat {
 				'custom_message'             => $sanitized_data['custom_message'],
 				'disclaimer_text'            => $sanitized_data['disclaimer_text'],
 				'disclaimer_acceptance_text' => $sanitized_data['disclaimer_acceptance_text'],
+				'custom_header_block_id'     => $sanitized_data['custom_header_block_id'],
+				'custom_footer_block_id'     => $sanitized_data['custom_footer_block_id'],
 			),
-			array( '%s', '%s', '%s', '%s', '%s', '%s', '%s' )
+			array( '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%d', '%d' )
 		);
 
 		return $result ? $wpdb->insert_id : false;
@@ -116,9 +118,11 @@ class DFX_Parish_Retreat_Letters_Retreat {
 				'custom_message'             => $sanitized_data['custom_message'],
 				'disclaimer_text'            => $sanitized_data['disclaimer_text'],
 				'disclaimer_acceptance_text' => $sanitized_data['disclaimer_acceptance_text'],
+				'custom_header_block_id'     => $sanitized_data['custom_header_block_id'],
+				'custom_footer_block_id'     => $sanitized_data['custom_footer_block_id'],
 			),
 			array( 'id' => $id ),
-			array( '%s', '%s', '%s', '%s', '%s', '%s', '%s' ),
+			array( '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%d', '%d' ),
 			array( '%d' )
 		);
 
@@ -295,6 +299,8 @@ class DFX_Parish_Retreat_Letters_Retreat {
 			'custom_message'             => wp_kses_post( $data['custom_message'] ?? '' ),
 			'disclaimer_text'            => wp_kses_post( $data['disclaimer_text'] ?? '' ),
 			'disclaimer_acceptance_text' => sanitize_text_field( $data['disclaimer_acceptance_text'] ?? '' ),
+			'custom_header_block_id'     => ! empty( $data['custom_header_block_id'] ) ? absint( $data['custom_header_block_id'] ) : null,
+			'custom_footer_block_id'     => ! empty( $data['custom_footer_block_id'] ) ? absint( $data['custom_footer_block_id'] ) : null,
 		);
 	}
 

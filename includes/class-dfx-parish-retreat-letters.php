@@ -450,6 +450,9 @@ class DFX_Parish_Retreat_Letters {
 			return;
 		}
 
+		// Get retreat data for custom header/footer blocks
+		$retreat = $this->get_retreat_by_token( $token );
+
 		// Rate limiting check (skip for logged-in users)
 		if ( ! is_user_logged_in() ) {
 			$ip_address = $this->security->get_user_ip();
@@ -468,14 +471,30 @@ class DFX_Parish_Retreat_Letters {
 		status_header( 200 );
 		nocache_headers();
 		
-		// Include WordPress header
-		get_header();
+		// Try to render custom header, fallback to default
+		$custom_header_rendered = false;
+		if ( $retreat && ! empty( $retreat->custom_header_block_id ) ) {
+			$custom_header_rendered = $this->render_custom_block( $retreat->custom_header_block_id );
+		}
+		
+		if ( ! $custom_header_rendered ) {
+			// Include WordPress header as fallback
+			get_header();
+		}
 		
 		// Display the form
 		$this->render_message_form( $attendant );
 		
-		// Include WordPress footer
-		get_footer();
+		// Try to render custom footer, fallback to default
+		$custom_footer_rendered = false;
+		if ( $retreat && ! empty( $retreat->custom_footer_block_id ) ) {
+			$custom_footer_rendered = $this->render_custom_block( $retreat->custom_footer_block_id );
+		}
+		
+		if ( ! $custom_footer_rendered ) {
+			// Include WordPress footer as fallback
+			get_footer();
+		}
 	}
 
 	/**
@@ -2054,5 +2073,74 @@ class DFX_Parish_Retreat_Letters {
 		if ( $this->security ) {
 			$this->security->anonymize_old_ip_addresses();
 		}
+	}
+
+	/**
+	 * Check if the current theme supports WordPress blocks.
+	 *
+	 * @since 1.5.0
+	 * @return bool True if theme supports blocks, false otherwise.
+	 */
+	private function theme_supports_blocks() {
+		// Check for block theme support
+		return function_exists( 'wp_is_block_theme' ) && wp_is_block_theme() ||
+			   current_theme_supports( 'block-templates' ) ||
+			   current_theme_supports( 'block-template-parts' );
+	}
+
+	/**
+	 * Render a custom header or footer block.
+	 *
+	 * @since 1.5.0
+	 * @param int|null $block_id WordPress post ID of the reusable block.
+	 * @return bool True if block was rendered, false otherwise.
+	 */
+	private function render_custom_block( $block_id ) {
+		if ( empty( $block_id ) || ! $this->theme_supports_blocks() ) {
+			return false;
+		}
+
+		// Get the block post
+		$block_post = get_post( $block_id );
+		if ( ! $block_post || $block_post->post_type !== 'wp_block' ) {
+			return false;
+		}
+
+		// Parse and render the block content
+		$block_content = $block_post->post_content;
+		if ( ! empty( $block_content ) ) {
+			// Parse blocks and render them
+			$blocks = parse_blocks( $block_content );
+			foreach ( $blocks as $block ) {
+				echo render_block( $block );
+			}
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
+	 * Get retreat data by attendant token (includes custom header/footer block IDs).
+	 *
+	 * @since 1.5.0
+	 * @param string $token Message URL token.
+	 * @return object|null Retreat object with block IDs or null if not found.
+	 */
+	private function get_retreat_by_token( $token ) {
+		global $wpdb;
+		
+		$attendants_table = $this->database->get_attendants_table();
+		$retreats_table = $this->database->get_retreats_table();
+
+		$retreat = $wpdb->get_row( $wpdb->prepare(
+			"SELECT r.custom_header_block_id, r.custom_footer_block_id, r.id, r.name
+			 FROM `{$attendants_table}` a
+			 INNER JOIN `{$retreats_table}` r ON a.retreat_id = r.id
+			 WHERE a.message_url_token = %s", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			$token
+		) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
+
+		return $retreat;
 	}
 }

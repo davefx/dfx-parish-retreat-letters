@@ -597,6 +597,8 @@ class DFX_Parish_Retreat_Letters_Admin {
 			'custom_message'             => wp_kses_post( $_POST['custom_message'] ?? '' ),
 			'disclaimer_text'            => wp_kses_post( $_POST['disclaimer_text'] ?? '' ),
 			'disclaimer_acceptance_text' => sanitize_text_field( $_POST['disclaimer_acceptance_text'] ?? '' ),
+			'custom_header_block_id'     => ! empty( $_POST['custom_header_block_id'] ) ? absint( $_POST['custom_header_block_id'] ) : null,
+			'custom_footer_block_id'     => ! empty( $_POST['custom_footer_block_id'] ) ? absint( $_POST['custom_footer_block_id'] ) : null,
 		);
 
 		if ( $retreat_id ) {
@@ -863,6 +865,26 @@ class DFX_Parish_Retreat_Letters_Admin {
 											<p class="description"><?php esc_html_e( 'This text will appear next to the disclaimer acceptance checkbox. Only used if disclaimer text is provided.', 'dfx-parish-retreat-letters' ); ?></p>
 										</td>
 									</tr>
+									<?php if ( function_exists( 'wp_is_block_theme' ) && ( wp_is_block_theme() || current_theme_supports( 'block-templates' ) ) ) : ?>
+									<tr>
+										<th scope="row">
+											<label for="custom_header_block_id"><?php esc_html_e( 'Custom Header Block', 'dfx-parish-retreat-letters' ); ?></label>
+										</th>
+										<td>
+											<?php $this->render_block_selector( 'custom_header_block_id', $retreat->custom_header_block_id ?? null, __( 'Use default WordPress header', 'dfx-parish-retreat-letters' ) ); ?>
+											<p class="description"><?php esc_html_e( 'Select a reusable block to display as custom header in the letters form page. Leave empty to use the default WordPress header.', 'dfx-parish-retreat-letters' ); ?></p>
+										</td>
+									</tr>
+									<tr>
+										<th scope="row">
+											<label for="custom_footer_block_id"><?php esc_html_e( 'Custom Footer Block', 'dfx-parish-retreat-letters' ); ?></label>
+										</th>
+										<td>
+											<?php $this->render_block_selector( 'custom_footer_block_id', $retreat->custom_footer_block_id ?? null, __( 'Use default WordPress footer', 'dfx-parish-retreat-letters' ) ); ?>
+											<p class="description"><?php esc_html_e( 'Select a reusable block to display as custom footer in the letters form page. Leave empty to use the default WordPress footer.', 'dfx-parish-retreat-letters' ); ?></p>
+										</td>
+									</tr>
+									<?php endif; ?>
 								</tbody>
 							</table>
 
@@ -4474,5 +4496,52 @@ class DFX_Parish_Retreat_Letters_Admin {
 				$count
 			)
 		) );
+	}
+
+	/**
+	 * Get available reusable blocks for header/footer selection.
+	 *
+	 * @since 1.5.0
+	 * @return array Array of reusable blocks with id and title.
+	 */
+	private function get_available_blocks() {
+		$blocks = get_posts( array(
+			'post_type'      => 'wp_block',
+			'post_status'    => 'publish',
+			'posts_per_page' => -1,
+			'orderby'        => 'title',
+			'order'          => 'ASC',
+		) );
+
+		$block_options = array();
+		foreach ( $blocks as $block ) {
+			$block_options[ $block->ID ] = $block->post_title;
+		}
+
+		return $block_options;
+	}
+
+	/**
+	 * Render a block selection dropdown.
+	 *
+	 * @since 1.5.0
+	 * @param string $name Field name.
+	 * @param int|null $selected_value Currently selected block ID.
+	 * @param string $default_text Default option text.
+	 */
+	private function render_block_selector( $name, $selected_value = null, $default_text = '' ) {
+		$blocks = $this->get_available_blocks();
+		
+		echo '<select id="' . esc_attr( $name ) . '" name="' . esc_attr( $name ) . '" class="regular-text">';
+		echo '<option value="">' . esc_html( $default_text ) . '</option>';
+		
+		foreach ( $blocks as $block_id => $block_title ) {
+			$selected = selected( $selected_value, $block_id, false );
+			echo '<option value="' . esc_attr( $block_id ) . '"' . $selected . '>';
+			echo esc_html( $block_title );
+			echo '</option>';
+		}
+		
+		echo '</select>';
 	}
 }

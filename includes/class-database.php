@@ -180,11 +180,15 @@ class DFX_Parish_Retreat_Letters_Database {
 			custom_message text NULL DEFAULT NULL,
 			disclaimer_text text NULL DEFAULT NULL,
 			disclaimer_acceptance_text varchar(500) NULL DEFAULT NULL,
+			custom_header_block_id bigint(20) unsigned NULL DEFAULT NULL,
+			custom_footer_block_id bigint(20) unsigned NULL DEFAULT NULL,
 			created_at datetime DEFAULT CURRENT_TIMESTAMP,
 			updated_at datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 			PRIMARY KEY (id),
 			INDEX idx_start_date (start_date),
-			INDEX idx_end_date (end_date)
+			INDEX idx_end_date (end_date),
+			INDEX idx_custom_header_block_id (custom_header_block_id),
+			INDEX idx_custom_footer_block_id (custom_footer_block_id)
 		) $charset_collate;";
 
 		dbDelta( $retreats_sql );
