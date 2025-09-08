@@ -4576,44 +4576,37 @@ class DFX_Parish_Retreat_Letters_Admin {
 		// Get reusable blocks (wp_block post type)
 		$blocks = get_posts( array(
 			'post_type'      => 'wp_block',
-			'post_status'    => array( 'publish', 'private', 'draft' ),
+			'post_status'    => 'publish',
 			'posts_per_page' => -1,
 			'orderby'        => 'title',
 			'order'          => 'ASC',
 		) );
 
 		foreach ( $blocks as $block ) {
-			$status_label = '';
-			if ( $block->post_status !== 'publish' ) {
-				$status_label = ' (' . ucfirst( $block->post_status ) . ')';
-			}
-			$block_options[ 'block_' . $block->ID ] = $block->post_title . $status_label . ' [Reusable Block]';
+			$reusable_block = __( 'Reusable Block', 'dfx-parish-retreat-letters' );
+			$block_options[ 'block_' . $block->ID ] = $block->post_title . ' [' . $reusable_block . ']';
 		}
 
 		// Get template parts (wp_template_part post type)
 		if ( post_type_exists( 'wp_template_part' ) ) {
 			$template_parts = get_posts( array(
 				'post_type'      => 'wp_template_part',
-				'post_status'    => array( 'publish', 'private', 'draft' ),
+				'post_status'    => 'publish',
 				'posts_per_page' => -1,
 				'orderby'        => 'title',
 				'order'          => 'ASC',
 			) );
 
 			foreach ( $template_parts as $template_part ) {
-				$status_label = '';
-				if ( $template_part->post_status !== 'publish' ) {
-					$status_label = ' (' . ucfirst( $template_part->post_status ) . ')';
-				}
-				
 				// Get template part area for better identification
 				$area = get_post_meta( $template_part->ID, 'area', true );
 				$area_label = '';
 				if ( $area ) {
 					$area_label = ' (' . ucfirst( $area ) . ')';
 				}
-				
-				$block_options[ 'templatepart_' . $template_part->ID ] = $template_part->post_title . $status_label . $area_label . ' [Template Part]';
+
+				$template_part_string = __( 'Template Part', 'dfx-parish-retreat-letters' );
+				$block_options[ 'templatepart_' . $template_part->ID ] = $template_part->post_title . $area_label . ' [' . $template_part_string . ']';
 			}
 		}
 
@@ -4622,18 +4615,15 @@ class DFX_Parish_Retreat_Letters_Admin {
 		if ( post_type_exists( 'wp_block_pattern' ) ) {
 			$patterns = get_posts( array(
 				'post_type'      => 'wp_block_pattern',
-				'post_status'    => array( 'publish', 'private', 'draft' ),
+				'post_status'    => 'publish',
 				'posts_per_page' => -1,
 				'orderby'        => 'title',
 				'order'          => 'ASC',
 			) );
 
 			foreach ( $patterns as $pattern ) {
-				$status_label = '';
-				if ( $pattern->post_status !== 'publish' ) {
-					$status_label = ' (' . ucfirst( $pattern->post_status ) . ')';
-				}
-				$block_options[ 'pattern_' . $pattern->ID ] = $pattern->post_title . $status_label . ' [Block Pattern]';
+				$block_pattern = __( 'Block Pattern', 'dfx-parish-retreat-letters' );
+				$block_options[ 'pattern_' . $pattern->ID ] = $pattern->post_title  . ' [' . $block_pattern . ']';
 			}
 		}
 
@@ -4649,7 +4639,8 @@ class DFX_Parish_Retreat_Letters_Admin {
 						 ( in_array( 'header', $pattern_data['categories'] ) || 
 						   in_array( 'footer', $pattern_data['categories'] ) ) ) {
 						$title = isset( $pattern_data['title'] ) ? $pattern_data['title'] : $pattern_name;
-						$block_options[ 'registered_' . $pattern_name ] = $title . ' [Registered Pattern]';
+						$registered_pattern = __( 'Registered Pattern', 'dfx-parish-retreat-letters' );
+						$block_options[ 'registered_' . $pattern_name ] = $title . ' [' . $registered_pattern . ']';
 					}
 				}
 			}

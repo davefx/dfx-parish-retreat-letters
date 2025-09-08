@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2025-09-07T06:49:20+00:00\n"
+"POT-Creation-Date: 2025-09-08T04:11:10+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: dfx-parish-retreat-letters\n"
@@ -61,7 +61,7 @@ msgstr ""
 #: includes/class-admin.php:3984
 #: includes/class-admin.php:4034
 #: includes/class-admin.php:4483
-#: includes/class-dfx-parish-retreat-letters.php:1586
+#: includes/class-dfx-parish-retreat-letters.php:1596
 #: includes/class-gdpr.php:406
 #: includes/class-gdpr.php:440
 msgid "Security check failed."
@@ -251,7 +251,7 @@ msgstr ""
 #: includes/class-admin.php:2190
 #: includes/class-admin.php:2229
 #: includes/class-admin.php:2275
-#: includes/class-invitations.php:467
+#: includes/class-invitations.php:521
 msgid "Retreat not found."
 msgstr ""
 
@@ -286,7 +286,7 @@ msgstr ""
 
 #: includes/class-admin.php:711
 #: includes/class-admin.php:819
-#: includes/class-invitations.php:712
+#: includes/class-invitations.php:766
 msgid "Location"
 msgstr ""
 
@@ -415,7 +415,7 @@ msgid "Use default WordPress header"
 msgstr ""
 
 #: includes/class-admin.php:875
-msgid "Select a reusable block to display as custom header in the letters form page. Leave empty to use the default WordPress header."
+msgid "Select a reusable block, template part, or pattern to display as custom header in the letters form page. Leave empty to use the default WordPress header."
 msgstr ""
 
 #: includes/class-admin.php:880
@@ -427,7 +427,7 @@ msgid "Use default WordPress footer"
 msgstr ""
 
 #: includes/class-admin.php:884
-msgid "Select a reusable block to display as custom footer in the letters form page. Leave empty to use the default WordPress footer."
+msgid "Select a reusable block, template part, or pattern to display as custom footer in the letters form page. Leave empty to use the default WordPress footer."
 msgstr ""
 
 #: includes/class-admin.php:892
@@ -481,8 +481,8 @@ msgstr ""
 #: includes/class-admin.php:1643
 #: includes/class-admin.php:1944
 #: includes/class-admin.php:3881
-#: includes/class-invitations.php:502
-#: includes/class-invitations.php:684
+#: includes/class-invitations.php:556
+#: includes/class-invitations.php:738
 msgid "Retreat Manager"
 msgstr ""
 
@@ -495,8 +495,8 @@ msgstr ""
 #: includes/class-admin.php:1644
 #: includes/class-admin.php:1945
 #: includes/class-admin.php:3882
-#: includes/class-invitations.php:503
-#: includes/class-invitations.php:685
+#: includes/class-invitations.php:557
+#: includes/class-invitations.php:739
 msgid "Message Manager"
 msgstr ""
 
@@ -522,7 +522,7 @@ msgstr ""
 #: includes/class-admin.php:995
 #: includes/class-admin.php:1068
 #: includes/class-admin.php:1636
-#: includes/class-invitations.php:768
+#: includes/class-invitations.php:822
 msgid "Email"
 msgstr ""
 
@@ -1139,7 +1139,7 @@ msgid "Total messages: %d"
 msgstr ""
 
 #: includes/class-admin.php:3563
-#: includes/class-dfx-parish-retreat-letters.php:1936
+#: includes/class-dfx-parish-retreat-letters.php:1946
 msgid "From"
 msgstr ""
 
@@ -1160,7 +1160,7 @@ msgid "Anonymous"
 msgstr ""
 
 #: includes/class-admin.php:3577
-#: includes/class-dfx-parish-retreat-letters.php:566
+#: includes/class-dfx-parish-retreat-letters.php:576
 msgid "Text Message"
 msgstr ""
 
@@ -1232,7 +1232,7 @@ msgid "File not found or access denied."
 msgstr ""
 
 #: includes/class-admin.php:3754
-#: includes/class-dfx-parish-retreat-letters.php:1833
+#: includes/class-dfx-parish-retreat-letters.php:1843
 msgid "Message not found."
 msgstr ""
 
@@ -1520,7 +1520,7 @@ msgstr ""
 
 #: includes/class-admin.php:4441
 #: includes/class-admin.php:4467
-#: includes/class-dfx-parish-retreat-letters.php:1535
+#: includes/class-dfx-parish-retreat-letters.php:1545
 msgid "A network error occurred. Please try again."
 msgstr ""
 
@@ -1539,6 +1539,31 @@ msgstr ""
 #: includes/class-admin.php:4495
 #, php-format
 msgid "Successfully reset %d rate limit(s)."
+msgstr ""
+
+#: includes/class-admin.php:4586
+msgid "Reusable Block"
+msgstr ""
+
+#: includes/class-admin.php:4608
+msgid "Template Part"
+msgstr ""
+
+#: includes/class-admin.php:4625
+msgid "Block Pattern"
+msgstr ""
+
+#: includes/class-admin.php:4642
+msgid "Registered Pattern"
+msgstr ""
+
+#: includes/class-admin.php:4678
+msgid "No reusable blocks or patterns found - create one first"
+msgstr ""
+
+#: includes/class-admin.php:4695
+#, php-format
+msgid "To create reusable blocks: Go to <strong>Appearance > Editor > Patterns</strong> or edit any page/post and create a block, then save it as a reusable block. For template parts, use <strong>Appearance > Editor > Patterns > Template Parts</strong>. For block patterns, use the Site Editor. <a href=\"%s\" target=\"_blank\">Learn more</a>"
 msgstr ""
 
 #: includes/class-attendant.php:388
@@ -1565,270 +1590,270 @@ msgstr ""
 msgid "Rate Limit Exceeded"
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:534
+#: includes/class-dfx-parish-retreat-letters.php:544
 msgid "Send a Confidential Message"
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:537
+#: includes/class-dfx-parish-retreat-letters.php:547
 msgid "For Retreat Attendant"
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:557
+#: includes/class-dfx-parish-retreat-letters.php:567
 msgid "Your Name"
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:558
+#: includes/class-dfx-parish-retreat-letters.php:568
 msgid "Enter your name"
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:562
+#: includes/class-dfx-parish-retreat-letters.php:572
 msgid "Choose message type:"
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:570
+#: includes/class-dfx-parish-retreat-letters.php:580
 msgid "File Upload"
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:576
+#: includes/class-dfx-parish-retreat-letters.php:586
 msgid "Your Message"
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:579
+#: includes/class-dfx-parish-retreat-letters.php:589
 msgid "Bold"
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:580
+#: includes/class-dfx-parish-retreat-letters.php:590
 msgid "Italic"
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:581
+#: includes/class-dfx-parish-retreat-letters.php:591
 msgid "Underline"
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:582
+#: includes/class-dfx-parish-retreat-letters.php:592
 msgid "Bullet List"
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:582
-#: includes/class-dfx-parish-retreat-letters.php:583
+#: includes/class-dfx-parish-retreat-letters.php:592
+#: includes/class-dfx-parish-retreat-letters.php:593
 msgid "List"
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:583
+#: includes/class-dfx-parish-retreat-letters.php:593
 msgid "Numbered List"
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:584
+#: includes/class-dfx-parish-retreat-letters.php:594
 msgid "Undo"
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:585
+#: includes/class-dfx-parish-retreat-letters.php:595
 msgid "Redo"
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:587
+#: includes/class-dfx-parish-retreat-letters.php:597
 msgid "Write your confidential message here..."
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:590
+#: includes/class-dfx-parish-retreat-letters.php:600
 msgid "You can use the toolbar to format your text, create lists, and paste images. HTML is allowed but will be filtered for security."
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:594
+#: includes/class-dfx-parish-retreat-letters.php:604
 msgid "Attach Files"
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:597
+#: includes/class-dfx-parish-retreat-letters.php:607
 msgid "Allowed file types: PDF, DOC, DOCX, TXT, JPG, PNG, GIF. Maximum 5MB per file."
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:604
+#: includes/class-dfx-parish-retreat-letters.php:614
 msgid "Security Check"
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:614
+#: includes/class-dfx-parish-retreat-letters.php:624
 msgid "Legal Disclaimer"
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:625
+#: includes/class-dfx-parish-retreat-letters.php:635
 msgid "I accept the terms and conditions stated above"
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:636
+#: includes/class-dfx-parish-retreat-letters.php:646
 msgid "Send Confidential Message"
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:638
+#: includes/class-dfx-parish-retreat-letters.php:648
 msgid "Sending..."
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:645
+#: includes/class-dfx-parish-retreat-letters.php:655
 msgid "Privacy & Security"
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:647
+#: includes/class-dfx-parish-retreat-letters.php:657
 msgid "Your message will be encrypted and stored securely."
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:648
+#: includes/class-dfx-parish-retreat-letters.php:658
 msgid "Only authorized retreat administrators can access your message."
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:649
+#: includes/class-dfx-parish-retreat-letters.php:659
 msgid "Messages can only be viewed when printed - no content is displayed on screen."
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:650
+#: includes/class-dfx-parish-retreat-letters.php:660
 msgid "Your IP address will be anonymized after 30 days for privacy compliance."
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:651
+#: includes/class-dfx-parish-retreat-letters.php:661
 msgid "All data is handled in accordance with GDPR and Spanish privacy laws."
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:1382
+#: includes/class-dfx-parish-retreat-letters.php:1392
 msgid "Please solve: "
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:1417
+#: includes/class-dfx-parish-retreat-letters.php:1427
 msgid "Remove"
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:1457
+#: includes/class-dfx-parish-retreat-letters.php:1467
 msgid "Please enter a message."
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:1463
+#: includes/class-dfx-parish-retreat-letters.php:1473
 msgid "Please select at least one file."
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:1473
-#: includes/class-dfx-parish-retreat-letters.php:1604
+#: includes/class-dfx-parish-retreat-letters.php:1483
+#: includes/class-dfx-parish-retreat-letters.php:1614
 msgid "Please complete the security check."
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:1478
+#: includes/class-dfx-parish-retreat-letters.php:1488
 msgid "Security check error. Please refresh the page."
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:1486
+#: includes/class-dfx-parish-retreat-letters.php:1496
 msgid "Security check error. Please try again."
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:1492
+#: includes/class-dfx-parish-retreat-letters.php:1502
 msgid "Incorrect security answer. Please try again."
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:1501
+#: includes/class-dfx-parish-retreat-letters.php:1511
 msgid "Please accept the legal disclaimer to proceed."
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:1521
+#: includes/class-dfx-parish-retreat-letters.php:1531
 msgid "Your message has been sent successfully and securely stored."
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:1526
+#: includes/class-dfx-parish-retreat-letters.php:1536
 msgid "An error occurred while sending your message."
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:1595
+#: includes/class-dfx-parish-retreat-letters.php:1605
 msgid "Too many submission attempts. Please wait before trying again."
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:1609
+#: includes/class-dfx-parish-retreat-letters.php:1619
 msgid "Incorrect security answer."
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:1615
+#: includes/class-dfx-parish-retreat-letters.php:1625
 msgid "Invalid attendant."
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:1635
+#: includes/class-dfx-parish-retreat-letters.php:1645
 msgid "You must accept the legal disclaimer to proceed."
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:1642
+#: includes/class-dfx-parish-retreat-letters.php:1652
 msgid "Sender name is required."
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:1648
+#: includes/class-dfx-parish-retreat-letters.php:1658
 msgid "Invalid message mode."
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:1662
+#: includes/class-dfx-parish-retreat-letters.php:1672
 msgid "Message content is required."
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:1668
+#: includes/class-dfx-parish-retreat-letters.php:1678
 msgid "At least one file is required."
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:1670
+#: includes/class-dfx-parish-retreat-letters.php:1680
 msgid "File upload message"
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:1685
+#: includes/class-dfx-parish-retreat-letters.php:1695
 msgid "Failed to save message."
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:1698
+#: includes/class-dfx-parish-retreat-letters.php:1708
 msgid "No files could be uploaded."
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:1707
+#: includes/class-dfx-parish-retreat-letters.php:1717
 msgid "Message sent successfully."
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:1712
+#: includes/class-dfx-parish-retreat-letters.php:1722
 #, php-format
 msgid "Message sent successfully with %d file(s)."
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:1719
+#: includes/class-dfx-parish-retreat-letters.php:1729
 #, php-format
 msgid "Note: Some files could not be uploaded: %s"
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:1757
+#: includes/class-dfx-parish-retreat-letters.php:1767
 #, php-format
 msgid "File \"%s\" upload failed with error code %d."
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:1775
+#: includes/class-dfx-parish-retreat-letters.php:1785
 #, php-format
 msgid "File \"%s\" failed validation (unsupported type or too large)."
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:1794
+#: includes/class-dfx-parish-retreat-letters.php:1804
 #, php-format
 msgid "File \"%s\" could not be saved to database."
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:1815
+#: includes/class-dfx-parish-retreat-letters.php:1825
 msgid "Invalid print request."
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:1820
+#: includes/class-dfx-parish-retreat-letters.php:1830
 msgid "Print token expired or invalid."
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:1859
+#: includes/class-dfx-parish-retreat-letters.php:1869
 msgid "File not found."
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:1893
+#: includes/class-dfx-parish-retreat-letters.php:1903
 msgid "Print Message"
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:1972
+#: includes/class-dfx-parish-retreat-letters.php:1982
 msgid "Word document content cannot be displayed for printing. Please download and print separately."
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:1973
+#: includes/class-dfx-parish-retreat-letters.php:1983
 msgid "File size:"
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:1986
+#: includes/class-dfx-parish-retreat-letters.php:1996
 #, php-format
 msgid "File type: %s, Size: %s - Cannot display content for printing."
 msgstr ""
@@ -1861,183 +1886,183 @@ msgstr ""
 msgid "Data erasure completed. Erased %d messages and %d files."
 msgstr ""
 
-#: includes/class-invitations.php:110
+#: includes/class-invitations.php:164
 msgid "Invalid email address."
 msgstr ""
 
-#: includes/class-invitations.php:117
+#: includes/class-invitations.php:171
 msgid "Invalid permission level."
 msgstr ""
 
-#: includes/class-invitations.php:129
+#: includes/class-invitations.php:183
 msgid "Permission granted to existing user."
 msgstr ""
 
-#: includes/class-invitations.php:134
+#: includes/class-invitations.php:188
 msgid "Failed to grant permission to existing user."
 msgstr ""
 
-#: includes/class-invitations.php:144
+#: includes/class-invitations.php:198
 msgid "An invitation for this email and permission level is already pending."
 msgstr ""
 
-#: includes/class-invitations.php:175
+#: includes/class-invitations.php:229
 msgid "Failed to create invitation."
 msgstr ""
 
-#: includes/class-invitations.php:189
+#: includes/class-invitations.php:243
 msgid "Failed to send invitation email."
 msgstr ""
 
-#: includes/class-invitations.php:205
+#: includes/class-invitations.php:259
 msgid "Invitation sent successfully."
 msgstr ""
 
-#: includes/class-invitations.php:224
-#: includes/class-invitations.php:450
+#: includes/class-invitations.php:278
+#: includes/class-invitations.php:504
 msgid "Invalid or expired invitation."
 msgstr ""
 
-#: includes/class-invitations.php:232
+#: includes/class-invitations.php:286
 msgid "This invitation has already been processed."
 msgstr ""
 
-#: includes/class-invitations.php:241
-#: includes/class-invitations.php:456
+#: includes/class-invitations.php:295
+#: includes/class-invitations.php:510
 msgid "This invitation has expired."
 msgstr ""
 
-#: includes/class-invitations.php:258
+#: includes/class-invitations.php:312
 msgid "Failed to create user account."
 msgstr ""
 
-#: includes/class-invitations.php:289
+#: includes/class-invitations.php:343
 msgid "Failed to grant permissions."
 msgstr ""
 
-#: includes/class-invitations.php:319
+#: includes/class-invitations.php:373
 msgid "Invitation accepted successfully."
 msgstr ""
 
-#: includes/class-invitations.php:509
+#: includes/class-invitations.php:563
 msgid "Retreat Invitation"
 msgstr ""
 
-#: includes/class-invitations.php:518
+#: includes/class-invitations.php:572
 msgid "You have been invited to:"
 msgstr ""
 
-#: includes/class-invitations.php:521
+#: includes/class-invitations.php:575
 msgid "Location:"
 msgstr ""
 
-#: includes/class-invitations.php:522
+#: includes/class-invitations.php:576
 msgid "Dates:"
 msgstr ""
 
-#: includes/class-invitations.php:526
+#: includes/class-invitations.php:580
 msgid "Role:"
 msgstr ""
 
-#: includes/class-invitations.php:533
+#: includes/class-invitations.php:587
 msgid "Complete Your Profile"
 msgstr ""
 
-#: includes/class-invitations.php:536
+#: includes/class-invitations.php:590
 msgid "First Name"
 msgstr ""
 
-#: includes/class-invitations.php:541
+#: includes/class-invitations.php:595
 msgid "Last Name"
 msgstr ""
 
-#: includes/class-invitations.php:547
-#: includes/class-invitations.php:720
+#: includes/class-invitations.php:601
+#: includes/class-invitations.php:774
 msgid "Accept Invitation"
 msgstr ""
 
-#: includes/class-invitations.php:553
+#: includes/class-invitations.php:607
 msgid "What happens next?"
 msgstr ""
 
-#: includes/class-invitations.php:555
+#: includes/class-invitations.php:609
 msgid "A user account will be created for you automatically"
 msgstr ""
 
-#: includes/class-invitations.php:556
+#: includes/class-invitations.php:610
 msgid "You will receive login credentials via email"
 msgstr ""
 
-#: includes/class-invitations.php:557
+#: includes/class-invitations.php:611
 msgid "You can then access the retreat management system"
 msgstr ""
 
-#: includes/class-invitations.php:690
+#: includes/class-invitations.php:744
 #, php-format
 msgid "Invitation to manage retreat: %s"
 msgstr ""
 
-#: includes/class-invitations.php:708
+#: includes/class-invitations.php:762
 #, php-format
 msgid "Hello %s,"
 msgstr ""
 
-#: includes/class-invitations.php:709
+#: includes/class-invitations.php:763
 msgid "You have been invited to participate in the management of the following retreat:"
 msgstr ""
 
-#: includes/class-invitations.php:710
+#: includes/class-invitations.php:764
 msgid "Retreat"
 msgstr ""
 
-#: includes/class-invitations.php:714
+#: includes/class-invitations.php:768
 msgid "Dates"
 msgstr ""
 
-#: includes/class-invitations.php:717
+#: includes/class-invitations.php:771
 msgid "Your Role"
 msgstr ""
 
-#: includes/class-invitations.php:721
+#: includes/class-invitations.php:775
 msgid "This invitation will expire in 7 days."
 msgstr ""
 
-#: includes/class-invitations.php:722
+#: includes/class-invitations.php:776
 msgid "If you have any questions, please contact the retreat administrator."
 msgstr ""
 
-#: includes/class-invitations.php:723
-#: includes/class-invitations.php:775
+#: includes/class-invitations.php:777
+#: includes/class-invitations.php:829
 msgid "Best regards,"
 msgstr ""
 
-#: includes/class-invitations.php:748
+#: includes/class-invitations.php:802
 #, php-format
 msgid "Welcome to %s - Your account details"
 msgstr ""
 
-#: includes/class-invitations.php:764
+#: includes/class-invitations.php:818
 #, php-format
 msgid "Welcome %s,"
 msgstr ""
 
-#: includes/class-invitations.php:765
+#: includes/class-invitations.php:819
 msgid "Your account has been created successfully!"
 msgstr ""
 
-#: includes/class-invitations.php:766
+#: includes/class-invitations.php:820
 msgid "Username"
 msgstr ""
 
-#: includes/class-invitations.php:770
+#: includes/class-invitations.php:824
 msgid "Password"
 msgstr ""
 
-#: includes/class-invitations.php:773
+#: includes/class-invitations.php:827
 msgid "Login Now"
 msgstr ""
 
-#: includes/class-invitations.php:774
+#: includes/class-invitations.php:828
 msgid "For security, please change your password after your first login."
 msgstr ""
 
