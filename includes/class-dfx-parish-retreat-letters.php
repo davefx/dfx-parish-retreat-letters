@@ -1793,12 +1793,12 @@ class DFX_Parish_Retreat_Letters {
 	private function handle_print_request( $token ) {
 		// Verify token
 		if ( ! $token ) {
-			wp_die( __( 'Invalid print request.', 'dfx-parish-retreat-letters' ) );
+			wp_die( esc_html__( 'Invalid print request.', 'dfx-parish-retreat-letters' ) );
 		}
 
 		$message_id = get_transient( 'dfx_prl_print_token_' . $token );
 		if ( ! $message_id ) {
-			wp_die( __( 'Print token expired or invalid.', 'dfx-parish-retreat-letters' ) );
+			wp_die( esc_html__( 'Print token expired or invalid.', 'dfx-parish-retreat-letters' ) );
 		}
 
 		// Delete the token after use
@@ -1811,7 +1811,7 @@ class DFX_Parish_Retreat_Letters {
 		// Get message with decrypted content
 		$message = $message_model->get_with_decrypted_content( $message_id );
 		if ( ! $message ) {
-			wp_die( __( 'Message not found.', 'dfx-parish-retreat-letters' ) );
+			wp_die( esc_html__( 'Message not found.', 'dfx-parish-retreat-letters' ) );
 		}
 
 		// Get attached files if any
@@ -1837,7 +1837,7 @@ class DFX_Parish_Retreat_Letters {
 	private function serve_file_directly( $file, $file_model ) {
 		$decrypted_file = $file_model->get_decrypted_file( $file->id );
 		if ( ! $decrypted_file ) {
-			wp_die( __( 'File not found.', 'dfx-parish-retreat-letters' ) );
+			wp_die( esc_html__( 'File not found.', 'dfx-parish-retreat-letters' ) );
 		}
 
 		// Sanitize filename for header
@@ -1964,7 +1964,7 @@ class DFX_Parish_Retreat_Letters {
 								// Binary file that can't be printed as text
 								echo '<h3>' . esc_html( $decrypted_file['filename'] ) . '</h3>';
 								echo '<p>' . sprintf( 
-									esc_html__( 'File type: %s, Size: %s - Cannot display content for printing.', 'dfx-parish-retreat-letters' ),
+									esc_html__( 'File type: %1$s, Size: %2$s - Cannot display content for printing.', 'dfx-parish-retreat-letters' ),
 									esc_html( $file->file_type ),
 									esc_html( size_format( $decrypted_file['size'] ) )
 								) . '</p>';
