@@ -2142,6 +2142,11 @@ class DFX_Parish_Retreat_Letters {
 	 */
 	private function render_theme_footer() {
 		if ( $this->is_block_theme() ) {
+			// Remove deprecated skip link hook to prevent deprecation warning
+			if ( function_exists( 'wp_enqueue_block_template_skip_link' ) ) {
+				remove_action( 'wp_footer', 'the_block_template_skip_link' );
+				wp_enqueue_block_template_skip_link();
+			}
 			?>
 			<?php wp_footer(); ?>
 			</body>
