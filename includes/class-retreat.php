@@ -68,7 +68,7 @@ class DFX_Parish_Retreat_Letters_Retreat {
 				'custom_header_block_id'     => $sanitized_data['custom_header_block_id'],
 				'custom_footer_block_id'     => $sanitized_data['custom_footer_block_id'],
 			),
-			array( '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%d', '%d' )
+			array( '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s' )
 		);
 
 		return $result ? $wpdb->insert_id : false;
@@ -122,7 +122,7 @@ class DFX_Parish_Retreat_Letters_Retreat {
 				'custom_footer_block_id'     => $sanitized_data['custom_footer_block_id'],
 			),
 			array( 'id' => $id ),
-			array( '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%d', '%d' ),
+			array( '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s' ),
 			array( '%d' )
 		);
 
@@ -321,7 +321,8 @@ class DFX_Parish_Retreat_Letters_Retreat {
 		if ( is_string( $selection ) && (
 			strpos( $selection, 'block_' ) === 0 ||
 			strpos( $selection, 'pattern_' ) === 0 ||
-			strpos( $selection, 'registered_' ) === 0
+			strpos( $selection, 'registered_' ) === 0 ||
+			strpos( $selection, 'templatepart_' ) === 0
 		) ) {
 			return sanitize_text_field( $selection );
 		}
