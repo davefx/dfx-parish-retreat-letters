@@ -1345,8 +1345,20 @@ class DFX_Parish_Retreat_Letters {
 			function generateCaptcha() {
 				var num1 = Math.floor(Math.random() * 10) + 1;
 				var num2 = Math.floor(Math.random() * 10) + 1;
-				var operations = ['+', '-', '*'];
+				var operations = ['+', '-', '×', '/'];
 				var operation = operations[Math.floor(Math.random() * operations.length)];
+				
+				// Ensure no negative numbers in subtraction
+				if (operation === '-' && num1 < num2) {
+					var temp = num1;
+					num1 = num2;
+					num2 = temp;
+				}
+				
+				// Ensure clean division (no remainders)
+				if (operation === '/') {
+					num1 = num2 * (Math.floor(Math.random() * 9) + 1); // num1 = num2 * (1-9)
+				}
 				
 				var question = num1 + ' ' + operation + ' ' + num2 + ' = ?';
 				var answer;
@@ -1354,7 +1366,8 @@ class DFX_Parish_Retreat_Letters {
 				switch(operation) {
 					case '+': answer = num1 + num2; break;
 					case '-': answer = num1 - num2; break;
-					case '*': answer = num1 * num2; break;
+					case '×': answer = num1 * num2; break;
+					case '/': answer = num1 / num2; break;
 				}
 				
 				// Set question text with proper string
