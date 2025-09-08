@@ -474,12 +474,17 @@ class DFX_Parish_Retreat_Letters {
 		// Try to render custom header, fallback to default
 		$custom_header_rendered = false;
 		if ( $retreat && ! empty( $retreat->custom_header_block_id ) ) {
+			// Debug: Output what we're trying to render
+			echo '<!-- DFX Debug: Attempting to render custom header with ID: ' . esc_html( $retreat->custom_header_block_id ) . ' -->';
 			$custom_header_rendered = $this->render_custom_block( $retreat->custom_header_block_id );
+			echo '<!-- DFX Debug: Custom header render result: ' . ( $custom_header_rendered ? 'success' : 'failed' ) . ' -->';
 		}
 		
 		if ( ! $custom_header_rendered ) {
 			// Include WordPress header as fallback (theme-agnostic)
+			echo '<!-- DFX Debug: Rendering fallback theme header -->';
 			$this->render_theme_header();
+			echo '<!-- DFX Debug: Fallback theme header rendered -->';
 		}
 		
 		// Display the form
@@ -488,12 +493,17 @@ class DFX_Parish_Retreat_Letters {
 		// Try to render custom footer, fallback to default
 		$custom_footer_rendered = false;
 		if ( $retreat && ! empty( $retreat->custom_footer_block_id ) ) {
+			// Debug: Output what we're trying to render
+			echo '<!-- DFX Debug: Attempting to render custom footer with ID: ' . esc_html( $retreat->custom_footer_block_id ) . ' -->';
 			$custom_footer_rendered = $this->render_custom_block( $retreat->custom_footer_block_id );
+			echo '<!-- DFX Debug: Custom footer render result: ' . ( $custom_footer_rendered ? 'success' : 'failed' ) . ' -->';
 		}
 		
 		if ( ! $custom_footer_rendered ) {
 			// Include WordPress footer as fallback (theme-agnostic)
+			echo '<!-- DFX Debug: Rendering fallback theme footer -->';
 			$this->render_theme_footer();
+			echo '<!-- DFX Debug: Fallback theme footer rendered -->';
 		}
 	}
 
@@ -2179,22 +2189,42 @@ class DFX_Parish_Retreat_Letters {
 			$type = 'registered_pattern';
 			$id = str_replace( 'registered_', '', $block_selection );
 		} else {
+			// Debug log unrecognized format
+			if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+				error_log( 'DFX Parish Retreat Letters: Unrecognized block selection format: ' . $block_selection );
+			}
 			return false;
+		}
+
+		// Debug log what we're trying to render
+		if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+			error_log( 'DFX Parish Retreat Letters: Attempting to render ' . $type . ' with ID: ' . $id );
 		}
 
 		// Render based on type
 		switch ( $type ) {
 			case 'block':
-				return $this->render_reusable_block( $id );
+				$result = $this->render_reusable_block( $id );
+				break;
 			case 'templatepart':
-				return $this->render_template_part( $id );
+				$result = $this->render_template_part( $id );
+				break;
 			case 'pattern':
-				return $this->render_pattern_post( $id );
+				$result = $this->render_pattern_post( $id );
+				break;
 			case 'registered_pattern':
-				return $this->render_registered_pattern( $id );
+				$result = $this->render_registered_pattern( $id );
+				break;
 			default:
-				return false;
+				$result = false;
 		}
+
+		// Debug log result
+		if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+			error_log( 'DFX Parish Retreat Letters: Render result for ' . $type . ' ID ' . $id . ': ' . ( $result ? 'success' : 'failed' ) );
+		}
+
+		return $result;
 	}
 
 	/**
@@ -2238,24 +2268,90 @@ class DFX_Parish_Retreat_Letters {
 	 */
 	private function render_template_part( $template_part_id ) {
 		if ( ! $template_part_id ) {
+			echo '<!-- DFX Debug: Template part ID is empty -->';
 			return false;
 		}
 
 		// Get the template part post
 		$template_part_post = get_post( $template_part_id );
 		if ( ! $template_part_post || $template_part_post->post_type !== 'wp_template_part' ) {
+			echo '<!-- DFX Debug: Template part post not found or wrong type. Post type: ' . ( $template_part_post ? esc_html( $template_part_post->post_type ) : 'null' ) . ' -->';
 			return false;
 		}
 
-		// Parse and render the template part content
+		echo '<!-- DFX Debug: Found template part: ' . esc_html( $template_part_post->post_title ) . ' (ID: ' . $template_part_id . ') -->';
+
+		// Get template part content
 		$template_content = $template_part_post->post_content;
-		if ( ! empty( $template_content ) ) {
-			// Parse blocks and render them
-			$blocks = parse_blocks( $template_content );
-			foreach ( $blocks as $block ) {
-				echo render_block( $block );
+		if ( empty( $template_content ) ) {
+			echo '<!-- DFX Debug: Template part content is empty -->';
+			return false;
+		}
+
+		echo '<!-- DFX Debug: Template part content length: ' . strlen( $template_content ) . ' characters -->';
+
+		// Template parts in block themes often use more complex block structures
+		// We need to ensure WordPress's block rendering context is available
+		try {
+			// Set up global post data for proper block rendering context
+			global $post;
+			$original_post = $post;
+			$post = $template_part_post;
+			setup_postdata( $post );
+			
+			echo '<!-- DFX Debug: Starting template part rendering -->';
+			
+			// Parse and render blocks with proper WordPress context
+			if ( function_exists( 'do_blocks' ) ) {
+				// Use do_blocks if available (WordPress 5.0+)
+				echo '<!-- DFX Debug: Using do_blocks function -->';
+				echo do_blocks( $template_content );
+			} else {
+				// Fallback to manual block parsing
+				echo '<!-- DFX Debug: Using manual block parsing -->';
+				$blocks = parse_blocks( $template_content );
+				
+				if ( ! empty( $blocks ) ) {
+					echo '<!-- DFX Debug: Parsed ' . count( $blocks ) . ' blocks -->';
+					foreach ( $blocks as $index => $block ) {
+						echo '<!-- DFX Debug: Rendering block ' . $index . ' -->';
+						if ( function_exists( 'render_block' ) ) {
+							echo render_block( $block );
+						}
+					}
+				} else {
+					echo '<!-- DFX Debug: No blocks parsed from content -->';
+				}
 			}
+			
+			echo '<!-- DFX Debug: Template part rendering completed -->';
+			
+			// Restore original post data
+			$post = $original_post;
+			if ( $original_post ) {
+				setup_postdata( $post );
+			} else {
+				wp_reset_postdata();
+			}
+			
 			return true;
+			
+		} catch ( Exception $e ) {
+			echo '<!-- DFX Debug: Exception during template part rendering: ' . esc_html( $e->getMessage() ) . ' -->';
+			
+			// Restore post data in case of error
+			global $post;
+			$post = $original_post ?? null;
+			if ( $original_post ) {
+				setup_postdata( $post );
+			} else {
+				wp_reset_postdata();
+			}
+			
+			// Log error if WordPress debug is enabled
+			if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+				error_log( 'DFX Parish Retreat Letters: Template part rendering error: ' . $e->getMessage() );
+			}
 		}
 
 		return false;
