@@ -447,13 +447,13 @@ class DFX_Parish_Retreat_Letters_Invitations {
 		$invitation = $this->get_invitation_by_token( $token );
 		
 		if ( ! $invitation || $invitation->status !== self::STATUS_PENDING ) {
-			wp_die( __( 'Invalid or expired invitation.', 'dfx-parish-retreat-letters' ) );
+			wp_die( esc_html__( 'Invalid or expired invitation.', 'dfx-parish-retreat-letters' ) );
 		}
 
 		// Check expiration
 		if ( strtotime( $invitation->expires_at ) < time() ) {
 			$this->mark_invitation_expired( $invitation->id );
-			wp_die( __( 'This invitation has expired.', 'dfx-parish-retreat-letters' ) );
+			wp_die( esc_html__( 'This invitation has expired.', 'dfx-parish-retreat-letters' ) );
 		}
 
 		// Get retreat details
@@ -464,7 +464,7 @@ class DFX_Parish_Retreat_Letters_Invitations {
 		) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
 
 		if ( ! $retreat ) {
-			wp_die( __( 'Retreat not found.', 'dfx-parish-retreat-letters' ) );
+			wp_die( esc_html__( 'Retreat not found.', 'dfx-parish-retreat-letters' ) );
 		}
 
 		// Handle form submission
