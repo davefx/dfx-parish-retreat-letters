@@ -243,6 +243,7 @@ class DFX_Parish_Retreat_Letters_GDPR {
 				$erasure_results['files_erased'] += $file_count;
 			} else {
 				$erasure_results['items_retained'][] = sprintf(
+					/* translators: %d: message ID number */
 					__( 'Message ID %d could not be deleted due to system error', 'dfx-parish-retreat-letters' ),
 					$message->id
 				);
@@ -455,7 +456,8 @@ class DFX_Parish_Retreat_Letters_GDPR {
 
 		wp_send_json_success( array(
 			'message' => sprintf(
-				__( 'Data erasure completed. Erased %d messages and %d files.', 'dfx-parish-retreat-letters' ),
+				/* translators: %1$d: number of messages erased, %2$d: number of files erased */
+				__( 'Data erasure completed. Erased %1$d messages and %2$d files.', 'dfx-parish-retreat-letters' ),
 				$erasure_results['messages_erased'],
 				$erasure_results['files_erased']
 			),

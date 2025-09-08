@@ -686,7 +686,9 @@ class DFX_Parish_Retreat_Letters_Admin {
 				<?php wp_nonce_field( 'dfx_prl_retreats_action' ); ?>
 				<div class="tablenav top">
 					<div class="alignleft actions">
-						<p><?php printf( esc_html__( 'Total retreats: %d', 'dfx-parish-retreat-letters' ), $total_items ); ?></p>
+						<p><?php
+						/* translators: %d: number of retreats */
+						printf( esc_html__( 'Total retreats: %d', 'dfx-parish-retreat-letters' ), $total_items ); ?></p>
 					</div>
 					<?php if ( $total_pages > 1 ) : ?>
 						<div class="tablenav-pages">
@@ -1520,7 +1522,9 @@ class DFX_Parish_Retreat_Letters_Admin {
 										</span>
 									</div>
 									<div class="dfx-prl-permission-meta">
-										<small><?php printf( __( 'By %s', 'dfx-parish-retreat-letters' ), esc_html( $permission->granted_by_name ) ); ?></small>
+										<small><?php 
+										/* translators: %s: name of the person who granted the permission */
+										printf( __( 'By %s', 'dfx-parish-retreat-letters' ), esc_html( $permission->granted_by_name ) ); ?></small>
 										<small><?php echo esc_html( date_i18n( get_option( 'date_format' ), strtotime( $permission->granted_at ) ) ); ?></small>
 									</div>
 									<?php if ( $permission->user_id !== get_current_user_id() ) : ?>
@@ -1562,7 +1566,9 @@ class DFX_Parish_Retreat_Letters_Admin {
 										</span>
 									</div>
 									<div class="dfx-prl-invitation-meta">
-										<small><?php printf( __( 'Expires %s', 'dfx-parish-retreat-letters' ), esc_html( date_i18n( get_option( 'date_format' ), strtotime( $invitation->expires_at ) ) ) ); ?></small>
+										<small><?php 
+										/* translators: %s: formatted expiration date */
+										printf( __( 'Expires %s', 'dfx-parish-retreat-letters' ), esc_html( date_i18n( get_option( 'date_format' ), strtotime( $invitation->expires_at ) ) ) ); ?></small>
 									</div>
 									<div class="dfx-prl-invitation-actions">
 										<button type="button" class="button button-small cancel-invitation" 
@@ -2424,6 +2430,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 			
 			if ( ! $mapped_data ) {
 				$errors++;
+				/* translators: %d: line number where the error occurred */
 				$error_details[] = sprintf( __( 'Line %d: Invalid data format', 'dfx-parish-retreat-letters' ), $line_number );
 				continue;
 			}
@@ -2450,6 +2457,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 					$updated++;
 				} else {
 					$errors++;
+					/* translators: %d: line number where the error occurred */
 					$error_details[] = sprintf( __( 'Line %d: Failed to update emergency contact for existing attendant', 'dfx-parish-retreat-letters' ), $line_number );
 				}
 			} else {
@@ -2458,6 +2466,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 					$imported++;
 				} else {
 					$errors++;
+					/* translators: %d: line number where the error occurred */
 					$error_details[] = sprintf( __( 'Line %d: Failed to create attendant', 'dfx-parish-retreat-letters' ), $line_number );
 				}
 			}
@@ -2985,7 +2994,9 @@ class DFX_Parish_Retreat_Letters_Admin {
 				<?php wp_nonce_field( 'dfx_prl_attendants_action' ); ?>
 				<div class="tablenav top">
 					<div class="alignleft actions">
-						<p><?php printf( esc_html__( 'Total attendants: %d', 'dfx-parish-retreat-letters' ), $total_items ); ?></p>
+						<p><?php
+						/* translators: %d: number of attendants */
+						printf( esc_html__( 'Total attendants: %d', 'dfx-parish-retreat-letters' ), $total_items ); ?></p>
 						<button type="submit" name="action" value="export_csv" class="button">
 							<?php esc_html_e( 'Export CSV', 'dfx-parish-retreat-letters' ); ?>
 						</button>
@@ -3519,7 +3530,9 @@ class DFX_Parish_Retreat_Letters_Admin {
 				<?php wp_nonce_field( 'dfx_prl_messages_action' ); ?>
 				<div class="tablenav top">
 					<div class="alignleft actions">
-						<p><?php printf( esc_html__( 'Total messages: %d', 'dfx-parish-retreat-letters' ), $total_items ); ?></p>
+						<p><?php
+						/* translators: %d: number of messages */
+						printf( esc_html__( 'Total messages: %d', 'dfx-parish-retreat-letters' ), $total_items ); ?></p>
 					</div>
 					<?php if ( $total_pages > 1 ) : ?>
 						<div class="tablenav-pages">
@@ -3861,6 +3874,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 
 			wp_send_json_success( array( 
 				'message' => sprintf( 
+					/* translators: %1$s: user's display name, %2$s: permission level name */
 					__( 'Permission granted to %1$s as %2$s.', 'dfx-parish-retreat-letters' ),
 					$user->display_name,
 					$permission_name
@@ -3910,6 +3924,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 			$user = get_user_by( 'id', $user_id );
 			wp_send_json_success( array( 
 				'message' => sprintf( 
+					/* translators: %s: user's display name */
 					__( 'Permission revoked from %s.', 'dfx-parish-retreat-letters' ),
 					$user->display_name
 				),
@@ -4470,6 +4485,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 		
 		wp_send_json_success( array( 
 			'message' => sprintf(
+				/* translators: %d: number of rate limits that were reset */
 				__( 'Successfully reset %d rate limit(s).', 'dfx-parish-retreat-letters' ),
 				$count
 			)
