@@ -187,7 +187,7 @@ msgstr "¿Estás seguro de que quieres eliminar este retiro?"
 #: includes/class-admin.php:3962
 #: includes/class-admin.php:4012
 #: includes/class-admin.php:4461
-#: includes/class-dfx-parish-retreat-letters.php:1546
+#: includes/class-dfx-parish-retreat-letters.php:1580
 #: includes/class-gdpr.php:406
 #: includes/class-gdpr.php:440
 msgid "Security check failed."
@@ -687,58 +687,58 @@ msgstr "Tu dirección IP será anonimizada después de 30 días para cumplir con
 msgid "All data is handled in accordance with GDPR and Spanish privacy laws."
 msgstr "Todos los datos se manejan de acuerdo con el RGPD y las leyes de privacidad españolas."
 
-#: includes/class-dfx-parish-retreat-letters.php:1355
+#: includes/class-dfx-parish-retreat-letters.php:1376
 msgid "Please solve: "
 msgstr "Por favor resuelve: "
 
-#: includes/class-dfx-parish-retreat-letters.php:1390
+#: includes/class-dfx-parish-retreat-letters.php:1411
 msgid "Remove"
 msgstr "Eliminar"
 
-#: includes/class-dfx-parish-retreat-letters.php:1465
+#: includes/class-dfx-parish-retreat-letters.php:1486
 msgid "Incorrect security answer. Please try again."
 msgstr "Respuesta de seguridad incorrecta. Por favor inténtelo de nuevo."
 
-#: includes/class-dfx-parish-retreat-letters.php:1494
+#: includes/class-dfx-parish-retreat-letters.php:1515
 msgid "Your message has been sent successfully and securely stored."
 msgstr "Tu mensaje ha sido enviado exitosamente y almacenado de forma segura."
 
-#: includes/class-dfx-parish-retreat-letters.php:1499
+#: includes/class-dfx-parish-retreat-letters.php:1520
 msgid "An error occurred while sending your message."
 msgstr "Ocurrió un error al enviar el mensaje."
 
 #: includes/class-admin.php:4419
 #: includes/class-admin.php:4445
-#: includes/class-dfx-parish-retreat-letters.php:1508
+#: includes/class-dfx-parish-retreat-letters.php:1529
 msgid "A network error occurred. Please try again."
 msgstr "Ocurrió un error de red. Por favor inténtelo de nuevo."
 
-#: includes/class-dfx-parish-retreat-letters.php:1555
+#: includes/class-dfx-parish-retreat-letters.php:1589
 msgid "Too many submission attempts. Please wait before trying again."
 msgstr "Demasiados intentos de envío. Por favor espere antes de intentar de nuevo."
 
-#: includes/class-dfx-parish-retreat-letters.php:1446
-#: includes/class-dfx-parish-retreat-letters.php:1564
+#: includes/class-dfx-parish-retreat-letters.php:1467
+#: includes/class-dfx-parish-retreat-letters.php:1598
 msgid "Please complete the security check."
 msgstr "Por favor complete la verificación de seguridad."
 
-#: includes/class-dfx-parish-retreat-letters.php:1569
+#: includes/class-dfx-parish-retreat-letters.php:1603
 msgid "Incorrect security answer."
 msgstr "Respuesta de seguridad incorrecta."
 
-#: includes/class-dfx-parish-retreat-letters.php:1575
+#: includes/class-dfx-parish-retreat-letters.php:1609
 msgid "Invalid attendant."
 msgstr "Asistente no válido."
 
-#: includes/class-dfx-parish-retreat-letters.php:1622
+#: includes/class-dfx-parish-retreat-letters.php:1656
 msgid "Message content is required."
 msgstr "Se requiere contenido del mensaje."
 
-#: includes/class-dfx-parish-retreat-letters.php:1645
+#: includes/class-dfx-parish-retreat-letters.php:1679
 msgid "Failed to save message."
 msgstr "Error al guardar el mensaje."
 
-#: includes/class-dfx-parish-retreat-letters.php:1667
+#: includes/class-dfx-parish-retreat-letters.php:1701
 msgid "Message sent successfully."
 msgstr "Mensaje enviado correctamente."
 
@@ -855,27 +855,27 @@ msgstr "Subida de archivos"
 msgid "Attach Files"
 msgstr "Adjuntar archivos"
 
-#: includes/class-dfx-parish-retreat-letters.php:1430
+#: includes/class-dfx-parish-retreat-letters.php:1451
 msgid "Please enter a message."
 msgstr "Por favor introduce un mensaje."
 
-#: includes/class-dfx-parish-retreat-letters.php:1436
+#: includes/class-dfx-parish-retreat-letters.php:1457
 msgid "Please select at least one file."
 msgstr "Por favor selecciona un archivo."
 
-#: includes/class-dfx-parish-retreat-letters.php:1602
+#: includes/class-dfx-parish-retreat-letters.php:1636
 msgid "Sender name is required."
 msgstr "El nombre del remitente es obligatorio."
 
-#: includes/class-dfx-parish-retreat-letters.php:1608
+#: includes/class-dfx-parish-retreat-letters.php:1642
 msgid "Invalid message mode."
 msgstr "Modo de mensaje no válido."
 
-#: includes/class-dfx-parish-retreat-letters.php:1628
+#: includes/class-dfx-parish-retreat-letters.php:1662
 msgid "At least one file is required."
 msgstr "Se requiere al menos un archivo."
 
-#: includes/class-dfx-parish-retreat-letters.php:1630
+#: includes/class-dfx-parish-retreat-letters.php:1664
 msgid "File upload message"
 msgstr "Mensaje con archivo adjunto"
 
@@ -912,11 +912,11 @@ msgstr "Deshacer"
 msgid "Redo"
 msgstr "Rehacer"
 
-#: includes/class-dfx-parish-retreat-letters.php:1451
+#: includes/class-dfx-parish-retreat-letters.php:1472
 msgid "Security check error. Please refresh the page."
 msgstr "Error en la verificación de seguridad. Por favor, actualiza la página."
 
-#: includes/class-dfx-parish-retreat-letters.php:1459
+#: includes/class-dfx-parish-retreat-letters.php:1480
 msgid "Security check error. Please try again."
 msgstr "Error en la verificación de seguridad. Por favor, inténtalo de nuevo."
 
@@ -956,65 +956,60 @@ msgstr "Mensajes con Archivos"
 msgid "Encrypted Files"
 msgstr "Archivos cifrados"
 
-#: includes/class-dfx-parish-retreat-letters.php:1853
+#: includes/class-dfx-parish-retreat-letters.php:1887
 msgid "Print Message"
 msgstr "Imprimir mensaje"
 
-#: includes/class-dfx-parish-retreat-letters.php:1775
+#: includes/class-dfx-parish-retreat-letters.php:1809
 msgid "Invalid print request."
 msgstr "Solicitud de impresión no válida."
 
-#: includes/class-dfx-parish-retreat-letters.php:1780
+#: includes/class-dfx-parish-retreat-letters.php:1814
 msgid "Print token expired or invalid."
 msgstr "Token de impresión caducado o no válido."
 
 #: includes/class-admin.php:3732
-#: includes/class-dfx-parish-retreat-letters.php:1793
+#: includes/class-dfx-parish-retreat-letters.php:1827
 msgid "Message not found."
 msgstr "Mensaje no encontrado."
 
-#: includes/class-dfx-parish-retreat-letters.php:1819
+#: includes/class-dfx-parish-retreat-letters.php:1853
 msgid "File not found."
 msgstr "Archivo no encontrado."
 
-#: includes/class-dfx-parish-retreat-letters.php:1932
+#: includes/class-dfx-parish-retreat-letters.php:1966
 msgid "Word document content cannot be displayed for printing. Please download and print separately."
 msgstr "El contenido del documento de Word no se puede mostrar para imprimir. Por favor descargue e imprima por separado."
 
-#: includes/class-dfx-parish-retreat-letters.php:1933
+#: includes/class-dfx-parish-retreat-letters.php:1967
 msgid "File size:"
 msgstr "Tamaño del archivo:"
 
-#: includes/class-dfx-parish-retreat-letters.php:1946
-#, php-format
-msgid "File type: %s, Size: %s - Cannot display content for printing."
-msgstr "Tipo de archivo: %s, Tamaño: %s - No se puede mostrar el contenido para imprimir."
-
-#: includes/class-dfx-parish-retreat-letters.php:1717
+#: includes/class-dfx-parish-retreat-letters.php:1751
 #, php-format
 msgid "File \"%s\" upload failed with error code %d."
 msgstr "La subida del archivo \"%s\" falló con código de error %d."
 
-#: includes/class-dfx-parish-retreat-letters.php:1735
+#: includes/class-dfx-parish-retreat-letters.php:1769
 #, php-format
 msgid "File \"%s\" failed validation (unsupported type or too large)."
 msgstr "El archivo \"%s\" falló la validación (tipo no soportado o demasiado grande)."
 
-#: includes/class-dfx-parish-retreat-letters.php:1754
+#: includes/class-dfx-parish-retreat-letters.php:1788
 #, php-format
 msgid "File \"%s\" could not be saved to database."
 msgstr "El archivo \"%s\" no pudo guardarse en la base de datos."
 
-#: includes/class-dfx-parish-retreat-letters.php:1658
+#: includes/class-dfx-parish-retreat-letters.php:1692
 msgid "No files could be uploaded."
 msgstr "No se pudieron subir archivos."
 
-#: includes/class-dfx-parish-retreat-letters.php:1672
+#: includes/class-dfx-parish-retreat-letters.php:1706
 #, php-format
 msgid "Message sent successfully with %d file(s)."
 msgstr "Mensaje enviado exitosamente con %d archivo(s)."
 
-#: includes/class-dfx-parish-retreat-letters.php:1679
+#: includes/class-dfx-parish-retreat-letters.php:1713
 #, php-format
 msgid "Note: Some files could not be uploaded: %s"
 msgstr "Nota: Algunos archivos no pudieron subirse: %s"
@@ -1555,7 +1550,7 @@ msgid "Total messages: %d"
 msgstr "Mensajes totales: %d"
 
 #: includes/class-admin.php:3541
-#: includes/class-dfx-parish-retreat-letters.php:1896
+#: includes/class-dfx-parish-retreat-letters.php:1930
 msgid "From"
 msgstr "De"
 
@@ -1624,11 +1619,6 @@ msgstr "El término de búsqueda debe tener al menos 2 caracteres."
 #: includes/class-admin.php:3969
 msgid "Invalid parameters."
 msgstr "Parametros no válidos."
-
-#: includes/class-admin.php:3864
-#, php-format
-msgid "Permission granted to %s as %s."
-msgstr "Permiso otorgado a %s como %s."
 
 #: includes/class-admin.php:3876
 msgid "Failed to grant permission."
@@ -2032,10 +2022,20 @@ msgstr "Advertencia Legal"
 msgid "I accept the terms and conditions stated above"
 msgstr "Acepto los términos y condiciones indicados arriba"
 
-#: includes/class-dfx-parish-retreat-letters.php:1474
+#: includes/class-dfx-parish-retreat-letters.php:1495
 msgid "Please accept the legal disclaimer to proceed."
 msgstr "Por favor, acepta la advertencia legal para continuar."
 
-#: includes/class-dfx-parish-retreat-letters.php:1595
+#: includes/class-dfx-parish-retreat-letters.php:1629
 msgid "You must accept the legal disclaimer to proceed."
 msgstr "Debes aceptar la advertencia legal para continuar."
+
+#: includes/class-admin.php:3864
+#, php-format
+msgid "Permission granted to %1$s as %2$s."
+msgstr "Permiso otorgado a %1$s como %2$s."
+
+#: includes/class-dfx-parish-retreat-letters.php:1980
+#, php-format
+msgid "File type: %1$s, Size: %2$s - Cannot display content for printing."
+msgstr "Tipo de fichero: %1$s, Tamaño: %2$s - No se puede mostrar el contenido para imprimir."
