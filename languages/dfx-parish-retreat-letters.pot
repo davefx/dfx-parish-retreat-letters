@@ -2,14 +2,14 @@
 # This file is distributed under the GPL v3.
 msgid ""
 msgstr ""
-"Project-Id-Version: DFX Parish Retreat Letters 25.9.7\n"
+"Project-Id-Version: DFX Parish Retreat Letters 25.9.11\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/dfx-parish-retreat-letters\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2025-09-08T04:11:10+00:00\n"
+"POT-Creation-Date: 2025-09-11T16:29:42+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: dfx-parish-retreat-letters\n"
@@ -61,7 +61,7 @@ msgstr ""
 #: includes/class-admin.php:3984
 #: includes/class-admin.php:4034
 #: includes/class-admin.php:4483
-#: includes/class-dfx-parish-retreat-letters.php:1596
+#: includes/class-dfx-parish-retreat-letters.php:1609
 #: includes/class-gdpr.php:406
 #: includes/class-gdpr.php:440
 msgid "Security check failed."
@@ -1139,7 +1139,7 @@ msgid "Total messages: %d"
 msgstr ""
 
 #: includes/class-admin.php:3563
-#: includes/class-dfx-parish-retreat-letters.php:1946
+#: includes/class-dfx-parish-retreat-letters.php:1959
 msgid "From"
 msgstr ""
 
@@ -1232,7 +1232,7 @@ msgid "File not found or access denied."
 msgstr ""
 
 #: includes/class-admin.php:3754
-#: includes/class-dfx-parish-retreat-letters.php:1843
+#: includes/class-dfx-parish-retreat-letters.php:1856
 msgid "Message not found."
 msgstr ""
 
@@ -1267,7 +1267,7 @@ msgstr ""
 
 #: includes/class-admin.php:3886
 #, php-format
-msgid "Permission granted to %s as %s."
+msgid "Permission granted to %1$s as %2$s."
 msgstr ""
 
 #: includes/class-admin.php:3898
@@ -1520,7 +1520,7 @@ msgstr ""
 
 #: includes/class-admin.php:4441
 #: includes/class-admin.php:4467
-#: includes/class-dfx-parish-retreat-letters.php:1545
+#: includes/class-dfx-parish-retreat-letters.php:1558
 msgid "A network error occurred. Please try again."
 msgstr ""
 
@@ -1711,151 +1711,151 @@ msgstr ""
 msgid "All data is handled in accordance with GDPR and Spanish privacy laws."
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:1392
+#: includes/class-dfx-parish-retreat-letters.php:1405
 msgid "Please solve: "
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:1427
+#: includes/class-dfx-parish-retreat-letters.php:1440
 msgid "Remove"
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:1467
+#: includes/class-dfx-parish-retreat-letters.php:1480
 msgid "Please enter a message."
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:1473
+#: includes/class-dfx-parish-retreat-letters.php:1486
 msgid "Please select at least one file."
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:1483
-#: includes/class-dfx-parish-retreat-letters.php:1614
+#: includes/class-dfx-parish-retreat-letters.php:1496
+#: includes/class-dfx-parish-retreat-letters.php:1627
 msgid "Please complete the security check."
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:1488
+#: includes/class-dfx-parish-retreat-letters.php:1501
 msgid "Security check error. Please refresh the page."
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:1496
+#: includes/class-dfx-parish-retreat-letters.php:1509
 msgid "Security check error. Please try again."
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:1502
+#: includes/class-dfx-parish-retreat-letters.php:1515
 msgid "Incorrect security answer. Please try again."
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:1511
+#: includes/class-dfx-parish-retreat-letters.php:1524
 msgid "Please accept the legal disclaimer to proceed."
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:1531
+#: includes/class-dfx-parish-retreat-letters.php:1544
 msgid "Your message has been sent successfully and securely stored."
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:1536
+#: includes/class-dfx-parish-retreat-letters.php:1549
 msgid "An error occurred while sending your message."
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:1605
+#: includes/class-dfx-parish-retreat-letters.php:1618
 msgid "Too many submission attempts. Please wait before trying again."
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:1619
+#: includes/class-dfx-parish-retreat-letters.php:1632
 msgid "Incorrect security answer."
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:1625
+#: includes/class-dfx-parish-retreat-letters.php:1638
 msgid "Invalid attendant."
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:1645
+#: includes/class-dfx-parish-retreat-letters.php:1658
 msgid "You must accept the legal disclaimer to proceed."
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:1652
+#: includes/class-dfx-parish-retreat-letters.php:1665
 msgid "Sender name is required."
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:1658
+#: includes/class-dfx-parish-retreat-letters.php:1671
 msgid "Invalid message mode."
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:1672
+#: includes/class-dfx-parish-retreat-letters.php:1685
 msgid "Message content is required."
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:1678
+#: includes/class-dfx-parish-retreat-letters.php:1691
 msgid "At least one file is required."
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:1680
+#: includes/class-dfx-parish-retreat-letters.php:1693
 msgid "File upload message"
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:1695
+#: includes/class-dfx-parish-retreat-letters.php:1708
 msgid "Failed to save message."
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:1708
+#: includes/class-dfx-parish-retreat-letters.php:1721
 msgid "No files could be uploaded."
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:1717
+#: includes/class-dfx-parish-retreat-letters.php:1730
 msgid "Message sent successfully."
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:1722
+#: includes/class-dfx-parish-retreat-letters.php:1735
 #, php-format
 msgid "Message sent successfully with %d file(s)."
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:1729
+#: includes/class-dfx-parish-retreat-letters.php:1742
 #, php-format
 msgid "Note: Some files could not be uploaded: %s"
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:1767
+#: includes/class-dfx-parish-retreat-letters.php:1780
 #, php-format
 msgid "File \"%s\" upload failed with error code %d."
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:1785
+#: includes/class-dfx-parish-retreat-letters.php:1798
 #, php-format
 msgid "File \"%s\" failed validation (unsupported type or too large)."
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:1804
+#: includes/class-dfx-parish-retreat-letters.php:1817
 #, php-format
 msgid "File \"%s\" could not be saved to database."
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:1825
+#: includes/class-dfx-parish-retreat-letters.php:1838
 msgid "Invalid print request."
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:1830
+#: includes/class-dfx-parish-retreat-letters.php:1843
 msgid "Print token expired or invalid."
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:1869
+#: includes/class-dfx-parish-retreat-letters.php:1882
 msgid "File not found."
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:1903
+#: includes/class-dfx-parish-retreat-letters.php:1916
 msgid "Print Message"
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:1982
+#: includes/class-dfx-parish-retreat-letters.php:1995
 msgid "Word document content cannot be displayed for printing. Please download and print separately."
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:1983
+#: includes/class-dfx-parish-retreat-letters.php:1996
 msgid "File size:"
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:1996
+#: includes/class-dfx-parish-retreat-letters.php:2009
 #, php-format
-msgid "File type: %s, Size: %s - Cannot display content for printing."
+msgid "File type: %1$s, Size: %2$s - Cannot display content for printing."
 msgstr ""
 
 #: includes/class-gdpr.php:176

@@ -31,7 +31,7 @@ class DFXParishRetreatLettersTest extends TestCase {
         
         // Define constants if not already defined
         if (!defined('DFX_PARISH_RETREAT_LETTERS_VERSION')) {
-            define('DFX_PARISH_RETREAT_LETTERS_VERSION', '25.9.7');
+            define('DFX_PARISH_RETREAT_LETTERS_VERSION', '25.9.11');
         }
     }
 
@@ -65,7 +65,7 @@ class DFXParishRetreatLettersTest extends TestCase {
         $version_property->setAccessible(true);
         $version = $version_property->getValue($plugin);
         
-        $this->assertEquals('25.9.7', $version);
+        $this->assertEquals('25.9.11', $version);
     }
 
     /**
