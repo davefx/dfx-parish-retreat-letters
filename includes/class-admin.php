@@ -408,7 +408,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 	 */
 	public function enqueue_admin_scripts( $hook_suffix ) {
 		// Check for our admin pages - be more flexible with the hook detection
-		$our_pages = array( 'dfx-prl-retreats', 'dfx-prl-messages', 'dfx-prl-privacy' );
+		$our_pages = array( 'dfx-prl-retreats', 'dfx-prl-messages', 'dfx-prl-privacy', 'dfx-prl-global-settings' );
 		$is_our_page = false;
 		
 		// Ensure hook_suffix is a string
@@ -443,6 +443,13 @@ class DFX_Parish_Retreat_Letters_Admin {
 		}
 
 		wp_enqueue_script( 'jquery' );
+		
+		// Enqueue Select2 for user management on global settings page
+		if ( isset( $_GET['page'] ) && $_GET['page'] === 'dfx-prl-global-settings' ) {
+			wp_enqueue_script( 'select2' );
+			wp_enqueue_style( 'select2' );
+		}
+		
 		wp_enqueue_script(
 			'dfx-prl-retreats-admin',
 			DFX_PARISH_RETREAT_LETTERS_PLUGIN_URL . 'includes/admin.js',
@@ -4868,13 +4875,109 @@ class DFX_Parish_Retreat_Letters_Admin {
 			<hr>
 
 			<h2><?php esc_html_e( 'User Management', 'dfx-parish-retreat-letters' ); ?></h2>
-			<p class="description"><?php esc_html_e( 'Plugin administrators can manage retreats and global settings. You can grant permissions to specific users for individual retreats on the Privacy & Compliance page.', 'dfx-parish-retreat-letters' ); ?></p>
+			<p class="description"><?php esc_html_e( 'Grant or revoke global retreat management permissions. Users with this permission can manage all retreats and create new ones.', 'dfx-parish-retreat-letters' ); ?></p>
+
+			<?php
+			// Get current global retreat managers
+			$global_managers = $this->permissions->get_global_retreat_managers();
+			$non_admin_users = $this->permissions->get_non_admin_users();
+			?>
+
+			<?php if ( ! empty( $global_managers ) ) : ?>
+			<h3><?php esc_html_e( 'Current Global Retreat Managers', 'dfx-parish-retreat-letters' ); ?></h3>
+			<table class="wp-list-table widefat fixed striped">
+				<thead>
+					<tr>
+						<th scope="col"><?php esc_html_e( 'User', 'dfx-parish-retreat-letters' ); ?></th>
+						<th scope="col"><?php esc_html_e( 'Email', 'dfx-parish-retreat-letters' ); ?></th>
+						<th scope="col"><?php esc_html_e( 'Role', 'dfx-parish-retreat-letters' ); ?></th>
+						<th scope="col"><?php esc_html_e( 'Actions', 'dfx-parish-retreat-letters' ); ?></th>
+					</tr>
+				</thead>
+				<tbody>
+					<?php foreach ( $global_managers as $manager ) : ?>
+					<tr>
+						<td><strong><?php echo esc_html( $manager->display_name ); ?></strong></td>
+						<td><?php echo esc_html( $manager->user_email ); ?></td>
+						<td><?php echo esc_html( implode( ', ', $manager->roles ) ); ?></td>
+						<td>
+							<form method="post" style="display: inline-block;">
+								<?php wp_nonce_field( 'dfx_prl_user_management_nonce' ); ?>
+								<input type="hidden" name="user_management_action" value="revoke">
+								<input type="hidden" name="user_id" value="<?php echo esc_attr( $manager->ID ); ?>">
+								<button type="submit" class="button button-small" onclick="return confirm('<?php esc_attr_e( 'Are you sure you want to revoke global retreat management access from this user?', 'dfx-parish-retreat-letters' ); ?>')">
+									<?php esc_html_e( 'Revoke Access', 'dfx-parish-retreat-letters' ); ?>
+								</button>
+							</form>
+						</td>
+					</tr>
+					<?php endforeach; ?>
+				</tbody>
+			</table>
+			<br>
+			<?php endif; ?>
+
+			<h3><?php esc_html_e( 'Grant Global Retreat Management Access', 'dfx-parish-retreat-letters' ); ?></h3>
 			
+			<?php if ( empty( $non_admin_users ) ) : ?>
+				<p><em><?php esc_html_e( 'No non-administrator users available.', 'dfx-parish-retreat-letters' ); ?></em></p>
+			<?php else : ?>
+				<form method="post">
+					<?php wp_nonce_field( 'dfx_prl_user_management_nonce' ); ?>
+					<input type="hidden" name="user_management_action" value="grant">
+					
+					<table class="form-table">
+						<tr>
+							<th scope="row">
+								<label for="user_id"><?php esc_html_e( 'Select User', 'dfx-parish-retreat-letters' ); ?></label>
+							</th>
+							<td>
+								<select name="user_id" id="user_id" class="dfx-user-select" style="width: 300px;" required>
+									<option value=""><?php esc_html_e( 'Choose a user...', 'dfx-parish-retreat-letters' ); ?></option>
+									<?php foreach ( $non_admin_users as $user ) : ?>
+										<?php if ( ! $user->has_cap( 'manage_retreat_plugin' ) ) : ?>
+										<option value="<?php echo esc_attr( $user->ID ); ?>">
+											<?php echo esc_html( $user->display_name . ' (' . $user->user_email . ')' ); ?>
+										</option>
+										<?php endif; ?>
+									<?php endforeach; ?>
+								</select>
+								<p class="description"><?php esc_html_e( 'Select a user to grant global retreat management permissions.', 'dfx-parish-retreat-letters' ); ?></p>
+							</td>
+						</tr>
+					</table>
+
+					<p class="submit">
+						<button type="submit" class="button button-primary">
+							<?php esc_html_e( 'Grant Access', 'dfx-parish-retreat-letters' ); ?>
+						</button>
+					</p>
+				</form>
+			<?php endif; ?>
+
+			<hr>
+			
+			<h3><?php esc_html_e( 'Per-Retreat Permissions', 'dfx-parish-retreat-letters' ); ?></h3>
+			<p class="description"><?php esc_html_e( 'For retreat-specific permissions (individual retreat management), use the Privacy & Compliance page.', 'dfx-parish-retreat-letters' ); ?></p>
 			<p>
 				<a href="<?php echo esc_url( admin_url( 'admin.php?page=dfx-prl-privacy' ) ); ?>" class="button">
-					<?php esc_html_e( 'Manage User Permissions', 'dfx-parish-retreat-letters' ); ?>
+					<?php esc_html_e( 'Manage Per-Retreat Permissions', 'dfx-parish-retreat-letters' ); ?>
 				</a>
 			</p>
+
+			<script type="text/javascript">
+			jQuery(document).ready(function($) {
+				// Initialize Select2 for user selection
+				if ($.fn.select2) {
+					$('.dfx-user-select').select2({
+						placeholder: '<?php esc_html_e( 'Choose a user...', 'dfx-parish-retreat-letters' ); ?>',
+						allowClear: true,
+						width: '100%'
+					});
+				}
+			});
+			</script>
+
 		</div>
 		<?php
 	}
@@ -4885,14 +4988,20 @@ class DFX_Parish_Retreat_Letters_Admin {
 	 * @since 1.6.0
 	 */
 	private function handle_global_settings_page_submissions() {
-		// Check if form was actually submitted
-		if ( ! isset( $_POST['submit'] ) ) {
+		// Check permissions first
+		if ( ! $this->permissions->current_user_can_manage_plugin() ) {
+			wp_die( esc_html__( 'You do not have permission to perform this action.', 'dfx-parish-retreat-letters' ) );
+		}
+
+		// Handle user management actions
+		if ( isset( $_POST['user_management_action'] ) ) {
+			$this->handle_user_management_actions();
 			return;
 		}
 
-		// Check permissions
-		if ( ! $this->permissions->current_user_can_manage_plugin() ) {
-			wp_die( esc_html__( 'You do not have permission to perform this action.', 'dfx-parish-retreat-letters' ) );
+		// Handle global settings form submission
+		if ( ! isset( $_POST['submit'] ) ) {
+			return;
 		}
 
 		// Verify nonce
@@ -4918,6 +5027,63 @@ class DFX_Parish_Retreat_Letters_Admin {
 			$this->add_admin_notice( __( 'Global settings saved successfully.', 'dfx-parish-retreat-letters' ), 'success' );
 		} else {
 			$this->add_admin_notice( __( 'Error saving global settings. Please try again.', 'dfx-parish-retreat-letters' ), 'error' );
+		}
+	}
+
+	/**
+	 * Handle user management actions.
+	 *
+	 * @since 1.6.1
+	 */
+	private function handle_user_management_actions() {
+		// Verify nonce
+		if ( ! isset( $_POST['_wpnonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['_wpnonce'] ) ), 'dfx_prl_user_management_nonce' ) ) {
+			$this->add_admin_notice( __( 'Security check failed. Please try again.', 'dfx-parish-retreat-letters' ), 'error' );
+			return;
+		}
+
+		$action = sanitize_text_field( $_POST['user_management_action'] );
+		$user_id = absint( $_POST['user_id'] ?? 0 );
+
+		if ( ! $user_id ) {
+			$this->add_admin_notice( __( 'Invalid user selected.', 'dfx-parish-retreat-letters' ), 'error' );
+			return;
+		}
+
+		$user = get_user_by( 'id', $user_id );
+		if ( ! $user ) {
+			$this->add_admin_notice( __( 'User not found.', 'dfx-parish-retreat-letters' ), 'error' );
+			return;
+		}
+
+		// Don't allow managing administrators
+		if ( $user->has_cap( 'manage_options' ) ) {
+			$this->add_admin_notice( __( 'Cannot modify permissions for administrators.', 'dfx-parish-retreat-letters' ), 'error' );
+			return;
+		}
+
+		switch ( $action ) {
+			case 'grant':
+				if ( $this->permissions->grant_global_retreat_management( $user_id ) ) {
+					/* translators: %s: User display name */
+					$this->add_admin_notice( sprintf( __( 'Global retreat management access granted to %s.', 'dfx-parish-retreat-letters' ), $user->display_name ), 'success' );
+				} else {
+					$this->add_admin_notice( __( 'Failed to grant global retreat management access.', 'dfx-parish-retreat-letters' ), 'error' );
+				}
+				break;
+
+			case 'revoke':
+				if ( $this->permissions->revoke_global_retreat_management( $user_id ) ) {
+					/* translators: %s: User display name */
+					$this->add_admin_notice( sprintf( __( 'Global retreat management access revoked from %s.', 'dfx-parish-retreat-letters' ), $user->display_name ), 'success' );
+				} else {
+					$this->add_admin_notice( __( 'Failed to revoke global retreat management access.', 'dfx-parish-retreat-letters' ), 'error' );
+				}
+				break;
+
+			default:
+				$this->add_admin_notice( __( 'Invalid action.', 'dfx-parish-retreat-letters' ), 'error' );
+				break;
 		}
 	}
 }

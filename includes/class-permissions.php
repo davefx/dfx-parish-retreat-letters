@@ -608,6 +608,123 @@ class DFX_Parish_Retreat_Letters_Permissions {
 	}
 
 	/**
+	 * Grant global retreat management capability to a user.
+	 *
+	 * @since 1.6.1
+	 * @param int $user_id User ID to grant capability to.
+	 * @return bool True on success, false on failure.
+	 */
+	public function grant_global_retreat_management( $user_id ) {
+		$user = get_user_by( 'id', $user_id );
+		if ( ! $user ) {
+			return false;
+		}
+
+		// Don't add if user already has it
+		if ( $user->has_cap( 'manage_retreat_plugin' ) ) {
+			return true;
+		}
+
+		$user->add_cap( 'manage_retreat_plugin' );
+		
+		// Ensure user has admin access
+		if ( ! $user->has_cap( 'read' ) ) {
+			$user->add_cap( 'read' );
+		}
+
+		return true;
+	}
+
+	/**
+	 * Revoke global retreat management capability from a user.
+	 *
+	 * @since 1.6.1
+	 * @param int $user_id User ID to revoke capability from.
+	 * @return bool True on success, false on failure.
+	 */
+	public function revoke_global_retreat_management( $user_id ) {
+		$user = get_user_by( 'id', $user_id );
+		if ( ! $user ) {
+			return false;
+		}
+
+		// Don't remove if user doesn't have it
+		if ( ! $user->has_cap( 'manage_retreat_plugin' ) ) {
+			return true;
+		}
+
+		$user->remove_cap( 'manage_retreat_plugin' );
+
+		// Check if user still has any retreat permissions
+		$accessible_retreats = $this->get_user_accessible_retreats( $user_id );
+		
+		// If user has no more retreat permissions and doesn't have other admin capabilities,
+		// consider removing the 'read' capability we may have added
+		if ( empty( $accessible_retreats ) && 
+			 ! $user->has_cap( 'edit_posts' ) && 
+			 ! $user->has_cap( 'manage_options' ) ) {
+			// Only remove 'read' if it was likely added by us (user has subscriber-like role)
+			$user_roles = $user->roles;
+			if ( in_array( 'subscriber', $user_roles, true ) || empty( $user_roles ) ) {
+				$user->remove_cap( 'read' );
+			}
+		}
+
+		return true;
+	}
+
+	/**
+	 * Get all users who have global retreat management capability.
+	 *
+	 * @since 1.6.1
+	 * @return array Array of user objects with global retreat management capability.
+	 */
+	public function get_global_retreat_managers() {
+		$users = get_users( array(
+			'meta_query' => array(
+				array(
+					'key'     => 'wp_capabilities',
+					'value'   => 'manage_retreat_plugin',
+					'compare' => 'LIKE'
+				)
+			)
+		) );
+
+		// Filter out administrators as they automatically have this capability
+		$managers = array();
+		foreach ( $users as $user ) {
+			if ( ! $user->has_cap( 'manage_options' ) && $user->has_cap( 'manage_retreat_plugin' ) ) {
+				$managers[] = $user;
+			}
+		}
+
+		return $managers;
+	}
+
+	/**
+	 * Get all non-administrator users for the user management interface.
+	 *
+	 * @since 1.6.1
+	 * @return array Array of user objects (excluding administrators).
+	 */
+	public function get_non_admin_users() {
+		$all_users = get_users( array(
+			'orderby' => 'display_name',
+			'order'   => 'ASC'
+		) );
+
+		// Filter out administrators
+		$non_admin_users = array();
+		foreach ( $all_users as $user ) {
+			if ( ! $user->has_cap( 'manage_options' ) ) {
+				$non_admin_users[] = $user;
+			}
+		}
+
+		return $non_admin_users;
+	}
+
+	/**
 	 * Initialize WooCommerce admin access handling.
 	 *
 	 * @since 1.3.0
