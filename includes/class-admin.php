@@ -5152,8 +5152,8 @@ class DFX_Parish_Retreat_Letters_Admin {
 	 */
 	private function render_plugin_footer() {
 		?>
-		<div class="dfx-prl-plugin-footer">
-			<p style="margin-top: 30px; padding-top: 15px; border-top: 1px solid #ddd; color: #666; font-size: 12px; text-align: center;">
+		<div class="dfx-prl-plugin-footer" style="position: fixed; bottom: 0; right: 0; left: 200px; z-index: 1000; background: #f1f1f1; border-top: 1px solid #ddd; padding: 10px 20px;">
+			<p style="margin: 0; color: #666; font-size: 12px; text-align: right;">
 				<?php 
 				printf(
 					/* translators: %1$s: Plugin name, %2$s: Author link */
@@ -5164,6 +5164,33 @@ class DFX_Parish_Retreat_Letters_Admin {
 				?>
 			</p>
 		</div>
+
+		<script>
+		jQuery(document).ready(function($) {
+			// Adjust footer positioning based on admin menu state
+			function adjustFooterPosition() {
+				var $footer = $('.dfx-prl-plugin-footer');
+				var $adminMenu = $('#adminmenumain');
+				
+				if ($adminMenu.length && $adminMenu.hasClass('folded')) {
+					// Menu is collapsed
+					$footer.css('left', '36px');
+				} else {
+					// Menu is expanded
+					$footer.css('left', '160px');
+				}
+			}
+			
+			// Initial adjustment
+			adjustFooterPosition();
+			
+			// Listen for menu fold/unfold events
+			$(document).on('wp-collapse-menu', adjustFooterPosition);
+			
+			// Fallback: monitor window resize
+			$(window).on('resize', adjustFooterPosition);
+		});
+		</script>
 		<?php
 	}
 }
