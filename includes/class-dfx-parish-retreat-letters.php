@@ -352,7 +352,8 @@ class DFX_Parish_Retreat_Letters {
 	public function load_plugin_textdomain() {
 		// Load plugin text domain for translations
 		$plugin_dir = plugin_basename( dirname( dirname( __FILE__ ) ) );
-		load_plugin_textdomain(
+		call_user_func(
+			'load_plugin_textdomain',
 			'dfx-parish-retreat-letters',
 			false,
 			$plugin_dir . '/languages/'
