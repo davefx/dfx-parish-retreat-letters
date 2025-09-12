@@ -398,7 +398,7 @@ class DFX_Parish_Retreat_Letters {
 	 */
 	public function handle_message_url_routing() {
 		// Check if we're on a message URL pattern: /messages/[token] or /print/[token]
-		$request_uri = sanitize_text_field( wp_unslash( $_SERVER['REQUEST_URI'] ?? '' ) );
+		$request_uri = isset( $_SERVER['REQUEST_URI'] ) ? sanitize_text_field( wp_unslash( $_SERVER['REQUEST_URI'] ) ) : '';
 		
 		// Ensure we have a valid string
 		if ( ! is_string( $request_uri ) || empty( $request_uri ) ) {
@@ -1112,7 +1112,7 @@ class DFX_Parish_Retreat_Letters {
 	 */
 	public function enqueue_public_scripts() {
 		// Only enqueue on message URLs
-		$request_uri = sanitize_text_field( wp_unslash( $_SERVER['REQUEST_URI'] ?? '' ) );
+		$request_uri = isset( $_SERVER['REQUEST_URI'] ) ? sanitize_text_field( wp_unslash( $_SERVER['REQUEST_URI'] ) ) : '';
 		
 		// Ensure we have a valid string
 		if ( ! is_string( $request_uri ) || empty( $request_uri ) ) {
