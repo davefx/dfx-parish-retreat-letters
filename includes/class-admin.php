@@ -5159,7 +5159,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 					/* translators: %1$s: Plugin name, %2$s: Author link */
 					__( 'Retreat letters management features provided via %1$s plugin by %2$s. A.M.D.G.', 'dfx-parish-retreat-letters' ),
 					'<strong>DFX Parish Retreat Letters</strong>',
-					printf('<a href="%s">David Marín Carreño</a>', __( 'https://davefx.com/en/wordpress-plugins/', 'dfx-parish-retreat-letters' ) )
+					sprintf('<a href="%s">David Marín Carreño</a>', __( 'https://davefx.com/en/wordpress-plugins/', 'dfx-parish-retreat-letters' ) )
 				);
 				?>
 			</p>
