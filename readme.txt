@@ -7,7 +7,7 @@ Stable tag: 25.9.12
 Requires PHP: 7.4
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
-Manage parish retreat programs with confidentiality, GDPR compliance, and advanced user management.
+Manage parish retreat programs with confidentiality, GDPR compliance, and user management.
 
 # DFX Parish Retreat Letters
 

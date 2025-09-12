@@ -197,7 +197,7 @@ class DFX_Parish_Retreat_Letters_Invitations {
 			'invitation_sent', 
 			$permission_level, 
 			$invited_by,
-			sprintf( 'Invitation sent to %s (%s)', $name, $email )
+			sprintf( 'Invitation sent to %1$s (%2$s)', $name, $email )
 		);
 
 		return array(
@@ -357,7 +357,7 @@ class DFX_Parish_Retreat_Letters_Invitations {
 				'invitation_cancelled', 
 				$invitation->permission_level, 
 				$cancelled_by,
-				sprintf( 'Invitation cancelled for %s (%s)', $invitation->name, $invitation->email )
+				sprintf( 'Invitation cancelled for %1$s (%2$s)', $invitation->name, $invitation->email )
 			);
 		}
 
