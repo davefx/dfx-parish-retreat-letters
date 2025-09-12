@@ -1703,6 +1703,7 @@ class DFX_Parish_Retreat_Letters {
 		// Add file upload info to success message if applicable
 		if ( $message_mode === 'file' && $upload_result['uploaded_count'] > 0 ) {
 			$success_message = sprintf(
+				/* translators: %d: number of files uploaded */
 				__( 'Message sent successfully with %d file(s).', 'dfx-parish-retreat-letters' ),
 				$upload_result['uploaded_count']
 			);
@@ -1710,6 +1711,7 @@ class DFX_Parish_Retreat_Letters {
 			// Add warning if some files failed
 			if ( ! empty( $upload_result['errors'] ) ) {
 				$success_message .= ' ' . sprintf(
+					/* translators: %s: comma-separated list of file names that failed to upload */
 					__( 'Note: Some files could not be uploaded: %s', 'dfx-parish-retreat-letters' ),
 					implode( ', ', $upload_result['errors'] )
 				);
@@ -1748,7 +1750,8 @@ class DFX_Parish_Retreat_Letters {
 			// Check for upload errors
 			if ( $files['error'][$i] !== UPLOAD_ERR_OK ) {
 				$errors[] = sprintf( 
-					__( 'File "%s" upload failed with error code %d.', 'dfx-parish-retreat-letters' ),
+					/* translators: %1$s: file name, %2$d: error code number */
+					__( 'File "%1$s" upload failed with error code %2$d.', 'dfx-parish-retreat-letters' ),
 					$filename,
 					$files['error'][$i]
 				);
@@ -1766,6 +1769,7 @@ class DFX_Parish_Retreat_Letters {
 			$validated_file = $this->security->validate_file_upload( $file_data );
 			if ( ! $validated_file ) {
 				$errors[] = sprintf( 
+					/* translators: %s: file name */
 					__( 'File "%s" failed validation (unsupported type or too large).', 'dfx-parish-retreat-letters' ),
 					$filename
 				);
@@ -1785,6 +1789,7 @@ class DFX_Parish_Retreat_Letters {
 				$uploaded_count++;
 			} else {
 				$errors[] = sprintf( 
+					/* translators: %s: file name */
 					__( 'File "%s" could not be saved to database.', 'dfx-parish-retreat-letters' ),
 					$filename
 				);
@@ -1977,6 +1982,7 @@ class DFX_Parish_Retreat_Letters {
 								// Binary file that can't be printed as text
 								echo '<h3>' . esc_html( $decrypted_file['filename'] ) . '</h3>';
 								echo '<p>' . sprintf( 
+									/* translators: %1$s: file type, %2$s: formatted file size */
 									esc_html__( 'File type: %1$s, Size: %2$s - Cannot display content for printing.', 'dfx-parish-retreat-letters' ),
 									esc_html( $file->file_type ),
 									esc_html( size_format( $decrypted_file['size'] ) )
