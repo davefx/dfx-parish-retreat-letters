@@ -518,7 +518,7 @@ class ComprehensiveInfrastructureTest extends TestCase {
         
         // Test that the database class has the current version
         if (class_exists('DFX_Parish_Retreat_Letters_Database')) {
-            $this->assertEquals('1.6.0', DFX_Parish_Retreat_Letters_Database::DB_VERSION, 'Database version should be 1.6.0');
+            $this->assertEquals('1.6.1', DFX_Parish_Retreat_Letters_Database::DB_VERSION, 'Database version should be 1.6.1');
             
             // Test that the database instance can be created
             $database = DFX_Parish_Retreat_Letters_Database::get_instance();

@@ -34,17 +34,14 @@ class GlobalSettingsTest extends TestCase {
         $this->assertSame($instance1, $instance2);
     }
 
-    public function test_database_settings_table_getter() {
-        if (!class_exists('DFX_Parish_Retreat_Letters_Database')) {
-            $this->markTestSkipped('Database class not available');
+    public function test_global_settings_uses_wordpress_options() {
+        if (!class_exists('DFX_Parish_Retreat_Letters_GlobalSettings')) {
+            $this->markTestSkipped('GlobalSettings class not available');
         }
 
-        $database = DFX_Parish_Retreat_Letters_Database::get_instance();
-        $this->assertTrue(method_exists($database, 'get_settings_table'));
-        
-        $table_name = $database->get_settings_table();
-        $this->assertIsString($table_name);
-        $this->assertStringEndsWith('dfx_prl_global_settings', $table_name);
+        // Test that the GlobalSettings class has the expected option prefix constant
+        $this->assertTrue(defined('DFX_Parish_Retreat_Letters_GlobalSettings::OPTION_PREFIX'));
+        $this->assertEquals('dfx_prl_global_', DFX_Parish_Retreat_Letters_GlobalSettings::OPTION_PREFIX);
     }
 
     public function test_database_version_updated() {
@@ -52,7 +49,7 @@ class GlobalSettingsTest extends TestCase {
             $this->markTestSkipped('Database class not available');
         }
 
-        $this->assertEquals('1.6.0', DFX_Parish_Retreat_Letters_Database::DB_VERSION);
+        $this->assertEquals('1.6.1', DFX_Parish_Retreat_Letters_Database::DB_VERSION);
     }
 
     public function test_retreat_model_has_css_sanitization() {

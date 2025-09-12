@@ -2,7 +2,7 @@
 /**
  * The global settings model class
  *
- * Handles CRUD operations for global plugin settings.
+ * Handles CRUD operations for global plugin settings using WordPress options.
  *
  * @link       https://github.com/davefx/dfx-parish-retreat-letters
  * @since      1.6.0
@@ -14,7 +14,11 @@
 /**
  * The global settings model class.
  *
- * This class handles all CRUD operations for global plugin settings.
+ * This class handles all CRUD operations for global plugin settings using WordPress options.
+ * 
+ * Since version 1.6.1, global settings are stored as WordPress options instead of a custom
+ * database table. This provides better performance, built-in caching, and easier backup/restore.
+ * All option names are prefixed with 'dfx_prl_global_' to avoid conflicts.
  *
  * @since      1.6.0
  * @package    DFX_Parish_Retreat_Letters
@@ -32,12 +36,12 @@ class DFX_Parish_Retreat_Letters_GlobalSettings {
 	private static $instance = null;
 
 	/**
-	 * The database instance.
+	 * The option prefix for global settings.
 	 *
 	 * @since 1.6.0
-	 * @var DFX_Parish_Retreat_Letters_Database
+	 * @var string
 	 */
-	private $database;
+	const OPTION_PREFIX = 'dfx_prl_global_';
 
 	/**
 	 * Get the single instance of the class.
@@ -58,7 +62,7 @@ class DFX_Parish_Retreat_Letters_GlobalSettings {
 	 * @since 1.6.0
 	 */
 	private function __construct() {
-		$this->database = DFX_Parish_Retreat_Letters_Database::get_instance();
+		// No database dependency needed - using WordPress options
 	}
 
 	/**
@@ -70,21 +74,8 @@ class DFX_Parish_Retreat_Letters_GlobalSettings {
 	 * @return mixed The setting value.
 	 */
 	public function get( $key, $default = null ) {
-		global $wpdb;
-		$table = $this->database->get_settings_table();
-		
-		$value = $wpdb->get_var( $wpdb->prepare(
-			"SELECT setting_value FROM {$table} WHERE setting_key = %s", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-			$key
-		) );
-		
-		if ( $value === null ) {
-			return $default;
-		}
-		
-		// Try to unserialize if it's a serialized value
-		$unserialized = maybe_unserialize( $value );
-		return $unserialized !== false ? $unserialized : $value;
+		$option_name = self::OPTION_PREFIX . $key;
+		return get_option( $option_name, $default );
 	}
 
 	/**
@@ -96,24 +87,8 @@ class DFX_Parish_Retreat_Letters_GlobalSettings {
 	 * @return bool True on success, false on failure.
 	 */
 	public function set( $key, $value ) {
-		global $wpdb;
-		$table = $this->database->get_settings_table();
-		
-		// Serialize complex values
-		if ( is_array( $value ) || is_object( $value ) ) {
-			$value = serialize( $value );
-		}
-		
-		$result = $wpdb->replace(
-			$table,
-			array(
-				'setting_key'   => $key,
-				'setting_value' => $value,
-			),
-			array( '%s', '%s' )
-		);
-		
-		return $result !== false;
+		$option_name = self::OPTION_PREFIX . $key;
+		return update_option( $option_name, $value );
 	}
 
 	/**
@@ -124,41 +99,39 @@ class DFX_Parish_Retreat_Letters_GlobalSettings {
 	 * @return bool True on success, false on failure.
 	 */
 	public function delete( $key ) {
-		global $wpdb;
-		$table = $this->database->get_settings_table();
-		
-		$result = $wpdb->delete(
-			$table,
-			array( 'setting_key' => $key ),
-			array( '%s' )
-		);
-		
-		return $result !== false;
+		$option_name = self::OPTION_PREFIX . $key;
+		return delete_option( $option_name );
 	}
 
 	/**
-	 * Get all settings as an associative array.
+	 * Get all global settings as an associative array.
 	 *
 	 * @since 1.6.0
 	 * @return array Array of setting_key => setting_value pairs.
 	 */
 	public function get_all() {
 		global $wpdb;
-		$table = $this->database->get_settings_table();
 		
-		$results = $wpdb->get_results(
-			"SELECT setting_key, setting_value FROM {$table}", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		// Get all options with our prefix
+		$prefix = self::OPTION_PREFIX;
+		$options = $wpdb->get_results(
+			$wpdb->prepare(
+				"SELECT option_name, option_value FROM {$wpdb->options} WHERE option_name LIKE %s",
+				$prefix . '%'
+			),
 			ARRAY_A
 		);
 		
-		if ( ! $results ) {
+		if ( ! $options ) {
 			return array();
 		}
 		
 		$settings = array();
-		foreach ( $results as $row ) {
-			$value = maybe_unserialize( $row['setting_value'] );
-			$settings[ $row['setting_key'] ] = $value !== false ? $value : $row['setting_value'];
+		foreach ( $options as $option ) {
+			// Remove the prefix to get the setting key
+			$setting_key = str_replace( $prefix, '', $option['option_name'] );
+			$setting_value = maybe_unserialize( $option['option_value'] );
+			$settings[ $setting_key ] = $setting_value;
 		}
 		
 		return $settings;

@@ -38,7 +38,7 @@ class DFX_Parish_Retreat_Letters_Database {
 	 * @since 1.0.0
 	 * @var string
 	 */
-	const DB_VERSION = '1.6.0';
+	const DB_VERSION = '1.6.1';
 
 	/**
 	 * The database version option name.
@@ -113,14 +113,6 @@ class DFX_Parish_Retreat_Letters_Database {
 	private $audit_log_table;
 
 	/**
-	 * The table name for global plugin settings.
-	 *
-	 * @since 1.6.0
-	 * @var string
-	 */
-	private $settings_table;
-
-	/**
 	 * Get the single instance of the class.
 	 *
 	 * @since 1.0.0
@@ -148,7 +140,6 @@ class DFX_Parish_Retreat_Letters_Database {
 		$this->permissions_table = $wpdb->prefix . 'dfx_prl_retreat_permissions';
 		$this->invitations_table = $wpdb->prefix . 'dfx_prl_retreat_invitations';
 		$this->audit_log_table = $wpdb->prefix . 'dfx_prl_permission_audit_log';
-		$this->settings_table = $wpdb->prefix . 'dfx_prl_global_settings';
 		
 		// Only check for database upgrades if WordPress is fully loaded
 		if ( did_action( 'init' ) || current_action() === 'init' ) {
@@ -354,19 +345,6 @@ class DFX_Parish_Retreat_Letters_Database {
 
 		dbDelta( $audit_log_sql );
 
-		// Create global settings table (from v1.6.0)
-		$settings_sql = "CREATE TABLE {$this->settings_table} (
-			id mediumint(9) NOT NULL AUTO_INCREMENT,
-			setting_key varchar(255) NOT NULL,
-			setting_value longtext DEFAULT NULL,
-			created_at datetime DEFAULT CURRENT_TIMESTAMP,
-			updated_at datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-			PRIMARY KEY (id),
-			UNIQUE KEY uk_setting_key (setting_key)
-		) $charset_collate;";
-
-		dbDelta( $settings_sql );
-
 		// Add the manage_retreat_plugin capability to administrator role (from v1.3.0)
 		$admin_role = get_role( 'administrator' );
 		if ( $admin_role ) {
@@ -396,7 +374,6 @@ class DFX_Parish_Retreat_Letters_Database {
 		global $wpdb;
 		// Drop tables in reverse order due to foreign key constraints
 		$wpdb->query( "DROP TABLE IF EXISTS {$this->audit_log_table}" ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-		$wpdb->query( "DROP TABLE IF EXISTS {$this->settings_table}" ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 		$wpdb->query( "DROP TABLE IF EXISTS {$this->invitations_table}" ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 		$wpdb->query( "DROP TABLE IF EXISTS {$this->permissions_table}" ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 		$wpdb->query( "DROP TABLE IF EXISTS {$this->message_print_log_table}" ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
@@ -492,16 +469,6 @@ class DFX_Parish_Retreat_Letters_Database {
 	 */
 	public function get_audit_log_table() {
 		return $this->audit_log_table;
-	}
-
-	/**
-	 * Get the global settings table name.
-	 *
-	 * @since 1.6.0
-	 * @return string
-	 */
-	public function get_settings_table() {
-		return $this->settings_table;
 	}
 
 	/**
@@ -714,6 +681,57 @@ class DFX_Parish_Retreat_Letters_Database {
 	}
 
 	/**
+	 * Migrate global settings from database table to WordPress options.
+	 * 
+	 * This method migrates existing settings from the dfx_prl_global_settings table
+	 * to WordPress options and then drops the table.
+	 *
+	 * @since 1.6.1
+	 */
+	private function migrate_global_settings_to_options() {
+		global $wpdb;
+		
+		$settings_table = $wpdb->prefix . 'dfx_prl_global_settings';
+		
+		// Check if the settings table exists
+		$table_exists = $wpdb->get_var( $wpdb->prepare( "SHOW TABLES LIKE %s", $settings_table ) );
+		if ( $table_exists !== $settings_table ) {
+			return; // Table doesn't exist, nothing to migrate
+		}
+		
+		// Get all settings from the table
+		$settings = $wpdb->get_results(
+			"SELECT setting_key, setting_value FROM {$settings_table}", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			ARRAY_A
+		);
+		
+		$migrated_count = 0;
+		if ( $settings ) {
+			foreach ( $settings as $setting ) {
+				$option_name = 'dfx_prl_global_' . $setting['setting_key'];
+				$option_value = maybe_unserialize( $setting['setting_value'] );
+				
+				// Only migrate if the option doesn't already exist
+				if ( get_option( $option_name ) === false ) {
+					update_option( $option_name, $option_value );
+					$migrated_count++;
+				}
+			}
+		}
+		
+		// Drop the settings table after migration
+		$wpdb->query( "DROP TABLE IF EXISTS {$settings_table}" ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		
+		// Log the migration if debug mode is enabled
+		if ( defined( 'WP_DEBUG' ) && WP_DEBUG && function_exists( 'error_log' ) ) {
+			error_log( sprintf(
+				'DFX Parish Retreat Letters: Migrated %d global settings from table to WordPress options and dropped settings table',
+				$migrated_count
+			) );
+		}
+	}
+
+	/**
 	 * Remove foreign key constraints from audit log table.
 	 * 
 	 * This method removes any existing foreign key constraints from the audit log table
@@ -835,6 +853,11 @@ class DFX_Parish_Retreat_Letters_Database {
 		// Migrate custom block ID format from bigint to varchar (v1.5.0)
 		if ( version_compare( $from_version, '1.5.0', '<' ) ) {
 			$this->migrate_custom_block_ids();
+		}
+		
+		// Migrate global settings from table to WordPress options (v1.6.1)
+		if ( version_compare( $from_version, '1.6.1', '<' ) ) {
+			$this->migrate_global_settings_to_options();
 		}
 		
 		// Always run the comprehensive setup which handles all tables and columns using dbDelta
