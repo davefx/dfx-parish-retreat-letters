@@ -65,8 +65,10 @@ class DFX_Parish_Retreat_Letters_Retreat {
 				'custom_message'             => $sanitized_data['custom_message'],
 				'disclaimer_text'            => $sanitized_data['disclaimer_text'],
 				'disclaimer_acceptance_text' => $sanitized_data['disclaimer_acceptance_text'],
+				'custom_header_block_id'     => $sanitized_data['custom_header_block_id'],
+				'custom_footer_block_id'     => $sanitized_data['custom_footer_block_id'],
 			),
-			array( '%s', '%s', '%s', '%s', '%s', '%s', '%s' )
+			array( '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s' )
 		);
 
 		return $result ? $wpdb->insert_id : false;
@@ -116,9 +118,11 @@ class DFX_Parish_Retreat_Letters_Retreat {
 				'custom_message'             => $sanitized_data['custom_message'],
 				'disclaimer_text'            => $sanitized_data['disclaimer_text'],
 				'disclaimer_acceptance_text' => $sanitized_data['disclaimer_acceptance_text'],
+				'custom_header_block_id'     => $sanitized_data['custom_header_block_id'],
+				'custom_footer_block_id'     => $sanitized_data['custom_footer_block_id'],
 			),
 			array( 'id' => $id ),
-			array( '%s', '%s', '%s', '%s', '%s', '%s', '%s' ),
+			array( '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s' ),
 			array( '%d' )
 		);
 
@@ -295,7 +299,41 @@ class DFX_Parish_Retreat_Letters_Retreat {
 			'custom_message'             => wp_kses_post( $data['custom_message'] ?? '' ),
 			'disclaimer_text'            => wp_kses_post( $data['disclaimer_text'] ?? '' ),
 			'disclaimer_acceptance_text' => sanitize_text_field( $data['disclaimer_acceptance_text'] ?? '' ),
+			'custom_header_block_id'     => $this->sanitize_block_selection( $data['custom_header_block_id'] ?? null ),
+			'custom_footer_block_id'     => $this->sanitize_block_selection( $data['custom_footer_block_id'] ?? null ),
 		);
+	}
+
+	/**
+	 * Sanitize block selection value.
+	 * Handles both legacy numeric format and new prefixed format.
+	 *
+	 * @since 1.5.1
+	 * @param mixed $selection Block selection value.
+	 * @return string|null Sanitized block selection or null if empty.
+	 */
+	private function sanitize_block_selection( $selection ) {
+		if ( empty( $selection ) ) {
+			return null;
+		}
+
+		// Handle string prefixed format
+		if ( is_string( $selection ) && (
+			strpos( $selection, 'block_' ) === 0 ||
+			strpos( $selection, 'pattern_' ) === 0 ||
+			strpos( $selection, 'registered_' ) === 0 ||
+			strpos( $selection, 'templatepart_' ) === 0
+		) ) {
+			return sanitize_text_field( $selection );
+		}
+
+		// Legacy numeric format - convert to new format for consistency
+		if ( is_numeric( $selection ) ) {
+			$id = absint( $selection );
+			return $id > 0 ? 'block_' . $id : null;
+		}
+
+		return null;
 	}
 
 	/**

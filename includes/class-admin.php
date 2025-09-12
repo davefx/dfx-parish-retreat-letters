@@ -597,6 +597,8 @@ class DFX_Parish_Retreat_Letters_Admin {
 			'custom_message'             => wp_kses_post( $_POST['custom_message'] ?? '' ),
 			'disclaimer_text'            => wp_kses_post( $_POST['disclaimer_text'] ?? '' ),
 			'disclaimer_acceptance_text' => sanitize_text_field( $_POST['disclaimer_acceptance_text'] ?? '' ),
+			'custom_header_block_id'     => $this->parse_block_selection( $_POST['custom_header_block_id'] ?? '' ),
+			'custom_footer_block_id'     => $this->parse_block_selection( $_POST['custom_footer_block_id'] ?? '' ),
 		);
 
 		if ( $retreat_id ) {
@@ -865,6 +867,26 @@ class DFX_Parish_Retreat_Letters_Admin {
 											<p class="description"><?php esc_html_e( 'This text will appear next to the disclaimer acceptance checkbox. Only used if disclaimer text is provided.', 'dfx-parish-retreat-letters' ); ?></p>
 										</td>
 									</tr>
+									<?php if ( post_type_exists( 'wp_block' ) ) : ?>
+									<tr>
+										<th scope="row">
+											<label for="custom_header_block_id"><?php esc_html_e( 'Custom Header Block', 'dfx-parish-retreat-letters' ); ?></label>
+										</th>
+										<td>
+											<?php $this->render_block_selector( 'custom_header_block_id', $retreat->custom_header_block_id ?? null, __( 'Use default WordPress header', 'dfx-parish-retreat-letters' ) ); ?>
+											<p class="description"><?php esc_html_e( 'Select a reusable block, template part, or pattern to display as custom header in the letters form page. Leave empty to use the default WordPress header.', 'dfx-parish-retreat-letters' ); ?></p>
+										</td>
+									</tr>
+									<tr>
+										<th scope="row">
+											<label for="custom_footer_block_id"><?php esc_html_e( 'Custom Footer Block', 'dfx-parish-retreat-letters' ); ?></label>
+										</th>
+										<td>
+											<?php $this->render_block_selector( 'custom_footer_block_id', $retreat->custom_footer_block_id ?? null, __( 'Use default WordPress footer', 'dfx-parish-retreat-letters' ) ); ?>
+											<p class="description"><?php esc_html_e( 'Select a reusable block, template part, or pattern to display as custom footer in the letters form page. Leave empty to use the default WordPress footer.', 'dfx-parish-retreat-letters' ); ?></p>
+										</td>
+									</tr>
+									<?php endif; ?>
 								</tbody>
 							</table>
 
@@ -4490,5 +4512,207 @@ class DFX_Parish_Retreat_Letters_Admin {
 				$count
 			)
 		) );
+	}
+
+	/**
+	 * Parse block selection from form input.
+	 * Handles both new prefixed format and legacy numeric format.
+	 *
+	 * @since 1.5.1
+	 * @param string $selection The block selection value from the form.
+	 * @return string|null The formatted block identifier or null if empty.
+	 */
+	private function parse_block_selection( $selection ) {
+		if ( empty( $selection ) ) {
+			return null;
+		}
+
+		// If it starts with a prefix, return as-is
+		if ( strpos( $selection, 'block_' ) === 0 || 
+			 strpos( $selection, 'templatepart_' ) === 0 || 
+			 strpos( $selection, 'pattern_' ) === 0 || 
+			 strpos( $selection, 'registered_' ) === 0 ) {
+			return sanitize_text_field( $selection );
+		}
+
+		// Legacy numeric format - convert to block_ prefix for backward compatibility
+		if ( is_numeric( $selection ) ) {
+			return 'block_' . absint( $selection );
+		}
+
+		return null;
+	}
+
+	/**
+	 * Get the actual block/pattern ID from a stored selection.
+	 * 
+	 * @since 1.5.1
+	 * @param string|null $selection The stored block selection.
+	 * @return int|string|null The actual ID or pattern name.
+	 */
+	private function get_block_id_from_selection( $selection ) {
+		if ( empty( $selection ) ) {
+			return null;
+		}
+
+		// Handle prefixed format
+		if ( strpos( $selection, 'block_' ) === 0 ) {
+			return absint( str_replace( 'block_', '', $selection ) );
+		}
+		
+		if ( strpos( $selection, 'templatepart_' ) === 0 ) {
+			return absint( str_replace( 'templatepart_', '', $selection ) );
+		}
+		
+		if ( strpos( $selection, 'pattern_' ) === 0 ) {
+			return absint( str_replace( 'pattern_', '', $selection ) );
+		}
+		
+		if ( strpos( $selection, 'registered_' ) === 0 ) {
+			return str_replace( 'registered_', '', $selection );
+		}
+
+		// Legacy numeric format
+		if ( is_numeric( $selection ) ) {
+			return absint( $selection );
+		}
+
+		return $selection;
+	}
+
+	/**
+	 * Get available reusable blocks, patterns, and template parts for header/footer selection.
+	 *
+	 * @since 1.5.0
+	 * @return array Array of reusable blocks, patterns, and template parts with id and title.
+	 */
+	private function get_available_blocks() {
+		$block_options = array();
+
+		// Get reusable blocks (wp_block post type)
+		$blocks = get_posts( array(
+			'post_type'      => 'wp_block',
+			'post_status'    => 'publish',
+			'posts_per_page' => -1,
+			'orderby'        => 'title',
+			'order'          => 'ASC',
+		) );
+
+		foreach ( $blocks as $block ) {
+			$reusable_block = __( 'Reusable Block', 'dfx-parish-retreat-letters' );
+			$block_options[ 'block_' . $block->ID ] = $block->post_title . ' [' . $reusable_block . ']';
+		}
+
+		// Get template parts (wp_template_part post type)
+		if ( post_type_exists( 'wp_template_part' ) ) {
+			$template_parts = get_posts( array(
+				'post_type'      => 'wp_template_part',
+				'post_status'    => 'publish',
+				'posts_per_page' => -1,
+				'orderby'        => 'title',
+				'order'          => 'ASC',
+			) );
+
+			foreach ( $template_parts as $template_part ) {
+				// Get template part area for better identification
+				$area = get_post_meta( $template_part->ID, 'area', true );
+				$area_label = '';
+				if ( $area ) {
+					$area_label = ' (' . ucfirst( $area ) . ')';
+				}
+
+				$template_part_string = __( 'Template Part', 'dfx-parish-retreat-letters' );
+				$block_options[ 'templatepart_' . $template_part->ID ] = $template_part->post_title . $area_label . ' [' . $template_part_string . ']';
+			}
+		}
+
+		// Get block patterns (wp_block_pattern post type, if it exists)
+		// This post type was introduced in WordPress 6.0+ for user-created patterns
+		if ( post_type_exists( 'wp_block_pattern' ) ) {
+			$patterns = get_posts( array(
+				'post_type'      => 'wp_block_pattern',
+				'post_status'    => 'publish',
+				'posts_per_page' => -1,
+				'orderby'        => 'title',
+				'order'          => 'ASC',
+			) );
+
+			foreach ( $patterns as $pattern ) {
+				$block_pattern = __( 'Block Pattern', 'dfx-parish-retreat-letters' );
+				$block_options[ 'pattern_' . $pattern->ID ] = $pattern->post_title  . ' [' . $block_pattern . ']';
+			}
+		}
+
+		// Try to get registered block patterns if the functions exist
+		if ( function_exists( 'WP_Block_Patterns_Registry' ) ) {
+			$pattern_registry = WP_Block_Patterns_Registry::get_instance();
+			if ( method_exists( $pattern_registry, 'get_all_registered' ) ) {
+				$registered_patterns = $pattern_registry->get_all_registered();
+				
+				foreach ( $registered_patterns as $pattern_name => $pattern_data ) {
+					// Focus on header and footer patterns
+					if ( isset( $pattern_data['categories'] ) && 
+						 ( in_array( 'header', $pattern_data['categories'] ) || 
+						   in_array( 'footer', $pattern_data['categories'] ) ) ) {
+						$title = isset( $pattern_data['title'] ) ? $pattern_data['title'] : $pattern_name;
+						$registered_pattern = __( 'Registered Pattern', 'dfx-parish-retreat-letters' );
+						$block_options[ 'registered_' . $pattern_name ] = $title . ' [' . $registered_pattern . ']';
+					}
+				}
+			}
+		}
+
+		return $block_options;
+	}
+
+	/**
+	 * Render a block selection dropdown.
+	 *
+	 * @since 1.5.0
+	 * @param string $name Field name.
+	 * @param string|int|null $selected_value Currently selected block ID or selection string.
+	 * @param string $default_text Default option text.
+	 */
+	private function render_block_selector( $name, $selected_value = null, $default_text = '' ) {
+		$blocks = $this->get_available_blocks();
+		
+		// Convert legacy numeric values to new format for comparison
+		$normalized_selected = null;
+		if ( ! empty( $selected_value ) ) {
+			if ( is_numeric( $selected_value ) ) {
+				// Legacy format - convert to new prefixed format
+				$normalized_selected = 'block_' . absint( $selected_value );
+			} else {
+				$normalized_selected = $selected_value;
+			}
+		}
+		
+		echo '<select id="' . esc_attr( $name ) . '" name="' . esc_attr( $name ) . '" class="regular-text">';
+		echo '<option value="">' . esc_html( $default_text ) . '</option>';
+		
+		if ( empty( $blocks ) ) {
+			echo '<option value="" disabled>' . esc_html__( 'No reusable blocks or patterns found - create one first', 'dfx-parish-retreat-letters' ) . '</option>';
+		} else {
+			foreach ( $blocks as $block_id => $block_title ) {
+				$selected = selected( $normalized_selected, $block_id, false );
+				echo '<option value="' . esc_attr( $block_id ) . '"' . $selected . '>';
+				echo esc_html( $block_title );
+				echo '</option>';
+			}
+		}
+		
+		echo '</select>';
+		
+		// Add helpful information about how to create reusable blocks and patterns
+		if ( empty( $blocks ) ) {
+			echo '<br><small class="description">';
+			echo wp_kses_post( 
+				sprintf( 
+					__( 'To create reusable blocks: Go to <strong>Appearance > Editor > Patterns</strong> or edit any page/post and create a block, then save it as a reusable block. For template parts, use <strong>Appearance > Editor > Patterns > Template Parts</strong>. For block patterns, use the Site Editor. <a href="%s" target="_blank">Learn more</a>', 'dfx-parish-retreat-letters' ),
+					'https://wordpress.org/documentation/article/reusable-blocks/'
+				)
+			);
+			echo '</small>';
+		}
 	}
 }

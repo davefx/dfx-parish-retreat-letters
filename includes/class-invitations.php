@@ -92,6 +92,60 @@ class DFX_Parish_Retreat_Letters_Invitations {
 	}
 
 	/**
+	 * Check if the current theme is a block theme.
+	 *
+	 * @since 1.5.3
+	 * @return bool True if it's a block theme, false otherwise.
+	 */
+	private function is_block_theme() {
+		return function_exists( 'wp_is_block_theme' ) && wp_is_block_theme();
+	}
+
+	/**
+	 * Render theme-agnostic header.
+	 * For block themes: renders minimal HTML structure with wp_head()
+	 * For classic themes: uses get_header()
+	 *
+	 * @since 1.5.3
+	 */
+	private function render_theme_header() {
+		if ( $this->is_block_theme() ) {
+			?>
+			<!DOCTYPE html>
+			<html <?php language_attributes(); ?>>
+			<head>
+				<meta charset="<?php bloginfo( 'charset' ); ?>">
+				<meta name="viewport" content="width=device-width, initial-scale=1">
+				<?php wp_head(); ?>
+			</head>
+			<body <?php body_class(); ?>>
+			<?php wp_body_open(); ?>
+			<?php
+		} else {
+			get_header();
+		}
+	}
+
+	/**
+	 * Render theme-agnostic footer.
+	 * For block themes: renders minimal HTML structure with wp_footer()
+	 * For classic themes: uses get_footer()
+	 *
+	 * @since 1.5.3
+	 */
+	private function render_theme_footer() {
+		if ( $this->is_block_theme() ) {
+			?>
+			<?php wp_footer(); ?>
+			</body>
+			</html>
+			<?php
+		} else {
+			get_footer();
+		}
+	}
+
+	/**
 	 * Send an invitation to join a retreat with specific permissions.
 	 *
 	 * @since 1.3.0
@@ -502,7 +556,7 @@ class DFX_Parish_Retreat_Letters_Invitations {
 			? __( 'Retreat Manager', 'dfx-parish-retreat-letters' )
 			: __( 'Message Manager', 'dfx-parish-retreat-letters' );
 
-		get_header();
+		$this->render_theme_header();
 		?>
 		<div class="dfx-prl-invitation-container">
 			<div class="dfx-prl-invitation-content">
@@ -653,7 +707,7 @@ class DFX_Parish_Retreat_Letters_Invitations {
 		}
 		</style>
 		<?php
-		get_footer();
+		$this->render_theme_footer();
 	}
 
 	/**

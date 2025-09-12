@@ -38,7 +38,7 @@ class DFX_Parish_Retreat_Letters_Database {
 	 * @since 1.0.0
 	 * @var string
 	 */
-	const DB_VERSION = '1.4.4';
+	const DB_VERSION = '1.5.0';
 
 	/**
 	 * The database version option name.
@@ -180,11 +180,15 @@ class DFX_Parish_Retreat_Letters_Database {
 			custom_message text NULL DEFAULT NULL,
 			disclaimer_text text NULL DEFAULT NULL,
 			disclaimer_acceptance_text varchar(500) NULL DEFAULT NULL,
+			custom_header_block_id varchar(100) NULL DEFAULT NULL,
+			custom_footer_block_id varchar(100) NULL DEFAULT NULL,
 			created_at datetime DEFAULT CURRENT_TIMESTAMP,
 			updated_at datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 			PRIMARY KEY (id),
 			INDEX idx_start_date (start_date),
-			INDEX idx_end_date (end_date)
+			INDEX idx_end_date (end_date),
+			INDEX idx_custom_header_block_id (custom_header_block_id),
+			INDEX idx_custom_footer_block_id (custom_footer_block_id)
 		) $charset_collate;";
 
 		dbDelta( $retreats_sql );
@@ -599,6 +603,83 @@ class DFX_Parish_Retreat_Letters_Database {
 	}
 
 	/**
+	 * Migrate custom block IDs from bigint format to varchar prefixed format.
+	 * 
+	 * This method converts existing numeric block IDs to the new prefixed format
+	 * (e.g., 123 becomes 'block_123') to support multiple block types including
+	 * reusable blocks, patterns, and registered patterns.
+	 *
+	 * @since 1.5.0
+	 */
+	private function migrate_custom_block_ids() {
+		global $wpdb;
+		
+		// Check if the retreats table exists
+		$table_exists = $wpdb->get_var( $wpdb->prepare( "SHOW TABLES LIKE %s", $this->retreats_table ) );
+		if ( $table_exists !== $this->retreats_table ) {
+			return; // Table doesn't exist, nothing to migrate
+		}
+		
+		// First, create temporary columns with the new varchar format
+		$wpdb->query( "ALTER TABLE {$this->retreats_table} 
+			ADD COLUMN custom_header_block_id_new varchar(100) NULL DEFAULT NULL AFTER custom_header_block_id,
+			ADD COLUMN custom_footer_block_id_new varchar(100) NULL DEFAULT NULL AFTER custom_footer_block_id" );
+		
+		// Convert existing numeric values to the new prefixed format
+		$retreats_with_blocks = $wpdb->get_results( 
+			"SELECT id, custom_header_block_id, custom_footer_block_id 
+			FROM {$this->retreats_table} 
+			WHERE custom_header_block_id IS NOT NULL OR custom_footer_block_id IS NOT NULL" 
+		);
+		
+		foreach ( $retreats_with_blocks as $retreat ) {
+			$header_value = null;
+			$footer_value = null;
+			
+			// Convert header block ID
+			if ( ! empty( $retreat->custom_header_block_id ) && is_numeric( $retreat->custom_header_block_id ) ) {
+				$header_value = 'block_' . absint( $retreat->custom_header_block_id );
+			}
+			
+			// Convert footer block ID  
+			if ( ! empty( $retreat->custom_footer_block_id ) && is_numeric( $retreat->custom_footer_block_id ) ) {
+				$footer_value = 'block_' . absint( $retreat->custom_footer_block_id );
+			}
+			
+			// Update the new columns with converted values
+			if ( $header_value || $footer_value ) {
+				$wpdb->update(
+					$this->retreats_table,
+					array(
+						'custom_header_block_id_new' => $header_value,
+						'custom_footer_block_id_new' => $footer_value,
+					),
+					array( 'id' => $retreat->id ),
+					array( '%s', '%s' ),
+					array( '%d' )
+				);
+			}
+		}
+		
+		// Drop the old columns and rename the new ones
+		$wpdb->query( "ALTER TABLE {$this->retreats_table} 
+			DROP COLUMN custom_header_block_id,
+			DROP COLUMN custom_footer_block_id" );
+			
+		$wpdb->query( "ALTER TABLE {$this->retreats_table} 
+			CHANGE COLUMN custom_header_block_id_new custom_header_block_id varchar(100) NULL DEFAULT NULL,
+			CHANGE COLUMN custom_footer_block_id_new custom_footer_block_id varchar(100) NULL DEFAULT NULL" );
+		
+		// Log the migration if debug mode is enabled
+		if ( defined( 'WP_DEBUG' ) && WP_DEBUG && function_exists( 'error_log' ) ) {
+			error_log( sprintf(
+				'DFX Parish Retreat Letters: Migrated %d retreats with custom block IDs to new format',
+				count( $retreats_with_blocks )
+			) );
+		}
+	}
+
+	/**
 	 * Remove foreign key constraints from audit log table.
 	 * 
 	 * This method removes any existing foreign key constraints from the audit log table
@@ -716,6 +797,11 @@ class DFX_Parish_Retreat_Letters_Database {
 		// Fix the problematic unique constraint in invitations table
 		// This prevents duplicate entry errors when cancelling invitations
 		$this->fix_invitations_unique_constraint();
+		
+		// Migrate custom block ID format from bigint to varchar (v1.5.0)
+		if ( version_compare( $from_version, '1.5.0', '<' ) ) {
+			$this->migrate_custom_block_ids();
+		}
 		
 		// Always run the comprehensive setup which handles all tables and columns using dbDelta
 		// This is safer and simpler than incremental upgrades and works for both fresh installs
