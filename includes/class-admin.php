@@ -952,14 +952,6 @@ class DFX_Parish_Retreat_Letters_Admin {
 											<p class="description"><?php esc_html_e( 'CSS styles specific to this retreat\'s message form page. Do not include &lt;style&gt; tags. Leave empty to use only the global default CSS.', 'dfx-parish-retreat-letters' ); ?></p>
 										</td>
 									</tr>
-									<?php else : ?>
-									<tr>
-										<td colspan="2">
-											<div class="notice notice-info inline">
-												<p><?php printf( esc_html__( 'Per-retreat customization is disabled. All retreats will use the global settings. %sChange global settings%s', 'dfx-parish-retreat-letters' ), '<a href="' . esc_url( admin_url( 'admin.php?page=dfx-prl-global-settings' ) ) . '">', '</a>' ); ?></p>
-											</div>
-										</td>
-									</tr>
 									<?php endif; ?>
 									<?php endif; ?>
 								</tbody>
