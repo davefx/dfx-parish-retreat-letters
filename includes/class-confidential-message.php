@@ -151,7 +151,7 @@ class DFX_Parish_Retreat_Letters_ConfidentialMessage {
 		$defaults = array(
 			'orderby'      => 'submitted_at',
 			'order'        => 'DESC',
-			'per_page'     => 20,
+			'per_page'     => 100,
 			'page'         => 1,
 			'search'       => '',
 			'message_type' => '',
