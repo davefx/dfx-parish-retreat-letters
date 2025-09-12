@@ -38,7 +38,7 @@ class DFX_Parish_Retreat_Letters_Database {
 	 * @since 1.0.0
 	 * @var string
 	 */
-	const DB_VERSION = '1.6.0';
+	const DB_VERSION = '1.6.1';
 
 	/**
 	 * The database version option name.
@@ -204,6 +204,7 @@ class DFX_Parish_Retreat_Letters_Database {
 			emergency_contact_name varchar(255) NOT NULL,
 			emergency_contact_surname varchar(255) NOT NULL,
 			emergency_contact_phone varchar(20) NOT NULL,
+			emergency_contact_email varchar(255) NULL DEFAULT NULL,
 			message_url_token VARCHAR(255) NULL DEFAULT NULL,
 			created_at datetime DEFAULT CURRENT_TIMESTAMP,
 			updated_at datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -211,6 +212,7 @@ class DFX_Parish_Retreat_Letters_Database {
 			INDEX idx_retreat_id (retreat_id),
 			INDEX idx_name (name),
 			INDEX idx_surnames (surnames),
+			INDEX idx_emergency_contact_email (emergency_contact_email),
 			INDEX idx_message_url_token (message_url_token)
 		) $charset_collate;";
 

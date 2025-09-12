@@ -2405,6 +2405,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 			'emergency_contact_name'    => sanitize_text_field( $_POST['emergency_contact_name'] ?? '' ),
 			'emergency_contact_surname' => sanitize_text_field( $_POST['emergency_contact_surname'] ?? '' ),
 			'emergency_contact_phone'   => sanitize_text_field( $_POST['emergency_contact_phone'] ?? '' ),
+			'emergency_contact_email'   => sanitize_email( $_POST['emergency_contact_email'] ?? '' ),
 		);
 
 		if ( $attendant_id ) {
@@ -2540,6 +2541,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 					'emergency_contact_name'    => $mapped_data['emergency_contact_name'],
 					'emergency_contact_surname' => $mapped_data['emergency_contact_surname'],
 					'emergency_contact_phone'   => $mapped_data['emergency_contact_phone'],
+					'emergency_contact_email'   => $mapped_data['emergency_contact_email'],
 				);
 
 				if ( $this->attendant_model->update_emergency_contact( $existing_attendant_id, $emergency_contact_data ) ) {
@@ -2677,6 +2679,8 @@ class DFX_Parish_Retreat_Letters_Admin {
 			'emergency_contact_surname' => json_decode( __('["emergency contact surname", "emergency surname", "contact surname", "emergency contact last name", "emergency last name", "contact last name"]', 'dfx-parish-retreat-letters' ), true ),
 			/* translators: JSON string with list of allowed headers for field emergency_contact_phone */
 			'emergency_contact_phone' => json_decode( __('["emergency contact phone", "emergency phone", "contact phone", "phone"]', 'dfx-parish-retreat-letters' ), true ),
+			/* translators: JSON string with list of allowed headers for field emergency_contact_email */
+			'emergency_contact_email' => json_decode( __('["emergency contact email", "emergency email", "contact email", "email", "correo del contacto de emergencia", "correo de emergencia", "correo", "email del contacto"]', 'dfx-parish-retreat-letters' ), true ),
 		);
 
 		// Normalize headers (lowercase, trim)
@@ -2785,6 +2789,11 @@ class DFX_Parish_Retreat_Letters_Admin {
 				// If date parsing fails, return false
 				return false;
 			}
+		}
+
+		// Ensure emergency_contact_email is always present (optional field)
+		if ( ! isset( $mapped_data['emergency_contact_email'] ) ) {
+			$mapped_data['emergency_contact_email'] = '';
 		}
 
 		return $mapped_data;
@@ -3138,6 +3147,9 @@ class DFX_Parish_Retreat_Letters_Admin {
 									<td>
 										<?php echo esc_html( $attendant->emergency_contact_name . ' ' . $attendant->emergency_contact_surname ); ?><br>
 										<small><?php echo esc_html( $attendant->emergency_contact_phone ); ?></small>
+										<?php if ( ! empty( $attendant->emergency_contact_email ) ) : ?>
+											<br><small><?php echo esc_html( $attendant->emergency_contact_email ); ?></small>
+										<?php endif; ?>
 									</td>
 									<td>
 										<?php if ( $message_count > 0 ) : ?>
@@ -3303,6 +3315,15 @@ class DFX_Parish_Retreat_Letters_Admin {
 								<p class="description"><?php esc_html_e( 'Enter phone number with area code.', 'dfx-parish-retreat-letters' ); ?></p>
 							</td>
 						</tr>
+						<tr>
+							<th scope="row">
+								<label for="emergency_contact_email"><?php esc_html_e( 'Emergency Contact Email', 'dfx-parish-retreat-letters' ); ?> <span class="description">(<?php esc_html_e( 'optional', 'dfx-parish-retreat-letters' ); ?>)</span></label>
+							</th>
+							<td>
+								<input type="email" id="emergency_contact_email" name="emergency_contact_email" value="<?php echo esc_attr( $attendant->emergency_contact_email ?? '' ); ?>" class="regular-text">
+								<p class="description"><?php esc_html_e( 'Enter email address for emergency contact.', 'dfx-parish-retreat-letters' ); ?></p>
+							</td>
+						</tr>
 					</tbody>
 				</table>
 
@@ -3402,6 +3423,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 					<li><strong><?php esc_html_e( 'Emergency Contact Name', 'dfx-parish-retreat-letters' ); ?></strong> <?php esc_html_e( '(or "Nombre del Contacto de Emergencia")', 'dfx-parish-retreat-letters' ); ?></li>
 					<li><strong><?php esc_html_e( 'Emergency Contact Surname', 'dfx-parish-retreat-letters' ); ?></strong> <?php esc_html_e( '(or "Apellido del Contacto de Emergencia")', 'dfx-parish-retreat-letters' ); ?></li>
 					<li><strong><?php esc_html_e( 'Emergency Contact Phone', 'dfx-parish-retreat-letters' ); ?></strong> <?php esc_html_e( '(or "Teléfono del Contacto de Emergencia")', 'dfx-parish-retreat-letters' ); ?></li>
+					<li><strong><?php esc_html_e( 'Emergency Contact Email', 'dfx-parish-retreat-letters' ); ?></strong> <?php esc_html_e( '(optional, or "Correo del Contacto de Emergencia")', 'dfx-parish-retreat-letters' ); ?></li>
 				</ul>
 				<p><?php esc_html_e( 'Additional features:', 'dfx-parish-retreat-letters' ); ?></p>
 				<ul>

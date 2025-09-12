@@ -69,9 +69,10 @@ class DFX_Parish_Retreat_Letters_Attendant {
 				'emergency_contact_name'    => $sanitized_data['emergency_contact_name'],
 				'emergency_contact_surname' => $sanitized_data['emergency_contact_surname'],
 				'emergency_contact_phone'   => $sanitized_data['emergency_contact_phone'],
+				'emergency_contact_email'   => $sanitized_data['emergency_contact_email'],
 				'message_url_token'         => $message_url_token,
 			),
-			array( '%d', '%s', '%s', '%s', '%s', '%s', '%s', '%s' )
+			array( '%d', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s' )
 		);
 
 		return $result ? $wpdb->insert_id : false;
@@ -121,9 +122,10 @@ class DFX_Parish_Retreat_Letters_Attendant {
 				'emergency_contact_name'    => $sanitized_data['emergency_contact_name'],
 				'emergency_contact_surname' => $sanitized_data['emergency_contact_surname'],
 				'emergency_contact_phone'   => $sanitized_data['emergency_contact_phone'],
+				'emergency_contact_email'   => $sanitized_data['emergency_contact_email'],
 			),
 			array( 'id' => $id ),
-			array( '%d', '%s', '%s', '%s', '%s', '%s', '%s' ),
+			array( '%d', '%s', '%s', '%s', '%s', '%s', '%s', '%s' ),
 			array( '%d' )
 		);
 
@@ -181,8 +183,9 @@ class DFX_Parish_Retreat_Letters_Attendant {
 
 		// Add search functionality
 		if ( ! empty( $args['search'] ) ) {
-			$where_clause .= ' AND (name LIKE %s OR surnames LIKE %s OR emergency_contact_name LIKE %s OR emergency_contact_surname LIKE %s)';
+			$where_clause .= ' AND (name LIKE %s OR surnames LIKE %s OR emergency_contact_name LIKE %s OR emergency_contact_surname LIKE %s OR emergency_contact_email LIKE %s)';
 			$search_term   = '%' . $wpdb->esc_like( $args['search'] ) . '%';
+			$where_values[] = $search_term;
 			$where_values[] = $search_term;
 			$where_values[] = $search_term;
 			$where_values[] = $search_term;
@@ -235,8 +238,9 @@ class DFX_Parish_Retreat_Letters_Attendant {
 		$where_values = array( $retreat_id );
 
 		if ( ! empty( $search ) ) {
-			$where_clause .= ' AND (name LIKE %s OR surnames LIKE %s OR emergency_contact_name LIKE %s OR emergency_contact_surname LIKE %s)';
+			$where_clause .= ' AND (name LIKE %s OR surnames LIKE %s OR emergency_contact_name LIKE %s OR emergency_contact_surname LIKE %s OR emergency_contact_email LIKE %s)';
 			$search_term   = '%' . $wpdb->esc_like( $search ) . '%';
+			$where_values[] = $search_term;
 			$where_values[] = $search_term;
 			$where_values[] = $search_term;
 			$where_values[] = $search_term;
@@ -330,6 +334,7 @@ class DFX_Parish_Retreat_Letters_Attendant {
 			__( 'Emergency Contact Name', 'dfx-parish-retreat-letters' ),
 			__( 'Emergency Contact Surname', 'dfx-parish-retreat-letters' ),
 			__( 'Emergency Contact Phone', 'dfx-parish-retreat-letters' ),
+			__( 'Emergency Contact Email', 'dfx-parish-retreat-letters' ),
 		);
 
 		$rows = array();
@@ -341,6 +346,7 @@ class DFX_Parish_Retreat_Letters_Attendant {
 				$attendant->emergency_contact_name,
 				$attendant->emergency_contact_surname,
 				$attendant->emergency_contact_phone,
+				$attendant->emergency_contact_email,
 			);
 		}
 
@@ -366,6 +372,7 @@ class DFX_Parish_Retreat_Letters_Attendant {
 			'emergency_contact_name'    => sanitize_text_field( $data['emergency_contact_name'] ?? '' ),
 			'emergency_contact_surname' => sanitize_text_field( $data['emergency_contact_surname'] ?? '' ),
 			'emergency_contact_phone'   => sanitize_text_field( $data['emergency_contact_phone'] ?? '' ),
+			'emergency_contact_email'   => sanitize_email( $data['emergency_contact_email'] ?? '' ),
 		);
 	}
 
@@ -404,6 +411,15 @@ class DFX_Parish_Retreat_Letters_Attendant {
 		if ( ! preg_match( '/^[\d\s\-\+\(\)\.]+$/', $data['emergency_contact_phone'] ) ) {
 			$admin_manager->add_admin_notice(
 				__( 'Invalid emergency contact phone number format.', 'dfx-parish-retreat-letters' ),
+				'error'
+			);
+			return false;
+		}
+
+		// Validate email format if provided (optional field)
+		if ( ! empty( $data['emergency_contact_email'] ) && ! is_email( $data['emergency_contact_email'] ) ) {
+			$admin_manager->add_admin_notice(
+				__( 'Invalid emergency contact email format.', 'dfx-parish-retreat-letters' ),
 				'error'
 			);
 			return false;
@@ -488,6 +504,7 @@ class DFX_Parish_Retreat_Letters_Attendant {
 			'emergency_contact_name'    => sanitize_text_field( $data['emergency_contact_name'] ?? '' ),
 			'emergency_contact_surname' => sanitize_text_field( $data['emergency_contact_surname'] ?? '' ),
 			'emergency_contact_phone'   => sanitize_text_field( $data['emergency_contact_phone'] ?? '' ),
+			'emergency_contact_email'   => sanitize_email( $data['emergency_contact_email'] ?? '' ),
 		);
 
 		// Basic validation for emergency contact data
@@ -502,11 +519,16 @@ class DFX_Parish_Retreat_Letters_Attendant {
 			return false;
 		}
 
+		// Validate email format if provided (optional field)
+		if ( ! empty( $sanitized_data['emergency_contact_email'] ) && ! is_email( $sanitized_data['emergency_contact_email'] ) ) {
+			return false;
+		}
+
 		$result = $wpdb->update(
 			$this->database->get_attendants_table(),
 			$sanitized_data,
 			array( 'id' => $id ),
-			array( '%s', '%s', '%s' ),
+			array( '%s', '%s', '%s', '%s' ),
 			array( '%d' )
 		);
 
