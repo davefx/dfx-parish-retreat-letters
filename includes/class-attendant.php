@@ -170,7 +170,7 @@ class DFX_Parish_Retreat_Letters_Attendant {
 			'search'   => '',
 			'orderby'  => 'name',
 			'order'    => 'ASC',
-			'per_page' => 20,
+			'per_page' => 100,
 			'page'     => 1,
 		);
 

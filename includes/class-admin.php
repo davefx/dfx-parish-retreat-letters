@@ -2215,7 +2215,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 		// Get query parameters
 		$search   = sanitize_text_field( $_GET['s'] ?? '' );
 		$page_num = max( 1, absint( $_GET['paged'] ?? 1 ) );
-		$per_page = 20;
+		$per_page = 100;
 
 		// Get attendants
 		$attendants = $this->attendant_model->get_by_retreat( $retreat_id, array(
@@ -3152,6 +3152,23 @@ class DFX_Parish_Retreat_Letters_Admin {
 						<?php endif; ?>
 					</tbody>
 				</table>
+
+				<?php if ( $total_pages > 1 ) : ?>
+					<div class="notice notice-info inline" style="margin: 15px 0; padding: 10px;">
+						<p>
+							<strong><?php esc_html_e( 'Note:', 'dfx-parish-retreat-letters' ); ?></strong>
+							<?php
+							printf(
+								/* translators: %1$d: current page, %2$d: total pages, %3$d: items per page */
+								esc_html__( 'Showing page %1$d of %2$d. There are more attendants available. Use the pagination controls above to view all %3$d attendants per page.', 'dfx-parish-retreat-letters' ),
+								$page_num,
+								$total_pages,
+								100
+							);
+							?>
+						</p>
+					</div>
+				<?php endif; ?>
 			</form>
 		</div>
 		<?php
@@ -3455,7 +3472,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 		$attendant_id = absint( $_GET['attendant_id'] ?? 0 );
 		$message_type = sanitize_text_field( $_GET['message_type'] ?? '' );
 		$page_num = max( 1, absint( $_GET['paged'] ?? 1 ) );
-		$per_page = 20;
+		$per_page = 100;
 
 		// Messages can only be accessed through attendants - redirect if no attendant_id
 		if ( ! $attendant_id ) {
@@ -3684,6 +3701,23 @@ class DFX_Parish_Retreat_Letters_Admin {
 						<?php endif; ?>
 					</tbody>
 				</table>
+
+				<?php if ( $total_pages > 1 ) : ?>
+					<div class="notice notice-info inline" style="margin: 15px 0; padding: 10px;">
+						<p>
+							<strong><?php esc_html_e( 'Note:', 'dfx-parish-retreat-letters' ); ?></strong>
+							<?php
+							printf(
+								/* translators: %1$d: current page, %2$d: total pages, %3$d: items per page */
+								esc_html__( 'Showing page %1$d of %2$d. There are more messages available. Use the pagination controls above to view all %3$d messages per page.', 'dfx-parish-retreat-letters' ),
+								$page_num,
+								$total_pages,
+								100
+							);
+							?>
+						</p>
+					</div>
+				<?php endif; ?>
 			</form>
 		</div>
 		<?php
