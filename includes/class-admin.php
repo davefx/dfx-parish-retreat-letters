@@ -2516,10 +2516,10 @@ class DFX_Parish_Retreat_Letters_Admin {
 			
 			// Add detailed error information if available
 			if ( ! empty( $error_details ) && count( $error_details ) <= 10 ) {
-				$error_message .= '<br><strong>' . __( 'Error details:', 'dfx-parish-retreat-letters' ) . '</strong><br>';
+				$error_message .= '<br><strong>' . esc_html__( 'Error details:', 'dfx-parish-retreat-letters' ) . '</strong><br>';
 				$error_message .= implode( '<br>', array_slice( $error_details, 0, 10 ) );
 				if ( count( $error_details ) > 10 ) {
-					$error_message .= '<br>' . __( '...and more errors.', 'dfx-parish-retreat-letters' );
+					$error_message .= '<br>' . esc_html__( '...and more errors.', 'dfx-parish-retreat-letters' );
 				}
 			}
 			
@@ -2552,10 +2552,10 @@ class DFX_Parish_Retreat_Letters_Admin {
 			);
 			
 			if ( count( $unique_ambiguous ) <= 5 ) {
-				$ambiguous_message .= '<br><strong>' . __( 'Ambiguous dates found:', 'dfx-parish-retreat-letters' ) . '</strong> ' . implode( ', ', $unique_ambiguous );
+				$ambiguous_message .= '<br><strong>' . esc_html__( 'Ambiguous dates found:', 'dfx-parish-retreat-letters' ) . '</strong> ' . esc_html( implode( ', ', $unique_ambiguous ) );
 			}
 			
-			$ambiguous_message .= '<br>' . __( 'To avoid ambiguity in future imports, consider using YYYY-MM-DD format.', 'dfx-parish-retreat-letters' );
+			$ambiguous_message .= '<br>' . esc_html__( 'To avoid ambiguity in future imports, consider using YYYY-MM-DD format.', 'dfx-parish-retreat-letters' );
 			
 			$this->add_admin_notice( $ambiguous_message, 'info' );
 		}
