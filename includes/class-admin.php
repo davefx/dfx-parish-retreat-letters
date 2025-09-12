@@ -827,6 +827,8 @@ class DFX_Parish_Retreat_Letters_Admin {
 					</tbody>
 				</table>
 			</form>
+
+			<?php $this->render_plugin_footer(); ?>
 		</div>
 		<?php
 	}
@@ -980,6 +982,8 @@ class DFX_Parish_Retreat_Letters_Admin {
 					</div>
 				</div>
 			</div>
+
+			<?php $this->render_plugin_footer(); ?>
 		</div>
 		<?php
 	}
@@ -3233,6 +3237,8 @@ class DFX_Parish_Retreat_Letters_Admin {
 					</div>
 				<?php endif; ?>
 			</form>
+
+			<?php $this->render_plugin_footer(); ?>
 		</div>
 		<?php
 	}
@@ -3387,6 +3393,8 @@ class DFX_Parish_Retreat_Letters_Admin {
 					</a>
 				</p>
 			</form>
+
+			<?php $this->render_plugin_footer(); ?>
 		</div>
 		<?php
 	}
@@ -3481,6 +3489,8 @@ class DFX_Parish_Retreat_Letters_Admin {
 					</a>
 				</p>
 			</form>
+
+			<?php $this->render_plugin_footer(); ?>
 		</div>
 		<?php
 	}
@@ -3792,6 +3802,8 @@ class DFX_Parish_Retreat_Letters_Admin {
 					</div>
 				<?php endif; ?>
 			</form>
+
+			<?php $this->render_plugin_footer(); ?>
 		</div>
 		<?php
 	}
@@ -4392,6 +4404,8 @@ class DFX_Parish_Retreat_Letters_Admin {
 					<?php endif; ?>
 				</tbody>
 			</table>
+
+			<?php $this->render_plugin_footer(); ?>
 		</div>
 
 		<style>
@@ -5021,6 +5035,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 			});
 			</script>
 
+			<?php $this->render_plugin_footer(); ?>
 		</div>
 		<?php
 	}
@@ -5128,5 +5143,54 @@ class DFX_Parish_Retreat_Letters_Admin {
 				$this->add_admin_notice( __( 'Invalid action.', 'dfx-parish-retreat-letters' ), 'error' );
 				break;
 		}
+	}
+
+	/**
+	 * Render the plugin footer for admin pages.
+	 *
+	 * @since 1.0.0
+	 */
+	private function render_plugin_footer() {
+		?>
+		<div class="dfx-prl-plugin-footer" style="position: fixed; bottom: 0; right: 0; left: 200px; z-index: 1000; background: #f1f1f1; border-top: 1px solid #ddd; padding: 10px 20px;">
+			<p style="margin: 0; color: #666; font-size: 12px; text-align: right;">
+				<?php 
+				printf(
+					/* translators: %1$s: Plugin name, %2$s: Author link */
+					__( 'Retreat letters management features provided via %1$s plugin by %2$s. A.M.D.G.', 'dfx-parish-retreat-letters' ),
+					'<strong>DFX Parish Retreat Letters</strong>',
+					'<a href="https://davefx.com/en/wordpress-plugins/">David Marín Carreño</a>'
+				);
+				?>
+			</p>
+		</div>
+
+		<script>
+		jQuery(document).ready(function($) {
+			// Adjust footer positioning based on admin menu state
+			function adjustFooterPosition() {
+				var $footer = $('.dfx-prl-plugin-footer');
+				var $adminMenu = $('#adminmenumain');
+				
+				if ($adminMenu.length && $adminMenu.hasClass('folded')) {
+					// Menu is collapsed
+					$footer.css('left', '36px');
+				} else {
+					// Menu is expanded
+					$footer.css('left', '160px');
+				}
+			}
+			
+			// Initial adjustment
+			adjustFooterPosition();
+			
+			// Listen for menu fold/unfold events
+			$(document).on('wp-collapse-menu', adjustFooterPosition);
+			
+			// Fallback: monitor window resize
+			$(window).on('resize', adjustFooterPosition);
+		});
+		</script>
+		<?php
 	}
 }
