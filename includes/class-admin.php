@@ -4869,6 +4869,11 @@ class DFX_Parish_Retreat_Letters_Admin {
 	 * @since 1.6.0
 	 */
 	private function handle_global_settings_page_submissions() {
+		// Check if form was actually submitted
+		if ( ! isset( $_POST['submit'] ) ) {
+			return;
+		}
+
 		// Check permissions
 		if ( ! $this->permissions->current_user_can_manage_plugin() ) {
 			wp_die( esc_html__( 'You do not have permission to perform this action.', 'dfx-parish-retreat-letters' ) );

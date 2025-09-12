@@ -207,7 +207,8 @@ class DFX_Parish_Retreat_Letters_GlobalSettings {
 	 * @return bool
 	 */
 	public function is_per_retreat_customization_enabled() {
-		return (bool) $this->get( 'enable_per_retreat_customization', true );
+		$value = $this->get( 'enable_per_retreat_customization', 'yes' );
+		return $value === 'yes';
 	}
 
 	/**
@@ -218,6 +219,6 @@ class DFX_Parish_Retreat_Letters_GlobalSettings {
 	 * @return bool
 	 */
 	public function set_per_retreat_customization_enabled( $enabled ) {
-		return $this->set( 'enable_per_retreat_customization', (bool) $enabled );
+		return $this->set( 'enable_per_retreat_customization', $enabled ? 'yes' : 'no' );
 	}
 }
