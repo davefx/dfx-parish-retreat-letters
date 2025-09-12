@@ -88,7 +88,7 @@ class DFX_Parish_Retreat_Letters_GlobalSettings {
 	 */
 	public function set( $key, $value ) {
 		$option_name = self::OPTION_PREFIX . $key;
-		return update_option( $option_name, $value );
+		return update_option( $option_name, $value ) || get_option( $option_name ) == $value;
 	}
 
 	/**

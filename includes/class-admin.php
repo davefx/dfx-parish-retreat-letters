@@ -4958,12 +4958,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 			<hr>
 			
 			<h3><?php esc_html_e( 'Per-Retreat Permissions', 'dfx-parish-retreat-letters' ); ?></h3>
-			<p class="description"><?php esc_html_e( 'For retreat-specific permissions (individual retreat management), use the Privacy & Compliance page.', 'dfx-parish-retreat-letters' ); ?></p>
-			<p>
-				<a href="<?php echo esc_url( admin_url( 'admin.php?page=dfx-prl-privacy' ) ); ?>" class="button">
-					<?php esc_html_e( 'Manage Per-Retreat Permissions', 'dfx-parish-retreat-letters' ); ?>
-				</a>
-			</p>
+			<p class="description"><?php esc_html_e( 'For retreat-specific permissions (individual retreat management), use the corresponding retreat edition page', 'dfx-parish-retreat-letters' ); ?></p>
 
 			<script type="text/javascript">
 			jQuery(document).ready(function($) {
