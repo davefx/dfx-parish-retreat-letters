@@ -537,7 +537,7 @@ class DFX_Parish_Retreat_Letters {
 		}
 		
 		// Display the form
-		$this->render_message_form( $attendant );
+		$this->render_message_form( $attendant, $retreat );
 		
 		// Try to render custom footer, fallback to default
 		$custom_footer_rendered = false;
@@ -585,8 +585,9 @@ class DFX_Parish_Retreat_Letters {
 	 *
 	 * @since 1.2.0
 	 * @param object $attendant Attendant object.
+	 * @param object|null $retreat Retreat object (optional, for custom CSS).
 	 */
-	private function render_message_form( $attendant ) {
+	private function render_message_form( $attendant, $retreat = null ) {
 		?>
 		<div class="dfx-message-form-container">
 			<div class="dfx-message-form-content">
@@ -1077,8 +1078,55 @@ class DFX_Parish_Retreat_Letters {
 				gap: 1rem;
 			}
 		}
+		
+		<?php
+		// Include custom CSS from global settings and retreat-specific settings
+		$this->render_custom_css_for_message_form( $retreat );
+		?>
 		</style>
 		<?php
+	}
+
+	/**
+	 * Render custom CSS for the message form from global settings and retreat-specific settings.
+	 *
+	 * @since 25.9.12
+	 * @param object|null $retreat Retreat object (optional).
+	 */
+	private function render_custom_css_for_message_form( $retreat = null ) {
+		// Get global settings instance
+		$global_settings = DFX_Parish_Retreat_Letters_GlobalSettings::get_instance();
+		
+		// Get global default CSS
+		$global_css = $global_settings->get_default_css();
+		
+		// Get retreat-specific CSS if per-retreat customization is enabled and retreat data is available
+		$retreat_css = '';
+		if ( $retreat && $global_settings->is_per_retreat_customization_enabled() ) {
+			// Get the full retreat data including custom_css
+			$retreat_model = new DFX_Parish_Retreat_Letters_Retreat();
+			$full_retreat_data = $retreat_model->get( $retreat->id );
+			if ( $full_retreat_data && ! empty( $full_retreat_data->custom_css ) ) {
+				$retreat_css = $full_retreat_data->custom_css;
+			}
+		}
+		
+		// Output CSS if any exists
+		if ( ! empty( $global_css ) || ! empty( $retreat_css ) ) {
+			echo "\n/* Custom CSS from DFX Parish Retreat Letters Plugin */\n";
+			
+			if ( ! empty( $global_css ) ) {
+				echo "/* Global Default CSS */\n";
+				// CSS is already sanitized when saved via sanitize_textarea_field
+				echo wp_strip_all_tags( $global_css ) . "\n";
+			}
+			
+			if ( ! empty( $retreat_css ) ) {
+				echo "/* Retreat-Specific CSS */\n";
+				// CSS is already sanitized when saved via sanitize_textarea_field
+				echo wp_strip_all_tags( $retreat_css ) . "\n";
+			}
+		}
 	}
 
 	/**
