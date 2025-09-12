@@ -2215,7 +2215,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 		// Get query parameters
 		$search   = sanitize_text_field( $_GET['s'] ?? '' );
 		$page_num = max( 1, absint( $_GET['paged'] ?? 1 ) );
-		$per_page = 20;
+		$per_page = 100;
 
 		// Get attendants
 		$attendants = $this->attendant_model->get_by_retreat( $retreat_id, array(
