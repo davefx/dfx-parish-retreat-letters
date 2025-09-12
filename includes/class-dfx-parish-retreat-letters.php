@@ -343,7 +343,7 @@ class DFX_Parish_Retreat_Letters {
 	 * but custom plugins need to explicitly load their translations. This method only loads
 	 * translations when actually needed.
 	 *
-	 * @since 25.9.11
+	 * @since 25.9.12
 	 */
 	public function maybe_load_plugin_textdomain() {
 		// Check if we're using English - if so, no translations needed
