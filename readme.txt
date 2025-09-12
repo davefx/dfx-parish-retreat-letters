@@ -343,6 +343,8 @@ Contributions are welcome! Please:
 
 ### 25.9.12
 
+- Feature: Added support for custom header, footer, and CSS in letters form page, globally and per-retreat.
+- Fix: Retreat managers can now edit retreats they manage.
 - Fix: Correcting translation loading issue in old WP versions
 
 ### 25.9.11

@@ -67,8 +67,9 @@ class DFX_Parish_Retreat_Letters_Retreat {
 				'disclaimer_acceptance_text' => $sanitized_data['disclaimer_acceptance_text'],
 				'custom_header_block_id'     => $sanitized_data['custom_header_block_id'],
 				'custom_footer_block_id'     => $sanitized_data['custom_footer_block_id'],
+				'custom_css'                 => $sanitized_data['custom_css'],
 			),
-			array( '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s' )
+			array( '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s' )
 		);
 
 		return $result ? $wpdb->insert_id : false;
@@ -120,9 +121,10 @@ class DFX_Parish_Retreat_Letters_Retreat {
 				'disclaimer_acceptance_text' => $sanitized_data['disclaimer_acceptance_text'],
 				'custom_header_block_id'     => $sanitized_data['custom_header_block_id'],
 				'custom_footer_block_id'     => $sanitized_data['custom_footer_block_id'],
+				'custom_css'                 => $sanitized_data['custom_css'],
 			),
 			array( 'id' => $id ),
-			array( '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s' ),
+			array( '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s' ),
 			array( '%d' )
 		);
 
@@ -301,6 +303,7 @@ class DFX_Parish_Retreat_Letters_Retreat {
 			'disclaimer_acceptance_text' => sanitize_text_field( $data['disclaimer_acceptance_text'] ?? '' ),
 			'custom_header_block_id'     => $this->sanitize_block_selection( $data['custom_header_block_id'] ?? null ),
 			'custom_footer_block_id'     => $this->sanitize_block_selection( $data['custom_footer_block_id'] ?? null ),
+			'custom_css'                 => $this->sanitize_css( $data['custom_css'] ?? '' ),
 		);
 	}
 
@@ -334,6 +337,26 @@ class DFX_Parish_Retreat_Letters_Retreat {
 		}
 
 		return null;
+	}
+
+	/**
+	 * Sanitize CSS content.
+	 *
+	 * @since 1.6.0
+	 * @param string $css CSS content to sanitize.
+	 * @return string Sanitized CSS.
+	 */
+	private function sanitize_css( $css ) {
+		if ( empty( $css ) ) {
+			return '';
+		}
+		
+		// Remove any PHP tags and script tags for security
+		$css = preg_replace( '/<\?php.*?\?>/is', '', $css );
+		$css = preg_replace( '/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/mi', '', $css );
+		
+		// Allow only CSS content
+		return wp_strip_all_tags( $css );
 	}
 
 	/**

@@ -38,7 +38,7 @@ class DFX_Parish_Retreat_Letters_Database {
 	 * @since 1.0.0
 	 * @var string
 	 */
-	const DB_VERSION = '1.5.0';
+	const DB_VERSION = '1.6.0';
 
 	/**
 	 * The database version option name.
@@ -182,6 +182,7 @@ class DFX_Parish_Retreat_Letters_Database {
 			disclaimer_acceptance_text varchar(500) NULL DEFAULT NULL,
 			custom_header_block_id varchar(100) NULL DEFAULT NULL,
 			custom_footer_block_id varchar(100) NULL DEFAULT NULL,
+			custom_css text NULL DEFAULT NULL,
 			created_at datetime DEFAULT CURRENT_TIMESTAMP,
 			updated_at datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 			PRIMARY KEY (id),
@@ -678,6 +679,8 @@ class DFX_Parish_Retreat_Letters_Database {
 			) );
 		}
 	}
+
+
 
 	/**
 	 * Remove foreign key constraints from audit log table.
