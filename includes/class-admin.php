@@ -299,16 +299,28 @@ class DFX_Parish_Retreat_Letters_Admin {
 			array( $this, 'retreats_list_page' )
 		);
 
-		// Only plugin administrators can add new retreats
+		// Register the add/edit page for all users with retreat access (needed for retreat managers to edit their retreats)
+		add_submenu_page(
+			'dfx-prl-retreats',
+			__( 'Add New Retreat', 'dfx-parish-retreat-letters' ),
+			'', // Empty menu title to hide from menu display initially
+			'read', // Use basic capability since we check specific permissions in the page method
+			'dfx-prl-retreats-add',
+			array( $this, 'retreat_add_page' )
+		);
+
+		// Only plugin administrators can see the "Add New" menu item and access privacy settings
 		if ( $this->permissions->current_user_can_manage_plugin() ) {
-			add_submenu_page(
-				'dfx-prl-retreats',
-				__( 'Add New Retreat', 'dfx-parish-retreat-letters' ),
-				__( 'Add New', 'dfx-parish-retreat-letters' ),
-				'read', // Use basic capability since we already check permissions above
-				'dfx-prl-retreats-add',
-				array( $this, 'retreat_add_page' )
-			);
+			// Show the "Add New" menu item for plugin administrators by updating the submenu
+			global $submenu;
+			if ( isset( $submenu['dfx-prl-retreats'] ) ) {
+				foreach ( $submenu['dfx-prl-retreats'] as $index => $menu_item ) {
+					if ( $menu_item[2] === 'dfx-prl-retreats-add' ) {
+						$submenu['dfx-prl-retreats'][$index][0] = __( 'Add New', 'dfx-parish-retreat-letters' );
+						break;
+					}
+				}
+			}
 
 			add_submenu_page(
 				'dfx-prl-retreats',
@@ -668,9 +680,11 @@ class DFX_Parish_Retreat_Letters_Admin {
 		?>
 		<div class="wrap">
 			<h1 class="wp-heading-inline"><?php esc_html_e( 'Retreats', 'dfx-parish-retreat-letters' ); ?></h1>
-			<a href="<?php echo esc_url( admin_url( 'admin.php?page=dfx-prl-retreats-add' ) ); ?>" class="page-title-action">
-				<?php esc_html_e( 'Add New', 'dfx-parish-retreat-letters' ); ?>
-			</a>
+			<?php if ( $this->permissions->current_user_can_manage_plugin() ) : ?>
+				<a href="<?php echo esc_url( admin_url( 'admin.php?page=dfx-prl-retreats-add' ) ); ?>" class="page-title-action">
+					<?php esc_html_e( 'Add New', 'dfx-parish-retreat-letters' ); ?>
+				</a>
+			<?php endif; ?>
 			<hr class="wp-header-end">
 
 			<?php $this->display_admin_notices(); ?>
@@ -771,9 +785,11 @@ class DFX_Parish_Retreat_Letters_Admin {
 										<?php esc_html_e( 'No retreats found for your search.', 'dfx-parish-retreat-letters' ); ?>
 									<?php else : ?>
 										<?php esc_html_e( 'No retreats found.', 'dfx-parish-retreat-letters' ); ?>
-										<a href="<?php echo esc_url( admin_url( 'admin.php?page=dfx-prl-retreats-add' ) ); ?>">
-											<?php esc_html_e( 'Add the first retreat', 'dfx-parish-retreat-letters' ); ?>
-										</a>
+										<?php if ( $this->permissions->current_user_can_manage_plugin() ) : ?>
+											<a href="<?php echo esc_url( admin_url( 'admin.php?page=dfx-prl-retreats-add' ) ); ?>">
+												<?php esc_html_e( 'Add the first retreat', 'dfx-parish-retreat-letters' ); ?>
+											</a>
+										<?php endif; ?>
 									<?php endif; ?>
 								</td>
 							</tr>
