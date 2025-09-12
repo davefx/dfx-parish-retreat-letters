@@ -38,7 +38,7 @@ class DFX_Parish_Retreat_Letters_Database {
 	 * @since 1.0.0
 	 * @var string
 	 */
-	const DB_VERSION = '1.6.1';
+	const DB_VERSION = '1.6.0';
 
 	/**
 	 * The database version option name.
@@ -680,56 +680,7 @@ class DFX_Parish_Retreat_Letters_Database {
 		}
 	}
 
-	/**
-	 * Migrate global settings from database table to WordPress options.
-	 * 
-	 * This method migrates existing settings from the dfx_prl_global_settings table
-	 * to WordPress options and then drops the table.
-	 *
-	 * @since 1.6.1
-	 */
-	private function migrate_global_settings_to_options() {
-		global $wpdb;
-		
-		$settings_table = $wpdb->prefix . 'dfx_prl_global_settings';
-		
-		// Check if the settings table exists
-		$table_exists = $wpdb->get_var( $wpdb->prepare( "SHOW TABLES LIKE %s", $settings_table ) );
-		if ( $table_exists !== $settings_table ) {
-			return; // Table doesn't exist, nothing to migrate
-		}
-		
-		// Get all settings from the table
-		$settings = $wpdb->get_results(
-			"SELECT setting_key, setting_value FROM {$settings_table}", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-			ARRAY_A
-		);
-		
-		$migrated_count = 0;
-		if ( $settings ) {
-			foreach ( $settings as $setting ) {
-				$option_name = 'dfx_prl_global_' . $setting['setting_key'];
-				$option_value = maybe_unserialize( $setting['setting_value'] );
-				
-				// Only migrate if the option doesn't already exist
-				if ( get_option( $option_name ) === false ) {
-					update_option( $option_name, $option_value );
-					$migrated_count++;
-				}
-			}
-		}
-		
-		// Drop the settings table after migration
-		$wpdb->query( "DROP TABLE IF EXISTS {$settings_table}" ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-		
-		// Log the migration if debug mode is enabled
-		if ( defined( 'WP_DEBUG' ) && WP_DEBUG && function_exists( 'error_log' ) ) {
-			error_log( sprintf(
-				'DFX Parish Retreat Letters: Migrated %d global settings from table to WordPress options and dropped settings table',
-				$migrated_count
-			) );
-		}
-	}
+
 
 	/**
 	 * Remove foreign key constraints from audit log table.
@@ -853,11 +804,6 @@ class DFX_Parish_Retreat_Letters_Database {
 		// Migrate custom block ID format from bigint to varchar (v1.5.0)
 		if ( version_compare( $from_version, '1.5.0', '<' ) ) {
 			$this->migrate_custom_block_ids();
-		}
-		
-		// Migrate global settings from table to WordPress options (v1.6.1)
-		if ( version_compare( $from_version, '1.6.1', '<' ) ) {
-			$this->migrate_global_settings_to_options();
 		}
 		
 		// Always run the comprehensive setup which handles all tables and columns using dbDelta
