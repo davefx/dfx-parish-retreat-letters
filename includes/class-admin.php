@@ -2680,7 +2680,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 			/* translators: JSON string with list of allowed headers for field emergency_contact_phone */
 			'emergency_contact_phone' => json_decode( __('["emergency contact phone", "emergency phone", "contact phone", "phone"]', 'dfx-parish-retreat-letters' ), true ),
 			/* translators: JSON string with list of allowed headers for field emergency_contact_email */
-			'emergency_contact_email' => json_decode( __('["emergency contact email", "emergency email", "contact email", "email", "correo del contacto de emergencia", "correo de emergencia", "correo", "email del contacto"]', 'dfx-parish-retreat-letters' ), true ),
+			'emergency_contact_email' => json_decode( __('["emergency contact email", "emergency email", "contact email", "email"]', 'dfx-parish-retreat-letters' ), true ),
 		);
 
 		// Normalize headers (lowercase, trim)

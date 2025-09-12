@@ -344,6 +344,8 @@ Contributions are welcome! Please:
 ### 25.9.12
 
 - Feature: Added support for custom header, footer, and CSS in letters form page, globally and per-retreat.
+- Feature: Added support to grant global Retreat Manager permissions to specific users.
+- Feature: New emergency contact email field for attendants.
 - Fix: Retreat managers can now edit retreats they manage.
 - Fix: Correcting translation loading issue in old WP versions
 
