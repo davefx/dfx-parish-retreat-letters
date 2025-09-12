@@ -331,8 +331,21 @@ class DFX_Parish_Retreat_Letters {
 	 * @since    1.0.0
 	 */
 	public function run() {
-		// load_plugin_textdomain() is no longer needed since WordPress 4.6
-		// WordPress automatically loads translations for plugins hosted on WordPress.org
+		// Load plugin text domain for translations
+		add_action( 'plugins_loaded', array( $this, 'load_plugin_textdomain' ) );
+	}
+
+	/**
+	 * Load the plugin text domain for translation.
+	 *
+	 * @since 25.9.11
+	 */
+	public function load_plugin_textdomain() {
+		load_plugin_textdomain(
+			'dfx-parish-retreat-letters',
+			false,
+			plugin_basename( dirname( dirname( __FILE__ ) ) ) . '/languages/'
+		);
 	}
 
 	/**
