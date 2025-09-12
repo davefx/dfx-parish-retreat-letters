@@ -169,19 +169,19 @@ class DFX_Parish_Retreat_Letters_Admin {
 	 */
 	public function handle_admin_form_submissions() {
 		// Only process POST requests
-		if ( $_SERVER['REQUEST_METHOD'] !== 'POST' ) {
+		if ( ! isset( $_SERVER['REQUEST_METHOD'] ) || $_SERVER['REQUEST_METHOD'] !== 'POST' ) {
 			return;
 		}
 
 		// Check for our plugin pages
-		$page = sanitize_text_field( $_GET['page'] ?? '' );
+		$page = sanitize_text_field( wp_unslash( $_GET['page'] ?? '' ) );
 		$allowed_pages = array( 'dfx-prl-retreats', 'dfx-prl-retreats-add', 'dfx-prl-messages', 'dfx-prl-privacy', 'dfx-prl-global-settings' );
 		
 		if ( ! in_array( $page, $allowed_pages, true ) ) {
 			return;
 		}
 
-		$action = sanitize_text_field( $_GET['action'] ?? '' );
+		$action = sanitize_text_field( wp_unslash( $_GET['action'] ?? '' ) );
 		$retreat_id = absint( $_GET['retreat_id'] ?? 0 );
 
 		// Handle different form submissions based on page and action
@@ -228,9 +228,9 @@ class DFX_Parish_Retreat_Letters_Admin {
 				
 			case 'attendants':
 				// Handle CSV export early (it calls exit)
-				$form_action = sanitize_text_field( $_POST['action'] ?? '' );
+				$form_action = sanitize_text_field( wp_unslash( $_POST['action'] ?? '' ) );
 				if ( $form_action === 'export_csv' ) {
-					if ( ! wp_verify_nonce( $_POST['_wpnonce'] ?? '', 'dfx_prl_attendants_action' ) ) {
+					if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['_wpnonce'] ?? '' ) ), 'dfx_prl_attendants_action' ) ) {
 						wp_die( esc_html__( 'Security check failed.', 'dfx-parish-retreat-letters' ) );
 					}
 					if ( ! $this->permissions->current_user_can_manage_retreat( $retreat_id ) ) {
@@ -425,7 +425,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 		
 		// Also check for query parameters that indicate our pages
 		if ( ! $is_our_page && isset( $_GET['page'] ) ) {
-			$page_param = sanitize_text_field( $_GET['page'] );
+			$page_param = sanitize_text_field( wp_unslash( $_GET['page'] ) );
 			// Ensure page_param is a string
 			$page_param = (string) ( $page_param ?? '' );
 			foreach ( $our_pages as $page ) {
@@ -445,7 +445,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 		wp_enqueue_script( 'jquery' );
 		
 		// Enqueue Select2 for user management on global settings page
-		if ( isset( $_GET['page'] ) && $_GET['page'] === 'dfx-prl-global-settings' ) {
+		if ( isset( $_GET['page'] ) && sanitize_text_field( wp_unslash( $_GET['page'] ) ) === 'dfx-prl-global-settings' ) {
 			wp_enqueue_script( 'select2' );
 			wp_enqueue_style( 'select2' );
 		}
@@ -501,7 +501,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 	 */
 	public function retreats_list_page() {
 		// Handle different actions
-		$action = sanitize_text_field( $_GET['action'] ?? '' );
+		$action = sanitize_text_field( wp_unslash( $_GET['action'] ?? '' ) );
 		$retreat_id = absint( $_GET['retreat_id'] ?? 0 );
 
 		switch ( $action ) {
@@ -531,7 +531,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 	 */
 	private function display_retreats_list() {
 		// Get query parameters
-		$search   = sanitize_text_field( $_GET['s'] ?? '' );
+		$search   = sanitize_text_field( wp_unslash( $_GET['s'] ?? '' ) );
 		$page_num = max( 1, absint( $_GET['paged'] ?? 1 ) );
 		$per_page = 20;
 
@@ -589,7 +589,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 		}
 
 		// Handle form submission
-		if ( ( $_SERVER['REQUEST_METHOD'] ?? '' ) === 'POST' ) {
+		if ( isset( $_SERVER['REQUEST_METHOD'] ) && $_SERVER['REQUEST_METHOD'] === 'POST' ) {
 			// Form submission already handled in admin_init, just return to prevent double processing
 			return;
 		}
@@ -603,11 +603,11 @@ class DFX_Parish_Retreat_Letters_Admin {
 	 * @since 1.0.0
 	 */
 	private function handle_list_page_actions() {
-		if ( ! wp_verify_nonce( $_POST['_wpnonce'] ?? '', 'dfx_prl_retreats_action' ) ) {
+		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['_wpnonce'] ?? '' ) ), 'dfx_prl_retreats_action' ) ) {
 			wp_die( esc_html__( 'Security check failed.', 'dfx-parish-retreat-letters' ) );
 		}
 
-		$action = sanitize_text_field( $_POST['action'] ?? '' );
+		$action = sanitize_text_field( wp_unslash( $_POST['action'] ?? '' ) );
 		$retreat_id = absint( $_POST['retreat_id'] ?? 0 );
 
 		if ( $action === 'delete' && $retreat_id ) {
@@ -626,21 +626,21 @@ class DFX_Parish_Retreat_Letters_Admin {
 	 * @param int $retreat_id Retreat ID for editing, 0 for adding.
 	 */
 	private function handle_add_edit_submission( $retreat_id = 0 ) {
-		if ( ! wp_verify_nonce( $_POST['_wpnonce'] ?? '', 'dfx_prl_retreats_add_edit' ) ) {
+		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['_wpnonce'] ?? '' ) ), 'dfx_prl_retreats_add_edit' ) ) {
 			wp_die( esc_html__( 'Security check failed.', 'dfx-parish-retreat-letters' ) );
 		}
 
 		$data = array(
-			'name'                       => sanitize_text_field( $_POST['name'] ?? '' ),
-			'location'                   => sanitize_text_field( $_POST['location'] ?? '' ),
-			'start_date'                 => sanitize_text_field( $_POST['start_date'] ?? '' ),
-			'end_date'                   => sanitize_text_field( $_POST['end_date'] ?? '' ),
-			'custom_message'             => wp_kses_post( $_POST['custom_message'] ?? '' ),
-			'disclaimer_text'            => wp_kses_post( $_POST['disclaimer_text'] ?? '' ),
-			'disclaimer_acceptance_text' => sanitize_text_field( $_POST['disclaimer_acceptance_text'] ?? '' ),
-			'custom_header_block_id'     => $this->parse_block_selection( $_POST['custom_header_block_id'] ?? '' ),
-			'custom_footer_block_id'     => $this->parse_block_selection( $_POST['custom_footer_block_id'] ?? '' ),
-			'custom_css'                 => sanitize_textarea_field( $_POST['custom_css'] ?? '' ),
+			'name'                       => sanitize_text_field( wp_unslash( $_POST['name'] ?? '' ) ),
+			'location'                   => sanitize_text_field( wp_unslash( $_POST['location'] ?? '' ) ),
+			'start_date'                 => sanitize_text_field( wp_unslash( $_POST['start_date'] ?? '' ) ),
+			'end_date'                   => sanitize_text_field( wp_unslash( $_POST['end_date'] ?? '' ) ),
+			'custom_message'             => wp_kses_post( wp_unslash( $_POST['custom_message'] ?? '' ) ),
+			'disclaimer_text'            => wp_kses_post( wp_unslash( $_POST['disclaimer_text'] ?? '' ) ),
+			'disclaimer_acceptance_text' => sanitize_text_field( wp_unslash( $_POST['disclaimer_acceptance_text'] ?? '' ) ),
+			'custom_header_block_id'     => $this->parse_block_selection( wp_unslash( $_POST['custom_header_block_id'] ?? '' ) ),
+			'custom_footer_block_id'     => $this->parse_block_selection( wp_unslash( $_POST['custom_footer_block_id'] ?? '' ) ),
+			'custom_css'                 => sanitize_textarea_field( wp_unslash( $_POST['custom_css'] ?? '' ) ),
 		);
 
 		if ( $retreat_id ) {
@@ -671,12 +671,12 @@ class DFX_Parish_Retreat_Letters_Admin {
 	 * @since 1.0.0
 	 */
 	public function ajax_delete_retreat() {
-		if ( ! wp_verify_nonce( $_POST['nonce'] ?? '', 'dfx_prl_retreats_nonce' ) ) {
+		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ?? '' ) ), 'dfx_prl_retreats_nonce' ) ) {
 			wp_die( esc_html__( 'Security check failed.', 'dfx-parish-retreat-letters' ) );
 		}
 
 		$retreat_id = absint( $_POST['retreat_id'] ?? 0 );
-		$retreat_name = sanitize_text_field( $_POST['retreat_name'] ?? '' );
+		$retreat_name = sanitize_text_field( wp_unslash( $_POST['retreat_name'] ?? '' ) );
 
 		// Get the retreat to verify the name
 		$retreat = $this->retreat_model->get( $retreat_id );
@@ -734,7 +734,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 					<div class="alignleft actions">
 						<p><?php
 						/* translators: %d: number of retreats */
-						printf( esc_html__( 'Total retreats: %d', 'dfx-parish-retreat-letters' ), $total_items ); ?></p>
+						printf( esc_html__( 'Total retreats: %d', 'dfx-parish-retreat-letters' ), esc_html( $total_items ) ); ?></p>
 					</div>
 					<?php if ( $total_pages > 1 ) : ?>
 						<div class="tablenav-pages">
@@ -782,7 +782,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 											printf(
 												/* translators: %d: Number of attendants */
 												esc_html( _n( '%d attendant', '%d attendants', $count, 'dfx-parish-retreat-letters' ) ),
-												$count
+												esc_html( $count )
 											);
 											?>
 										</a>
@@ -2268,7 +2268,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 		}
 
 		// Get query parameters
-		$search   = sanitize_text_field( $_GET['s'] ?? '' );
+		$search   = sanitize_text_field( wp_unslash( $_GET['s'] ?? '' ) );
 		$page_num = max( 1, absint( $_GET['paged'] ?? 1 ) );
 		$per_page = 100;
 
@@ -2358,7 +2358,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 		}
 
 		// Handle form submission
-		if ( ( $_SERVER['REQUEST_METHOD'] ?? '' ) === 'POST' ) {
+		if ( isset( $_SERVER['REQUEST_METHOD'] ) && $_SERVER['REQUEST_METHOD'] === 'POST' ) {
 			// Form submission already handled in admin_init, just return to prevent double processing
 			return;
 		}
@@ -2373,11 +2373,11 @@ class DFX_Parish_Retreat_Letters_Admin {
 	 * @param int $retreat_id Retreat ID.
 	 */
 	private function handle_attendant_list_actions( $retreat_id ) {
-		if ( ! wp_verify_nonce( $_POST['_wpnonce'] ?? '', 'dfx_prl_attendants_action' ) ) {
+		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['_wpnonce'] ?? '' ) ), 'dfx_prl_attendants_action' ) ) {
 			wp_die( esc_html__( 'Security check failed.', 'dfx-parish-retreat-letters' ) );
 		}
 
-		$action = sanitize_text_field( $_POST['action'] ?? '' );
+		$action = sanitize_text_field( wp_unslash( $_POST['action'] ?? '' ) );
 		$attendant_id = absint( $_POST['attendant_id'] ?? 0 );
 
 		if ( $action === 'delete' && $attendant_id ) {
@@ -2397,19 +2397,19 @@ class DFX_Parish_Retreat_Letters_Admin {
 	 * @param int $attendant_id Attendant ID for editing, 0 for adding.
 	 */
 	private function handle_attendant_add_edit_submission( $retreat_id, $attendant_id = 0 ) {
-		if ( ! wp_verify_nonce( $_POST['_wpnonce'] ?? '', 'dfx_prl_attendants_add_edit' ) ) {
+		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['_wpnonce'] ?? '' ) ), 'dfx_prl_attendants_add_edit' ) ) {
 			wp_die( esc_html__( 'Security check failed.', 'dfx-parish-retreat-letters' ) );
 		}
 
 		$data = array(
 			'retreat_id'                => $retreat_id,
-			'name'                      => sanitize_text_field( $_POST['name'] ?? '' ),
-			'surnames'                  => sanitize_text_field( $_POST['surnames'] ?? '' ),
-			'date_of_birth'             => sanitize_text_field( $_POST['date_of_birth'] ?? '' ),
-			'emergency_contact_name'    => sanitize_text_field( $_POST['emergency_contact_name'] ?? '' ),
-			'emergency_contact_surname' => sanitize_text_field( $_POST['emergency_contact_surname'] ?? '' ),
-			'emergency_contact_phone'   => sanitize_text_field( $_POST['emergency_contact_phone'] ?? '' ),
-			'emergency_contact_email'   => sanitize_email( $_POST['emergency_contact_email'] ?? '' ),
+			'name'                      => sanitize_text_field( wp_unslash( $_POST['name'] ?? '' ) ),
+			'surnames'                  => sanitize_text_field( wp_unslash( $_POST['surnames'] ?? '' ) ),
+			'date_of_birth'             => sanitize_text_field( wp_unslash( $_POST['date_of_birth'] ?? '' ) ),
+			'emergency_contact_name'    => sanitize_text_field( wp_unslash( $_POST['emergency_contact_name'] ?? '' ) ),
+			'emergency_contact_surname' => sanitize_text_field( wp_unslash( $_POST['emergency_contact_surname'] ?? '' ) ),
+			'emergency_contact_phone'   => sanitize_text_field( wp_unslash( $_POST['emergency_contact_phone'] ?? '' ) ),
+			'emergency_contact_email'   => sanitize_email( wp_unslash( $_POST['emergency_contact_email'] ?? '' ) ),
 		);
 
 		if ( $attendant_id ) {
