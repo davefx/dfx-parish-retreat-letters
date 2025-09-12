@@ -240,6 +240,11 @@ class DFX_Parish_Retreat_Letters {
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-invitations.php';
 
 		/**
+		 * The class responsible for global settings management.
+		 */
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-global-settings.php';
+
+		/**
 		 * The class responsible for defining admin interface functionality
 		 * of the plugin.
 		 */

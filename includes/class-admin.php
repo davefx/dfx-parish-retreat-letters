@@ -97,6 +97,14 @@ class DFX_Parish_Retreat_Letters_Admin {
 	private $permissions;
 
 	/**
+	 * The global settings instance.
+	 *
+	 * @since 1.6.0
+	 * @var DFX_Parish_Retreat_Letters_GlobalSettings
+	 */
+	private $global_settings;
+
+	/**
 	 * Get the single instance of the class.
 	 *
 	 * @since 1.0.0
@@ -123,6 +131,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 		$this->security = DFX_Parish_Retreat_Letters_Security::get_instance();
 		$this->gdpr = DFX_Parish_Retreat_Letters_GDPR::get_instance();
 		$this->permissions = DFX_Parish_Retreat_Letters_Permissions::get_instance();
+		$this->global_settings = DFX_Parish_Retreat_Letters_GlobalSettings::get_instance();
 		$this->init_hooks();
 	}
 
@@ -166,7 +175,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 
 		// Check for our plugin pages
 		$page = sanitize_text_field( $_GET['page'] ?? '' );
-		$allowed_pages = array( 'dfx-prl-retreats', 'dfx-prl-retreats-add', 'dfx-prl-messages', 'dfx-prl-privacy' );
+		$allowed_pages = array( 'dfx-prl-retreats', 'dfx-prl-retreats-add', 'dfx-prl-messages', 'dfx-prl-privacy', 'dfx-prl-global-settings' );
 		
 		if ( ! in_array( $page, $allowed_pages, true ) ) {
 			return;
@@ -191,6 +200,10 @@ class DFX_Parish_Retreat_Letters_Admin {
 				
 			case 'dfx-prl-privacy':
 				$this->handle_privacy_page_submissions();
+				break;
+				
+			case 'dfx-prl-global-settings':
+				$this->handle_global_settings_page_submissions();
 				break;
 		}
 	}
@@ -317,6 +330,15 @@ class DFX_Parish_Retreat_Letters_Admin {
 				'read', // Use basic capability since we already check permissions above
 				'dfx-prl-privacy',
 				array( $this, 'privacy_compliance_page' )
+			);
+
+			add_submenu_page(
+				'dfx-prl-retreats',
+				__( 'Global Settings', 'dfx-parish-retreat-letters' ),
+				__( 'Global Settings', 'dfx-parish-retreat-letters' ),
+				'read', // Use basic capability since we already check permissions above
+				'dfx-prl-global-settings',
+				array( $this, 'global_settings_page' )
 			);
 		}
 
@@ -599,6 +621,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 			'disclaimer_acceptance_text' => sanitize_text_field( $_POST['disclaimer_acceptance_text'] ?? '' ),
 			'custom_header_block_id'     => $this->parse_block_selection( $_POST['custom_header_block_id'] ?? '' ),
 			'custom_footer_block_id'     => $this->parse_block_selection( $_POST['custom_footer_block_id'] ?? '' ),
+			'custom_css'                 => sanitize_textarea_field( $_POST['custom_css'] ?? '' ),
 		);
 
 		if ( $retreat_id ) {
@@ -868,13 +891,24 @@ class DFX_Parish_Retreat_Letters_Admin {
 										</td>
 									</tr>
 									<?php if ( post_type_exists( 'wp_block' ) ) : ?>
+									<?php 
+									$per_retreat_customization_enabled = $this->global_settings->is_per_retreat_customization_enabled();
+									$header_default_text = $per_retreat_customization_enabled ? 
+										__( 'Use default header', 'dfx-parish-retreat-letters' ) : 
+										__( 'Use global default header', 'dfx-parish-retreat-letters' );
+									$footer_default_text = $per_retreat_customization_enabled ? 
+										__( 'Use default footer', 'dfx-parish-retreat-letters' ) : 
+										__( 'Use global default footer', 'dfx-parish-retreat-letters' );
+									?>
+									
+									<?php if ( $per_retreat_customization_enabled ) : ?>
 									<tr>
 										<th scope="row">
 											<label for="custom_header_block_id"><?php esc_html_e( 'Custom Header Block', 'dfx-parish-retreat-letters' ); ?></label>
 										</th>
 										<td>
-											<?php $this->render_block_selector( 'custom_header_block_id', $retreat->custom_header_block_id ?? null, __( 'Use default WordPress header', 'dfx-parish-retreat-letters' ) ); ?>
-											<p class="description"><?php esc_html_e( 'Select a reusable block, template part, or pattern to display as custom header in the letters form page. Leave empty to use the default WordPress header.', 'dfx-parish-retreat-letters' ); ?></p>
+											<?php $this->render_block_selector( 'custom_header_block_id', $retreat->custom_header_block_id ?? null, $header_default_text ); ?>
+											<p class="description"><?php esc_html_e( 'Select a reusable block, template part, or pattern to display as custom header in the letters form page. Leave empty to use the default header.', 'dfx-parish-retreat-letters' ); ?></p>
 										</td>
 									</tr>
 									<tr>
@@ -882,10 +916,28 @@ class DFX_Parish_Retreat_Letters_Admin {
 											<label for="custom_footer_block_id"><?php esc_html_e( 'Custom Footer Block', 'dfx-parish-retreat-letters' ); ?></label>
 										</th>
 										<td>
-											<?php $this->render_block_selector( 'custom_footer_block_id', $retreat->custom_footer_block_id ?? null, __( 'Use default WordPress footer', 'dfx-parish-retreat-letters' ) ); ?>
-											<p class="description"><?php esc_html_e( 'Select a reusable block, template part, or pattern to display as custom footer in the letters form page. Leave empty to use the default WordPress footer.', 'dfx-parish-retreat-letters' ); ?></p>
+											<?php $this->render_block_selector( 'custom_footer_block_id', $retreat->custom_footer_block_id ?? null, $footer_default_text ); ?>
+											<p class="description"><?php esc_html_e( 'Select a reusable block, template part, or pattern to display as custom footer in the letters form page. Leave empty to use the default footer.', 'dfx-parish-retreat-letters' ); ?></p>
 										</td>
 									</tr>
+									<tr>
+										<th scope="row">
+											<label for="custom_css"><?php esc_html_e( 'Custom CSS Styles', 'dfx-parish-retreat-letters' ); ?></label>
+										</th>
+										<td>
+											<textarea id="custom_css" name="custom_css" rows="10" cols="80" class="large-text code"><?php echo esc_textarea( $retreat->custom_css ?? '' ); ?></textarea>
+											<p class="description"><?php esc_html_e( 'CSS styles specific to this retreat\'s message form page. Do not include &lt;style&gt; tags. Leave empty to use only the global default CSS.', 'dfx-parish-retreat-letters' ); ?></p>
+										</td>
+									</tr>
+									<?php else : ?>
+									<tr>
+										<td colspan="2">
+											<div class="notice notice-info inline">
+												<p><?php printf( esc_html__( 'Per-retreat customization is disabled. All retreats will use the global settings. %sChange global settings%s', 'dfx-parish-retreat-letters' ), '<a href="' . esc_url( admin_url( 'admin.php?page=dfx-prl-global-settings' ) ) . '">', '</a>' ); ?></p>
+											</div>
+										</td>
+									</tr>
+									<?php endif; ?>
 									<?php endif; ?>
 								</tbody>
 							</table>
@@ -4713,6 +4765,138 @@ class DFX_Parish_Retreat_Letters_Admin {
 				)
 			);
 			echo '</small>';
+		}
+	}
+
+	/**
+	 * Display the global settings page.
+	 *
+	 * @since 1.6.0
+	 */
+	public function global_settings_page() {
+		// Check permissions - only plugin administrators can access this page
+		if ( ! $this->permissions->current_user_can_manage_plugin() ) {
+			wp_die( esc_html__( 'You do not have permission to access this page.', 'dfx-parish-retreat-letters' ) );
+		}
+
+		// Display admin notices
+		$this->display_admin_notices();
+
+		// Get current settings
+		$default_header = $this->global_settings->get_default_header();
+		$default_footer = $this->global_settings->get_default_footer();
+		$default_css = $this->global_settings->get_default_css();
+		$per_retreat_customization_enabled = $this->global_settings->is_per_retreat_customization_enabled();
+
+		?>
+		<div class="wrap">
+			<h1 class="wp-heading-inline">
+				<?php esc_html_e( 'Global Settings', 'dfx-parish-retreat-letters' ); ?>
+			</h1>
+			<hr class="wp-header-end">
+
+			<form method="post" action="">
+				<?php wp_nonce_field( 'dfx_prl_global_settings_nonce' ); ?>
+				
+				<table class="form-table">
+					<tbody>
+						<tr>
+							<th scope="row">
+								<label for="enable_per_retreat_customization"><?php esc_html_e( 'Per-Retreat Customization', 'dfx-parish-retreat-letters' ); ?></label>
+							</th>
+							<td>
+								<input type="checkbox" id="enable_per_retreat_customization" name="enable_per_retreat_customization" value="1" <?php checked( $per_retreat_customization_enabled ); ?>>
+								<label for="enable_per_retreat_customization"><?php esc_html_e( 'Allow individual retreats to customize headers, footers, and CSS', 'dfx-parish-retreat-letters' ); ?></label>
+								<p class="description"><?php esc_html_e( 'When disabled, all retreats will use the global default settings defined below.', 'dfx-parish-retreat-letters' ); ?></p>
+							</td>
+						</tr>
+						
+						<?php if ( post_type_exists( 'wp_block' ) ) : ?>
+						<tr>
+							<th scope="row">
+								<label for="default_header_block_id"><?php esc_html_e( 'Default Header Block', 'dfx-parish-retreat-letters' ); ?></label>
+							</th>
+							<td>
+								<?php $this->render_block_selector( 'default_header_block_id', $default_header, __( 'Use default WordPress header', 'dfx-parish-retreat-letters' ) ); ?>
+								<p class="description"><?php esc_html_e( 'Select a reusable block, template part, or pattern to display as the default header in all retreat message form pages.', 'dfx-parish-retreat-letters' ); ?></p>
+							</td>
+						</tr>
+						<tr>
+							<th scope="row">
+								<label for="default_footer_block_id"><?php esc_html_e( 'Default Footer Block', 'dfx-parish-retreat-letters' ); ?></label>
+							</th>
+							<td>
+								<?php $this->render_block_selector( 'default_footer_block_id', $default_footer, __( 'Use default WordPress footer', 'dfx-parish-retreat-letters' ) ); ?>
+								<p class="description"><?php esc_html_e( 'Select a reusable block, template part, or pattern to display as the default footer in all retreat message form pages.', 'dfx-parish-retreat-letters' ); ?></p>
+							</td>
+						</tr>
+						<?php endif; ?>
+						
+						<tr>
+							<th scope="row">
+								<label for="default_css"><?php esc_html_e( 'Default CSS Styles', 'dfx-parish-retreat-letters' ); ?></label>
+							</th>
+							<td>
+								<textarea id="default_css" name="default_css" rows="15" cols="80" class="large-text code"><?php echo esc_textarea( $default_css ); ?></textarea>
+								<p class="description"><?php esc_html_e( 'CSS styles to be applied to all retreat message form pages. Do not include &lt;style&gt; tags.', 'dfx-parish-retreat-letters' ); ?></p>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+
+				<p class="submit">
+					<input type="submit" name="submit" id="submit" class="button button-primary" value="<?php esc_attr_e( 'Save Settings', 'dfx-parish-retreat-letters' ); ?>">
+				</p>
+			</form>
+
+			<hr>
+
+			<h2><?php esc_html_e( 'User Management', 'dfx-parish-retreat-letters' ); ?></h2>
+			<p class="description"><?php esc_html_e( 'Plugin administrators can manage retreats and global settings. You can grant permissions to specific users for individual retreats on the Privacy & Compliance page.', 'dfx-parish-retreat-letters' ); ?></p>
+			
+			<p>
+				<a href="<?php echo esc_url( admin_url( 'admin.php?page=dfx-prl-privacy' ) ); ?>" class="button">
+					<?php esc_html_e( 'Manage User Permissions', 'dfx-parish-retreat-letters' ); ?>
+				</a>
+			</p>
+		</div>
+		<?php
+	}
+
+	/**
+	 * Handle global settings page form submissions.
+	 *
+	 * @since 1.6.0
+	 */
+	private function handle_global_settings_page_submissions() {
+		// Check permissions
+		if ( ! $this->permissions->current_user_can_manage_plugin() ) {
+			wp_die( esc_html__( 'You do not have permission to perform this action.', 'dfx-parish-retreat-letters' ) );
+		}
+
+		// Verify nonce
+		if ( ! isset( $_POST['_wpnonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['_wpnonce'] ) ), 'dfx_prl_global_settings_nonce' ) ) {
+			$this->add_admin_notice( __( 'Security check failed. Please try again.', 'dfx-parish-retreat-letters' ), 'error' );
+			return;
+		}
+
+		// Process form submission
+		$per_retreat_customization = isset( $_POST['enable_per_retreat_customization'] ) ? 1 : 0;
+		$default_header = $this->parse_block_selection( $_POST['default_header_block_id'] ?? '' );
+		$default_footer = $this->parse_block_selection( $_POST['default_footer_block_id'] ?? '' );
+		$default_css = sanitize_textarea_field( $_POST['default_css'] ?? '' );
+
+		// Save settings
+		$success = true;
+		$success = $this->global_settings->set_per_retreat_customization_enabled( $per_retreat_customization ) && $success;
+		$success = $this->global_settings->set_default_header( $default_header ) && $success;
+		$success = $this->global_settings->set_default_footer( $default_footer ) && $success;
+		$success = $this->global_settings->set_default_css( $default_css ) && $success;
+
+		if ( $success ) {
+			$this->add_admin_notice( __( 'Global settings saved successfully.', 'dfx-parish-retreat-letters' ), 'success' );
+		} else {
+			$this->add_admin_notice( __( 'Error saving global settings. Please try again.', 'dfx-parish-retreat-letters' ), 'error' );
 		}
 	}
 }

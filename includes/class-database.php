@@ -38,7 +38,7 @@ class DFX_Parish_Retreat_Letters_Database {
 	 * @since 1.0.0
 	 * @var string
 	 */
-	const DB_VERSION = '1.5.0';
+	const DB_VERSION = '1.6.0';
 
 	/**
 	 * The database version option name.
@@ -113,6 +113,14 @@ class DFX_Parish_Retreat_Letters_Database {
 	private $audit_log_table;
 
 	/**
+	 * The table name for global plugin settings.
+	 *
+	 * @since 1.6.0
+	 * @var string
+	 */
+	private $settings_table;
+
+	/**
 	 * Get the single instance of the class.
 	 *
 	 * @since 1.0.0
@@ -140,6 +148,7 @@ class DFX_Parish_Retreat_Letters_Database {
 		$this->permissions_table = $wpdb->prefix . 'dfx_prl_retreat_permissions';
 		$this->invitations_table = $wpdb->prefix . 'dfx_prl_retreat_invitations';
 		$this->audit_log_table = $wpdb->prefix . 'dfx_prl_permission_audit_log';
+		$this->settings_table = $wpdb->prefix . 'dfx_prl_global_settings';
 		
 		// Only check for database upgrades if WordPress is fully loaded
 		if ( did_action( 'init' ) || current_action() === 'init' ) {
@@ -182,6 +191,7 @@ class DFX_Parish_Retreat_Letters_Database {
 			disclaimer_acceptance_text varchar(500) NULL DEFAULT NULL,
 			custom_header_block_id varchar(100) NULL DEFAULT NULL,
 			custom_footer_block_id varchar(100) NULL DEFAULT NULL,
+			custom_css text NULL DEFAULT NULL,
 			created_at datetime DEFAULT CURRENT_TIMESTAMP,
 			updated_at datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 			PRIMARY KEY (id),
@@ -344,6 +354,19 @@ class DFX_Parish_Retreat_Letters_Database {
 
 		dbDelta( $audit_log_sql );
 
+		// Create global settings table (from v1.6.0)
+		$settings_sql = "CREATE TABLE {$this->settings_table} (
+			id mediumint(9) NOT NULL AUTO_INCREMENT,
+			setting_key varchar(255) NOT NULL,
+			setting_value longtext DEFAULT NULL,
+			created_at datetime DEFAULT CURRENT_TIMESTAMP,
+			updated_at datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+			PRIMARY KEY (id),
+			UNIQUE KEY uk_setting_key (setting_key)
+		) $charset_collate;";
+
+		dbDelta( $settings_sql );
+
 		// Add the manage_retreat_plugin capability to administrator role (from v1.3.0)
 		$admin_role = get_role( 'administrator' );
 		if ( $admin_role ) {
@@ -373,6 +396,7 @@ class DFX_Parish_Retreat_Letters_Database {
 		global $wpdb;
 		// Drop tables in reverse order due to foreign key constraints
 		$wpdb->query( "DROP TABLE IF EXISTS {$this->audit_log_table}" ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		$wpdb->query( "DROP TABLE IF EXISTS {$this->settings_table}" ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 		$wpdb->query( "DROP TABLE IF EXISTS {$this->invitations_table}" ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 		$wpdb->query( "DROP TABLE IF EXISTS {$this->permissions_table}" ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 		$wpdb->query( "DROP TABLE IF EXISTS {$this->message_print_log_table}" ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
@@ -468,6 +492,16 @@ class DFX_Parish_Retreat_Letters_Database {
 	 */
 	public function get_audit_log_table() {
 		return $this->audit_log_table;
+	}
+
+	/**
+	 * Get the global settings table name.
+	 *
+	 * @since 1.6.0
+	 * @return string
+	 */
+	public function get_settings_table() {
+		return $this->settings_table;
 	}
 
 	/**
