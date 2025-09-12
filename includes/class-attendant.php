@@ -73,7 +73,7 @@ class DFX_Parish_Retreat_Letters_Attendant {
 				'message_url_token'         => $message_url_token,
 			),
 			array( '%d', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s' )
-		);
+		); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
 
 		return $result ? $wpdb->insert_id : false;
 	}
@@ -88,10 +88,21 @@ class DFX_Parish_Retreat_Letters_Attendant {
 	public function get( $id ) {
 		global $wpdb;
 
+		// Check cache first
+		$cache_key = 'dfx_prl_attendant_' . $id;
+		$cached_result = wp_cache_get( $cache_key );
+		if ( false !== $cached_result ) {
+			return $cached_result;
+		}
+
+		$table_name = $this->database->get_attendants_table();
 		$result = $wpdb->get_row( $wpdb->prepare(
-			"SELECT * FROM {$this->database->get_attendants_table()} WHERE id = %d",
+			"SELECT * FROM {$table_name} WHERE id = %d", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 			$id
-		) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
+
+		// Cache result for 5 minutes
+		wp_cache_set( $cache_key, $result, '', 300 );
 
 		return $result;
 	}
@@ -127,7 +138,12 @@ class DFX_Parish_Retreat_Letters_Attendant {
 			array( 'id' => $id ),
 			array( '%d', '%s', '%s', '%s', '%s', '%s', '%s', '%s' ),
 			array( '%d' )
-		);
+		); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
+
+		// Clear cache for this attendant
+		if ( $result !== false ) {
+			wp_cache_delete( 'dfx_prl_attendant_' . $id );
+		}
 
 		return $result !== false;
 	}
@@ -152,7 +168,12 @@ class DFX_Parish_Retreat_Letters_Attendant {
 			$this->database->get_attendants_table(),
 			array( 'id' => $id ),
 			array( '%d' )
-		);
+		); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
+
+		// Clear cache for this attendant
+		if ( $result !== false ) {
+			wp_cache_delete( 'dfx_prl_attendant_' . $id );
+		}
 
 		return $result !== false;
 	}
@@ -198,19 +219,20 @@ class DFX_Parish_Retreat_Letters_Attendant {
 		$order = in_array( strtoupper( $args['order'] ), array( 'ASC', 'DESC' ), true ) ? strtoupper( $args['order'] ) : 'ASC';
 
 		// Handle pagination - check if per_page is -1 (meaning get all records)
+		$table_name = $this->database->get_attendants_table();
 		if ( $args['per_page'] === -1 ) {
 			// No pagination - get all records
-			$sql = "SELECT * FROM {$this->database->get_attendants_table()} 
+			$sql = "SELECT * FROM {$table_name} 
 					WHERE {$where_clause} 
-					ORDER BY {$orderby} {$order}";
+					ORDER BY {$orderby} {$order}"; // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 		} else {
 			// Calculate offset for pagination
 			$offset = ( absint( $args['page'] ) - 1 ) * absint( $args['per_page'] );
 
-			$sql = "SELECT * FROM {$this->database->get_attendants_table()} 
+			$sql = "SELECT * FROM {$table_name} 
 					WHERE {$where_clause} 
 					ORDER BY {$orderby} {$order} 
-					LIMIT %d OFFSET %d";
+					LIMIT %d OFFSET %d"; // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 
 			$where_values[] = absint( $args['per_page'] );
 			$where_values[] = $offset;
@@ -218,7 +240,7 @@ class DFX_Parish_Retreat_Letters_Attendant {
 
 		$sql = $wpdb->prepare( $sql, $where_values ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 
-		$results = $wpdb->get_results( $sql ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.PreparedSQL.NotPrepared
+		$results = $wpdb->get_results( $sql ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching,WordPress.DB.PreparedSQL.NotPrepared
 
 		return $results ? $results : array();
 	}
@@ -247,11 +269,11 @@ class DFX_Parish_Retreat_Letters_Attendant {
 			$where_values[] = $search_term;
 		}
 
-		$sql = "SELECT COUNT(*) FROM {$this->database->get_attendants_table()} WHERE {$where_clause}";
+		$sql = "SELECT COUNT(*) FROM {$this->database->get_attendants_table()} WHERE {$where_clause}"; // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 
 		$sql = $wpdb->prepare( $sql, $where_values ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 
-		return (int) $wpdb->get_var( $sql ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.PreparedSQL.NotPrepared
+		return (int) $wpdb->get_var( $sql ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching,WordPress.DB.PreparedSQL.NotPrepared
 	}
 
 	/**
@@ -269,12 +291,13 @@ class DFX_Parish_Retreat_Letters_Attendant {
 		}
 
 		$placeholders = implode( ', ', array_fill( 0, count( $retreat_ids ), '%d' ) );
+		$table_name = $this->database->get_attendants_table();
 		$sql = "SELECT retreat_id, COUNT(*) as count 
-				FROM {$this->database->get_attendants_table()} 
+				FROM {$table_name} 
 				WHERE retreat_id IN ($placeholders) 
-				GROUP BY retreat_id";
+				GROUP BY retreat_id"; // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 
-		$results = $wpdb->get_results( $wpdb->prepare( $sql, $retreat_ids ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.PreparedSQL.NotPrepared
+		$results = $wpdb->get_results( $wpdb->prepare( $sql, $retreat_ids ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching,WordPress.DB.PreparedSQL.NotPrepared
 
 		$counts = array();
 		foreach ( $results as $result ) {
@@ -296,10 +319,11 @@ class DFX_Parish_Retreat_Letters_Attendant {
 		global $wpdb;
 
 		// First get all attendant IDs for this retreat
+		$table_name = $this->database->get_attendants_table();
 		$attendant_ids = $wpdb->get_col( $wpdb->prepare(
-			'SELECT id FROM ' . $this->database->get_attendants_table() . ' WHERE retreat_id = %d',
+			"SELECT id FROM {$table_name} WHERE retreat_id = %d", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 			$retreat_id
-		) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
+		) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
 
 		// Delete all messages for these attendants (cascade delete)
 		if ( ! empty( $attendant_ids ) ) {
@@ -312,7 +336,7 @@ class DFX_Parish_Retreat_Letters_Attendant {
 			$this->database->get_attendants_table(),
 			array( 'retreat_id' => $retreat_id ),
 			array( '%d' )
-		);
+		); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
 
 		return $result !== false;
 	}
@@ -427,10 +451,11 @@ class DFX_Parish_Retreat_Letters_Attendant {
 
 		// Check if retreat exists
 		global $wpdb;
+		$retreats_table = $this->database->get_retreats_table();
 		$retreat_exists = $wpdb->get_var( $wpdb->prepare(
-			"SELECT COUNT(*) FROM {$this->database->get_retreats_table()} WHERE id = %d",
+			"SELECT COUNT(*) FROM {$retreats_table} WHERE id = %d", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 			$data['retreat_id']
-		) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
 
 		if ( ! $retreat_exists ) {
 			$admin_manager->add_admin_notice(
@@ -458,11 +483,12 @@ class DFX_Parish_Retreat_Letters_Attendant {
 	public function exists( $retreat_id, $name, $surnames, $date_of_birth ) {
 		global $wpdb;
 
+		$table_name = $this->database->get_attendants_table();
 		$exists = $wpdb->get_var( $wpdb->prepare(
-			"SELECT COUNT(*) FROM {$this->database->get_attendants_table()} 
-			WHERE retreat_id = %d AND name = %s AND surnames = %s AND date_of_birth = %s",
+			"SELECT COUNT(*) FROM {$table_name} 
+			WHERE retreat_id = %d AND name = %s AND surnames = %s AND date_of_birth = %s", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 			$retreat_id, $name, $surnames, $date_of_birth
-		) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
 
 		return (bool) $exists;
 	}
@@ -480,11 +506,12 @@ class DFX_Parish_Retreat_Letters_Attendant {
 	public function get_id_by_identity( $retreat_id, $name, $surnames, $date_of_birth ) {
 		global $wpdb;
 
+		$table_name = $this->database->get_attendants_table();
 		$attendant_id = $wpdb->get_var( $wpdb->prepare(
-			"SELECT id FROM {$this->database->get_attendants_table()} 
-			WHERE retreat_id = %d AND name = %s AND surnames = %s AND date_of_birth = %s",
+			"SELECT id FROM {$table_name} 
+			WHERE retreat_id = %d AND name = %s AND surnames = %s AND date_of_birth = %s", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 			$retreat_id, $name, $surnames, $date_of_birth
-		) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
 
 		return $attendant_id ? (int) $attendant_id : null;
 	}
@@ -530,7 +557,12 @@ class DFX_Parish_Retreat_Letters_Attendant {
 			array( 'id' => $id ),
 			array( '%s', '%s', '%s', '%s' ),
 			array( '%d' )
-		);
+		); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
+
+		// Clear cache for this attendant
+		if ( $result !== false ) {
+			wp_cache_delete( 'dfx_prl_attendant_' . $id );
+		}
 
 		return $result !== false;
 	}
