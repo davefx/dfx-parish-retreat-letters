@@ -331,8 +331,52 @@ class DFX_Parish_Retreat_Letters {
 	 * @since    1.0.0
 	 */
 	public function run() {
-		// load_plugin_textdomain() is no longer needed since WordPress 4.6
-		// WordPress automatically loads translations for plugins hosted on WordPress.org
+		// Conditionally load plugin text domain for translations
+		// Only needed for custom plugins (not hosted on WordPress.org) and non-English locales
+		add_action( 'plugins_loaded', array( $this, 'maybe_load_plugin_textdomain' ) );
+	}
+
+	/**
+	 * Conditionally load the plugin text domain for translation.
+	 *
+	 * WordPress automatically loads translations for plugins hosted on WordPress.org since 4.6,
+	 * but custom plugins need to explicitly load their translations. This method only loads
+	 * translations when actually needed.
+	 *
+	 * @since 25.9.12
+	 */
+	public function maybe_load_plugin_textdomain() {
+		// Check if we're using English - if so, no translations needed
+		$locale = get_locale();
+		if ( 'en_US' === $locale || empty( $locale ) || 0 === strpos( $locale, 'en_' ) ) {
+			return;
+		}
+
+		// Check if translation files exist for this locale
+		$plugin_dir = plugin_basename( dirname( dirname( __FILE__ ) ) );
+		$languages_path = WP_PLUGIN_DIR . '/' . $plugin_dir . '/languages/';
+		$mo_file = $languages_path . 'dfx-parish-retreat-letters-' . $locale . '.mo';
+
+		// If no translation file exists for this locale, no point in loading
+		if ( ! file_exists( $mo_file ) ) {
+			return;
+		}
+
+		// Check if WordPress automatic loading might already be working
+		// Test if a known translatable string is already translated
+		$test_string = __( 'Send a Confidential Message', 'dfx-parish-retreat-letters' );
+		
+		// If the string is already translated (different from English), WordPress auto-loading might be working
+		if ( 'Send a Confidential Message' !== $test_string ) {
+			return;
+		}
+
+		// All checks passed - we need to explicitly load translations
+		load_plugin_textdomain(
+			'dfx-parish-retreat-letters',
+			false,
+			$plugin_dir . '/languages/'
+		);
 	}
 
 	/**
@@ -1732,6 +1776,7 @@ class DFX_Parish_Retreat_Letters {
 		// Add file upload info to success message if applicable
 		if ( $message_mode === 'file' && $upload_result['uploaded_count'] > 0 ) {
 			$success_message = sprintf(
+				/* translators: %d: number of files uploaded */
 				__( 'Message sent successfully with %d file(s).', 'dfx-parish-retreat-letters' ),
 				$upload_result['uploaded_count']
 			);
@@ -1739,6 +1784,7 @@ class DFX_Parish_Retreat_Letters {
 			// Add warning if some files failed
 			if ( ! empty( $upload_result['errors'] ) ) {
 				$success_message .= ' ' . sprintf(
+					/* translators: %s: comma-separated list of file names that failed to upload */
 					__( 'Note: Some files could not be uploaded: %s', 'dfx-parish-retreat-letters' ),
 					implode( ', ', $upload_result['errors'] )
 				);
@@ -1777,7 +1823,8 @@ class DFX_Parish_Retreat_Letters {
 			// Check for upload errors
 			if ( $files['error'][$i] !== UPLOAD_ERR_OK ) {
 				$errors[] = sprintf( 
-					__( 'File "%s" upload failed with error code %d.', 'dfx-parish-retreat-letters' ),
+					/* translators: %1$s: file name, %2$d: error code number */
+					__( 'File "%1$s" upload failed with error code %2$d.', 'dfx-parish-retreat-letters' ),
 					$filename,
 					$files['error'][$i]
 				);
@@ -1795,6 +1842,7 @@ class DFX_Parish_Retreat_Letters {
 			$validated_file = $this->security->validate_file_upload( $file_data );
 			if ( ! $validated_file ) {
 				$errors[] = sprintf( 
+					/* translators: %s: file name */
 					__( 'File "%s" failed validation (unsupported type or too large).', 'dfx-parish-retreat-letters' ),
 					$filename
 				);
@@ -1814,6 +1862,7 @@ class DFX_Parish_Retreat_Letters {
 				$uploaded_count++;
 			} else {
 				$errors[] = sprintf( 
+					/* translators: %s: file name */
 					__( 'File "%s" could not be saved to database.', 'dfx-parish-retreat-letters' ),
 					$filename
 				);
@@ -2006,6 +2055,7 @@ class DFX_Parish_Retreat_Letters {
 								// Binary file that can't be printed as text
 								echo '<h3>' . esc_html( $decrypted_file['filename'] ) . '</h3>';
 								echo '<p>' . sprintf( 
+									/* translators: %1$s: file type, %2$s: formatted file size */
 									esc_html__( 'File type: %1$s, Size: %2$s - Cannot display content for printing.', 'dfx-parish-retreat-letters' ),
 									esc_html( $file->file_type ),
 									esc_html( size_format( $decrypted_file['size'] ) )

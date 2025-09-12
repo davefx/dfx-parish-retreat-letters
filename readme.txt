@@ -3,11 +3,11 @@ Contributors: davefx
 Tags: parish, retreat, letters, confidential, GDPR
 Requires at least: 5.0
 Tested up to: 6.8
-Stable tag: 25.9.11
+Stable tag: 25.9.12
 Requires PHP: 7.4
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
-Manage parish retreat programs with confidentiality, GDPR compliance, and advanced user management.
+Manage parish retreat programs with confidentiality, GDPR compliance, and user management.
 
 # DFX Parish Retreat Letters
 
@@ -340,6 +340,10 @@ Contributions are welcome! Please:
 5. Include appropriate tests and documentation
 
 ## Changelog
+
+### 25.9.12
+
+- Fix: Correcting translation loading issue in old WP versions
 
 ### 25.9.11
 

@@ -251,7 +251,7 @@ class DFX_Parish_Retreat_Letters_Invitations {
 			'invitation_sent', 
 			$permission_level, 
 			$invited_by,
-			sprintf( 'Invitation sent to %s (%s)', $name, $email )
+			sprintf( 'Invitation sent to %1$s (%2$s)', $name, $email )
 		);
 
 		return array(
@@ -411,7 +411,7 @@ class DFX_Parish_Retreat_Letters_Invitations {
 				'invitation_cancelled', 
 				$invitation->permission_level, 
 				$cancelled_by,
-				sprintf( 'Invitation cancelled for %s (%s)', $invitation->name, $invitation->email )
+				sprintf( 'Invitation cancelled for %1$s (%2$s)', $invitation->name, $invitation->email )
 			);
 		}
 
@@ -741,6 +741,7 @@ class DFX_Parish_Retreat_Letters_Invitations {
 		$invitation_url = home_url( "/retreat-invitation/{$token}" );
 		
 		$subject = sprintf(
+			/* translators: %s: retreat name */
 			__( 'Invitation to manage retreat: %s', 'dfx-parish-retreat-letters' ),
 			$retreat->name
 		);
@@ -759,6 +760,7 @@ class DFX_Parish_Retreat_Letters_Invitations {
 			<p style="color: #666; font-size: 14px;"><em>%s</em></p>
 			<p>%s</p>
 			<p>%s<br>%s</p>',
+			/* translators: %s: person's name */
 			sprintf( __( 'Hello %s,', 'dfx-parish-retreat-letters' ), $name ),
 			__( 'You have been invited to participate in the management of the following retreat:', 'dfx-parish-retreat-letters' ),
 			__( 'Retreat', 'dfx-parish-retreat-letters' ),
@@ -799,6 +801,7 @@ class DFX_Parish_Retreat_Letters_Invitations {
 	 */
 	private function send_welcome_email( $user, $password ) {
 		$subject = sprintf(
+			/* translators: %s: site name */
 			__( 'Welcome to %s - Your account details', 'dfx-parish-retreat-letters' ),
 			get_bloginfo( 'name' )
 		);
@@ -815,6 +818,7 @@ class DFX_Parish_Retreat_Letters_Invitations {
 			<p><a href="%s" style="background: #007cba; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; display: inline-block;">%s</a></p>
 			<p style="color: #dc3545; font-weight: bold;">%s</p>
 			<p>%s<br>%s</p>',
+			/* translators: %s: user's display name */
 			sprintf( __( 'Welcome %s,', 'dfx-parish-retreat-letters' ), $user->display_name ),
 			__( 'Your account has been created successfully!', 'dfx-parish-retreat-letters' ),
 			__( 'Username', 'dfx-parish-retreat-letters' ),
