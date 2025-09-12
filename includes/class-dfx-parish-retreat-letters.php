@@ -331,8 +331,52 @@ class DFX_Parish_Retreat_Letters {
 	 * @since    1.0.0
 	 */
 	public function run() {
-		// load_plugin_textdomain() is no longer needed since WordPress 4.6
-		// WordPress automatically loads translations for plugins hosted on WordPress.org
+		// Conditionally load plugin text domain for translations
+		// Only needed for custom plugins (not hosted on WordPress.org) and non-English locales
+		add_action( 'plugins_loaded', array( $this, 'maybe_load_plugin_textdomain' ) );
+	}
+
+	/**
+	 * Conditionally load the plugin text domain for translation.
+	 *
+	 * WordPress automatically loads translations for plugins hosted on WordPress.org since 4.6,
+	 * but custom plugins need to explicitly load their translations. This method only loads
+	 * translations when actually needed.
+	 *
+	 * @since 25.9.11
+	 */
+	public function maybe_load_plugin_textdomain() {
+		// Check if we're using English - if so, no translations needed
+		$locale = get_locale();
+		if ( 'en_US' === $locale || empty( $locale ) || 0 === strpos( $locale, 'en_' ) ) {
+			return;
+		}
+
+		// Check if translation files exist for this locale
+		$plugin_dir = plugin_basename( dirname( dirname( __FILE__ ) ) );
+		$languages_path = WP_PLUGIN_DIR . '/' . $plugin_dir . '/languages/';
+		$mo_file = $languages_path . 'dfx-parish-retreat-letters-' . $locale . '.mo';
+
+		// If no translation file exists for this locale, no point in loading
+		if ( ! file_exists( $mo_file ) ) {
+			return;
+		}
+
+		// Check if WordPress automatic loading might already be working
+		// Test if a known translatable string is already translated
+		$test_string = __( 'Send a Confidential Message', 'dfx-parish-retreat-letters' );
+		
+		// If the string is already translated (different from English), WordPress auto-loading might be working
+		if ( 'Send a Confidential Message' !== $test_string ) {
+			return;
+		}
+
+		// All checks passed - we need to explicitly load translations
+		load_plugin_textdomain(
+			'dfx-parish-retreat-letters',
+			false,
+			$plugin_dir . '/languages/'
+		);
 	}
 
 	/**

@@ -24,6 +24,10 @@ class DFXParishRetreatLettersTest extends TestCase {
         // Mock WordPress functions
         Functions\when('plugin_dir_path')->justReturn('/path/to/plugin/');
         Functions\when('plugin_dir_url')->justReturn('http://example.com/wp-content/plugins/dfx-parish-retreat-letters/');
+        Functions\when('plugin_basename')->justReturn('dfx-parish-retreat-letters/dfx-parish-retreat-letters.php');
+        Functions\when('get_locale')->justReturn('en_US');
+        Functions\when('file_exists')->justReturn(false);
+        Functions\when('__')->returnArg();
         Functions\when('is_admin')->justReturn(true);
         Functions\when('add_action')->justReturn(true);
         Functions\when('add_filter')->justReturn(true);
@@ -104,5 +108,28 @@ class DFXParishRetreatLettersTest extends TestCase {
         
         $this->assertTrue(method_exists($plugin, 'run'));
         $this->assertTrue(is_callable([$plugin, 'run']));
+    }
+
+    /**
+     * Test maybe_load_plugin_textdomain method exists and is callable
+     */
+    public function test_maybe_load_plugin_textdomain_method_exists() {
+        $plugin = DFX_Parish_Retreat_Letters::get_instance();
+        
+        $this->assertTrue(method_exists($plugin, 'maybe_load_plugin_textdomain'));
+        $this->assertTrue(is_callable([$plugin, 'maybe_load_plugin_textdomain']));
+    }
+
+    /**
+     * Test translation loading is properly hooked
+     */
+    public function test_translation_loading_hooked() {
+        // Mock add_action to capture the hook registration
+        Functions\expect('add_action')
+            ->once()
+            ->with('plugins_loaded', \Mockery::type('array'));
+        
+        $plugin = DFX_Parish_Retreat_Letters::get_instance();
+        $plugin->run();
     }
 }
