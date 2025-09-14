@@ -129,19 +129,12 @@ class DFX_Parish_Retreat_Letters_GlobalSettings {
 	 * Get all global settings as an associative array.
 	 *
 	 * Uses WordPress options API instead of direct database queries for better
-	 * compliance with WordPress.org coding standards. Includes caching for performance.
+	 * compliance with WordPress.org coding standards.
 	 *
 	 * @since 1.6.0
 	 * @return array Array of setting_key => setting_value pairs.
 	 */
 	public function get_all() {
-		// Try to get from cache first
-		$cache_key = 'dfx_prl_global_settings_all';
-		$cached_settings = wp_cache_get( $cache_key );
-		if ( false !== $cached_settings ) {
-			return $cached_settings;
-		}
-		
 		// Get list of active setting keys
 		$active_keys = get_option( self::KEYS_OPTION_NAME, array() );
 		
@@ -158,9 +151,6 @@ class DFX_Parish_Retreat_Letters_GlobalSettings {
 				$settings[ $key ] = $value;
 			}
 		}
-		
-		// Cache the result for 5 minutes
-		wp_cache_set( $cache_key, $settings, '', 300 );
 		
 		return $settings;
 	}
@@ -261,9 +251,6 @@ class DFX_Parish_Retreat_Letters_GlobalSettings {
 		if ( ! in_array( $key, $active_keys, true ) ) {
 			$active_keys[] = $key;
 			update_option( self::KEYS_OPTION_NAME, $active_keys );
-			
-			// Clear cache when keys change
-			wp_cache_delete( 'dfx_prl_global_settings_all' );
 		}
 	}
 
@@ -279,9 +266,6 @@ class DFX_Parish_Retreat_Letters_GlobalSettings {
 		
 		if ( count( $updated_keys ) !== count( $active_keys ) ) {
 			update_option( self::KEYS_OPTION_NAME, array_values( $updated_keys ) );
-			
-			// Clear cache when keys change
-			wp_cache_delete( 'dfx_prl_global_settings_all' );
 		}
 	}
 
