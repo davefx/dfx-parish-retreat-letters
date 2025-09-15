@@ -104,40 +104,6 @@ class DFX_Parish_Retreat_Letters_GlobalSettings {
 	}
 
 	/**
-	 * Get all global settings as an associative array.
-	 *
-	 * @since 1.6.0
-	 * @return array Array of setting_key => setting_value pairs.
-	 */
-	public function get_all() {
-		global $wpdb;
-		
-		// Get all options with our prefix
-		$prefix = self::OPTION_PREFIX;
-		$options = $wpdb->get_results(
-			$wpdb->prepare(
-				"SELECT option_name, option_value FROM {$wpdb->options} WHERE option_name LIKE %s",
-				$prefix . '%'
-			),
-			ARRAY_A
-		);
-		
-		if ( ! $options ) {
-			return array();
-		}
-		
-		$settings = array();
-		foreach ( $options as $option ) {
-			// Remove the prefix to get the setting key
-			$setting_key = str_replace( $prefix, '', $option['option_name'] );
-			$setting_value = maybe_unserialize( $option['option_value'] );
-			$settings[ $setting_key ] = $setting_value;
-		}
-		
-		return $settings;
-	}
-
-	/**
 	 * Get default header block ID.
 	 *
 	 * @since 1.6.0

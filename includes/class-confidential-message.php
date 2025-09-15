@@ -84,7 +84,7 @@ class DFX_Parish_Retreat_Letters_ConfidentialMessage {
 				'ip_address'        => $ip_address,
 			),
 			array( '%d', '%s', '%s', '%s', '%s', '%s' )
-		);
+		); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
 
 		return $result ? $wpdb->insert_id : false;
 	}
@@ -414,7 +414,7 @@ class DFX_Parish_Retreat_Letters_ConfidentialMessage {
 			$this->database->get_messages_table(),
 			array( 'id' => $id ),
 			array( '%d' )
-		);
+		); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
 
 		return $result !== false;
 	}
@@ -527,6 +527,7 @@ class DFX_Parish_Retreat_Letters_ConfidentialMessage {
 		$messages_table = $this->database->get_messages_table();
 
 		// Get messages to delete
+		$messages_table = $this->database->get_messages_table();
 		$message_ids = $wpdb->get_col( $wpdb->prepare(
 			"SELECT id FROM `{$messages_table}` WHERE submitted_at < %s", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 			$cutoff_date
@@ -554,8 +555,9 @@ class DFX_Parish_Retreat_Letters_ConfidentialMessage {
 		global $wpdb;
 
 		// Get all message IDs for this attendant
+		$messages_table = $this->database->get_messages_table();
 		$message_ids = $wpdb->get_col( $wpdb->prepare(
-			'SELECT id FROM ' . $this->database->get_messages_table() . ' WHERE attendant_id = %d',
+			"SELECT id FROM `{$messages_table}` WHERE attendant_id = %d", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 			$attendant_id
 		) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
 
@@ -592,11 +594,10 @@ class DFX_Parish_Retreat_Letters_ConfidentialMessage {
 		global $wpdb;
 
 		// Get all message IDs for these attendants
+		$messages_table = $this->database->get_messages_table();
 		$placeholders = implode( ',', array_fill( 0, count( $attendant_ids ), '%d' ) );
-		$message_ids = $wpdb->get_col( $wpdb->prepare(
-			'SELECT id FROM ' . $this->database->get_messages_table() . " WHERE attendant_id IN ({$placeholders})",
-			$attendant_ids
-		) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.PreparedSQL.NotPrepared
+		$query = "SELECT id FROM `{$messages_table}` WHERE attendant_id IN ({$placeholders})"; // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		$message_ids = $wpdb->get_col( $wpdb->prepare( $query, $attendant_ids ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
 
 		$deleted_count = 0;
 		foreach ( $message_ids as $message_id ) {
