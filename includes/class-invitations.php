@@ -386,8 +386,9 @@ class DFX_Parish_Retreat_Letters_Invitations {
 	public function cancel_invitation( $invitation_id, $cancelled_by ) {
 		global $wpdb;
 
+		$invitations_table = $this->database->get_invitations_table();
 		$invitation = $wpdb->get_row( $wpdb->prepare(
-			'SELECT * FROM ' . $this->database->get_invitations_table() . ' WHERE id = %d',
+			"SELECT * FROM {$invitations_table} WHERE id = %d",
 			$invitation_id
 		) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
 
@@ -437,12 +438,14 @@ class DFX_Parish_Retreat_Letters_Invitations {
 			$params[] = $status;
 		}
 
+		$invitations_table = $this->database->get_invitations_table();
+		$query = "SELECT i.*, ib.display_name as invited_by_name
+		          FROM {$invitations_table} i
+		          INNER JOIN {$wpdb->users} ib ON i.invited_by = ib.ID
+		          {$where_clause}
+		          ORDER BY i.invited_at DESC";
 		$invitations = $wpdb->get_results( $wpdb->prepare(
-			'SELECT i.*, ib.display_name as invited_by_name
-			 FROM ' . $this->database->get_invitations_table() . ' i
-			 INNER JOIN ' . $wpdb->users . ' ib ON i.invited_by = ib.ID
-			 ' . $where_clause . '
-			 ORDER BY i.invited_at DESC',
+			$query,
 			...$params
 		) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
 
@@ -512,8 +515,9 @@ class DFX_Parish_Retreat_Letters_Invitations {
 
 		// Get retreat details
 		global $wpdb;
+		$retreats_table = $this->database->get_retreats_table();
 		$retreat = $wpdb->get_row( $wpdb->prepare(
-			'SELECT * FROM ' . $this->database->get_retreats_table() . ' WHERE id = %d',
+			"SELECT * FROM {$retreats_table} WHERE id = %d",
 			$invitation->retreat_id
 		) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
 
@@ -725,8 +729,9 @@ class DFX_Parish_Retreat_Letters_Invitations {
 	private function send_invitation_email( $invitation_id, $retreat_id, $email, $name, $permission_level, $token ) {
 		// Get retreat details
 		global $wpdb;
+		$retreats_table = $this->database->get_retreats_table();
 		$retreat = $wpdb->get_row( $wpdb->prepare(
-			'SELECT name, location, start_date, end_date FROM ' . $this->database->get_retreats_table() . ' WHERE id = %d',
+			"SELECT name, location, start_date, end_date FROM {$retreats_table} WHERE id = %d",
 			$retreat_id
 		) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
 
@@ -856,8 +861,9 @@ class DFX_Parish_Retreat_Letters_Invitations {
 		
 		do {
 			$token = $this->security->generate_secure_token();
+			$invitations_table = $this->database->get_invitations_table();
 			$exists = $wpdb->get_var( $wpdb->prepare(
-				'SELECT COUNT(*) FROM ' . $this->database->get_invitations_table() . ' WHERE token = %s',
+				"SELECT COUNT(*) FROM {$invitations_table} WHERE token = %s",
 				$token
 			) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
 		} while ( $exists > 0 );
@@ -895,8 +901,9 @@ class DFX_Parish_Retreat_Letters_Invitations {
 	private function get_invitation_by_token( $token ) {
 		global $wpdb;
 
+		$invitations_table = $this->database->get_invitations_table();
 		return $wpdb->get_row( $wpdb->prepare(
-			'SELECT * FROM ' . $this->database->get_invitations_table() . ' WHERE token = %s',
+			"SELECT * FROM {$invitations_table} WHERE token = %s",
 			$token
 		) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
 	}
@@ -913,9 +920,10 @@ class DFX_Parish_Retreat_Letters_Invitations {
 	private function get_pending_invitation( $retreat_id, $email, $permission_level ) {
 		global $wpdb;
 
+		$invitations_table = $this->database->get_invitations_table();
 		return $wpdb->get_row( $wpdb->prepare(
-			'SELECT * FROM ' . $this->database->get_invitations_table() . ' 
-			 WHERE retreat_id = %d AND email = %s AND permission_level = %s AND status = %s',
+			"SELECT * FROM {$invitations_table}
+			 WHERE retreat_id = %d AND email = %s AND permission_level = %s AND status = %s",
 			$retreat_id,
 			$email,
 			$permission_level,
@@ -950,17 +958,19 @@ class DFX_Parish_Retreat_Letters_Invitations {
 	public function cleanup_expired_invitations() {
 		global $wpdb;
 
+		$invitations_table = $this->database->get_invitations_table();
+		
 		// Mark expired invitations
 		$wpdb->query(
-			'UPDATE ' . $this->database->get_invitations_table() . ' 
-			 SET status = \'expired\' 
-			 WHERE status = \'pending\' AND expires_at < NOW()'
+			"UPDATE {$invitations_table}
+			 SET status = 'expired'
+			 WHERE status = 'pending' AND expires_at < NOW()"
 		); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
 
 		// Delete old invitations (older than 1 year)
 		$deleted = $wpdb->query(
-			'DELETE FROM ' . $this->database->get_invitations_table() . ' 
-			 WHERE status IN (\'expired\', \'cancelled\') AND invited_at < DATE_SUB(NOW(), INTERVAL 1 YEAR)'
+			"DELETE FROM {$invitations_table}
+			 WHERE status IN ('expired', 'cancelled') AND invited_at < DATE_SUB(NOW(), INTERVAL 1 YEAR)"
 		); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
 
 		return $deleted ? $deleted : 0;
