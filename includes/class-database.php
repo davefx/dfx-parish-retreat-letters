@@ -537,20 +537,22 @@ class DFX_Parish_Retreat_Letters_Database {
 		}
 
 		// Check if message_url_token column exists in attendants table
+		$attendants_table = $this->attendants_table;
 		$column_exists = $wpdb->get_results( $wpdb->prepare(
-			"SHOW COLUMNS FROM {$this->attendants_table} LIKE %s",
+			"SHOW COLUMNS FROM {$attendants_table} LIKE %s", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 			'message_url_token'
-		) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
 
 		if ( empty( $column_exists ) ) {
 			return false;
 		}
 
 		// Check if custom_message column exists in retreats table
+		$retreats_table = $this->retreats_table;
 		$custom_message_exists = $wpdb->get_results( $wpdb->prepare(
-			"SHOW COLUMNS FROM {$this->retreats_table} LIKE %s",
+			"SHOW COLUMNS FROM {$retreats_table} LIKE %s", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 			'custom_message'
-		) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
 
 		if ( empty( $custom_message_exists ) ) {
 			return false;
@@ -624,16 +626,17 @@ class DFX_Parish_Retreat_Letters_Database {
 		}
 		
 		// First, create temporary columns with the new varchar format
-		$wpdb->query( "ALTER TABLE {$this->retreats_table} 
+		$retreats_table = $this->retreats_table;
+		$wpdb->query( "ALTER TABLE {$retreats_table} 
 			ADD COLUMN custom_header_block_id_new varchar(100) NULL DEFAULT NULL AFTER custom_header_block_id,
-			ADD COLUMN custom_footer_block_id_new varchar(100) NULL DEFAULT NULL AFTER custom_footer_block_id" );
+			ADD COLUMN custom_footer_block_id_new varchar(100) NULL DEFAULT NULL AFTER custom_footer_block_id" ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 		
 		// Convert existing numeric values to the new prefixed format
 		$retreats_with_blocks = $wpdb->get_results( 
 			"SELECT id, custom_header_block_id, custom_footer_block_id 
-			FROM {$this->retreats_table} 
-			WHERE custom_header_block_id IS NOT NULL OR custom_footer_block_id IS NOT NULL" 
-		);
+			FROM {$retreats_table} 
+			WHERE custom_header_block_id IS NOT NULL OR custom_footer_block_id IS NOT NULL" // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
 		
 		foreach ( $retreats_with_blocks as $retreat ) {
 			$header_value = null;
@@ -665,17 +668,17 @@ class DFX_Parish_Retreat_Letters_Database {
 		}
 		
 		// Drop the old columns and rename the new ones
-		$wpdb->query( "ALTER TABLE {$this->retreats_table} 
+		$wpdb->query( "ALTER TABLE {$retreats_table} 
 			DROP COLUMN custom_header_block_id,
-			DROP COLUMN custom_footer_block_id" );
+			DROP COLUMN custom_footer_block_id" ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 			
-		$wpdb->query( "ALTER TABLE {$this->retreats_table} 
+		$wpdb->query( "ALTER TABLE {$retreats_table} 
 			CHANGE COLUMN custom_header_block_id_new custom_header_block_id varchar(100) NULL DEFAULT NULL,
-			CHANGE COLUMN custom_footer_block_id_new custom_footer_block_id varchar(100) NULL DEFAULT NULL" );
+			CHANGE COLUMN custom_footer_block_id_new custom_footer_block_id varchar(100) NULL DEFAULT NULL" ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 		
 		// Log the migration if debug mode is enabled
 		if ( defined( 'WP_DEBUG' ) && WP_DEBUG && function_exists( 'error_log' ) ) {
-			error_log( sprintf(
+			error_log( sprintf( // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log -- Debug-only logging when WP_DEBUG enabled
 				'DFX Parish Retreat Letters: Migrated %d retreats with custom block IDs to new format',
 				count( $retreats_with_blocks )
 			) );
@@ -730,7 +733,7 @@ class DFX_Parish_Retreat_Letters_Database {
 			
 			// Log the removal if debug mode is enabled
 			if ( defined( 'WP_DEBUG' ) && WP_DEBUG && function_exists( 'error_log' ) ) {
-				error_log( sprintf(
+				error_log( sprintf( // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log -- Debug-only logging when WP_DEBUG enabled
 					'DFX Parish Retreat Letters: Removed foreign key constraint %s from audit log table',
 					$constraint_name
 				) );

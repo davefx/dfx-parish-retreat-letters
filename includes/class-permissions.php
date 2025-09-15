@@ -149,10 +149,11 @@ class DFX_Parish_Retreat_Letters_Permissions {
 		global $wpdb;
 		
 		// Get the retreat ID for this attendant
+		$attendants_table = $this->database->get_attendants_table();
 		$retreat_id = $wpdb->get_var( $wpdb->prepare(
-			"SELECT retreat_id FROM {$this->database->get_attendants_table()} WHERE id = %d",
+			"SELECT retreat_id FROM {$attendants_table} WHERE id = %d",
 			$attendant_id
-		) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
 
 		if ( ! $retreat_id ) {
 			return false;
@@ -174,13 +175,14 @@ class DFX_Parish_Retreat_Letters_Permissions {
 	public function user_has_retreat_permission( $user_id, $retreat_id, $permission_level ) {
 		global $wpdb;
 
+		$permissions_table = $this->database->get_permissions_table();
 		$count = $wpdb->get_var( $wpdb->prepare(
-			"SELECT COUNT(*) FROM {$this->database->get_permissions_table()} 
+			"SELECT COUNT(*) FROM {$permissions_table} 
 			 WHERE user_id = %d AND retreat_id = %d AND permission_level = %s AND is_active = 1",
 			$user_id,
 			$retreat_id,
 			$permission_level
-		) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
 
 		return $count > 0;
 	}
@@ -290,15 +292,16 @@ class DFX_Parish_Retreat_Letters_Permissions {
 	public function get_retreat_permissions( $retreat_id ) {
 		global $wpdb;
 
+		$permissions_table = $this->database->get_permissions_table();
 		$permissions = $wpdb->get_results( $wpdb->prepare(
 			"SELECT p.*, u.display_name, u.user_email, u.user_login, gb.display_name as granted_by_name
-			 FROM {$this->database->get_permissions_table()} p
+			 FROM {$permissions_table} p
 			 INNER JOIN {$wpdb->users} u ON p.user_id = u.ID
 			 INNER JOIN {$wpdb->users} gb ON p.granted_by = gb.ID
 			 WHERE p.retreat_id = %d AND p.is_active = 1
 			 ORDER BY p.permission_level DESC, u.display_name ASC",
 			$retreat_id
-		) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
 
 		return $permissions ? $permissions : array();
 	}
@@ -315,17 +318,19 @@ class DFX_Parish_Retreat_Letters_Permissions {
 		$user = get_user_by( 'id', $user_id );
 		if ( $user && $user->has_cap( 'manage_retreat_plugin' ) ) {
 			global $wpdb;
-			$retreat_ids = $wpdb->get_col( "SELECT id FROM {$this->database->get_retreats_table()}" ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			$retreats_table = $this->database->get_retreats_table();
+			$retreat_ids = $wpdb->get_col( "SELECT id FROM {$retreats_table}" ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
 			return array_map( 'intval', $retreat_ids );
 		}
 
 		// Get retreats with specific permissions
 		global $wpdb;
+		$permissions_table = $this->database->get_permissions_table();
 		$retreat_ids = $wpdb->get_col( $wpdb->prepare(
-			"SELECT DISTINCT retreat_id FROM {$this->database->get_permissions_table()} 
+			"SELECT DISTINCT retreat_id FROM {$permissions_table} 
 			 WHERE user_id = %d AND is_active = 1",
 			$user_id
-		) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
 
 		return array_map( 'intval', $retreat_ids );
 	}
@@ -422,7 +427,7 @@ class DFX_Parish_Retreat_Letters_Permissions {
 		global $wpdb;
 
 		// Get user agent and IP for security logging
-		$user_agent = $_SERVER['HTTP_USER_AGENT'] ?? '';
+		$user_agent = isset( $_SERVER['HTTP_USER_AGENT'] ) ? sanitize_text_field( wp_unslash( $_SERVER['HTTP_USER_AGENT'] ) ) : '';
 		$ip_address = '';
 		if ( class_exists( 'DFX_Parish_Retreat_Letters_Security' ) ) {
 			$security = DFX_Parish_Retreat_Letters_Security::get_instance();
@@ -457,9 +462,10 @@ class DFX_Parish_Retreat_Letters_Permissions {
 	public function get_permission_audit_log( $retreat_id, $limit = 50 ) {
 		global $wpdb;
 
+		$audit_log_table = $this->database->get_audit_log_table();
 		$audit_log = $wpdb->get_results( $wpdb->prepare(
 			"SELECT a.*, u.display_name, u.user_email, pb.display_name as performed_by_name
-			 FROM {$this->database->get_audit_log_table()} a
+			 FROM {$audit_log_table} a
 			 INNER JOIN {$wpdb->users} u ON a.user_id = u.ID
 			 INNER JOIN {$wpdb->users} pb ON a.performed_by = pb.ID
 			 WHERE a.retreat_id = %d
@@ -467,7 +473,7 @@ class DFX_Parish_Retreat_Letters_Permissions {
 			 LIMIT %d",
 			$retreat_id,
 			$limit
-		) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
 
 		return $audit_log ? $audit_log : array();
 	}

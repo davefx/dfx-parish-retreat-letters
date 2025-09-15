@@ -71,7 +71,7 @@ class DFX_Parish_Retreat_Letters_PrintLog {
 		}
 
 		$ip_address = $this->security->get_user_ip();
-		$user_agent = $_SERVER['HTTP_USER_AGENT'] ?? 'unknown';
+		$user_agent = isset( $_SERVER['HTTP_USER_AGENT'] ) ? sanitize_text_field( wp_unslash( $_SERVER['HTTP_USER_AGENT'] ) ) : 'unknown';
 
 		$result = $wpdb->insert(
 			$this->database->get_message_print_log_table(),
@@ -97,10 +97,11 @@ class DFX_Parish_Retreat_Letters_PrintLog {
 	public function get( $id ) {
 		global $wpdb;
 
+		$table_name = $this->database->get_message_print_log_table();
 		$result = $wpdb->get_row( $wpdb->prepare(
-			"SELECT * FROM {$this->database->get_message_print_log_table()} WHERE id = %d",
+			"SELECT * FROM {$table_name} WHERE id = %d",
 			$id
-		) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
 
 		return $result;
 	}
@@ -133,8 +134,9 @@ class DFX_Parish_Retreat_Letters_PrintLog {
 		// Calculate offset
 		$offset = ( absint( $args['page'] ) - 1 ) * absint( $args['per_page'] );
 
+		$print_log_table = $this->database->get_message_print_log_table();
 		$sql = "SELECT pl.*, u.display_name, u.user_login
-				FROM {$this->database->get_message_print_log_table()} pl
+				FROM {$print_log_table} pl
 				LEFT JOIN {$wpdb->users} u ON pl.user_id = u.ID
 				WHERE pl.message_id = %d 
 				ORDER BY pl.{$orderby} {$order} 
@@ -142,7 +144,7 @@ class DFX_Parish_Retreat_Letters_PrintLog {
 
 		$sql = $wpdb->prepare( $sql, $message_id, absint( $args['per_page'] ), $offset ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 
-		$results = $wpdb->get_results( $sql ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.PreparedSQL.NotPrepared
+		$results = $wpdb->get_results( $sql ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching,WordPress.DB.PreparedSQL.NotPrepared
 
 		return $results ? $results : array();
 	}
@@ -157,10 +159,11 @@ class DFX_Parish_Retreat_Letters_PrintLog {
 	public function get_print_count( $message_id ) {
 		global $wpdb;
 
+		$table_name = $this->database->get_message_print_log_table();
 		$count = $wpdb->get_var( $wpdb->prepare(
-			"SELECT COUNT(*) FROM {$this->database->get_message_print_log_table()} WHERE message_id = %d",
+			"SELECT COUNT(*) FROM {$table_name} WHERE message_id = %d",
 			$message_id
-		) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
 
 		return (int) $count;
 	}
@@ -175,10 +178,11 @@ class DFX_Parish_Retreat_Letters_PrintLog {
 	public function get_first_print_date( $message_id ) {
 		global $wpdb;
 
+		$table_name = $this->database->get_message_print_log_table();
 		$date = $wpdb->get_var( $wpdb->prepare(
-			"SELECT MIN(printed_at) FROM {$this->database->get_message_print_log_table()} WHERE message_id = %d",
+			"SELECT MIN(printed_at) FROM {$table_name} WHERE message_id = %d",
 			$message_id
-		) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
 
 		return $date;
 	}
@@ -193,10 +197,11 @@ class DFX_Parish_Retreat_Letters_PrintLog {
 	public function get_last_print_date( $message_id ) {
 		global $wpdb;
 
+		$table_name = $this->database->get_message_print_log_table();
 		$date = $wpdb->get_var( $wpdb->prepare(
-			"SELECT MAX(printed_at) FROM {$this->database->get_message_print_log_table()} WHERE message_id = %d",
+			"SELECT MAX(printed_at) FROM {$table_name} WHERE message_id = %d",
 			$message_id
-		) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
 
 		return $date;
 	}
@@ -227,15 +232,16 @@ class DFX_Parish_Retreat_Letters_PrintLog {
 		}
 
 		$placeholders = implode( ', ', array_fill( 0, count( $message_ids ), '%d' ) );
+		$table_name = $this->database->get_message_print_log_table();
 		$sql = "SELECT message_id, 
 				       COUNT(*) as print_count,
 				       MIN(printed_at) as first_printed,
 				       MAX(printed_at) as last_printed
-				FROM {$this->database->get_message_print_log_table()} 
+				FROM {$table_name} 
 				WHERE message_id IN ($placeholders) 
 				GROUP BY message_id";
 
-		$results = $wpdb->get_results( $wpdb->prepare( $sql, $message_ids ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.PreparedSQL.NotPrepared
+		$results = $wpdb->get_results( $wpdb->prepare( $sql, $message_ids ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching,WordPress.DB.PreparedSQL.NotPrepared
 
 		$stats = array();
 		foreach ( $results as $result ) {
@@ -339,15 +345,20 @@ class DFX_Parish_Retreat_Letters_PrintLog {
 		// Calculate offset
 		$offset = ( absint( $args['page'] ) - 1 ) * absint( $args['per_page'] );
 
+		$print_log_table = $this->database->get_message_print_log_table();
+		$messages_table = $this->database->get_messages_table();
+		$attendants_table = $this->database->get_attendants_table();
+		$retreats_table = $this->database->get_retreats_table();
+
 		$sql = "SELECT pl.*, 
 				       m.sender_name, m.message_type, m.submitted_at,
 				       a.name as attendant_name, a.surnames as attendant_surnames,
 				       r.name as retreat_name,
 				       u.display_name as user_display_name, u.user_login
-				FROM {$this->database->get_message_print_log_table()} pl
-				INNER JOIN {$this->database->get_messages_table()} m ON pl.message_id = m.id
-				INNER JOIN {$this->database->get_attendants_table()} a ON m.attendant_id = a.id
-				INNER JOIN {$this->database->get_retreats_table()} r ON a.retreat_id = r.id
+				FROM {$print_log_table} pl
+				INNER JOIN {$messages_table} m ON pl.message_id = m.id
+				INNER JOIN {$attendants_table} a ON m.attendant_id = a.id
+				INNER JOIN {$retreats_table} r ON a.retreat_id = r.id
 				LEFT JOIN {$wpdb->users} u ON pl.user_id = u.ID
 				WHERE {$where_clause} 
 				ORDER BY {$orderby} {$order} 
@@ -360,7 +371,7 @@ class DFX_Parish_Retreat_Letters_PrintLog {
 			$sql = $wpdb->prepare( $sql, $where_values ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 		}
 
-		$results = $wpdb->get_results( $sql ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.PreparedSQL.NotPrepared
+		$results = $wpdb->get_results( $sql ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching,WordPress.DB.PreparedSQL.NotPrepared
 
 		return $results ? $results : array();
 	}
@@ -411,10 +422,14 @@ class DFX_Parish_Retreat_Letters_PrintLog {
 			$where_values[] = $search_term;
 		}
 
+		$print_log_table = $this->database->get_message_print_log_table();
+		$messages_table = $this->database->get_messages_table();
+		$attendants_table = $this->database->get_attendants_table();
+
 		$sql = "SELECT COUNT(*) 
-				FROM {$this->database->get_message_print_log_table()} pl
-				INNER JOIN {$this->database->get_messages_table()} m ON pl.message_id = m.id
-				INNER JOIN {$this->database->get_attendants_table()} a ON m.attendant_id = a.id
+				FROM {$print_log_table} pl
+				INNER JOIN {$messages_table} m ON pl.message_id = m.id
+				INNER JOIN {$attendants_table} a ON m.attendant_id = a.id
 				LEFT JOIN {$wpdb->users} u ON pl.user_id = u.ID
 				WHERE {$where_clause}";
 
@@ -422,7 +437,7 @@ class DFX_Parish_Retreat_Letters_PrintLog {
 			$sql = $wpdb->prepare( $sql, $where_values ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 		}
 
-		return (int) $wpdb->get_var( $sql ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.PreparedSQL.NotPrepared
+		return (int) $wpdb->get_var( $sql ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching,WordPress.DB.PreparedSQL.NotPrepared
 	}
 
 	/**
@@ -435,26 +450,27 @@ class DFX_Parish_Retreat_Letters_PrintLog {
 		global $wpdb;
 
 		$stats = array();
+		$table_name = $this->database->get_message_print_log_table();
 
 		// Total print operations
 		$stats['total_prints'] = (int) $wpdb->get_var(
-			"SELECT COUNT(*) FROM {$this->database->get_message_print_log_table()}"
-		); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			"SELECT COUNT(*) FROM {$table_name}"
+		); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
 
 		// Unique messages printed
 		$stats['unique_messages_printed'] = (int) $wpdb->get_var(
-			"SELECT COUNT(DISTINCT message_id) FROM {$this->database->get_message_print_log_table()}"
-		); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			"SELECT COUNT(DISTINCT message_id) FROM {$table_name}"
+		); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
 
 		// Prints by user
 		$user_prints = $wpdb->get_results(
 			"SELECT u.display_name, COUNT(*) as print_count
-			 FROM {$this->database->get_message_print_log_table()} pl
+			 FROM {$table_name} pl
 			 LEFT JOIN {$wpdb->users} u ON pl.user_id = u.ID
 			 GROUP BY pl.user_id
 			 ORDER BY print_count DESC
 			 LIMIT 10"
-		); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
 
 		$stats['by_user'] = array();
 		foreach ( $user_prints as $user_print ) {
@@ -466,9 +482,9 @@ class DFX_Parish_Retreat_Letters_PrintLog {
 
 		// Recent print activity (last 30 days)
 		$stats['recent_prints'] = (int) $wpdb->get_var(
-			"SELECT COUNT(*) FROM {$this->database->get_message_print_log_table()} 
+			"SELECT COUNT(*) FROM {$table_name} 
 			 WHERE printed_at >= DATE_SUB(NOW(), INTERVAL 30 DAY)"
-		); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
 
 		return $stats;
 	}
@@ -484,11 +500,12 @@ class DFX_Parish_Retreat_Letters_PrintLog {
 		global $wpdb;
 
 		$cutoff_date = gmdate( 'Y-m-d H:i:s', strtotime( "-{$days_old} days" ) );
+		$table_name = $this->database->get_message_print_log_table();
 
 		$deleted = $wpdb->query( $wpdb->prepare(
-			"DELETE FROM {$this->database->get_message_print_log_table()} WHERE printed_at < %s",
+			"DELETE FROM {$table_name} WHERE printed_at < %s",
 			$cutoff_date
-		) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
 
 		return $deleted ? $deleted : 0;
 	}
@@ -522,10 +539,11 @@ class DFX_Parish_Retreat_Letters_PrintLog {
 
 		// Check if message exists
 		global $wpdb;
+		$messages_table = $this->database->get_messages_table();
 		$message_exists = $wpdb->get_var( $wpdb->prepare(
-			"SELECT COUNT(*) FROM {$this->database->get_messages_table()} WHERE id = %d",
+			"SELECT COUNT(*) FROM {$messages_table} WHERE id = %d",
 			$data['message_id']
-		) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
 
 		if ( ! $message_exists ) {
 			return false;
@@ -535,7 +553,7 @@ class DFX_Parish_Retreat_Letters_PrintLog {
 		$user_exists = $wpdb->get_var( $wpdb->prepare(
 			"SELECT COUNT(*) FROM {$wpdb->users} WHERE ID = %d",
 			$data['user_id']
-		) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
 
 		if ( ! $user_exists ) {
 			return false;

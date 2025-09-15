@@ -122,7 +122,7 @@ class DFX_Parish_Retreat_Letters_MessageFile {
 		}
 
 		// Create database record
-		$result = $wpdb->insert(
+		$result = $wpdb->insert( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
 			$this->database->get_message_files_table(),
 			array(
 				'message_id'         => $sanitized_data['message_id'],
@@ -156,10 +156,10 @@ class DFX_Parish_Retreat_Letters_MessageFile {
 		global $wpdb;
 
 		$table_name = $this->database->get_message_files_table();
-		$result = $wpdb->get_row( $wpdb->prepare(
+		$result = $wpdb->get_row( $wpdb->prepare( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
 			"SELECT * FROM `{$table_name}` WHERE id = %d", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 			$id
-		) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
+		) );
 
 		return $result;
 	}
@@ -175,10 +175,10 @@ class DFX_Parish_Retreat_Letters_MessageFile {
 		global $wpdb;
 
 		$table_name = $this->database->get_message_files_table();
-		$results = $wpdb->get_results( $wpdb->prepare(
+		$results = $wpdb->get_results( $wpdb->prepare( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
 			"SELECT * FROM `{$table_name}` WHERE message_id = %d ORDER BY uploaded_at ASC", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 			$message_id
-		) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
+		) );
 
 		return $results ? $results : array();
 	}
@@ -243,7 +243,7 @@ class DFX_Parish_Retreat_Letters_MessageFile {
 		}
 
 		// Delete database record
-		$result = $wpdb->delete(
+		$result = $wpdb->delete( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
 			$this->database->get_message_files_table(),
 			array( 'id' => $id ),
 			array( '%d' )
@@ -347,14 +347,14 @@ class DFX_Parish_Retreat_Letters_MessageFile {
 		$table_name = $this->database->get_message_files_table();
 
 		// Total files
-		$stats['total_files'] = (int) $wpdb->get_var(
+		$stats['total_files'] = (int) $wpdb->get_var( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
 			"SELECT COUNT(*) FROM `{$table_name}`" // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-		); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
+		);
 
 		// Files by type
-		$file_types = $wpdb->get_results(
+		$file_types = $wpdb->get_results( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
 			"SELECT file_type, COUNT(*) as count FROM `{$table_name}` GROUP BY file_type" // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-		); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
+		);
 
 		$stats['by_type'] = array();
 		foreach ( $file_types as $type_data ) {
@@ -362,9 +362,9 @@ class DFX_Parish_Retreat_Letters_MessageFile {
 		}
 
 		// Total storage used
-		$stats['total_size'] = (int) $wpdb->get_var(
+		$stats['total_size'] = (int) $wpdb->get_var( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
 			"SELECT SUM(file_size) FROM `{$table_name}`" // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-		); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
+		);
 
 		return $stats;
 	}
@@ -387,10 +387,10 @@ class DFX_Parish_Retreat_Letters_MessageFile {
 			$table_name = $this->database->get_message_files_table();
 			
 			// Check if file exists in database
-			$exists = $wpdb->get_var( $wpdb->prepare(
+			$exists = $wpdb->get_var( $wpdb->prepare( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
 				"SELECT COUNT(*) FROM `{$table_name}` WHERE encrypted_filename = %s", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 				$filename
-			) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
+			) );
 
 			if ( ! $exists ) {
 				// File not in database, remove it
@@ -437,10 +437,10 @@ class DFX_Parish_Retreat_Letters_MessageFile {
 		// Check if message exists
 		global $wpdb;
 		$messages_table = $this->database->get_messages_table();
-		$message_exists = $wpdb->get_var( $wpdb->prepare(
+		$message_exists = $wpdb->get_var( $wpdb->prepare( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
 			"SELECT COUNT(*) FROM `{$messages_table}` WHERE id = %d", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 			$data['message_id']
-		) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
+		) );
 
 		if ( ! $message_exists ) {
 			return false;
