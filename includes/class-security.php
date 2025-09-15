@@ -631,7 +631,7 @@ class DFX_Parish_Retreat_Letters_Security {
 			'timestamp'  => current_time( 'mysql' ),
 			'ip_address' => $ip_address,
 			'action'     => $action,
-			'user_agent' => $_SERVER['HTTP_USER_AGENT'] ?? 'unknown',
+			'user_agent' => sanitize_text_field( $_SERVER['HTTP_USER_AGENT'] ?? 'unknown' ),
 		);
 
 		// Store in transient for admin review

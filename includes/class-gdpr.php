@@ -543,8 +543,9 @@ class DFX_Parish_Retreat_Letters_GDPR {
 	 */
 	private function get_total_messages_count() {
 		global $wpdb;
+		$table_name = $this->database->get_messages_table();
 		return (int) $wpdb->get_var( 
-			'SELECT COUNT(*) FROM ' . $this->database->get_messages_table()
+			"SELECT COUNT(*) FROM `{$table_name}`" // Table name is validated by database class
 		); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
 	}
 
@@ -556,8 +557,9 @@ class DFX_Parish_Retreat_Letters_GDPR {
 	 */
 	private function get_total_files_count() {
 		global $wpdb;
+		$table_name = $this->database->get_message_files_table();
 		return (int) $wpdb->get_var( 
-			'SELECT COUNT(*) FROM ' . $this->database->get_message_files_table()
+			"SELECT COUNT(*) FROM `{$table_name}`" // Table name is validated by database class
 		); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
 	}
 }

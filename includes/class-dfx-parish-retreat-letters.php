@@ -2411,7 +2411,7 @@ class DFX_Parish_Retreat_Letters {
 				if ( ! empty( $blocks ) ) {
 					echo '<!-- DFX Debug: Parsed ' . count( $blocks ) . ' blocks -->';
 					foreach ( $blocks as $index => $block ) {
-						echo '<!-- DFX Debug: Rendering block ' . $index . ' -->';
+						echo '<!-- DFX Debug: Rendering block ' . absint( $index ) . ' -->';
 						if ( function_exists( 'render_block' ) ) {
 							echo render_block( $block );
 						}

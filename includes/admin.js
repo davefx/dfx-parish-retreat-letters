@@ -14,7 +14,7 @@
             console.warn('dfxPRLAdmin is not defined. Admin functionality may be limited.');
             // Create a fallback object to prevent errors
             window.dfxPRLAdmin = {
-                ajaxurl: (typeof ajaxurl !== 'undefined') ? ajaxurl : '/wp-admin/admin-ajax.php',
+                ajaxurl: (typeof ajaxurl !== 'undefined') ? ajaxurl : '',
                 nonce: '',
                 messages: {
                     confirmDelete: 'Are you sure you want to delete this item?',
@@ -204,7 +204,7 @@
             
             var ajaxUrl = (typeof dfxPRLAdmin !== 'undefined' && dfxPRLAdmin.ajaxurl)
                 ? dfxPRLAdmin.ajaxurl
-                : (typeof ajaxurl !== 'undefined' ? ajaxurl : '/wp-admin/admin-ajax.php');
+                : (typeof ajaxurl !== 'undefined' ? ajaxurl : '');
             var nonce = (typeof dfxPRLAdmin !== 'undefined' && dfxPRLAdmin.nonce)
                 ? dfxPRLAdmin.nonce
                 : '';
@@ -285,7 +285,7 @@
             
             var ajaxUrl = (typeof dfxPRLAdmin !== 'undefined' && dfxPRLAdmin.ajaxurl)
                 ? dfxPRLAdmin.ajaxurl
-                : (typeof ajaxurl !== 'undefined' ? ajaxurl : '/wp-admin/admin-ajax.php');
+                : (typeof ajaxurl !== 'undefined' ? ajaxurl : '');
             var nonce = (typeof dfxPRLAdmin !== 'undefined' && dfxPRLAdmin.nonce)
                 ? dfxPRLAdmin.nonce
                 : '';
@@ -367,7 +367,7 @@
             
             var ajaxUrl = (typeof dfxPRLAdmin !== 'undefined' && dfxPRLAdmin.ajaxurl)
                 ? dfxPRLAdmin.ajaxurl
-                : (typeof ajaxurl !== 'undefined' ? ajaxurl : '/wp-admin/admin-ajax.php');
+                : (typeof ajaxurl !== 'undefined' ? ajaxurl : '');
             var nonce = (typeof dfxPRLAdmin !== 'undefined' && dfxPRLAdmin.nonce)
                 ? dfxPRLAdmin.nonce
                 : '';
@@ -422,7 +422,7 @@
             
             var ajaxUrl = (typeof dfxPRLAdmin !== 'undefined' && dfxPRLAdmin.ajaxurl)
                 ? dfxPRLAdmin.ajaxurl
-                : (typeof ajaxurl !== 'undefined' ? ajaxurl : '/wp-admin/admin-ajax.php');
+                : (typeof ajaxurl !== 'undefined' ? ajaxurl : '');
             var nonce = (typeof dfxPRLAdmin !== 'undefined' && dfxPRLAdmin.nonce)
                 ? dfxPRLAdmin.nonce
                 : '';
@@ -472,7 +472,7 @@
             
             var ajaxUrl = (typeof dfxPRLAdmin !== 'undefined' && dfxPRLAdmin.ajaxurl)
                 ? dfxPRLAdmin.ajaxurl
-                : (typeof ajaxurl !== 'undefined' ? ajaxurl : '/wp-admin/admin-ajax.php');
+                : (typeof ajaxurl !== 'undefined' ? ajaxurl : '');
             var nonce = (typeof dfxPRLAdmin !== 'undefined' && dfxPRLAdmin.nonce)
                 ? dfxPRLAdmin.nonce
                 : '';

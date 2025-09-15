@@ -422,7 +422,7 @@ class DFX_Parish_Retreat_Letters_Permissions {
 		global $wpdb;
 
 		// Get user agent and IP for security logging
-		$user_agent = $_SERVER['HTTP_USER_AGENT'] ?? '';
+		$user_agent = sanitize_text_field( $_SERVER['HTTP_USER_AGENT'] ?? '' );
 		$ip_address = '';
 		if ( class_exists( 'DFX_Parish_Retreat_Letters_Security' ) ) {
 			$security = DFX_Parish_Retreat_Letters_Security::get_instance();
