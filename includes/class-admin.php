@@ -450,6 +450,63 @@ class DFX_Parish_Retreat_Letters_Admin {
 			DFX_PARISH_RETREAT_LETTERS_VERSION
 		);
 		
+		// Add base admin styles
+		$base_styles = '
+		#permission-management-section {
+			margin-top: 20px;
+			padding: 20px;
+		}
+		.permission-badge {
+			display: inline-block;
+			padding: 3px 8px;
+			border-radius: 3px;
+			font-size: 11px;
+			font-weight: 600;
+			text-transform: uppercase;
+		}
+		.permission-badge.permission-manager {
+			background: #d4edda;
+			color: #155724;
+		}
+		.permission-badge.permission-message_manager {
+			background: #fff3cd;
+			color: #856404;
+		}
+		.dfx-prl-permissions-list, .dfx-prl-invitations-list {
+			margin-bottom: 15px;
+		}
+		.dfx-prl-permission-item, .dfx-prl-invitation-item {
+			padding: 10px;
+			border: 1px solid #ddd;
+			border-radius: 4px;
+			margin-bottom: 8px;
+			background: #fff;
+		}
+		.dfx-prl-status-grid {
+			display: grid;
+			grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+			gap: 20px;
+			margin-bottom: 30px;
+		}
+		.dfx-prl-status-item {
+			padding: 20px;
+			border: 1px solid #ddd;
+			border-radius: 8px;
+			background: #fff;
+			text-align: center;
+		}
+		.dfx-prl-status-item.status-good {
+			border-color: #46b450;
+			background: #f7fcf7;
+		}
+		.dfx-prl-status-item.status-warning {
+			border-color: #ffb900;
+			background: #fffbf0;
+		}
+		';
+		
+		wp_add_inline_style( 'dfx-prl-admin-styles', $base_styles );
+		
 		// Enqueue Select2 for user management on global settings page
 		if ( isset( $_GET['page'] ) && sanitize_text_field( $_GET['page'] ) === 'dfx-prl-global-settings' ) {
 			wp_enqueue_script( 'select2' );
@@ -5130,7 +5187,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 			case 'grant':
 				if ( $this->permissions->grant_global_retreat_management( $user_id ) ) {
 					/* translators: %s: User display name */
-					$this->add_admin_notice( sprintf( __( 'Global retreat management access granted to %s.', 'dfx-parish-retreat-letters' ), $user->display_name ), 'success' );
+					$this->add_admin_notice( sprintf( esc_html__( 'Global retreat management access granted to %s.', 'dfx-parish-retreat-letters' ), esc_html( $user->display_name ) ), 'success' );
 				} else {
 					$this->add_admin_notice( __( 'Failed to grant global retreat management access.', 'dfx-parish-retreat-letters' ), 'error' );
 				}
@@ -5139,7 +5196,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 			case 'revoke':
 				if ( $this->permissions->revoke_global_retreat_management( $user_id ) ) {
 					/* translators: %s: User display name */
-					$this->add_admin_notice( sprintf( __( 'Global retreat management access revoked from %s.', 'dfx-parish-retreat-letters' ), $user->display_name ), 'success' );
+					$this->add_admin_notice( sprintf( esc_html__( 'Global retreat management access revoked from %s.', 'dfx-parish-retreat-letters' ), esc_html( $user->display_name ) ), 'success' );
 				} else {
 					$this->add_admin_notice( __( 'Failed to revoke global retreat management access.', 'dfx-parish-retreat-letters' ), 'error' );
 				}

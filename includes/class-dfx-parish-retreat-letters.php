@@ -1842,7 +1842,7 @@ class DFX_Parish_Retreat_Letters {
 		$errors = array();
 		
 		for ( $i = 0; $i < $file_count; $i++ ) {
-			$filename = $files['name'][$i];
+			$filename = sanitize_file_name( $files['name'][$i] );
 			
 			// Skip empty file slots
 			if ( empty( $filename ) ) {
