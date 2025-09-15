@@ -196,10 +196,11 @@ class DFX_Parish_Retreat_Letters_Security {
 		do {
 			$token = $this->generate_secure_token();
 			// Check if token already exists
+			$attendants_table = $database->get_attendants_table();
 			$exists = $wpdb->get_var( $wpdb->prepare(
-				"SELECT COUNT(*) FROM {$database->get_attendants_table()} WHERE message_url_token = %s",
+				"SELECT COUNT(*) FROM {$attendants_table} WHERE message_url_token = %s",
 				$token
-			) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
 		} while ( $exists > 0 );
 
 		return $token;
@@ -344,13 +345,14 @@ class DFX_Parish_Retreat_Letters_Security {
 		$cutoff_date = gmdate( 'Y-m-d H:i:s', strtotime( "-{$days_old} days" ) );
 
 		// Anonymize IPs in messages table
+		$messages_table = $database->get_messages_table();
 		$updated = $wpdb->query( $wpdb->prepare(
-			"UPDATE {$database->get_messages_table()} 
+			"UPDATE {$messages_table} 
 			 SET ip_hash = %s, ip_address = NULL, ip_anonymized_at = NOW() 
 			 WHERE submitted_at < %s AND ip_address IS NOT NULL AND ip_anonymized_at IS NULL",
 			'anonymized',
 			$cutoff_date
-		) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
 
 		return $updated ? $updated : 0;
 	}
@@ -425,6 +427,7 @@ class DFX_Parish_Retreat_Letters_Security {
 		
 		// Log detected MIME type for debugging (only in wp-config debug mode)
 		if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+			// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log -- Conditional debug logging only when WP_DEBUG is enabled
 			error_log( sprintf( 
 				'DFX File Upload Debug: File "%s" (extension: %s) detected MIME type: %s, expected: %s',
 				$file['name'],
@@ -583,9 +586,9 @@ class DFX_Parish_Retreat_Letters_Security {
 		global $wpdb;
 		
 		// Delete all rate limit transients
-		$count = $wpdb->query( "DELETE FROM {$wpdb->options} WHERE option_name LIKE '_transient_dfx_prl_message_rate_limit_%'" );
+		$count = $wpdb->query( "DELETE FROM {$wpdb->options} WHERE option_name LIKE '_transient_dfx_prl_message_rate_limit_%'" ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
 		// Also delete timeout transients
-		$wpdb->query( "DELETE FROM {$wpdb->options} WHERE option_name LIKE '_transient_timeout_dfx_prl_message_rate_limit_%'" );
+		$wpdb->query( "DELETE FROM {$wpdb->options} WHERE option_name LIKE '_transient_timeout_dfx_prl_message_rate_limit_%'" ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
 		
 		return $count ? $count : 0;
 	}
@@ -631,7 +634,7 @@ class DFX_Parish_Retreat_Letters_Security {
 			'timestamp'  => current_time( 'mysql' ),
 			'ip_address' => $ip_address,
 			'action'     => $action,
-			'user_agent' => $_SERVER['HTTP_USER_AGENT'] ?? 'unknown',
+			'user_agent' => isset( $_SERVER['HTTP_USER_AGENT'] ) ? sanitize_text_field( wp_unslash( $_SERVER['HTTP_USER_AGENT'] ) ) : 'unknown',
 		);
 
 		// Store in transient for admin review
