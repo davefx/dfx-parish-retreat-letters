@@ -85,7 +85,7 @@ class DFX_Parish_Retreat_Letters_GDPR {
 
 		add_action( 'dfx_prl_daily_gdpr_cleanup', array( $this, 'run_daily_cleanup' ) );
 		add_action( 'admin_init', array( $this, 'maybe_anonymize_ips' ) );
-		
+
 		// Only add AJAX hooks in admin
 		if ( is_admin() ) {
 			add_action( 'wp_ajax_dfx_prl_export_personal_data', array( $this, 'ajax_export_personal_data' ) );
@@ -229,7 +229,7 @@ class DFX_Parish_Retreat_Letters_GDPR {
 
 		// Erase each message and its associated data
 		$message_model = new DFX_Parish_Retreat_Letters_ConfidentialMessage();
-		
+
 		foreach ( $messages as $message ) {
 			// Get file count before deletion
 			$file_count = $wpdb->get_var( $wpdb->prepare(
@@ -544,7 +544,7 @@ class DFX_Parish_Retreat_Letters_GDPR {
 	private function get_total_messages_count() {
 		global $wpdb;
 		$table_name = $this->database->get_messages_table();
-		return (int) $wpdb->get_var( 
+		return (int) $wpdb->get_var(
 			"SELECT COUNT(*) FROM `{$table_name}`" // Table name is validated by database class
 		); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
 	}
@@ -558,7 +558,7 @@ class DFX_Parish_Retreat_Letters_GDPR {
 	private function get_total_files_count() {
 		global $wpdb;
 		$table_name = $this->database->get_message_files_table();
-		return (int) $wpdb->get_var( 
+		return (int) $wpdb->get_var(
 			"SELECT COUNT(*) FROM `{$table_name}`" // Table name is validated by database class
 		); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
 	}

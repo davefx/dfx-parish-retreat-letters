@@ -69,12 +69,12 @@
         // Handle delete retreat button clicks
         $('.dfx-prl-delete-retreat').on('click', function(e) {
             e.preventDefault();
-            
+
             var retreatId = $(this).data('retreat-id');
             var retreatName = $(this).data('retreat-name');
             var $row = $(this).closest('tr');
             var $button = $(this);
-            
+
             // Show custom delete confirmation modal
             showDeleteRetreatModal(retreatId, retreatName, $row, $button);
         });
@@ -82,7 +82,7 @@
         // Function to show delete retreat confirmation modal
         function showDeleteRetreatModal(retreatId, retreatName, $row, $button) {
             // Create modal HTML
-            var modalHtml = 
+            var modalHtml =
                 '<div id="dfx-prl-delete-retreat-modal" class="dfx-prl-modal-overlay">' +
                     '<div class="dfx-prl-modal-dialog">' +
                         '<div class="dfx-prl-modal-header">' +
@@ -109,18 +109,18 @@
                         '</div>' +
                     '</div>' +
                 '</div>';
-            
+
             // Add modal to body
             $('body').append(modalHtml);
-            
+
             var $modal = $('#dfx-prl-delete-retreat-modal');
             var $confirmInput = $('#dfx-prl-retreat-name-confirm');
             var $confirmButton = $('#dfx-prl-confirm-delete');
-            
+
             // Show modal
             $modal.fadeIn();
             $confirmInput.focus();
-            
+
             // Check input as user types
             $confirmInput.on('input', function() {
                 var enteredName = $(this).val().trim();
@@ -130,7 +130,7 @@
                     $confirmButton.prop('disabled', true);
                 }
             });
-            
+
             // Handle cancel
             $('#dfx-prl-cancel-delete, .dfx-prl-modal-overlay').on('click', function(e) {
                 if (e.target === this) {
@@ -139,16 +139,16 @@
                     });
                 }
             });
-            
+
             // Handle confirm delete
             $confirmButton.on('click', function() {
                 $modal.fadeOut(function() {
                     $modal.remove();
                 });
-                
+
                 // Disable button and show loading state
                 $button.prop('disabled', true).text(dfxPRLAdmin.messages.deleting);
-                
+
                 $.ajax({
                     url: dfxPRLAdmin.ajaxurl,
                     type: 'POST',
@@ -163,7 +163,7 @@
                             // Remove the row with animation
                             $row.fadeOut(300, function() {
                                 $(this).remove();
-                                
+
                                 // Show success message
                                 $('<div class="notice notice-success is-dismissible"><p>' + response.data.message + '</p></div>')
                                     .insertAfter('.wp-header-end');
@@ -186,29 +186,29 @@
         // Handle delete attendant button clicks
         $('.dfx-prl-delete-attendant').on('click', function(e) {
             e.preventDefault();
-            
+
             var attendantId = $(this).data('attendant-id');
             var $row = $(this).closest('tr');
-            
+
             // Check if dfxPRLAdmin is available
             var confirmMessage = (typeof dfxPRLAdmin !== 'undefined' && dfxPRLAdmin.messages && dfxPRLAdmin.messages.confirmDeleteAttendant)
                 ? dfxPRLAdmin.messages.confirmDeleteAttendant
                 : 'Are you sure you want to delete this attendant?';
-            
+
             if (!confirm(confirmMessage)) {
                 return;
             }
-            
+
             // Disable button and show loading state
             $(this).prop('disabled', true).text('Deleting...');
-            
+
             var ajaxUrl = (typeof dfxPRLAdmin !== 'undefined' && dfxPRLAdmin.ajaxurl)
                 ? dfxPRLAdmin.ajaxurl
                 : (typeof ajaxurl !== 'undefined' ? ajaxurl : '');
             var nonce = (typeof dfxPRLAdmin !== 'undefined' && dfxPRLAdmin.nonce)
                 ? dfxPRLAdmin.nonce
                 : '';
-            
+
             $.ajax({
                 url: ajaxUrl,
                 type: 'POST',
@@ -222,7 +222,7 @@
                         // Remove the row with animation
                         $row.fadeOut(300, function() {
                             $(this).remove();
-                            
+
                             // Show success message
                             var successMessage = response.data.message || 'Attendant deleted successfully.';
                             $('<div class="notice notice-success is-dismissible"><p>' + successMessage + '</p></div>')
@@ -245,12 +245,12 @@
                 }
             });
         });
-        
+
         // Form validation for add/edit retreat
         $('form').on('submit', function(e) {
             var startDate = $('#start_date').val();
             var endDate = $('#end_date').val();
-            
+
             if (startDate && endDate && new Date(endDate) < new Date(startDate)) {
                 e.preventDefault();
                 alert('End date cannot be before start date.');
@@ -258,17 +258,17 @@
                 return false;
             }
         });
-        
+
         // Auto-dismiss notices - disabled to prevent automatic hiding
         // $('.notice.is-dismissible').delay(5000).fadeOut();
 
         // Handle generate message URL button clicks
         $('.dfx-prl-generate-url').on('click', function(e) {
             e.preventDefault();
-            
+
             var attendantId = $(this).data('attendant-id');
             var $button = $(this);
-            
+
             // Get localized text with fallbacks
             var generatingText = (typeof dfxPRLAdmin !== 'undefined' && dfxPRLAdmin.messages && dfxPRLAdmin.messages.generating)
                 ? dfxPRLAdmin.messages.generating
@@ -279,17 +279,17 @@
             var generateErrorText = (typeof dfxPRLAdmin !== 'undefined' && dfxPRLAdmin.messages && dfxPRLAdmin.messages.generateError)
                 ? dfxPRLAdmin.messages.generateError
                 : 'Error generating message URL. Please try again.';
-            
+
             // Disable button and show loading state
             $button.prop('disabled', true).text(generatingText);
-            
+
             var ajaxUrl = (typeof dfxPRLAdmin !== 'undefined' && dfxPRLAdmin.ajaxurl)
                 ? dfxPRLAdmin.ajaxurl
                 : (typeof ajaxurl !== 'undefined' ? ajaxurl : '');
             var nonce = (typeof dfxPRLAdmin !== 'undefined' && dfxPRLAdmin.nonce)
                 ? dfxPRLAdmin.nonce
                 : '';
-            
+
             $.ajax({
                 url: ajaxUrl,
                 type: 'POST',
@@ -304,11 +304,11 @@
                         var newButton = '<button type="button" class="button button-small button-primary dfx-prl-copy-url" data-url="' + response.data.url + '">' +
                                        'Copy Message URL</button>';
                         $button.replaceWith(newButton);
-                        
+
                         // Show success message
                         $('<div class="notice notice-success is-dismissible"><p>' + urlGeneratedText + '</p></div>')
                             .insertAfter('.wp-header-end');
-                            
+
                         // Auto-copy URL to clipboard
                         copyToClipboard(response.data.url);
                     } else {
@@ -328,15 +328,15 @@
         // Handle copy URL button clicks (using event delegation for dynamically added buttons)
         $(document).on('click', '.dfx-prl-copy-url', function(e) {
             e.preventDefault();
-            
+
             var url = $(this).data('url');
             var $button = $(this);
-            
+
             // Get localized text with fallbacks
             var urlCopiedText = (typeof dfxPRLAdmin !== 'undefined' && dfxPRLAdmin.messages && dfxPRLAdmin.messages.urlCopied)
                 ? dfxPRLAdmin.messages.urlCopied
                 : 'URL copied to clipboard!';
-            
+
             if (copyToClipboard(url)) {
                 // Temporarily change button text
                 var originalText = $button.text();
@@ -350,10 +350,10 @@
         // Handle print message button clicks
         $('.dfx-prl-print-message').on('click', function(e) {
             e.preventDefault();
-            
+
             var messageId = $(this).data('message-id');
             var $button = $(this);
-            
+
             // Get localized text with fallbacks
             var printingText = (typeof dfxPRLAdmin !== 'undefined' && dfxPRLAdmin.messages && dfxPRLAdmin.messages.printing)
                 ? dfxPRLAdmin.messages.printing
@@ -361,17 +361,17 @@
             var printErrorText = (typeof dfxPRLAdmin !== 'undefined' && dfxPRLAdmin.messages && dfxPRLAdmin.messages.printError)
                 ? dfxPRLAdmin.messages.printError
                 : 'Error preparing message for print. Please try again.';
-            
+
             // Disable button and show loading state
             $button.prop('disabled', true).text(printingText);
-            
+
             var ajaxUrl = (typeof dfxPRLAdmin !== 'undefined' && dfxPRLAdmin.ajaxurl)
                 ? dfxPRLAdmin.ajaxurl
                 : (typeof ajaxurl !== 'undefined' ? ajaxurl : '');
             var nonce = (typeof dfxPRLAdmin !== 'undefined' && dfxPRLAdmin.nonce)
                 ? dfxPRLAdmin.nonce
                 : '';
-            
+
             $.ajax({
                 url: ajaxUrl,
                 type: 'POST',
@@ -401,10 +401,10 @@
         // Handle delete message button clicks
         $('.dfx-prl-delete-message').on('click', function(e) {
             e.preventDefault();
-            
+
             var messageId = $(this).data('message-id');
             var $row = $(this).closest('tr');
-            
+
             // Get localized text with fallbacks
             var confirmMessage = (typeof dfxPRLAdmin !== 'undefined' && dfxPRLAdmin.messages && dfxPRLAdmin.messages.confirmDeleteMessage)
                 ? dfxPRLAdmin.messages.confirmDeleteMessage
@@ -412,21 +412,21 @@
             var messageDeletedText = (typeof dfxPRLAdmin !== 'undefined' && dfxPRLAdmin.messages && dfxPRLAdmin.messages.messageDeleted)
                 ? dfxPRLAdmin.messages.messageDeleted
                 : 'Message deleted successfully.';
-            
+
             if (!confirm(confirmMessage)) {
                 return;
             }
-            
+
             // Disable button and show loading state
             $(this).prop('disabled', true).text('Deleting...');
-            
+
             var ajaxUrl = (typeof dfxPRLAdmin !== 'undefined' && dfxPRLAdmin.ajaxurl)
                 ? dfxPRLAdmin.ajaxurl
                 : (typeof ajaxurl !== 'undefined' ? ajaxurl : '');
             var nonce = (typeof dfxPRLAdmin !== 'undefined' && dfxPRLAdmin.nonce)
                 ? dfxPRLAdmin.nonce
                 : '';
-            
+
             $.ajax({
                 url: ajaxUrl,
                 type: 'POST',
@@ -440,7 +440,7 @@
                         // Remove the row with animation
                         $row.fadeOut(300, function() {
                             $(this).remove();
-                            
+
                             // Show success message
                             var successMessage = response.data.message || messageDeletedText;
                             $('<div class="notice notice-success is-dismissible"><p>' + successMessage + '</p></div>')
@@ -467,19 +467,19 @@
         // Handle view print log clicks
         $('.dfx-prl-view-print-log').on('click', function(e) {
             e.preventDefault();
-            
+
             var messageId = $(this).data('message-id');
-            
+
             var ajaxUrl = (typeof dfxPRLAdmin !== 'undefined' && dfxPRLAdmin.ajaxurl)
                 ? dfxPRLAdmin.ajaxurl
                 : (typeof ajaxurl !== 'undefined' ? ajaxurl : '');
             var nonce = (typeof dfxPRLAdmin !== 'undefined' && dfxPRLAdmin.nonce)
                 ? dfxPRLAdmin.nonce
                 : '';
-            
+
             // Show loading state
             showPrintLogModal(messageId, null, true);
-            
+
             $.ajax({
                 url: ajaxUrl,
                 type: 'POST',
@@ -507,11 +507,11 @@
         function showPrintLogModal(messageId, data, loading) {
             // Remove existing modal if any
             $('#dfx-prl-print-log-modal').remove();
-            
+
             var modalHtml = '';
-            
+
             if (loading) {
-                modalHtml = 
+                modalHtml =
                     '<div id="dfx-prl-print-log-modal" class="dfx-prl-modal-overlay">' +
                         '<div class="dfx-prl-modal-dialog">' +
                             '<div class="dfx-prl-modal-header">' +
@@ -535,7 +535,7 @@
                             '</tr>' +
                         '</thead>' +
                         '<tbody>';
-                    
+
                     for (var i = 0; i < data.logs.length; i++) {
                         var log = data.logs[i];
                         logsTable += '<tr>' +
@@ -544,13 +544,13 @@
                             '<td>' + log.ip_address + '</td>' +
                         '</tr>';
                     }
-                    
+
                     logsTable += '</tbody></table>';
                 } else {
                     logsTable = '<p>No print history available for this message.</p>';
                 }
-                
-                modalHtml = 
+
+                modalHtml =
                     '<div id="dfx-prl-print-log-modal" class="dfx-prl-modal-overlay">' +
                         '<div class="dfx-prl-modal-dialog" style="max-width: 700px;">' +
                             '<div class="dfx-prl-modal-header">' +
@@ -563,16 +563,16 @@
                         '</div>' +
                     '</div>';
             }
-            
+
             $('body').append(modalHtml);
             $('#dfx-prl-print-log-modal').show();
-            
+
             // Handle close button clicks
             $('.dfx-prl-modal-close').on('click', function(e) {
                 e.preventDefault();
                 closePrintLogModal();
             });
-            
+
             // Handle backdrop clicks
             $('#dfx-prl-print-log-modal').on('click', function(e) {
                 if (e.target === this) {
@@ -614,7 +614,7 @@
             document.body.appendChild(textArea);
             textArea.focus();
             textArea.select();
-            
+
             try {
                 var successful = document.execCommand('copy');
                 document.body.removeChild(textArea);
