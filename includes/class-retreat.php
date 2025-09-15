@@ -55,7 +55,7 @@ class DFX_Parish_Retreat_Letters_Retreat {
 			return false;
 		}
 
-		$result = $wpdb->insert(
+		$result = $wpdb->insert( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
 			$this->database->get_retreats_table(),
 			array(
 				'name'                       => $sanitized_data['name'],
@@ -85,10 +85,11 @@ class DFX_Parish_Retreat_Letters_Retreat {
 	public function get( $id ) {
 		global $wpdb;
 
-		$result = $wpdb->get_row( $wpdb->prepare(
-			"SELECT * FROM {$this->database->get_retreats_table()} WHERE id = %d",
+		$retreats_table = $this->database->get_retreats_table();
+		$result = $wpdb->get_row( $wpdb->prepare( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
+			"SELECT * FROM {$retreats_table} WHERE id = %d",
 			$id
-		) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		) );
 
 		return $result;
 	}
@@ -109,7 +110,7 @@ class DFX_Parish_Retreat_Letters_Retreat {
 			return false;
 		}
 
-		$result = $wpdb->update(
+		$result = $wpdb->update( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
 			$this->database->get_retreats_table(),
 			array(
 				'name'                       => $sanitized_data['name'],
@@ -162,7 +163,7 @@ class DFX_Parish_Retreat_Letters_Retreat {
 		$invitations_model->delete_by_retreat( $id );
 
 		// Delete the retreat
-		$result = $wpdb->delete(
+		$result = $wpdb->delete( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
 			$this->database->get_retreats_table(),
 			array( 'id' => $id ),
 			array( '%d' )
