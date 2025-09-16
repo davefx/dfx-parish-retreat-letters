@@ -405,12 +405,12 @@ class DFX_Parish_Retreat_Letters_GDPR {
 	 * @since 1.2.0
 	 */
 	public function ajax_export_personal_data() {
-		if ( ! current_user_can( 'manage_options' ) ) {
-			wp_die( esc_html__( 'Insufficient permissions.', 'dfx-parish-retreat-letters' ) );
-		}
-
 		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ?? '' ) ), 'dfx_prl_gdpr_nonce' ) ) {
 			wp_die( esc_html__( 'Security check failed.', 'dfx-parish-retreat-letters' ) );
+		}
+
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_die( esc_html__( 'Insufficient permissions.', 'dfx-parish-retreat-letters' ) );
 		}
 
 		$identifier = sanitize_text_field( wp_unslash( $_POST['identifier'] ?? '' ) );
@@ -439,12 +439,12 @@ class DFX_Parish_Retreat_Letters_GDPR {
 	 * @since 1.2.0
 	 */
 	public function ajax_erase_personal_data() {
-		if ( ! current_user_can( 'manage_options' ) ) {
-			wp_die( esc_html__( 'Insufficient permissions.', 'dfx-parish-retreat-letters' ) );
-		}
-
 		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ?? '' ) ), 'dfx_prl_gdpr_nonce' ) ) {
 			wp_die( esc_html__( 'Security check failed.', 'dfx-parish-retreat-letters' ) );
+		}
+
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_die( esc_html__( 'Insufficient permissions.', 'dfx-parish-retreat-letters' ) );
 		}
 
 		$identifier = sanitize_text_field( wp_unslash( $_POST['identifier'] ?? '' ) );

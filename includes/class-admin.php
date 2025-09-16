@@ -701,8 +701,8 @@ class DFX_Parish_Retreat_Letters_Admin {
 			'custom_message'             => wp_kses_post( wp_unslash( $_POST['custom_message'] ?? '' ) ),
 			'disclaimer_text'            => wp_kses_post( wp_unslash( $_POST['disclaimer_text'] ?? '' ) ),
 			'disclaimer_acceptance_text' => sanitize_text_field( wp_unslash( $_POST['disclaimer_acceptance_text'] ?? '' ) ),
-			'custom_header_block_id'     => $this->parse_block_selection( wp_unslash( $_POST['custom_header_block_id'] ?? '' ) ),
-			'custom_footer_block_id'     => $this->parse_block_selection( wp_unslash( $_POST['custom_footer_block_id'] ?? '' ) ),
+			'custom_header_block_id'     => $this->parse_block_selection( sanitize_text_field( wp_unslash( $_POST['custom_header_block_id'] ?? '' ) ) ),
+			'custom_footer_block_id'     => $this->parse_block_selection( sanitize_text_field( wp_unslash( $_POST['custom_footer_block_id'] ?? '' ) ) ),
 			'custom_css'                 => sanitize_textarea_field( wp_unslash( $_POST['custom_css'] ?? '' ) ),
 		);
 
