@@ -132,14 +132,18 @@ class DFX_Parish_Retreat_Letters_Database {
 	 */
 	private function __construct() {
 		global $wpdb;
-		$this->retreats_table = $wpdb->prefix . 'dfx_prl_retreats';
-		$this->attendants_table = $wpdb->prefix . 'dfx_prl_attendants';
-		$this->messages_table = $wpdb->prefix . 'dfx_prl_confidential_messages';
-		$this->message_files_table = $wpdb->prefix . 'dfx_prl_message_files';
-		$this->message_print_log_table = $wpdb->prefix . 'dfx_prl_message_print_log';
-		$this->permissions_table = $wpdb->prefix . 'dfx_prl_retreat_permissions';
-		$this->invitations_table = $wpdb->prefix . 'dfx_prl_retreat_invitations';
-		$this->audit_log_table = $wpdb->prefix . 'dfx_prl_permission_audit_log';
+		
+		// Ensure $wpdb and prefix are properly set, fallback to 'wp_' if not available
+		$prefix = ( isset( $wpdb->prefix ) && ! empty( $wpdb->prefix ) ) ? $wpdb->prefix : 'wp_';
+		
+		$this->retreats_table = $prefix . 'dfx_prl_retreats';
+		$this->attendants_table = $prefix . 'dfx_prl_attendants';
+		$this->messages_table = $prefix . 'dfx_prl_confidential_messages';
+		$this->message_files_table = $prefix . 'dfx_prl_message_files';
+		$this->message_print_log_table = $prefix . 'dfx_prl_message_print_log';
+		$this->permissions_table = $prefix . 'dfx_prl_retreat_permissions';
+		$this->invitations_table = $prefix . 'dfx_prl_retreat_invitations';
+		$this->audit_log_table = $prefix . 'dfx_prl_permission_audit_log';
 		
 		// Only check for database upgrades if WordPress is fully loaded
 		if ( did_action( 'init' ) || current_action() === 'init' ) {
