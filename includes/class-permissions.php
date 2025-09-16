@@ -16,7 +16,7 @@
  *
  * This class handles the three-tier authorization system:
  * - Plugin Administrators (global access)
- * - Retreat Managers (retreat-specific control) 
+ * - Retreat Managers (retreat-specific control)
  * - Message Managers (message-only access)
  *
  * @since      1.3.0
@@ -147,7 +147,7 @@ class DFX_Parish_Retreat_Letters_Permissions {
 	 */
 	public function current_user_can_manage_attendant( $attendant_id ) {
 		global $wpdb;
-		
+
 		// Get the retreat ID for this attendant
 		$attendants_table = $this->database->get_attendants_table();
 		$retreat_id = $wpdb->get_var( $wpdb->prepare(
@@ -380,12 +380,12 @@ class DFX_Parish_Retreat_Letters_Permissions {
 
 		// Check if user still has any retreat permissions
 		$accessible_retreats = $this->get_user_accessible_retreats( $user_id );
-		
+
 		// If user has no more retreat permissions and doesn't have other admin capabilities,
 		// we should consider removing the 'read' capability we may have added
 		// However, we'll be conservative and only remove it if the user has no other admin-related capabilities
-		if ( empty( $accessible_retreats ) && 
-			 ! $user->has_cap( 'edit_posts' ) && 
+		if ( empty( $accessible_retreats ) &&
+			 ! $user->has_cap( 'edit_posts' ) &&
 			 ! $user->has_cap( 'manage_options' ) &&
 			 ! $user->has_cap( 'manage_retreat_plugin' ) ) {
 			// Only remove 'read' if it was likely added by us (user has subscriber-like role)
@@ -508,7 +508,7 @@ class DFX_Parish_Retreat_Letters_Permissions {
 
 		// Get users with inactive permissions to clean their capabilities
 		$inactive_permissions = $wpdb->get_results(
-			"SELECT user_id, retreat_id, permission_level FROM {$this->database->get_permissions_table()} 
+			"SELECT user_id, retreat_id, permission_level FROM {$this->database->get_permissions_table()}
 			 WHERE is_active = 0"
 		); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 
@@ -518,7 +518,7 @@ class DFX_Parish_Retreat_Letters_Permissions {
 
 		// Delete old inactive permissions (older than 1 year)
 		$deleted = $wpdb->query(
-			"DELETE FROM {$this->database->get_permissions_table()} 
+			"DELETE FROM {$this->database->get_permissions_table()}
 			 WHERE is_active = 0 AND revoked_at < DATE_SUB(NOW(), INTERVAL 1 YEAR)"
 		); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 
@@ -538,7 +538,7 @@ class DFX_Parish_Retreat_Letters_Permissions {
 
 		// First remove dynamic capabilities for all users with permissions on this retreat
 		$permissions = $wpdb->get_results( $wpdb->prepare(
-			"SELECT user_id, permission_level FROM {$this->database->get_permissions_table()} 
+			"SELECT user_id, permission_level FROM {$this->database->get_permissions_table()}
 			 WHERE retreat_id = %d AND is_active = 1",
 			$retreat_id
 		) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
@@ -632,7 +632,7 @@ class DFX_Parish_Retreat_Letters_Permissions {
 		}
 
 		$user->add_cap( 'manage_retreat_plugin' );
-		
+
 		// Ensure user has admin access
 		if ( ! $user->has_cap( 'read' ) ) {
 			$user->add_cap( 'read' );
@@ -663,11 +663,11 @@ class DFX_Parish_Retreat_Letters_Permissions {
 
 		// Check if user still has any retreat permissions
 		$accessible_retreats = $this->get_user_accessible_retreats( $user_id );
-		
+
 		// If user has no more retreat permissions and doesn't have other admin capabilities,
 		// consider removing the 'read' capability we may have added
-		if ( empty( $accessible_retreats ) && 
-			 ! $user->has_cap( 'edit_posts' ) && 
+		if ( empty( $accessible_retreats ) &&
+			 ! $user->has_cap( 'edit_posts' ) &&
 			 ! $user->has_cap( 'manage_options' ) ) {
 			// Only remove 'read' if it was likely added by us (user has subscriber-like role)
 			$user_roles = $user->roles;
@@ -776,11 +776,11 @@ class DFX_Parish_Retreat_Letters_Permissions {
 		}
 
 		// Check if user has admin-type capabilities or retreat permissions
-		$has_admin_access = $user->has_cap( 'edit_posts' ) || 
-							$user->has_cap( 'manage_options' ) || 
+		$has_admin_access = $user->has_cap( 'edit_posts' ) ||
+							$user->has_cap( 'manage_options' ) ||
 							$user->has_cap( 'manage_retreat_plugin' );
 
-		// If user doesn't have standard admin access but has retreat permissions, 
+		// If user doesn't have standard admin access but has retreat permissions,
 		// we need to prevent WooCommerce from redirecting them
 		if ( ! $has_admin_access && ! empty( $accessible_retreats ) ) {
 			// Remove WooCommerce's admin restrictions
@@ -801,7 +801,7 @@ class DFX_Parish_Retreat_Letters_Permissions {
 
 		// Remove WooCommerce admin restrictions
 		remove_action( 'admin_init', 'wc_disable_admin_bar', 10 );
-		
+
 		// Also try to remove if it's hooked differently
 		if ( function_exists( 'wc_prevent_admin_access' ) ) {
 			remove_action( 'admin_init', 'wc_prevent_admin_access', 10 );
@@ -817,8 +817,8 @@ class DFX_Parish_Retreat_Letters_Permissions {
 			foreach ( $wp_filter['admin_init']->callbacks as $priority => $callbacks ) {
 				foreach ( $callbacks as $key => $callback ) {
 					// Look for WooCommerce admin restriction callbacks
-					if ( is_array( $callback['function'] ) && 
-						 is_object( $callback['function'][0] ) && 
+					if ( is_array( $callback['function'] ) &&
+						 is_object( $callback['function'][0] ) &&
 						 get_class( $callback['function'][0] ) === 'WC_Admin' &&
 						 $callback['function'][1] === 'prevent_admin_access' ) {
 						remove_action( 'admin_init', $callback['function'], $priority );

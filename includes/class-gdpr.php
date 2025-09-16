@@ -85,7 +85,7 @@ class DFX_Parish_Retreat_Letters_GDPR {
 
 		add_action( 'dfx_prl_daily_gdpr_cleanup', array( $this, 'run_daily_cleanup' ) );
 		add_action( 'admin_init', array( $this, 'maybe_anonymize_ips' ) );
-		
+
 		// Only add AJAX hooks in admin
 		if ( is_admin() ) {
 			add_action( 'wp_ajax_dfx_prl_export_personal_data', array( $this, 'ajax_export_personal_data' ) );
@@ -234,7 +234,7 @@ class DFX_Parish_Retreat_Letters_GDPR {
 
 		// Erase each message and its associated data
 		$message_model = new DFX_Parish_Retreat_Letters_ConfidentialMessage();
-		
+
 		foreach ( $messages as $message ) {
 			// Get file count before deletion
 			$message_files_table = $this->database->get_message_files_table();
@@ -405,12 +405,12 @@ class DFX_Parish_Retreat_Letters_GDPR {
 	 * @since 1.2.0
 	 */
 	public function ajax_export_personal_data() {
-		if ( ! current_user_can( 'manage_options' ) ) {
-			wp_die( esc_html__( 'Insufficient permissions.', 'dfx-parish-retreat-letters' ) );
-		}
-
 		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ?? '' ) ), 'dfx_prl_gdpr_nonce' ) ) {
 			wp_die( esc_html__( 'Security check failed.', 'dfx-parish-retreat-letters' ) );
+		}
+
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_die( esc_html__( 'Insufficient permissions.', 'dfx-parish-retreat-letters' ) );
 		}
 
 		$identifier = sanitize_text_field( wp_unslash( $_POST['identifier'] ?? '' ) );
@@ -439,12 +439,12 @@ class DFX_Parish_Retreat_Letters_GDPR {
 	 * @since 1.2.0
 	 */
 	public function ajax_erase_personal_data() {
-		if ( ! current_user_can( 'manage_options' ) ) {
-			wp_die( esc_html__( 'Insufficient permissions.', 'dfx-parish-retreat-letters' ) );
-		}
-
 		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ?? '' ) ), 'dfx_prl_gdpr_nonce' ) ) {
 			wp_die( esc_html__( 'Security check failed.', 'dfx-parish-retreat-letters' ) );
+		}
+
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_die( esc_html__( 'Insufficient permissions.', 'dfx-parish-retreat-letters' ) );
 		}
 
 		$identifier = sanitize_text_field( wp_unslash( $_POST['identifier'] ?? '' ) );

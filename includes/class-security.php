@@ -96,7 +96,7 @@ class DFX_Parish_Retreat_Letters_Security {
 
 	/**
 	 * Get the encryption key.
-	 * 
+	 *
 	 * This key should be stored securely outside the database.
 	 * In production, consider storing in wp-config.php or environment variable.
 	 *
@@ -192,7 +192,7 @@ class DFX_Parish_Retreat_Letters_Security {
 	public function generate_unique_message_token() {
 		global $wpdb;
 		$database = DFX_Parish_Retreat_Letters_Database::get_instance();
-		
+
 		do {
 			$token = $this->generate_secure_token();
 			// Check if token already exists
@@ -424,7 +424,7 @@ class DFX_Parish_Retreat_Letters_Security {
 		$finfo = finfo_open( FILEINFO_MIME_TYPE );
 		$mime_type = finfo_file( $finfo, $file['tmp_name'] );
 		finfo_close( $finfo );
-		
+
 		// Log detected MIME type for debugging (only in wp-config debug mode)
 		if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
 			// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log -- Conditional debug logging only when WP_DEBUG is enabled
@@ -442,32 +442,32 @@ class DFX_Parish_Retreat_Letters_Security {
 			$allowed_variations = array(
 				// Text files
 				'text/x-Algol68' => array( 'text/plain' ),
-				
+
 				// DOC files - multiple possible MIME types
-				'application/octet-stream' => array( 
-					'application/pdf', 
+				'application/octet-stream' => array(
+					'application/pdf',
 					'application/msword',
 					'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
 				),
 				'application/doc' => array( 'application/msword' ),
-				'application/vnd.ms-office' => array( 
+				'application/vnd.ms-office' => array(
 					'application/msword',
 					'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
 				),
-				
+
 				// DOCX files - can be reported as ZIP since DOCX is a ZIP-based format
 				'application/zip' => array( 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' ),
-				
+
 				// Sometimes PDF files are reported as octet-stream
 				'application/x-pdf' => array( 'application/pdf' ),
 			);
 
 			$is_valid = false;
 			if ( isset( $allowed_variations[ $mime_type ] ) ) {
-				$valid_types = is_array( $allowed_variations[ $mime_type ] ) 
-					? $allowed_variations[ $mime_type ] 
+				$valid_types = is_array( $allowed_variations[ $mime_type ] )
+					? $allowed_variations[ $mime_type ]
 					: array( $allowed_variations[ $mime_type ] );
-				
+
 				if ( in_array( $allowed_types[ $extension ], $valid_types, true ) ) {
 					$is_valid = true;
 				}
@@ -584,7 +584,7 @@ class DFX_Parish_Retreat_Letters_Security {
 	 */
 	public function reset_all_rate_limits() {
 		global $wpdb;
-		
+
 		// Delete all rate limit transients
 		$count = $wpdb->query( "DELETE FROM {$wpdb->options} WHERE option_name LIKE '_transient_dfx_prl_message_rate_limit_%'" ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
 		// Also delete timeout transients
@@ -603,19 +603,19 @@ class DFX_Parish_Retreat_Letters_Security {
 	public function get_rate_limit_status( $ip_address ) {
 		$transient_key = 'dfx_prl_message_rate_limit_' . md5( $ip_address );
 		$attempts = get_transient( $transient_key );
-		
+
 		if ( $attempts === false ) {
 			return array(
 				'attempts' => 0,
 				'time_remaining' => 0
 			);
 		}
-		
+
 		// Get the timeout for this transient
 		$timeout_key = '_transient_timeout_' . $transient_key;
 		$timeout = get_option( $timeout_key );
 		$time_remaining = $timeout ? max( 0, $timeout - time() ) : 0;
-		
+
 		return array(
 			'attempts' => $attempts,
 			'time_remaining' => $time_remaining
@@ -640,12 +640,12 @@ class DFX_Parish_Retreat_Letters_Security {
 		// Store in transient for admin review
 		$violations = get_transient( 'dfx_prl_message_rate_limit_violations' ) ?: array();
 		$violations[] = $log_entry;
-		
+
 		// Keep only last 100 violations
 		if ( count( $violations ) > 100 ) {
 			$violations = array_slice( $violations, -100 );
 		}
-		
+
 		set_transient( 'dfx_prl_message_rate_limit_violations', $violations, 24 * 60 * 60 ); // 24 hours
 	}
 }

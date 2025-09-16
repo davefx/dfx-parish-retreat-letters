@@ -324,7 +324,7 @@ class DFX_Parish_Retreat_Letters {
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_public_scripts' ) );
 		add_action( 'wp_ajax_nopriv_dfx_prl_submit_message', array( $this, 'handle_message_submission' ) );
 		add_action( 'wp_ajax_dfx_prl_submit_message', array( $this, 'handle_message_submission' ) );
-		
+
 		// Schedule cleanup tasks
 		add_action( 'init', array( $this, 'schedule_cleanup_tasks' ) );
 		add_action( 'dfx_prl_retreat_cleanup_hook', array( $this, 'run_cleanup_tasks' ) );
@@ -397,41 +397,42 @@ class DFX_Parish_Retreat_Letters {
 	 * @since 1.2.0
 	 */
 	public function handle_message_url_routing() {
-		// Check if we're on a message URL pattern: /messages/[token] or /print/[token]
+
+    // Check if we're on a message URL pattern: /messages/[token] or /print/[token]
 		$request_uri = isset( $_SERVER['REQUEST_URI'] ) ? sanitize_text_field( wp_unslash( $_SERVER['REQUEST_URI'] ) ) : '';
-		
-		// Ensure we have a valid string
+
+    // Ensure we have a valid string
 		if ( ! is_string( $request_uri ) || empty( $request_uri ) ) {
 			return;
 		}
-		
+
 		// Remove query string
 		$request_uri = strtok( $request_uri, '?' );
 		if ( $request_uri === false ) {
 			return;
 		}
-		
+
 		// Get the site's base path
 		$site_url = wp_parse_url( home_url(), PHP_URL_PATH );
 		$site_path = ( is_string( $site_url ) && ! empty( $site_url ) ) ? $site_url : '/';
-		
+
 		// Normalize paths and ensure site_path is a string
 		$site_path = (string) $site_path;
 		if ( $site_path !== '/' ) {
 			$site_path = rtrim( $site_path, '/' );
 		}
-		
+
 		// Create patterns for both message submission and print URLs
 		$messages_pattern = '#^' . preg_quote( $site_path, '#' ) . '/messages/([a-zA-Z0-9]+)/?$#';
 		$print_pattern = '#^' . preg_quote( $site_path, '#' ) . '/print/([a-zA-Z0-9]+)/?$#';
-		
+
 		// Also try without the site path for root installations
 		$root_messages_pattern = '#^/messages/([a-zA-Z0-9]+)/?$#';
 		$root_print_pattern = '#^/print/([a-zA-Z0-9]+)/?$#';
-		
+
 		$token = null;
 		$is_print = false;
-		
+
 		// Check for message submission URLs
 		if ( preg_match( $messages_pattern, $request_uri, $matches ) ) {
 			$token = sanitize_text_field( $matches[1] );
@@ -446,7 +447,7 @@ class DFX_Parish_Retreat_Letters {
 			$token = sanitize_text_field( $matches[1] );
 			$is_print = true;
 		}
-		
+
 		if ( $token ) {
 			if ( $is_print ) {
 				$this->handle_print_request( $token );
@@ -466,7 +467,7 @@ class DFX_Parish_Retreat_Letters {
 	private function display_message_form( $token ) {
 		// Verify token and get attendant
 		$attendant = $this->get_attendant_by_token( $token );
-		
+
 		if ( ! $attendant ) {
 			// Invalid token - show 404
 			status_header( 404 );
@@ -484,7 +485,7 @@ class DFX_Parish_Retreat_Letters {
 			if ( ! $this->security->check_rate_limit( $ip_address, 10, 60 ) ) {
 				// Rate limit exceeded
 				$this->security->log_rate_limit_violation( $ip_address, 'message_form_access' );
-				wp_die( 
+				wp_die(
 					esc_html__( 'Too many requests. Please wait before trying again.', 'dfx-parish-retreat-letters' ),
 					esc_html__( 'Rate Limit Exceeded', 'dfx-parish-retreat-letters' ),
 					array( 'response' => 429 )
@@ -495,7 +496,7 @@ class DFX_Parish_Retreat_Letters {
 		// Set up WordPress environment for form
 		status_header( 200 );
 		nocache_headers();
-		
+
 		// Try to render custom header, fallback to default
 		$custom_header_rendered = false;
 		if ( $retreat && ! empty( $retreat->custom_header_block_id ) ) {
@@ -504,17 +505,17 @@ class DFX_Parish_Retreat_Letters {
 			$custom_header_rendered = $this->render_custom_block( $retreat->custom_header_block_id );
 			echo '<!-- DFX Debug: Custom header render result: ' . ( $custom_header_rendered ? 'success' : 'failed' ) . ' -->';
 		}
-		
+
 		if ( ! $custom_header_rendered ) {
 			// Include WordPress header as fallback (theme-agnostic)
 			echo '<!-- DFX Debug: Rendering fallback theme header -->';
 			$this->render_theme_header();
 			echo '<!-- DFX Debug: Fallback theme header rendered -->';
 		}
-		
+
 		// Display the form
 		$this->render_message_form( $attendant, $retreat );
-		
+
 		// Try to render custom footer, fallback to default
 		$custom_footer_rendered = false;
 		if ( $retreat && ! empty( $retreat->custom_footer_block_id ) ) {
@@ -523,7 +524,7 @@ class DFX_Parish_Retreat_Letters {
 			$custom_footer_rendered = $this->render_custom_block( $retreat->custom_footer_block_id );
 			echo '<!-- DFX Debug: Custom footer render result: ' . ( $custom_footer_rendered ? 'success' : 'failed' ) . ' -->';
 		}
-		
+
 		if ( ! $custom_footer_rendered ) {
 			// Include WordPress footer as fallback (theme-agnostic)
 			echo '<!-- DFX Debug: Rendering fallback theme footer -->';
@@ -541,7 +542,7 @@ class DFX_Parish_Retreat_Letters {
 	 */
 	private function get_attendant_by_token( $token ) {
 		global $wpdb;
-		
+
 		$attendants_table = $this->database->get_attendants_table();
 		$retreats_table = $this->database->get_retreats_table();
 
@@ -568,7 +569,7 @@ class DFX_Parish_Retreat_Letters {
 		<div class="dfx-message-form-container">
 			<div class="dfx-message-form-content">
 				<h1><?php esc_html_e( 'Send a Confidential Message', 'dfx-parish-retreat-letters' ); ?></h1>
-				
+
 				<div class="dfx-prl-retreat-info">
 					<h2><?php esc_html_e( 'For Retreat Attendant', 'dfx-parish-retreat-letters' ); ?></h2>
 					<p><strong><?php echo esc_html( $attendant->name . ' ' . $attendant->surnames ); ?></strong></p>
@@ -655,9 +656,9 @@ class DFX_Parish_Retreat_Letters {
 								<label class="dfx-checkbox-label">
 									<input type="checkbox" id="disclaimer_accepted" name="disclaimer_accepted" required>
 									<span class="required">*</span>
-									<?php 
-									$acceptance_text = ! empty( $attendant->disclaimer_acceptance_text ) 
-										? $attendant->disclaimer_acceptance_text 
+									<?php
+									$acceptance_text = ! empty( $attendant->disclaimer_acceptance_text )
+										? $attendant->disclaimer_acceptance_text
 										: __( 'I accept the terms and conditions stated above', 'dfx-parish-retreat-letters' );
 									echo esc_html( $acceptance_text );
 									?>
@@ -1054,7 +1055,7 @@ class DFX_Parish_Retreat_Letters {
 				gap: 1rem;
 			}
 		}
-		
+
 		<?php
 		// Include custom CSS from global settings and retreat-specific settings
 		$this->render_custom_css_for_message_form( $retreat );
@@ -1072,10 +1073,10 @@ class DFX_Parish_Retreat_Letters {
 	private function render_custom_css_for_message_form( $retreat = null ) {
 		// Get global settings instance
 		$global_settings = DFX_Parish_Retreat_Letters_GlobalSettings::get_instance();
-		
+
 		// Get global default CSS
 		$global_css = $global_settings->get_default_css();
-		
+
 		// Get retreat-specific CSS if per-retreat customization is enabled and retreat data is available
 		$retreat_css = '';
 		if ( $retreat && $global_settings->is_per_retreat_customization_enabled() ) {
@@ -1086,17 +1087,17 @@ class DFX_Parish_Retreat_Letters {
 				$retreat_css = $full_retreat_data->custom_css;
 			}
 		}
-		
+
 		// Output CSS if any exists
 		if ( ! empty( $global_css ) || ! empty( $retreat_css ) ) {
 			echo "\n/* Custom CSS from DFX Parish Retreat Letters Plugin */\n";
-			
+
 			if ( ! empty( $global_css ) ) {
 				echo "/* Global Default CSS */\n";
 				// CSS is already sanitized when saved via sanitize_textarea_field
 				echo wp_strip_all_tags( $global_css ) . "\n";
 			}
-			
+
 			if ( ! empty( $retreat_css ) ) {
 				echo "/* Retreat-Specific CSS */\n";
 				// CSS is already sanitized when saved via sanitize_textarea_field
@@ -1113,38 +1114,37 @@ class DFX_Parish_Retreat_Letters {
 	public function enqueue_public_scripts() {
 		// Only enqueue on message URLs
 		$request_uri = isset( $_SERVER['REQUEST_URI'] ) ? sanitize_text_field( wp_unslash( $_SERVER['REQUEST_URI'] ) ) : '';
-		
 		// Ensure we have a valid string
 		if ( ! is_string( $request_uri ) || empty( $request_uri ) ) {
 			return;
 		}
-		
+
 		$request_uri = strtok( $request_uri, '?' );
 		if ( $request_uri === false ) {
 			return;
 		}
-		
+
 		// Get the site's base path (same logic as handle_message_url_routing)
 		$site_url = wp_parse_url( home_url(), PHP_URL_PATH );
 		$site_path = ( is_string( $site_url ) && ! empty( $site_url ) ) ? $site_url : '/';
-		
+
 		// Normalize paths and ensure site_path is a string
 		$site_path = (string) $site_path;
 		if ( $site_path !== '/' ) {
 			$site_path = rtrim( $site_path, '/' );
 		}
-		
+
 		// Create the pattern based on the site's base path
 		$pattern = '#^' . preg_quote( $site_path, '#' ) . '/messages/([a-zA-Z0-9]+)/?$#';
-		
+
 		// Also try without the site path for root installations
 		$root_pattern = '#^/messages/([a-zA-Z0-9]+)/?$#';
-		
+
 		$is_message_url = preg_match( $pattern, $request_uri ) || preg_match( $root_pattern, $request_uri );
-		
+
 		if ( $is_message_url ) {
 			wp_enqueue_script( 'jquery' );
-			
+
 			// Inline script for message form functionality
 			add_action( 'wp_footer', array( $this, 'output_message_form_script' ) );
 		}
@@ -1161,29 +1161,29 @@ class DFX_Parish_Retreat_Letters {
 		jQuery(document).ready(function($) {
 			var editor = $('#message_content');
 			var hiddenInput = $('#message_content_hidden');
-			
+
 			// Initialize editor
 			if (editor.length) {
 				// Set initial placeholder state
 				if (editor.text().trim() === '') {
 					editor.addClass('empty');
 				}
-				
+
 				// Make sure contenteditable is properly set
 				editor.attr('contenteditable', 'true');
 			}
-			
+
 			// Generate and display CAPTCHA immediately
 			generateCaptcha();
-			
+
 			// Initialize submit button state based on disclaimer
 			updateSubmitButtonState();
-			
+
 			// Handle disclaimer checkbox changes
 			$('#disclaimer_accepted').on('change', function() {
 				updateSubmitButtonState();
 			});
-			
+
 			// Message mode switching
 			$('input[name="message_mode"]').on('change', function() {
 				var mode = $(this).val();
@@ -1199,12 +1199,12 @@ class DFX_Parish_Retreat_Letters {
 					$('#message_files').prop('required', true);
 				}
 			});
-			
+
 			// Editor functionality
 			editor.on('input paste keyup', function() {
 				// Sync contenteditable content to hidden textarea
 				hiddenInput.val($(this).html());
-				
+
 				// Update placeholder visibility
 				if ($(this).text().trim() === '') {
 					$(this).addClass('empty');
@@ -1212,62 +1212,62 @@ class DFX_Parish_Retreat_Letters {
 					$(this).removeClass('empty');
 				}
 			});
-			
+
 			// Handle paste events to clean up content
 			editor.on('paste', function(e) {
 				e.preventDefault();
-				
+
 				var paste = (e.originalEvent.clipboardData || window.clipboardData).getData('text/html');
 				if (!paste) {
 					paste = (e.originalEvent.clipboardData || window.clipboardData).getData('text/plain');
 					paste = paste.replace(/\n/g, '<br>');
 				}
-				
+
 				// Clean the pasted content
 				var cleanHTML = cleanPastedContent(paste);
 				document.execCommand('insertHTML', false, cleanHTML);
-				
+
 				// Update hidden input
 				hiddenInput.val(editor.html());
 			});
-			
+
 			// File handling
 			$('#message_files').on('change', function() {
 				displaySelectedFiles(this.files);
 			});
-			
+
 			// Form submission
 			$('#dfx-message-form').on('submit', function(e) {
 				console.log('Form submit event triggered');
 				e.preventDefault();
 				e.stopPropagation();
-				
+
 				// Sync editor content before submission
 				if (editor.length) {
 					hiddenInput.val(editor.html());
 				}
-				
+
 				console.log('About to call submitMessage()');
 				submitMessage();
-				
+
 				// Ensure no actual form submission
 				return false;
 			});
-			
+
 			// Editor toolbar
 			$('.dfx-editor-toolbar button').on('click', function(e) {
 				e.preventDefault();
 				e.stopPropagation();
-				
+
 				var command = $(this).data('command');
 				var button = $(this);
-				
+
 				// Focus the editor first
 				editor.focus();
-				
+
 				// Get the current selection
 				var selection = window.getSelection();
-				
+
 				// Handle different commands
 				switch(command) {
 					case 'bold':
@@ -1295,37 +1295,37 @@ class DFX_Parish_Retreat_Letters {
 						}
 						break;
 				}
-				
+
 				// Update content and toolbar states
 				setTimeout(function() {
 					hiddenInput.val(editor.html());
 					updateToolbarStates();
 				}, 10);
-				
+
 				// Keep focus on editor
 				editor.focus();
 			});
-			
+
 			function applyFormat(tag, style) {
 				var selection = window.getSelection();
-				
+
 				if (selection.rangeCount === 0) {
 					return;
 				}
-				
+
 				var range = selection.getRangeAt(0);
 				var selectedText = range.toString();
-				
+
 				if (selectedText.length === 0) {
 					// No selection, just place cursor and toggle state for next typing
 					return;
 				}
-				
+
 				try {
 					// Check if selection is already formatted
 					var ancestor = range.commonAncestorContainer;
 					var isFormatted = false;
-					
+
 					// Check if we're inside the formatting tag
 					var parent = ancestor.nodeType === Node.TEXT_NODE ? ancestor.parentNode : ancestor;
 					while (parent && parent !== editor[0]) {
@@ -1335,7 +1335,7 @@ class DFX_Parish_Retreat_Letters {
 						}
 						parent = parent.parentNode;
 					}
-					
+
 					if (isFormatted) {
 						// Remove formatting by unwrapping
 						document.execCommand('removeFormat', false, null);
@@ -1355,7 +1355,7 @@ class DFX_Parish_Retreat_Letters {
 					document.execCommand(execCommand, false, null);
 				}
 			}
-			
+
 			function toggleList(listType) {
 				try {
 					var command = listType === 'ul' ? 'insertUnorderedList' : 'insertOrderedList';
@@ -1364,20 +1364,20 @@ class DFX_Parish_Retreat_Letters {
 					console.warn('List formatting not supported:', e);
 				}
 			}
-			
+
 			// Update toolbar button states based on current selection
 			function updateToolbarStates() {
 				$('.dfx-editor-toolbar button').each(function() {
 					var command = $(this).data('command');
 					var isActive = false;
-					
+
 					try {
 						// Check if cursor is within formatted text
 						var selection = window.getSelection();
 						if (selection.rangeCount > 0) {
 							var range = selection.getRangeAt(0);
 							var element = range.startContainer;
-							
+
 							// Traverse up to find formatting
 							while (element && element !== editor[0]) {
 								if (element.nodeType === Node.ELEMENT_NODE) {
@@ -1402,45 +1402,45 @@ class DFX_Parish_Retreat_Letters {
 							// Command not supported
 						}
 					}
-					
+
 					$(this).toggleClass('active', isActive);
 				});
 			}
-			
+
 			// Update toolbar states when selection changes
 			editor.on('mouseup keyup', function() {
 				setTimeout(updateToolbarStates, 10);
 			});
-			
+
 			function cleanPastedContent(html) {
 				// Create a temporary div to clean the content
 				var temp = $('<div>').html(html);
-				
+
 				// Remove potentially dangerous elements and attributes
 				temp.find('script, style, meta, link').remove();
-				
+
 				// For images, preserve src attribute but validate it's a data URL
 				temp.find('img').each(function() {
 					var $img = $(this);
 					var src = $img.attr('src');
-					
+
 					// Remove all attributes first
 					$img.removeAttr('style class id onclick onload onerror');
-					
+
 					// Only keep src if it's a valid data URL (base64 image)
 					if (src && src.match(/^data:image\/(jpeg|jpg|png|gif|webp|bmp|svg\+xml);base64,[A-Za-z0-9+/=]+$/i)) {
 						$img.attr('src', src);
 					}
 				});
-				
+
 				// For all other elements, remove dangerous attributes
 				temp.find('*:not(img)').removeAttr('style class id onclick onload onerror');
-				
+
 				// Convert common formatting
 				temp.find('div').replaceWith(function() {
 					return '<p>' + $(this).html() + '</p>';
 				});
-				
+
 				return temp.html();
 			}
 
@@ -1449,29 +1449,29 @@ class DFX_Parish_Retreat_Letters {
 				var num2 = Math.floor(Math.random() * 10) + 1;
 				var operations = ['+', '-', '×', '/'];
 				var operation = operations[Math.floor(Math.random() * operations.length)];
-				
+
 				// Ensure no negative numbers in subtraction
 				if (operation === '-' && num1 < num2) {
 					var temp = num1;
 					num1 = num2;
 					num2 = temp;
 				}
-				
+
 				// Ensure clean division (no remainders)
 				if (operation === '/') {
 					num1 = num2 * (Math.floor(Math.random() * 9) + 1); // num1 = num2 * (1-9)
 				}
-				
+
 				var question = num1 + ' ' + operation + ' ' + num2 + ' = ?';
 				var answer;
-				
+
 				switch(operation) {
 					case '+': answer = num1 + num2; break;
 					case '-': answer = num1 - num2; break;
 					case '×': answer = num1 * num2; break;
 					case '/': answer = num1 / num2; break;
 				}
-				
+
 				// Set question text with proper string
 				var questionElement = $('#dfx-captcha-question');
 				if (questionElement.length) {
@@ -1479,11 +1479,11 @@ class DFX_Parish_Retreat_Letters {
 				} else {
 					console.error('CAPTCHA question element not found');
 				}
-				
+
 				// Set token and clear answer
 				var tokenElement = $('#captcha_token');
 				var answerElement = $('#captcha_answer');
-				
+
 				if (tokenElement.length) {
 					try {
 						tokenElement.val(btoa(answer.toString()));
@@ -1493,26 +1493,26 @@ class DFX_Parish_Retreat_Letters {
 				} else {
 					console.error('CAPTCHA token element not found');
 				}
-				
+
 				if (answerElement.length) {
 					answerElement.val('');
 				} else {
 					console.error('CAPTCHA answer element not found');
 				}
-				
+
 				console.log('CAPTCHA generated: ' + question + ' = ' + answer);
 			}
 
 			function displaySelectedFiles(files) {
 				var container = $('#dfx-file-list');
 				container.empty();
-				
+
 				Array.from(files).forEach(function(file, index) {
 					var fileItem = $('<div class="dfx-file-item">' +
 						'<span>' + file.name + ' (' + formatFileSize(file.size) + ')</span>' +
 						'<button type="button" class="dfx-file-remove" data-index="' + index + '"><?php echo esc_js( __( 'Remove', 'dfx-parish-retreat-letters' ) ); ?></button>' +
 						'</div>');
-					
+
 					container.append(fileItem);
 				});
 			}
@@ -1529,20 +1529,20 @@ class DFX_Parish_Retreat_Letters {
 				var fileInput = $('#message_files')[0];
 				var files = Array.from(fileInput.files);
 				var indexToRemove = parseInt($(this).data('index'));
-				
+
 				files.splice(indexToRemove, 1);
-				
+
 				var dt = new DataTransfer();
 				files.forEach(file => dt.items.add(file));
 				fileInput.files = dt.files;
-				
+
 				displaySelectedFiles(fileInput.files);
 			});
 
 			function submitMessage() {
 				var form = $('#dfx-message-form')[0];
 				var formData = new FormData(form);
-				
+
 				// Validate mode-specific requirements
 				var mode = $('input[name="message_mode"]:checked').val();
 				if (mode === 'text') {
@@ -1560,21 +1560,21 @@ class DFX_Parish_Retreat_Letters {
 						return;
 					}
 				}
-				
+
 				// Validate CAPTCHA
 				var userAnswer = $('#captcha_answer').val().trim();
 				var expectedAnswerB64 = $('#captcha_token').val();
-				
+
 				if (!userAnswer) {
 					showNotice('<?php echo esc_js( __( 'Please complete the security check.', 'dfx-parish-retreat-letters' ) ); ?>', 'error');
 					return;
 				}
-				
+
 				if (!expectedAnswerB64) {
 					showNotice('<?php echo esc_js( __( 'Security check error. Please refresh the page.', 'dfx-parish-retreat-letters' ) ); ?>', 'error');
 					return;
 				}
-				
+
 				var expectedAnswer;
 				try {
 					expectedAnswer = atob(expectedAnswerB64);
@@ -1583,29 +1583,29 @@ class DFX_Parish_Retreat_Letters {
 					generateCaptcha();
 					return;
 				}
-				
+
 				if (parseInt(userAnswer) != parseInt(expectedAnswer)) {
 					showNotice('<?php echo esc_js( __( 'Incorrect security answer. Please try again.', 'dfx-parish-retreat-letters' ) ); ?>', 'error');
 					generateCaptcha();
 					$('#captcha_answer').val('');
 					return;
 				}
-				
+
 				// Validate disclaimer if present
 				var disclaimerCheckbox = $('#disclaimer_accepted');
 				if (disclaimerCheckbox.length && !disclaimerCheckbox.is(':checked')) {
 					showNotice('<?php echo esc_js( __( 'Please accept the legal disclaimer to proceed.', 'dfx-parish-retreat-letters' ) ); ?>', 'error');
 					return;
 				}
-				
+
 				// Add message mode to form data
 				formData.append('message_mode', mode);
-				
+
 				// Disable submit button
 				$('#dfx-submit-btn').prop('disabled', true);
 				$('.dfx-submit-text').hide();
 				$('.dfx-loading-spinner').show();
-				
+
 				$.ajax({
 					url: '<?php echo esc_url( admin_url( 'admin-ajax.php' ) ); ?>',
 					type: 'POST',
@@ -1641,7 +1641,7 @@ class DFX_Parish_Retreat_Letters {
 			function updateSubmitButtonState() {
 				var submitBtn = $('#dfx-submit-btn');
 				var disclaimerCheckbox = $('#disclaimer_accepted');
-				
+
 				// If disclaimer checkbox exists and is not checked, disable submit button
 				if (disclaimerCheckbox.length && !disclaimerCheckbox.is(':checked')) {
 					submitBtn.prop('disabled', true);
@@ -1654,11 +1654,11 @@ class DFX_Parish_Retreat_Letters {
 			function showNotice(message, type) {
 				var notice = $('<div class="dfx-notice ' + type + '">' + message + '</div>');
 				$('#dfx-message-notices').html(notice);
-				
+
 				$('html, body').animate({
 					scrollTop: notice.offset().top - 20
 				}, 500);
-				
+
 				if (type === 'success') {
 					// Keep success message forever
 					// setTimeout(function() {
@@ -1695,7 +1695,7 @@ class DFX_Parish_Retreat_Letters {
 		// Validate CAPTCHA
 		$user_answer = sanitize_text_field( wp_unslash( $_POST['captcha_answer'] ?? '' ) );
 		$captcha_token = sanitize_text_field( wp_unslash( $_POST['captcha_token'] ?? '' ) );
-		
+
 		if ( empty( $user_answer ) || empty( $captcha_token ) ) {
 			wp_send_json_error( array( 'message' => __( 'Please complete the security check.', 'dfx-parish-retreat-letters' ) ) );
 		}
@@ -1715,7 +1715,7 @@ class DFX_Parish_Retreat_Letters {
 		global $wpdb;
 		$attendants_table = $this->database->get_attendants_table();
 		$retreats_table = $this->database->get_retreats_table();
-		
+
 		$retreat_data = $wpdb->get_row( $wpdb->prepare(
 			"SELECT r.disclaimer_text, r.disclaimer_acceptance_text
 			 FROM `{$attendants_table}` a
@@ -1747,11 +1747,11 @@ class DFX_Parish_Retreat_Letters {
 		// Validate based on message mode
 		$content = '';
 		$message_type = 'text';
-		
+
 		if ( $message_mode === 'text' ) {
 			// Validate message content
 			$content = wp_kses_post( wp_unslash( $_POST['message_content'] ?? '' ) );
-			
+
 			// Check if content has actual text, not just HTML tags
 			$text_content = trim( wp_strip_all_tags( $content ) );
 			if ( empty( $content ) || empty( $text_content ) ) {
@@ -1785,23 +1785,23 @@ class DFX_Parish_Retreat_Letters {
 		$upload_result = array( 'uploaded_count' => 0, 'errors' => array() );
 		if ( $message_mode === 'file' && ! empty( $_FILES['message_files']['name'][0] ) ) {
 			$upload_result = $this->handle_file_uploads( $message_id, $_FILES['message_files'] );
-			
+
 			// If no files were uploaded successfully, return an error
 			if ( $upload_result['uploaded_count'] === 0 ) {
 				// Delete the message since no files were saved
 				$message_model->delete( $message_id );
-				
+
 				$error_message = __( 'No files could be uploaded.', 'dfx-parish-retreat-letters' );
 				if ( ! empty( $upload_result['errors'] ) ) {
 					$error_message .= ' ' . implode( ' ', $upload_result['errors'] );
 				}
-				
+
 				wp_send_json_error( array( 'message' => $error_message ) );
 			}
 		}
 
 		$success_message = __( 'Message sent successfully.', 'dfx-parish-retreat-letters' );
-		
+
 		// Add file upload info to success message if applicable
 		if ( $message_mode === 'file' && $upload_result['uploaded_count'] > 0 ) {
 			$success_message = sprintf(
@@ -1809,7 +1809,7 @@ class DFX_Parish_Retreat_Letters {
 				__( 'Message sent successfully with %d file(s).', 'dfx-parish-retreat-letters' ),
 				$upload_result['uploaded_count']
 			);
-			
+
 			// Add warning if some files failed
 			if ( ! empty( $upload_result['errors'] ) ) {
 				$success_message .= ' ' . sprintf(
@@ -1836,22 +1836,22 @@ class DFX_Parish_Retreat_Letters {
 	 */
 	private function handle_file_uploads( $message_id, $files ) {
 		$file_model = new DFX_Parish_Retreat_Letters_MessageFile();
-		
+
 		$file_count = count( $files['name'] );
 		$uploaded_count = 0;
 		$errors = array();
-		
+
 		for ( $i = 0; $i < $file_count; $i++ ) {
-			$filename = $files['name'][$i];
-			
+			$filename = sanitize_file_name( $files['name'][$i] );
+
 			// Skip empty file slots
 			if ( empty( $filename ) ) {
 				continue;
 			}
-			
+
 			// Check for upload errors
 			if ( $files['error'][$i] !== UPLOAD_ERR_OK ) {
-				$errors[] = sprintf( 
+				$errors[] = sprintf(
 					/* translators: %1$s: file name, %2$d: error code number */
 					__( 'File "%1$s" upload failed with error code %2$d.', 'dfx-parish-retreat-letters' ),
 					$filename,
@@ -1859,7 +1859,7 @@ class DFX_Parish_Retreat_Letters {
 				);
 				continue;
 			}
-			
+
 			$file_data = array(
 				'name'     => $filename,
 				'tmp_name' => $files['tmp_name'][$i],
@@ -1867,17 +1867,17 @@ class DFX_Parish_Retreat_Letters {
 				'type'     => $files['type'][$i],
 				'error'    => $files['error'][$i],
 			);
-			
+
 			$validated_file = $this->security->validate_file_upload( $file_data );
 			if ( ! $validated_file ) {
-				$errors[] = sprintf( 
+				$errors[] = sprintf(
 					/* translators: %s: file name */
 					__( 'File "%s" failed validation (unsupported type or too large).', 'dfx-parish-retreat-letters' ),
 					$filename
 				);
 				continue;
 			}
-			
+
 			$file_model_data = array(
 				'message_id'        => $message_id,
 				'original_filename' => $validated_file['name'],
@@ -1885,19 +1885,19 @@ class DFX_Parish_Retreat_Letters {
 				'file_size'         => $validated_file['size'],
 				'tmp_name'          => $validated_file['tmp_name'],
 			);
-			
+
 			$file_id = $file_model->create( $file_model_data );
 			if ( $file_id ) {
 				$uploaded_count++;
 			} else {
-				$errors[] = sprintf( 
+				$errors[] = sprintf(
 					/* translators: %s: file name */
 					__( 'File "%s" could not be saved to database.', 'dfx-parish-retreat-letters' ),
 					$filename
 				);
 			}
 		}
-		
+
 		return array(
 			'uploaded_count' => $uploaded_count,
 			'errors' => $errors,
@@ -1962,7 +1962,7 @@ class DFX_Parish_Retreat_Letters {
 
 		// Sanitize filename for header
 		$safe_filename = sanitize_file_name( $decrypted_file['filename'] );
-		
+
 		// Set headers based on file type
 		header( 'Content-Type: ' . $file->file_type );
 		header( 'Content-Disposition: inline; filename="' . $safe_filename . '"' );
@@ -2037,7 +2037,7 @@ class DFX_Parish_Retreat_Letters {
 				echo esc_html__( 'From', 'dfx-parish-retreat-letters' ) . ': ' . esc_html( $message->sender_name );
 				echo '</div>';
 			}
-			
+
 			if ( $message->message_type === 'text' ) {
 				// For text messages, display the content
 				echo '<div class="message-content">';
@@ -2046,13 +2046,13 @@ class DFX_Parish_Retreat_Letters {
 			} elseif ( $message->message_type === 'file' && ! empty( $files ) ) {
 				// Initialize file model for decryption
 				$file_model = new DFX_Parish_Retreat_Letters_MessageFile();
-				
+
 				// For file messages, display the actual file content
 				foreach ( $files as $file ) {
 					$decrypted_file = $file_model->get_decrypted_file( $file->id );
 					if ( $decrypted_file ) {
 						echo '<div class="file-content">';
-						
+
 						// Handle different file types
 						if ( $file->file_type === 'text/plain' ) {
 							echo '<h3>' . esc_html( $decrypted_file['filename'] ) . '</h3>';
@@ -2075,7 +2075,7 @@ class DFX_Parish_Retreat_Letters {
 						} else {
 							// For other file types, try to display as text if possible
 							$content = $decrypted_file['content'] ?? '';
-							
+
 							// Check if content is text-like
 							if ( is_string( $content ) && mb_check_encoding( $content, 'UTF-8' ) && ctype_print( str_replace( array( "\n", "\r", "\t" ), '', $content ) ) ) {
 								echo '<h3>' . esc_html( $decrypted_file['filename'] ) . '</h3>';
@@ -2083,7 +2083,7 @@ class DFX_Parish_Retreat_Letters {
 							} else {
 								// Binary file that can't be printed as text
 								echo '<h3>' . esc_html( $decrypted_file['filename'] ) . '</h3>';
-								echo '<p>' . sprintf( 
+								echo '<p>' . sprintf(
 									/* translators: %1$s: file type, %2$s: formatted file size */
 									esc_html__( 'File type: %1$s, Size: %2$s - Cannot display content for printing.', 'dfx-parish-retreat-letters' ),
 									esc_html( $file->file_type ),
@@ -2091,20 +2091,20 @@ class DFX_Parish_Retreat_Letters {
 								) . '</p>';
 							}
 						}
-						
+
 						echo '</div>';
 					}
 				}
 			}
 			?>
-			
+
 			<script>
 				// Auto-trigger print dialog when page loads
 				window.addEventListener('load', function() {
 					// Small delay to ensure page is fully rendered
 					setTimeout(function() {
 						window.print();
-						
+
 						// Fallback: close window after a reasonable time if afterprint doesn't fire
 						setTimeout(function() {
 							if (!window.closed) {
@@ -2113,20 +2113,20 @@ class DFX_Parish_Retreat_Letters {
 						}, 3000); // 3 seconds fallback
 					}, 100);
 				});
-				
+
 				// Close tab after printing
 				window.addEventListener('afterprint', function() {
 					setTimeout(function() {
 						window.close();
 					}, 100);
 				});
-				
+
 				// Handle print dialog cancellation (beforeprint + timeout)
 				var printStarted = false;
 				window.addEventListener('beforeprint', function() {
 					printStarted = true;
 				});
-				
+
 				// Additional fallback for browsers that don't support afterprint
 				window.addEventListener('focus', function() {
 					if (printStarted) {
@@ -2395,9 +2395,9 @@ class DFX_Parish_Retreat_Letters {
 			$original_post = $post;
 			$post = $template_part_post;
 			setup_postdata( $post );
-			
+
 			echo '<!-- DFX Debug: Starting template part rendering -->';
-			
+
 			// Parse and render blocks with proper WordPress context
 			if ( function_exists( 'do_blocks' ) ) {
 				// Use do_blocks if available (WordPress 5.0+)
@@ -2407,11 +2407,11 @@ class DFX_Parish_Retreat_Letters {
 				// Fallback to manual block parsing
 				echo '<!-- DFX Debug: Using manual block parsing -->';
 				$blocks = parse_blocks( $template_content );
-				
+
 				if ( ! empty( $blocks ) ) {
 					echo '<!-- DFX Debug: Parsed ' . count( $blocks ) . ' blocks -->';
 					foreach ( $blocks as $index => $block ) {
-						echo '<!-- DFX Debug: Rendering block ' . $index . ' -->';
+						echo '<!-- DFX Debug: Rendering block ' . absint( $index ) . ' -->';
 						if ( function_exists( 'render_block' ) ) {
 							echo render_block( $block );
 						}
@@ -2420,9 +2420,9 @@ class DFX_Parish_Retreat_Letters {
 					echo '<!-- DFX Debug: No blocks parsed from content -->';
 				}
 			}
-			
+
 			echo '<!-- DFX Debug: Template part rendering completed -->';
-			
+
 			// Restore original post data
 			$post = $original_post;
 			if ( $original_post ) {
@@ -2430,12 +2430,12 @@ class DFX_Parish_Retreat_Letters {
 			} else {
 				wp_reset_postdata();
 			}
-			
+
 			return true;
-			
+
 		} catch ( Exception $e ) {
 			echo '<!-- DFX Debug: Exception during template part rendering: ' . esc_html( $e->getMessage() ) . ' -->';
-			
+
 			// Restore post data in case of error
 			global $post;
 			$post = $original_post ?? null;
@@ -2444,7 +2444,7 @@ class DFX_Parish_Retreat_Letters {
 			} else {
 				wp_reset_postdata();
 			}
-			
+
 			// Log error if WordPress debug is enabled
 			if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
 				error_log( 'DFX Parish Retreat Letters: Template part rendering error: ' . $e->getMessage() );
@@ -2531,7 +2531,7 @@ class DFX_Parish_Retreat_Letters {
 	 */
 	private function get_retreat_by_token( $token ) {
 		global $wpdb;
-		
+
 		$attendants_table = $this->database->get_attendants_table();
 		$retreats_table = $this->database->get_retreats_table();
 
