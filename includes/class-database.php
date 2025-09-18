@@ -38,7 +38,7 @@ class DFX_Parish_Retreat_Letters_Database {
 	 * @since 1.0.0
 	 * @var string
 	 */
-	const DB_VERSION = '1.6.1';
+	const DB_VERSION = '1.6.2';
 
 	/**
 	 * The database version option name.
@@ -249,7 +249,7 @@ class DFX_Parish_Retreat_Letters_Database {
 			message_id mediumint(9) NOT NULL,
 			original_filename varchar(255) NOT NULL,
 			encrypted_filename varchar(255) NOT NULL,
-			file_type varchar(50) NOT NULL,
+			file_type varchar(255) NOT NULL,
 			file_size int(11) NOT NULL,
 			encrypted_file_path text NOT NULL,
 			file_salt varchar(255) NOT NULL,

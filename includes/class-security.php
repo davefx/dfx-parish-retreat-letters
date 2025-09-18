@@ -474,6 +474,14 @@ class DFX_Parish_Retreat_Letters_Security {
 			}
 
 			if ( ! $is_valid ) {
+				trigger_error( sprintf(
+					'DFX File Upload Error: File "%s" (extension: %s) detected MIME type: %s, expected: %s',
+					$file['name'],
+					$extension,
+					$mime_type,
+					$allowed_types[ $extension ]
+				), E_USER_ERROR );
+
 				return false;
 			}
 		}
