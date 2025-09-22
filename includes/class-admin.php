@@ -4992,6 +4992,42 @@ class DFX_Parish_Retreat_Letters_Admin {
 								<p class="description"><?php esc_html_e( 'CSS styles to be applied to all retreat message form pages. Do not include &lt;style&gt; tags.', 'dfx-parish-retreat-letters' ); ?></p>
 							</td>
 						</tr>
+
+						<tr>
+							<th scope="row">
+								<label for="ip_whitelist"><?php esc_html_e( 'IP Address Whitelist', 'dfx-parish-retreat-letters' ); ?></label>
+							</th>
+							<td>
+								<?php
+								$whitelist = get_option( 'dfx_prl_ip_whitelist', array() );
+								$whitelist_text = is_array( $whitelist ) ? implode( "\n", $whitelist ) : '';
+								?>
+								<textarea id="ip_whitelist" name="ip_whitelist" rows="8" cols="50" class="large-text"><?php echo esc_textarea( $whitelist_text ); ?></textarea>
+								<p class="description">
+									<?php esc_html_e( 'Enter IP addresses that should be exempt from rate limiting, one per line. Supports CIDR notation (e.g., 192.168.1.0/24).', 'dfx-parish-retreat-letters' ); ?>
+									<br>
+									<?php esc_html_e( 'Examples: 127.0.0.1, 192.168.1.100, 10.0.0.0/8', 'dfx-parish-retreat-letters' ); ?>
+								</p>
+							</td>
+						</tr>
+
+						<tr>
+							<th scope="row">
+								<?php esc_html_e( 'Rate Limiting Status', 'dfx-parish-retreat-letters' ); ?>
+							</th>
+							<td>
+								<p><?php esc_html_e( 'Current rate limits: 8 attempts per hour for anonymous users, with progressive time penalties.', 'dfx-parish-retreat-letters' ); ?></p>
+								<p>
+									<button type="button" id="reset-rate-limits" class="button button-secondary">
+										<?php esc_html_e( 'Reset All Rate Limits', 'dfx-parish-retreat-letters' ); ?>
+									</button>
+									<span id="reset-rate-limits-result"></span>
+								</p>
+								<p class="description">
+									<?php esc_html_e( 'Rate limiting helps prevent abuse while allowing legitimate users to submit messages. Validation errors have lighter penalties than security violations.', 'dfx-parish-retreat-letters' ); ?>
+								</p>
+							</td>
+						</tr>
 					</tbody>
 				</table>
 
@@ -5098,6 +5134,40 @@ class DFX_Parish_Retreat_Letters_Admin {
 						width: '100%'
 					});
 				}
+
+				// Handle reset rate limits button
+				$('#reset-rate-limits').on('click', function() {
+					var button = $(this);
+					var result = $('#reset-rate-limits-result');
+					
+					button.prop('disabled', true).text('<?php esc_html_e( 'Resetting...', 'dfx-parish-retreat-letters' ); ?>');
+					result.html('');
+
+					$.ajax({
+						url: ajaxurl,
+						type: 'POST',
+						data: {
+							action: 'dfx_prl_reset_rate_limits',
+							_ajax_nonce: '<?php echo esc_js( wp_create_nonce( 'dfx_prl_reset_rate_limits' ) ); ?>'
+						},
+						success: function(response) {
+							if (response.success) {
+								result.html('<span style="color: green;">' + response.data.message + '</span>');
+							} else {
+								result.html('<span style="color: red;">' + response.data.message + '</span>');
+							}
+						},
+						error: function() {
+							result.html('<span style="color: red;"><?php esc_html_e( 'Error resetting rate limits.', 'dfx-parish-retreat-letters' ); ?></span>');
+						},
+						complete: function() {
+							button.prop('disabled', false).text('<?php esc_html_e( 'Reset All Rate Limits', 'dfx-parish-retreat-letters' ); ?>');
+							setTimeout(function() {
+								result.fadeOut();
+							}, 5000);
+						}
+					});
+				});
 			});
 			</script>
 
@@ -5140,12 +5210,29 @@ class DFX_Parish_Retreat_Letters_Admin {
 		$default_footer = $this->parse_block_selection( sanitize_text_field( wp_unslash( $_POST['default_footer_block_id'] ?? '' ) ) );
 		$default_css = sanitize_textarea_field( wp_unslash( $_POST['default_css'] ?? '' ) );
 
+		// Process IP whitelist
+		$ip_whitelist_raw = sanitize_textarea_field( wp_unslash( $_POST['ip_whitelist'] ?? '' ) );
+		$ip_whitelist = array();
+		if ( ! empty( $ip_whitelist_raw ) ) {
+			$lines = explode( "\n", $ip_whitelist_raw );
+			foreach ( $lines as $line ) {
+				$line = trim( $line );
+				if ( ! empty( $line ) ) {
+					// Basic validation for IP addresses
+					if ( $this->validate_ip_or_cidr( $line ) ) {
+						$ip_whitelist[] = $line;
+					}
+				}
+			}
+		}
+
 		// Save settings
 		$success = true;
 		$success = $this->global_settings->set_per_retreat_customization_enabled( $per_retreat_customization ) && $success;
 		$success = $this->global_settings->set_default_header( $default_header ) && $success;
 		$success = $this->global_settings->set_default_footer( $default_footer ) && $success;
 		$success = $this->global_settings->set_default_css( $default_css ) && $success;
+		$success = update_option( 'dfx_prl_ip_whitelist', $ip_whitelist ) && $success;
 
 		if ( $success ) {
 			$this->add_admin_notice( __( 'Global settings saved successfully.', 'dfx-parish-retreat-letters' ), 'success' );
@@ -5213,6 +5300,40 @@ class DFX_Parish_Retreat_Letters_Admin {
 			default:
 				$this->add_admin_notice( __( 'Invalid action.', 'dfx-parish-retreat-letters' ), 'error' );
 				break;
+		}
+	}
+
+	/**
+	 * Validate IP address or CIDR notation.
+	 *
+	 * @since 1.2.0
+	 * @param string $ip_or_cidr IP address or CIDR notation.
+	 * @return bool True if valid, false otherwise.
+	 */
+	private function validate_ip_or_cidr( $ip_or_cidr ) {
+		// Check if it's a CIDR notation
+		if ( strpos( $ip_or_cidr, '/' ) !== false ) {
+			list( $ip, $mask ) = explode( '/', $ip_or_cidr, 2 );
+			
+			// Validate IP part
+			if ( ! filter_var( $ip, FILTER_VALIDATE_IP ) ) {
+				return false;
+			}
+			
+			// Validate mask
+			$mask = (int) $mask;
+			if ( filter_var( $ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 ) ) {
+				// IPv4 - mask should be 0-32
+				return $mask >= 0 && $mask <= 32;
+			} elseif ( filter_var( $ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6 ) ) {
+				// IPv6 - mask should be 0-128
+				return $mask >= 0 && $mask <= 128;
+			}
+			
+			return false;
+		} else {
+			// Just validate as a regular IP address
+			return filter_var( $ip_or_cidr, FILTER_VALIDATE_IP ) !== false;
 		}
 	}
 

@@ -1682,32 +1682,47 @@ class DFX_Parish_Retreat_Letters {
 			wp_send_json_error( array( 'message' => __( 'Security check failed.', 'dfx-parish-retreat-letters' ) ) );
 		}
 
-		// Rate limiting (skip for logged-in users)
+		$ip_address = $this->security->get_user_ip();
+
+		// Rate limiting (skip for logged-in users) - increased from 3 to 8 attempts
 		if ( ! is_user_logged_in() ) {
-   		// Rate limiting - only check, don't increment yet
-	  	$ip_address = $this->security->get_user_ip();
-		  if ( ! $this->security->is_within_rate_limit( $ip_address, 3, 60 ) ) {
-			  $this->security->log_rate_limit_violation( $ip_address, 'message_submission' );
-			  wp_send_json_error( array( 'message' => __( 'Too many submission attempts. Please wait before trying again.', 'dfx-parish-retreat-letters' ) ) );
-      }
-    }
+			// Get current rate limit info
+			$rate_limit_info = $this->security->get_rate_limit_info( $ip_address, 8, 'message_submission' );
+			
+			if ( $rate_limit_info['blocked'] ) {
+				$this->security->log_rate_limit_violation( $ip_address, 'message_submission' );
+				wp_send_json_error( array( 'message' => $rate_limit_info['message'] ) );
+			}
+		}
 
 		// Validate CAPTCHA
 		$user_answer = sanitize_text_field( wp_unslash( $_POST['captcha_answer'] ?? '' ) );
 		$captcha_token = sanitize_text_field( wp_unslash( $_POST['captcha_token'] ?? '' ) );
 
 		if ( empty( $user_answer ) || empty( $captcha_token ) ) {
+			// Increment rate limit for validation failure (lighter penalty)
+			if ( ! is_user_logged_in() ) {
+				$this->security->increment_rate_limit( $ip_address, 30, 'message_submission', 'validation' );
+			}
 			wp_send_json_error( array( 'message' => __( 'Please complete the security check.', 'dfx-parish-retreat-letters' ) ) );
 		}
 
 		$expected_answer = base64_decode( $captcha_token );
 		if ( $user_answer != $expected_answer ) {
+			// Increment rate limit for CAPTCHA failure (moderate penalty)
+			if ( ! is_user_logged_in() ) {
+				$this->security->increment_rate_limit( $ip_address, 45, 'message_submission', 'captcha' );
+			}
 			wp_send_json_error( array( 'message' => __( 'Incorrect security answer.', 'dfx-parish-retreat-letters' ) ) );
 		}
 
 		// Validate attendant
 		$attendant_id = absint( $_POST['attendant_id'] ?? 0 );
 		if ( ! $attendant_id ) {
+			// Increment rate limit for validation failure
+			if ( ! is_user_logged_in() ) {
+				$this->security->increment_rate_limit( $ip_address, 30, 'message_submission', 'validation' );
+			}
 			wp_send_json_error( array( 'message' => __( 'Invalid attendant.', 'dfx-parish-retreat-letters' ) ) );
 		}
 
@@ -1728,6 +1743,10 @@ class DFX_Parish_Retreat_Letters {
 		if ( ! empty( $retreat_data->disclaimer_text ) ) {
 			$disclaimer_accepted = sanitize_text_field( wp_unslash( $_POST['disclaimer_accepted'] ?? '' ) );
 			if ( empty( $disclaimer_accepted ) || $disclaimer_accepted !== 'on' ) {
+				// Increment rate limit for validation failure
+				if ( ! is_user_logged_in() ) {
+					$this->security->increment_rate_limit( $ip_address, 30, 'message_submission', 'validation' );
+				}
 				wp_send_json_error( array( 'message' => __( 'You must accept the legal disclaimer to proceed.', 'dfx-parish-retreat-letters' ) ) );
 			}
 		}
@@ -1735,12 +1754,20 @@ class DFX_Parish_Retreat_Letters {
 		// Validate sender name (now required)
 		$sender_name = sanitize_text_field( wp_unslash( $_POST['sender_name'] ?? '' ) );
 		if ( empty( trim( $sender_name ) ) ) {
+			// Increment rate limit for validation failure
+			if ( ! is_user_logged_in() ) {
+				$this->security->increment_rate_limit( $ip_address, 30, 'message_submission', 'validation' );
+			}
 			wp_send_json_error( array( 'message' => __( 'Sender name is required.', 'dfx-parish-retreat-letters' ) ) );
 		}
 
 		// Validate message mode
 		$message_mode = sanitize_text_field( wp_unslash( $_POST['message_mode'] ?? 'text' ) );
 		if ( ! in_array( $message_mode, array( 'text', 'file' ), true ) ) {
+			// Increment rate limit for validation failure
+			if ( ! is_user_logged_in() ) {
+				$this->security->increment_rate_limit( $ip_address, 30, 'message_submission', 'validation' );
+			}
 			wp_send_json_error( array( 'message' => __( 'Invalid message mode.', 'dfx-parish-retreat-letters' ) ) );
 		}
 
@@ -1755,12 +1782,20 @@ class DFX_Parish_Retreat_Letters {
 			// Check if content has actual text, not just HTML tags
 			$text_content = trim( wp_strip_all_tags( $content ) );
 			if ( empty( $content ) || empty( $text_content ) ) {
+				// Increment rate limit for validation failure
+				if ( ! is_user_logged_in() ) {
+					$this->security->increment_rate_limit( $ip_address, 30, 'message_submission', 'validation' );
+				}
 				wp_send_json_error( array( 'message' => __( 'Message content is required.', 'dfx-parish-retreat-letters' ) ) );
 			}
 			$message_type = 'text';
 		} else {
 			// Validate file upload
 			if ( ! isset( $_FILES['message_files'] ) || empty( $_FILES['message_files']['name'][0] ) ) {
+				// Increment rate limit for validation failure
+				if ( ! is_user_logged_in() ) {
+					$this->security->increment_rate_limit( $ip_address, 30, 'message_submission', 'validation' );
+				}
 				wp_send_json_error( array( 'message' => __( 'At least one file is required.', 'dfx-parish-retreat-letters' ) ) );
 			}
 			$content = __( 'File upload message', 'dfx-parish-retreat-letters' );
@@ -1820,8 +1855,10 @@ class DFX_Parish_Retreat_Letters {
 			}
 		}
 
-		// Message was successfully created - now increment the rate limit
-		$this->security->increment_rate_limit( $ip_address, 60 );
+		// Message was successfully created - increment the rate limit with lighter penalty for successful submission
+		if ( ! is_user_logged_in() ) {
+			$this->security->increment_rate_limit( $ip_address, 60, 'message_submission', 'general' );
+		}
 
 		wp_send_json_success( array( 'message' => $success_message ) );
 	}

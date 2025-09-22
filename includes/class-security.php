@@ -515,10 +515,16 @@ class DFX_Parish_Retreat_Letters_Security {
 	 * @param string $ip_address IP address to check.
 	 * @param int    $max_attempts Maximum attempts allowed.
 	 * @param int    $time_window Time window in minutes.
+	 * @param string $action_type Type of action for different rate limits.
 	 * @return bool True if within rate limit, false if exceeded.
 	 */
-	public function is_within_rate_limit( $ip_address, $max_attempts = 5, $time_window = 60 ) {
-		$transient_key = 'dfx_prl_message_rate_limit_' . md5( $ip_address );
+	public function is_within_rate_limit( $ip_address, $max_attempts = 5, $time_window = 60, $action_type = 'message_submission' ) {
+		// Check if IP is whitelisted
+		if ( $this->is_ip_whitelisted( $ip_address ) ) {
+			return true;
+		}
+
+		$transient_key = 'dfx_prl_rate_limit_' . $action_type . '_' . md5( $ip_address );
 		$attempts = get_transient( $transient_key );
 
 		if ( $attempts === false ) {
@@ -535,21 +541,31 @@ class DFX_Parish_Retreat_Letters_Security {
 	 * @since 1.2.0
 	 * @param string $ip_address IP address to increment.
 	 * @param int    $time_window Time window in minutes.
+	 * @param string $action_type Type of action for different rate limits.
+	 * @param string $failure_type Type of failure (validation, captcha, security, etc.).
 	 * @return int New attempt count.
 	 */
-	public function increment_rate_limit( $ip_address, $time_window = 60 ) {
-		$transient_key = 'dfx_prl_message_rate_limit_' . md5( $ip_address );
+	public function increment_rate_limit( $ip_address, $time_window = 60, $action_type = 'message_submission', $failure_type = 'general' ) {
+		// Don't increment for whitelisted IPs
+		if ( $this->is_ip_whitelisted( $ip_address ) ) {
+			return 0;
+		}
+
+		$transient_key = 'dfx_prl_rate_limit_' . $action_type . '_' . md5( $ip_address );
 		$attempts = get_transient( $transient_key );
+
+		// Use progressive time windows based on failure type
+		$adjusted_time_window = $this->get_adjusted_time_window( $time_window, $failure_type, $attempts );
 
 		if ( $attempts === false ) {
 			// No previous attempts recorded
-			set_transient( $transient_key, 1, $time_window * 60 );
+			set_transient( $transient_key, 1, $adjusted_time_window * 60 );
 			return 1;
 		}
 
 		// Increment attempts
 		$new_attempts = $attempts + 1;
-		set_transient( $transient_key, $new_attempts, $time_window * 60 );
+		set_transient( $transient_key, $new_attempts, $adjusted_time_window * 60 );
 		return $new_attempts;
 	}
 
@@ -564,11 +580,11 @@ class DFX_Parish_Retreat_Letters_Security {
 	 * @return bool True if within rate limit, false if exceeded.
 	 */
 	public function check_rate_limit( $ip_address, $max_attempts = 5, $time_window = 60 ) {
-		if ( ! $this->is_within_rate_limit( $ip_address, $max_attempts, $time_window ) ) {
+		if ( ! $this->is_within_rate_limit( $ip_address, $max_attempts, $time_window, 'message_submission' ) ) {
 			return false;
 		}
 
-		$this->increment_rate_limit( $ip_address, $time_window );
+		$this->increment_rate_limit( $ip_address, $time_window, 'message_submission', 'general' );
 		return true;
 	}
 
@@ -577,11 +593,31 @@ class DFX_Parish_Retreat_Letters_Security {
 	 *
 	 * @since 1.2.0
 	 * @param string $ip_address IP address to reset.
+	 * @param string $action_type Type of action to reset (optional, resets all if not specified).
 	 * @return bool True on success, false on failure.
 	 */
-	public function reset_rate_limit( $ip_address ) {
-		$transient_key = 'dfx_prl_message_rate_limit_' . md5( $ip_address );
-		return delete_transient( $transient_key );
+	public function reset_rate_limit( $ip_address, $action_type = '' ) {
+		if ( empty( $action_type ) ) {
+			// Reset all action types for this IP
+			global $wpdb;
+			$ip_hash = md5( $ip_address );
+			$count = $wpdb->query( $wpdb->prepare(
+				"DELETE FROM {$wpdb->options} WHERE option_name LIKE %s",
+				'_transient_dfx_prl_rate_limit_%_' . $ip_hash
+			) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
+			
+			// Also delete timeout transients
+			$wpdb->query( $wpdb->prepare(
+				"DELETE FROM {$wpdb->options} WHERE option_name LIKE %s",
+				'_transient_timeout_dfx_prl_rate_limit_%_' . $ip_hash
+			) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
+			
+			return $count > 0;
+		} else {
+			// Reset specific action type
+			$transient_key = 'dfx_prl_rate_limit_' . $action_type . '_' . md5( $ip_address );
+			return delete_transient( $transient_key );
+		}
 	}
 
 	/**
@@ -593,12 +629,16 @@ class DFX_Parish_Retreat_Letters_Security {
 	public function reset_all_rate_limits() {
 		global $wpdb;
 
-		// Delete all rate limit transients
-		$count = $wpdb->query( "DELETE FROM {$wpdb->options} WHERE option_name LIKE '_transient_dfx_prl_message_rate_limit_%'" ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
+		// Delete all new rate limit transients
+		$count = $wpdb->query( "DELETE FROM {$wpdb->options} WHERE option_name LIKE '_transient_dfx_prl_rate_limit_%'" ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
 		// Also delete timeout transients
+		$wpdb->query( "DELETE FROM {$wpdb->options} WHERE option_name LIKE '_transient_timeout_dfx_prl_rate_limit_%'" ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
+		
+		// Delete legacy rate limit transients for backward compatibility
+		$legacy_count = $wpdb->query( "DELETE FROM {$wpdb->options} WHERE option_name LIKE '_transient_dfx_prl_message_rate_limit_%'" ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
 		$wpdb->query( "DELETE FROM {$wpdb->options} WHERE option_name LIKE '_transient_timeout_dfx_prl_message_rate_limit_%'" ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
 		
-		return $count ? $count : 0;
+		return ( $count ?: 0 ) + ( $legacy_count ?: 0 );
 	}
 
 	/**
@@ -606,10 +646,11 @@ class DFX_Parish_Retreat_Letters_Security {
 	 *
 	 * @since 1.2.0
 	 * @param string $ip_address IP address to check.
+	 * @param string $action_type Type of action to check.
 	 * @return array Array with 'attempts' and 'time_remaining' keys.
 	 */
-	public function get_rate_limit_status( $ip_address ) {
-		$transient_key = 'dfx_prl_message_rate_limit_' . md5( $ip_address );
+	public function get_rate_limit_status( $ip_address, $action_type = 'message_submission' ) {
+		$transient_key = 'dfx_prl_rate_limit_' . $action_type . '_' . md5( $ip_address );
 		$attempts = get_transient( $transient_key );
 
 		if ( $attempts === false ) {
@@ -655,5 +696,160 @@ class DFX_Parish_Retreat_Letters_Security {
 		}
 
 		set_transient( 'dfx_prl_message_rate_limit_violations', $violations, 24 * 60 * 60 ); // 24 hours
+	}
+
+	/**
+	 * Check if an IP address is whitelisted.
+	 *
+	 * @since 1.2.0
+	 * @param string $ip_address IP address to check.
+	 * @return bool True if whitelisted, false otherwise.
+	 */
+	public function is_ip_whitelisted( $ip_address ) {
+		// Get whitelisted IPs from options
+		$whitelist = get_option( 'dfx_prl_ip_whitelist', array() );
+		
+		if ( empty( $whitelist ) ) {
+			return false;
+		}
+
+		// Check exact matches and CIDR ranges
+		foreach ( $whitelist as $whitelisted_ip ) {
+			if ( $this->ip_matches_range( $ip_address, trim( $whitelisted_ip ) ) ) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * Check if an IP matches a range (supports CIDR notation).
+	 *
+	 * @since 1.2.0
+	 * @param string $ip IP address to check.
+	 * @param string $range IP range (can be single IP or CIDR notation).
+	 * @return bool True if IP matches range, false otherwise.
+	 */
+	private function ip_matches_range( $ip, $range ) {
+		// If no slash, it's a single IP
+		if ( strpos( $range, '/' ) === false ) {
+			return $ip === $range;
+		}
+
+		// Handle CIDR notation
+		list( $subnet, $mask ) = explode( '/', $range, 2 );
+		
+		if ( filter_var( $ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 ) ) {
+			// IPv4
+			$ip_long = ip2long( $ip );
+			$subnet_long = ip2long( $subnet );
+			$mask_long = -1 << ( 32 - (int) $mask );
+			
+			return ( $ip_long & $mask_long ) === ( $subnet_long & $mask_long );
+		} elseif ( filter_var( $ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6 ) ) {
+			// IPv6 - simplified check for exact match or /64 networks
+			if ( $mask == 64 ) {
+				$ip_parts = explode( ':', $ip );
+				$subnet_parts = explode( ':', $subnet );
+				
+				// Compare first 4 parts (64 bits)
+				for ( $i = 0; $i < 4; $i++ ) {
+					if ( ( $ip_parts[ $i ] ?? '0' ) !== ( $subnet_parts[ $i ] ?? '0' ) ) {
+						return false;
+					}
+				}
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * Get adjusted time window based on failure type and attempt count.
+	 *
+	 * @since 1.2.0
+	 * @param int    $base_time_window Base time window in minutes.
+	 * @param string $failure_type Type of failure.
+	 * @param int    $attempts Current attempt count.
+	 * @return int Adjusted time window in minutes.
+	 */
+	private function get_adjusted_time_window( $base_time_window, $failure_type, $attempts ) {
+		// Different penalties for different failure types
+		$multipliers = array(
+			'validation' => 0.5, // Validation errors are less severe
+			'captcha'    => 0.75, // CAPTCHA errors are moderately severe
+			'security'   => 1.5, // Security violations are more severe
+			'general'    => 1.0, // Default
+		);
+
+		$multiplier = $multipliers[ $failure_type ] ?? 1.0;
+		
+		// Progressive escalation based on attempt count
+		if ( $attempts !== false && $attempts > 5 ) {
+			// For repeat offenders, increase time window
+			$escalation = min( 2.0, 1.0 + ( ( $attempts - 5 ) * 0.2 ) );
+			$multiplier *= $escalation;
+		}
+
+		return max( 1, (int) ( $base_time_window * $multiplier ) );
+	}
+
+	/**
+	 * Get user-friendly rate limit message with remaining attempts.
+	 *
+	 * @since 1.2.0
+	 * @param string $ip_address IP address to check.
+	 * @param int    $max_attempts Maximum attempts allowed.
+	 * @param string $action_type Type of action.
+	 * @return array Array with 'blocked', 'attempts_remaining', 'time_remaining', and 'message' keys.
+	 */
+	public function get_rate_limit_info( $ip_address, $max_attempts = 8, $action_type = 'message_submission' ) {
+		$transient_key = 'dfx_prl_rate_limit_' . $action_type . '_' . md5( $ip_address );
+		$attempts = get_transient( $transient_key );
+
+		if ( $attempts === false ) {
+			return array(
+				'blocked' => false,
+				'attempts_remaining' => $max_attempts,
+				'time_remaining' => 0,
+				'message' => ''
+			);
+		}
+
+		$attempts_remaining = max( 0, $max_attempts - $attempts );
+		$blocked = $attempts_remaining === 0;
+
+		// Get time remaining
+		$timeout_key = '_transient_timeout_' . $transient_key;
+		$timeout = get_option( $timeout_key );
+		$time_remaining = $timeout ? max( 0, $timeout - time() ) : 0;
+
+		// Create user-friendly message
+		$message = '';
+		if ( $blocked ) {
+			if ( $time_remaining > 0 ) {
+				$minutes = ceil( $time_remaining / 60 );
+				$message = sprintf(
+					/* translators: %d: number of minutes */
+					__( 'Too many attempts. Please wait %d minute(s) before trying again.', 'dfx-parish-retreat-letters' ),
+					$minutes
+				);
+			}
+		} elseif ( $attempts_remaining <= 2 ) {
+			$message = sprintf(
+				/* translators: %d: number of attempts remaining */
+				__( 'Warning: You have %d attempt(s) remaining before being temporarily blocked.', 'dfx-parish-retreat-letters' ),
+				$attempts_remaining
+			);
+		}
+
+		return array(
+			'blocked' => $blocked,
+			'attempts_remaining' => $attempts_remaining,
+			'time_remaining' => $time_remaining,
+			'message' => $message
+		);
 	}
 }
