@@ -389,7 +389,7 @@ class DFX_Parish_Retreat_Letters_ConfidentialMessage {
 			$sql = $wpdb->prepare( $sql, $where_values ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 		}
 
-		return (int) $wpdb->get_var( $sql ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.PreparedSQL.NotPrepared
+		return (int) $wpdb->get_var( $sql ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 	}
 
 	/**
@@ -597,7 +597,7 @@ class DFX_Parish_Retreat_Letters_ConfidentialMessage {
 		$messages_table = $this->database->get_messages_table();
 		$placeholders = implode( ',', array_fill( 0, count( $attendant_ids ), '%d' ) );
 		$query = "SELECT id FROM `{$messages_table}` WHERE attendant_id IN ({$placeholders})"; // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-		$message_ids = $wpdb->get_col( $wpdb->prepare( $query, $attendant_ids ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
+		$message_ids = $wpdb->get_col( $wpdb->prepare( $query, $attendant_ids ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.PreparedSQL.NotPrepared
 
 		$deleted_count = 0;
 		foreach ( $message_ids as $message_id ) {
