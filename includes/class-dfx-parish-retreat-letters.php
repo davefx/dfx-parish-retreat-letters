@@ -500,17 +500,32 @@ class DFX_Parish_Retreat_Letters {
 		// Try to render custom header, fallback to default
 		$custom_header_rendered = false;
 		if ( $retreat && ! empty( $retreat->custom_header_block_id ) ) {
-			// Debug: Output what we're trying to render
+			// Enqueue output buffering to capture wp_head output
+			ob_start();
 			echo '<!-- DFX Debug: Attempting to render custom header with ID: ' . esc_html( $retreat->custom_header_block_id ) . ' -->';
 			$custom_header_rendered = $this->render_custom_block( $retreat->custom_header_block_id );
 			echo '<!-- DFX Debug: Custom header render result: ' . ( $custom_header_rendered ? 'success' : 'failed' ) . ' -->';
+			$generated_head = ob_get_clean();
+
+			if ( $custom_header_rendered ) {
+				?>
+				<!DOCTYPE html>
+				<html <?php language_attributes(); ?>>
+				<head>
+					<meta charset="<?php bloginfo( 'charset' ); ?>">
+					<meta name="viewport" content="width=device-width, initial-scale=1">
+					<?php wp_head(); ?>
+				</head>
+				<body <?php body_class(); ?>>
+				<?php
+				wp_body_open();
+				echo $generated_head;
+			}
 		}
 
 		if ( ! $custom_header_rendered ) {
 			// Include WordPress header as fallback (theme-agnostic)
-			echo '<!-- DFX Debug: Rendering fallback theme header -->';
 			$this->render_theme_header();
-			echo '<!-- DFX Debug: Fallback theme header rendered -->';
 		}
 
 		// Display the form
@@ -523,6 +538,18 @@ class DFX_Parish_Retreat_Letters {
 			echo '<!-- DFX Debug: Attempting to render custom footer with ID: ' . esc_html( $retreat->custom_footer_block_id ) . ' -->';
 			$custom_footer_rendered = $this->render_custom_block( $retreat->custom_footer_block_id );
 			echo '<!-- DFX Debug: Custom footer render result: ' . ( $custom_footer_rendered ? 'success' : 'failed' ) . ' -->';
+			if ( $custom_footer_rendered ) {
+				// Remove deprecated skip link hook to prevent deprecation warning
+				if ( function_exists( 'wp_enqueue_block_template_skip_link' ) ) {
+					remove_action( 'wp_footer', 'the_block_template_skip_link' );
+					wp_enqueue_block_template_skip_link();
+				}
+				wp_footer();
+				?>
+				</body>
+				</html>
+				<?php
+			}
 		}
 
 		if ( ! $custom_footer_rendered ) {
