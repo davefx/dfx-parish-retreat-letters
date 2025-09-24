@@ -155,11 +155,11 @@ class DFX_Parish_Retreat_Letters_Retreat {
 		$attendant_model->delete_by_retreat( $id );
 
 		// Delete all permissions and audit logs for this retreat
-		$permissions_model = new DFX_Parish_Retreat_Letters_Permissions();
+		$permissions_model = DFX_Parish_Retreat_Letters_Permissions::get_instance();
 		$permissions_model->delete_by_retreat( $id );
 
 		// Delete all invitations for this retreat
-		$invitations_model = new DFX_Parish_Retreat_Letters_Invitations();
+		$invitations_model = DFX_Parish_Retreat_Letters_Invitations::get_instance();
 		$invitations_model->delete_by_retreat( $id );
 
 		// Delete the retreat

@@ -435,4 +435,60 @@ class CascadeDeleteTest extends PHPUnit\Framework\TestCase {
 		$this->assertEquals( $attendant3_id, $final_message['attendant_id'] );
 		$this->assertEquals( 'Message 4', $final_message['content'] );
 	}
+
+	/**
+	 * Test that retreat deletion uses singleton pattern correctly.
+	 * 
+	 * This test validates the fix for issue #82 where retreat deletion
+	 * failed with "Call to private constructor" error when trying to
+	 * instantiate Permissions and Invitations classes directly.
+	 * 
+	 * The fix ensures that singleton classes are accessed via get_instance()
+	 * instead of direct instantiation with 'new'.
+	 */
+	public function testRetreatDeletionUsesSingletonPattern() {
+		// Test that Permissions and Invitations classes follow singleton pattern
+		$this->assertTrue( method_exists( 'DFX_Parish_Retreat_Letters_Permissions', 'get_instance' ) );
+		$this->assertTrue( method_exists( 'DFX_Parish_Retreat_Letters_Invitations', 'get_instance' ) );
+		
+		// Test that both classes have private constructors (singleton pattern)
+		$permissions_reflection = new ReflectionClass( 'DFX_Parish_Retreat_Letters_Permissions' );
+		$invitations_reflection = new ReflectionClass( 'DFX_Parish_Retreat_Letters_Invitations' );
+		
+		$this->assertFalse( $permissions_reflection->getConstructor()->isPublic() );
+		$this->assertFalse( $invitations_reflection->getConstructor()->isPublic() );
+		
+		// Test that singleton instances can be obtained without errors
+		$permissions_instance = DFX_Parish_Retreat_Letters_Permissions::get_instance();
+		$invitations_instance = DFX_Parish_Retreat_Letters_Invitations::get_instance();
+		
+		$this->assertInstanceOf( 'DFX_Parish_Retreat_Letters_Permissions', $permissions_instance );
+		$this->assertInstanceOf( 'DFX_Parish_Retreat_Letters_Invitations', $invitations_instance );
+		
+		// Test singleton behavior - same instance returned
+		$permissions_instance2 = DFX_Parish_Retreat_Letters_Permissions::get_instance();
+		$invitations_instance2 = DFX_Parish_Retreat_Letters_Invitations::get_instance();
+		
+		$this->assertSame( $permissions_instance, $permissions_instance2 );
+		$this->assertSame( $invitations_instance, $invitations_instance2 );
+		
+		// Test that delete_by_retreat methods exist (called during retreat deletion)
+		$this->assertTrue( method_exists( $permissions_instance, 'delete_by_retreat' ) );
+		$this->assertTrue( method_exists( $invitations_instance, 'delete_by_retreat' ) );
+	}
+
+	/**
+	 * Test that direct instantiation of singleton classes fails as expected.
+	 * 
+	 * This test validates that the classes properly enforce singleton pattern
+	 * by making their constructors private.
+	 */
+	public function testSingletonConstructorsArePrivate() {
+		// Test that direct instantiation throws an error
+		$this->expectException( Error::class );
+		$this->expectExceptionMessage( 'Call to private' );
+		
+		// This should fail - testing one is enough to validate the pattern
+		$permissions = new DFX_Parish_Retreat_Letters_Permissions();
+	}
 }
