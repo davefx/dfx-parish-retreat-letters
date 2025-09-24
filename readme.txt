@@ -343,6 +343,7 @@ Contributions are welcome! Please:
 
 ### 25.9.24
 
+- Fix: now correctly generating error 404 when accessing messages form page with wrong token
 - Fix: solved error that prevented the removal of retreats
 - Fix: solved bug with custom headers and footers
 

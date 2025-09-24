@@ -451,10 +451,14 @@ class DFX_Parish_Retreat_Letters {
 		if ( $token ) {
 			if ( $is_print ) {
 				$this->handle_print_request( $token );
-			} else {
-				$this->display_message_form( $token );
+				exit;
 			}
-			exit;
+
+			$shown = $this->display_message_form( $token );
+			if ( $shown ) {
+				exit;
+			}
+
 		}
 	}
 
@@ -469,11 +473,10 @@ class DFX_Parish_Retreat_Letters {
 		$attendant = $this->get_attendant_by_token( $token );
 
 		if ( ! $attendant ) {
-			// Invalid token - show 404
+			global $wp_query;
+			$wp_query->set_404();
 			status_header( 404 );
-			nocache_headers();
-			include get_404_template();
-			return;
+			return false;
 		}
 
 		// Get retreat data for custom header/footer blocks
@@ -558,6 +561,8 @@ class DFX_Parish_Retreat_Letters {
 			$this->render_theme_footer();
 			echo '<!-- DFX Debug: Fallback theme footer rendered -->';
 		}
+
+		return true;
 	}
 
 	/**
