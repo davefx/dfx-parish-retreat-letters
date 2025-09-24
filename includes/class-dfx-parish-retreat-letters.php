@@ -2058,6 +2058,36 @@ class DFX_Parish_Retreat_Letters {
 				@media print {
 					body { margin: 0; }
 					.no-print { display: none !important; }
+					
+					/* Multi-image print optimization */
+					.file-content.multi-image {
+						page-break-before: always;
+						page-break-after: always;
+						margin: 0;
+						padding: 0;
+						border: none;
+						background: none;
+						display: flex;
+						align-items: center;
+						justify-content: center;
+						min-height: 100vh;
+					}
+					
+					.file-content.multi-image:first-child {
+						page-break-before: auto;
+					}
+					
+					.file-content.multi-image h3 {
+						display: none; /* Hide filename for multi-image prints */
+					}
+					
+					.file-content.multi-image .file-image {
+						max-width: 100vw;
+						max-height: 100vh;
+						width: auto;
+						height: auto;
+						object-fit: contain;
+					}
 				}
 			</style>
 		</head>
@@ -2079,11 +2109,19 @@ class DFX_Parish_Retreat_Letters {
 				// Initialize file model for decryption
 				$file_model = new DFX_Parish_Retreat_Letters_MessageFile();
 
+				// Count image files to determine if multi-image styling should be applied
+				$image_files = array_filter( $files, function( $file ) {
+					return strpos( $file->file_type, 'image/' ) === 0;
+				});
+				$is_multi_image = count( $image_files ) > 1;
+
 				// For file messages, display the actual file content
 				foreach ( $files as $file ) {
 					$decrypted_file = $file_model->get_decrypted_file( $file->id );
 					if ( $decrypted_file ) {
-						echo '<div class="file-content">';
+						$is_image = strpos( $file->file_type, 'image/' ) === 0;
+						$css_class = ( $is_multi_image && $is_image ) ? 'file-content multi-image' : 'file-content';
+						echo '<div class="' . esc_attr( $css_class ) . '">';
 
 						// Handle different file types
 						if ( $file->file_type === 'text/plain' ) {
