@@ -1975,6 +1975,23 @@ class DFX_Parish_Retreat_Letters {
 			return;
 		}
 
+		// Check if we have multiple files with mixed types (containing non-images)
+		if ( count( $files ) > 1 ) {
+			$has_non_image = false;
+			foreach ( $files as $file ) {
+				if ( strpos( $file->file_type, 'image/' ) !== 0 ) {
+					$has_non_image = true;
+					break;
+				}
+			}
+
+			// If there are non-image files, generate ZIP for download
+			if ( $has_non_image ) {
+				$this->serve_files_as_zip( $files, $file_model, $message );
+				return;
+			}
+		}
+
 		// For all other cases, render the clean print page
 		$this->render_print_page( $message, $files );
 	}
@@ -2005,6 +2022,78 @@ class DFX_Parish_Retreat_Letters {
 
 		// Output file content
 		echo $decrypted_file['content']; // PHPCS: ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		exit;
+	}
+
+	/**
+	 * Serve multiple files as a ZIP download.
+	 *
+	 * @since 1.2.2
+	 * @param array  $files Array of file objects.
+	 * @param DFX_Parish_Retreat_Letters_MessageFile $file_model File model instance.
+	 * @param object $message Message object.
+	 */
+	private function serve_files_as_zip( $files, $file_model, $message ) {
+		// Check if ZipArchive class is available
+		if ( ! class_exists( 'ZipArchive' ) ) {
+			wp_die( esc_html__( 'ZIP functionality is not available on this server.', 'dfx-parish-retreat-letters' ) );
+		}
+
+		// Create a temporary file for the ZIP
+		$temp_zip_path = wp_tempnam( 'message-files-', '.zip' );
+		if ( ! $temp_zip_path ) {
+			wp_die( esc_html__( 'Unable to create temporary file for ZIP download.', 'dfx-parish-retreat-letters' ) );
+		}
+
+		$zip = new ZipArchive();
+		$result = $zip->open( $temp_zip_path, ZipArchive::CREATE | ZipArchive::OVERWRITE );
+
+		if ( $result !== TRUE ) {
+			unlink( $temp_zip_path );
+			wp_die( esc_html__( 'Unable to create ZIP file.', 'dfx-parish-retreat-letters' ) );
+		}
+
+		// Add each file to the ZIP
+		foreach ( $files as $file ) {
+			$decrypted_file = $file_model->get_decrypted_file( $file->id );
+			if ( $decrypted_file ) {
+				// Sanitize filename for ZIP
+				$safe_filename = sanitize_file_name( $decrypted_file['filename'] );
+				$zip->addFromString( $safe_filename, $decrypted_file['content'] );
+			}
+		}
+
+		$zip->close();
+
+		// Check if ZIP file was created successfully
+		if ( ! file_exists( $temp_zip_path ) || filesize( $temp_zip_path ) === 0 ) {
+			if ( file_exists( $temp_zip_path ) ) {
+				unlink( $temp_zip_path );
+			}
+			wp_die( esc_html__( 'Failed to generate ZIP file.', 'dfx-parish-retreat-letters' ) );
+		}
+
+		// Generate a safe filename for the ZIP
+		$zip_filename = 'message-files';
+		if ( ! empty( $message->sender_name ) ) {
+			$sender_safe = sanitize_file_name( $message->sender_name );
+			$zip_filename = "message-files-{$sender_safe}";
+		}
+		$zip_filename .= '.zip';
+
+		// Send headers for ZIP download
+		header( 'Content-Type: application/zip' );
+		header( 'Content-Disposition: attachment; filename="' . $zip_filename . '"' );
+		header( 'Content-Length: ' . filesize( $temp_zip_path ) );
+		header( 'Cache-Control: private, no-cache, no-store, must-revalidate' );
+		header( 'Pragma: no-cache' );
+		header( 'Expires: 0' );
+
+		// Output the ZIP file
+		readfile( $temp_zip_path );
+
+		// Clean up temporary file
+		unlink( $temp_zip_path );
 		exit;
 	}
 
@@ -2058,6 +2147,36 @@ class DFX_Parish_Retreat_Letters {
 				@media print {
 					body { margin: 0; }
 					.no-print { display: none !important; }
+					
+					/* Multi-image print optimization */
+					.file-content.multi-image {
+						page-break-before: always;
+						page-break-after: always;
+						margin: 0;
+						padding: 0;
+						border: none;
+						background: none;
+						display: flex;
+						align-items: center;
+						justify-content: center;
+						min-height: 100vh;
+					}
+					
+					.file-content.multi-image:first-child {
+						page-break-before: auto;
+					}
+					
+					.file-content.multi-image h3 {
+						display: none; /* Hide filename for multi-image prints */
+					}
+					
+					.file-content.multi-image .file-image {
+						max-width: 100vw;
+						max-height: 100vh;
+						width: auto;
+						height: auto;
+						object-fit: contain;
+					}
 				}
 			</style>
 		</head>
@@ -2079,11 +2198,19 @@ class DFX_Parish_Retreat_Letters {
 				// Initialize file model for decryption
 				$file_model = new DFX_Parish_Retreat_Letters_MessageFile();
 
+				// Count image files to determine if multi-image styling should be applied
+				$image_files = array_filter( $files, function( $file ) {
+					return strpos( $file->file_type, 'image/' ) === 0;
+				});
+				$is_multi_image = count( $image_files ) > 1;
+
 				// For file messages, display the actual file content
 				foreach ( $files as $file ) {
 					$decrypted_file = $file_model->get_decrypted_file( $file->id );
 					if ( $decrypted_file ) {
-						echo '<div class="file-content">';
+						$is_image = strpos( $file->file_type, 'image/' ) === 0;
+						$css_class = ( $is_multi_image && $is_image ) ? 'file-content multi-image' : 'file-content';
+						echo '<div class="' . esc_attr( $css_class ) . '">';
 
 						// Handle different file types
 						if ( $file->file_type === 'text/plain' ) {
