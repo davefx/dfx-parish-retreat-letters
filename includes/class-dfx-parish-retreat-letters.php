@@ -2151,7 +2151,6 @@ class DFX_Parish_Retreat_Letters {
 					/* Multi-image print optimization */
 					.file-content.multi-image {
 						page-break-before: always;
-						page-break-after: always;
 						margin: 0;
 						padding: 0;
 						border: none;
