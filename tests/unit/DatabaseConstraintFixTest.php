@@ -27,12 +27,12 @@ class DatabaseConstraintFixTest extends TestCase {
 	}
 
 	/**
-	 * Test that database version was bumped to 1.4.3.
+	 * Test that database version was bumped to 1.6.2.
 	 */
 	public function test_database_version_bumped() {
 		require_once dirname( dirname( __DIR__ ) ) . '/includes/class-database.php';
 		
-		$this->assertEquals( '1.4.3', DFX_Parish_Retreat_Letters_Database::DB_VERSION );
+		$this->assertEquals( '1.6.2', DFX_Parish_Retreat_Letters_Database::DB_VERSION );
 	}
 
 	/**
