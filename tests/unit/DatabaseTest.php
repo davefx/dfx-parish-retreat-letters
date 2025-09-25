@@ -22,7 +22,7 @@ class DatabaseTest extends TestCase {
         Monkey\setUp();
         
         // Mock WordPress functions
-        Functions\when('get_option')->justReturn('1.4.1');
+        Functions\when('get_option')->justReturn('1.6.2');
         Functions\when('add_option')->justReturn(true);
         Functions\when('update_option')->justReturn(true);
     }
@@ -55,7 +55,7 @@ class DatabaseTest extends TestCase {
      * Test database version constant
      */
     public function test_database_version_constant() {
-        $this->assertEquals('1.4.1', DFX_Parish_Retreat_Letters_Database::DB_VERSION);
+        $this->assertEquals('1.6.2', DFX_Parish_Retreat_Letters_Database::DB_VERSION);
     }
 
     /**
@@ -152,7 +152,7 @@ class DatabaseTest extends TestCase {
         $database = DFX_Parish_Retreat_Letters_Database::get_instance();
         
         if (method_exists($database, 'migrate_to_version')) {
-            $target_version = '1.4.1';
+            $target_version = '1.6.2';
             $result = $database->migrate_to_version($target_version);
             $this->assertTrue(is_callable([$database, 'migrate_to_version']));
         } else {
