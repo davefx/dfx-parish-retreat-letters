@@ -5,8 +5,8 @@
     "license": "GPL-3.0-or-later",
     "authors": [
         {
-            "name": "DaveFX",
-            "homepage": "https://github.com/davefx"
+            "name": "David Marín Carreño",
+            "homepage": "https://davefx.com"
         }
     ],
     "require": {

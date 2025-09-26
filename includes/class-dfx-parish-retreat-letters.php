@@ -2167,8 +2167,8 @@ class DFX_Parish_Retreat_Letters {
 						page-break-before: auto;
 						page-break-after: always;
 						/* Scale to fit remaining space after sender info */
-						min-height: calc(100vh - 100px);
-						max-height: calc(100vh - 100px);
+						min-height: calc(100vh - 150px);
+						max-height: calc(100vh - 150px);
 					}
 					
 					/* Last image should not force a page break after */

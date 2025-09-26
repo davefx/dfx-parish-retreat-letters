@@ -3,7 +3,7 @@ Contributors: davefx
 Tags: parish, retreat, letters, confidential, GDPR
 Requires at least: 5.0
 Tested up to: 6.8
-Stable tag: 25.9.24
+Stable tag: 25.9.26
 Requires PHP: 7.4
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
@@ -340,6 +340,11 @@ Contributions are welcome! Please:
 5. Include appropriate tests and documentation
 
 ## Changelog
+
+### 25.9.26
+
+- Fix: messages with multiple images are now printed correctly, without splitting images in two pages.
+- Fix: if a message have multiple attached files, and any of them is not an image, a ZIP file will be generated now. 
 
 ### 25.9.24
 
