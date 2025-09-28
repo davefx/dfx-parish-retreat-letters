@@ -1718,7 +1718,7 @@ class DFX_Parish_Retreat_Letters {
 		if ( ! is_user_logged_in() ) {
    		// Rate limiting - only check, don't increment yet
 	  	$ip_address = $this->security->get_user_ip();
-		  if ( ! $this->security->is_within_rate_limit( $ip_address, 3, 60 ) ) {
+		  if ( ! $this->security->is_within_rate_limit( $ip_address, 20, 60 ) ) {
 			  $this->security->log_rate_limit_violation( $ip_address, 'message_submission' );
 			  wp_send_json_error( array( 'message' => __( 'Too many submission attempts. Please wait before trying again.', 'dfx-parish-retreat-letters' ) ) );
       }
