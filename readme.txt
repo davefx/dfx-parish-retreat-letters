@@ -343,6 +343,7 @@ Contributions are welcome! Please:
 
 ### 25.9.30
 
+- Feature: improved error messages on AJAX calls.
 - Fix: solved problem with messages when pasted from Microsoft Office, and some style information wrongly got into 
        the message body.
 
