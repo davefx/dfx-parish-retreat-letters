@@ -1445,11 +1445,21 @@ class DFX_Parish_Retreat_Letters {
 			});
 
 			function cleanPastedContent(html) {
+				// First, remove style tags and their content using regex before DOM manipulation
+				// This prevents any MSO style definitions from being parsed
+				html = html.replace(/<style[^>]*>[\s\S]*?<\/style>/gi, '');
+				
+				// Remove MSO conditional comments
+				html = html.replace(/<!--\[if[^\]]*\]>[\s\S]*?<!\[endif\]-->/gi, '');
+				
+				// Remove regular comments (often contain MSO metadata)
+				html = html.replace(/<!--[\s\S]*?-->/g, '');
+				
 				// Create a temporary div to clean the content
 				var temp = $('<div>').html(html);
 
-				// Remove potentially dangerous elements and attributes
-				temp.find('script, style, meta, link').remove();
+				// Remove potentially dangerous elements
+				temp.find('script, meta, link').remove();
 
 				// For images, preserve src attribute but validate it's a data URL
 				temp.find('img').each(function() {
