@@ -718,6 +718,38 @@ msgstr "Ocurrió un error al enviar el mensaje."
 msgid "A network error occurred. Please try again."
 msgstr "Ocurrió un error de red. Por favor inténtelo de nuevo."
 
+#: includes/class-dfx-parish-retreat-letters.php:1684
+msgid "The request timed out. Please check your connection and try again."
+msgstr "La solicitud ha expirado. Por favor revise su conexión e inténtelo de nuevo."
+
+#: includes/class-dfx-parish-retreat-letters.php:1687
+msgid "Cannot connect to the server. Please check your internet connection."
+msgstr "No se puede conectar al servidor. Por favor revise su conexión a internet."
+
+#: includes/class-dfx-parish-retreat-letters.php:1689
+msgid "Access denied. Please refresh the page and try again."
+msgstr "Acceso denegado. Por favor actualice la página e inténtelo de nuevo."
+
+#: includes/class-dfx-parish-retreat-letters.php:1691
+msgid "The uploaded files are too large. Please reduce the file size and try again."
+msgstr "Los archivos subidos son demasiado grandes. Por favor reduzca el tamaño de los archivos e inténtelo de nuevo."
+
+#: includes/class-dfx-parish-retreat-letters.php:1693
+msgid "A server error occurred. Please try again later or contact support if the problem persists."
+msgstr "Ocurrió un error del servidor. Por favor inténtelo más tarde o contacte con soporte si el problema persiste."
+
+#: includes/class-dfx-parish-retreat-letters.php:1695
+msgid "There was a problem with your request. Please refresh the page and try again."
+msgstr "Hubo un problema con su solicitud. Por favor actualice la página e inténtelo de nuevo."
+
+#: includes/class-dfx-parish-retreat-letters.php:1698
+msgid "There was a problem processing the server response. Please try again."
+msgstr "Hubo un problema procesando la respuesta del servidor. Por favor inténtelo de nuevo."
+
+#: includes/class-dfx-parish-retreat-letters.php:1700
+msgid "The request was cancelled. Please try again."
+msgstr "La solicitud fue cancelada. Por favor inténtelo de nuevo."
+
 #: includes/class-dfx-parish-retreat-letters.php:1690
 msgid "Too many submission attempts. Please wait before trying again."
 msgstr "Demasiados intentos de envío. Por favor espere antes de intentar de nuevo."
