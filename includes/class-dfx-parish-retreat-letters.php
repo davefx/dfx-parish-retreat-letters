@@ -1669,8 +1669,38 @@ class DFX_Parish_Retreat_Letters {
 						}
 					},
 					error: function(xhr, status, error) {
-						console.error('AJAX Error:', status, error);
-						showNotice('<?php echo esc_js( __( 'A network error occurred. Please try again.', 'dfx-parish-retreat-letters' ) ); ?>', 'error');
+						console.error('AJAX Error Details:', {
+							status: status,
+							error: error,
+							responseText: xhr.responseText,
+							statusCode: xhr.status,
+							readyState: xhr.readyState
+						});
+						
+						var errorMessage = '<?php echo esc_js( __( 'A network error occurred. Please try again.', 'dfx-parish-retreat-letters' ) ); ?>';
+						
+						// Provide more specific error messages based on the error type
+						if (status === 'timeout') {
+							errorMessage = '<?php echo esc_js( __( 'The request timed out. Please check your connection and try again.', 'dfx-parish-retreat-letters' ) ); ?>';
+						} else if (status === 'error') {
+							if (xhr.status === 0) {
+								errorMessage = '<?php echo esc_js( __( 'Cannot connect to the server. Please check your internet connection.', 'dfx-parish-retreat-letters' ) ); ?>';
+							} else if (xhr.status === 403) {
+								errorMessage = '<?php echo esc_js( __( 'Access denied. Please refresh the page and try again.', 'dfx-parish-retreat-letters' ) ); ?>';
+							} else if (xhr.status === 413) {
+								errorMessage = '<?php echo esc_js( __( 'The uploaded files are too large. Please reduce the file size and try again.', 'dfx-parish-retreat-letters' ) ); ?>';
+							} else if (xhr.status >= 500) {
+								errorMessage = '<?php echo esc_js( __( 'A server error occurred. Please try again later or contact support if the problem persists.', 'dfx-parish-retreat-letters' ) ); ?>';
+							} else if (xhr.status >= 400) {
+								errorMessage = '<?php echo esc_js( __( 'There was a problem with your request. Please refresh the page and try again.', 'dfx-parish-retreat-letters' ) ); ?>';
+							}
+						} else if (status === 'parsererror') {
+							errorMessage = '<?php echo esc_js( __( 'There was a problem processing the server response. Please try again.', 'dfx-parish-retreat-letters' ) ); ?>';
+						} else if (status === 'abort') {
+							errorMessage = '<?php echo esc_js( __( 'The request was cancelled. Please try again.', 'dfx-parish-retreat-letters' ) ); ?>';
+						}
+						
+						showNotice(errorMessage, 'error');
 					},
 					complete: function() {
 						$('#dfx-submit-btn').prop('disabled', false);
