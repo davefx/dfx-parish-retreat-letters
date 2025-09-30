@@ -398,6 +398,23 @@ class ConfidentialMessageTest extends TestCase {
             $this->assertStringContains('<p>', $sanitized['content']); // Allowed HTML preserved
             $this->assertStringNotContains('<script>', $sanitized['content']); // Script tags removed
             $this->assertEquals('personal', $sanitized['message_type']); // Trimmed
+            
+            // Test that MSO style definitions are properly handled by wp_kses_post
+            // Note: The actual cleaning happens in JavaScript cleanPastedContent, but we verify
+            // that wp_kses_post also removes style tags if they make it through
+            $mso_data = [
+                'attendant_id' => '1',
+                'sender_name' => 'Test User',
+                'content' => '<p>Normal message</p><style>/* Style Definitions */ table.MsoNormalTable {mso-style-name:"Tabla normal";}</style>',
+                'message_type' => 'text'
+            ];
+            
+            $sanitized_mso = $method->invoke($message, $mso_data);
+            
+            // wp_kses_post should remove style tags and their content
+            $this->assertStringNotContains('<style>', $sanitized_mso['content']);
+            $this->assertStringNotContains('MsoNormalTable', $sanitized_mso['content']);
+            $this->assertStringContains('<p>Normal message</p>', $sanitized_mso['content']);
         } else {
             $this->markTestSkipped('sanitize_message_data method not found');
         }

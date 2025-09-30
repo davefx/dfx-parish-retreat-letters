@@ -1445,11 +1445,21 @@ class DFX_Parish_Retreat_Letters {
 			});
 
 			function cleanPastedContent(html) {
+				// First, remove style tags and their content using regex before DOM manipulation
+				// This prevents any MSO style definitions from being parsed
+				html = html.replace(/<style[^>]*>[\s\S]*?<\/style>/gi, '');
+				
+				// Remove MSO conditional comments
+				html = html.replace(/<!--\[if[^\]]*\]>[\s\S]*?<!\[endif\]-->/gi, '');
+				
+				// Remove regular comments (often contain MSO metadata)
+				html = html.replace(/<!--[\s\S]*?-->/g, '');
+				
 				// Create a temporary div to clean the content
 				var temp = $('<div>').html(html);
 
-				// Remove potentially dangerous elements and attributes
-				temp.find('script, style, meta, link').remove();
+				// Remove potentially dangerous elements
+				temp.find('script, meta, link').remove();
 
 				// For images, preserve src attribute but validate it's a data URL
 				temp.find('img').each(function() {
@@ -2098,6 +2108,45 @@ class DFX_Parish_Retreat_Letters {
 	}
 
 	/**
+	 * Clean MSO (Microsoft Office) artifacts from message content.
+	 * This removes MSO style definitions that may have been saved in older messages.
+	 *
+	 * @since 1.2.0
+	 * @param string $content The message content to clean.
+	 * @return string Cleaned content.
+	 */
+	private function clean_mso_content( $content ) {
+		// Remove style tags and their content (backup for old data)
+		$content = preg_replace( '/<style[^>]*>[\s\S]*?<\/style>/i', '', $content );
+		
+		// Remove MSO conditional comments
+		$content = preg_replace( '/<!--\[if[^\]]*\]>[\s\S]*?<!\[endif\]-->/i', '', $content );
+		
+		// Remove regular HTML comments
+		$content = preg_replace( '/<!--[\s\S]*?-->/', '', $content );
+		
+		// Remove CSS-like MSO definitions that appear as text (must come before other patterns)
+		// Pattern: "/* Style Definitions */ table.MsoNormalTable {...}"
+		$content = preg_replace( '/\/\*\s*Style\s+Definitions\s*\*\/[\s\S]*?(?=<|$)/i', '', $content );
+		
+		// Remove MSO class/style text patterns that appear as loose text
+		// Pattern: "Normal 0 21 false false false ES X-NONE X-NONE" or variations
+		// This needs to be comprehensive to catch all MSO metadata text
+		$content = preg_replace( '/\b(?:Normal|false|true)\s+\d+(?:\s+\d+)*(?:\s+(?:false|true))*(?:\s+[A-Z][-A-Z]*)*\s*/i', '', $content );
+		
+		// Remove standalone MSO table class definitions
+		$content = preg_replace( '/\btable\.Mso\w+\s*\{[^}]+\}/i', '', $content );
+		
+		// Clean up multiple consecutive whitespace/newlines
+		$content = preg_replace( '/\s+/', ' ', $content );
+		
+		// Trim whitespace
+		$content = trim( $content );
+		
+		return $content;
+	}
+
+	/**
 	 * Render clean print page without WordPress headers/footers.
 	 *
 	 * @since 1.2.0
@@ -2212,8 +2261,10 @@ class DFX_Parish_Retreat_Letters {
 
 			if ( $message->message_type === 'text' ) {
 				// For text messages, display the content
+				// Clean MSO artifacts that may exist in older messages
+				$cleaned_content = $this->clean_mso_content( $message->decrypted_content );
 				echo '<div class="message-content">';
-				echo wp_kses_post( $message->decrypted_content );
+				echo wp_kses_post( $cleaned_content );
 				echo '</div>';
 			} elseif ( $message->message_type === 'file' && ! empty( $files ) ) {
 				// Initialize file model for decryption
