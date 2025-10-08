@@ -672,7 +672,7 @@ class DFX_Parish_Retreat_Letters {
 						<div class="dfx-captcha-container">
 							<label for="captcha_answer"><?php esc_html_e( 'Security Check', 'dfx-parish-retreat-letters' ); ?> <span class="required">*</span></label>
 							<div id="dfx-captcha-question"></div>
-							<input type="text" id="captcha_answer" name="captcha_answer" required autocomplete="off">
+							<input type="text" id="captcha_answer" name="captcha_answer" required autocomplete="off" placeholder="<?php esc_html_e( 'Please enter the result', 'dfx-parish-retreat-letters' );?>">
 							<input type="hidden" id="captcha_token" name="captcha_token">
 						</div>
 					</div>
