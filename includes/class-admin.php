@@ -2486,6 +2486,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 			'emergency_contact_surname' => sanitize_text_field( wp_unslash( $_POST['emergency_contact_surname'] ?? '' ) ),
 			'emergency_contact_phone'   => sanitize_text_field( wp_unslash( $_POST['emergency_contact_phone'] ?? '' ) ),
 			'emergency_contact_email'   => sanitize_email( wp_unslash( $_POST['emergency_contact_email'] ?? '' ) ),
+			'notes'                     => sanitize_textarea_field( wp_unslash( $_POST['notes'] ?? '' ) ),
 		);
 
 		if ( $attendant_id ) {
