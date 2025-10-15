@@ -3246,7 +3246,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 									<td>
 										<?php
 										if ( ! empty( $attendant->notes ) ) {
-											echo esc_html( wp_trim_words( $attendant->notes, 10, '...' ) );
+											echo wpautop( esc_html( $attendant->notes ) );
 										} else {
 											echo '<span class="description">' . esc_html__( 'No notes', 'dfx-parish-retreat-letters' ) . '</span>';
 										}
