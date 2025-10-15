@@ -704,6 +704,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 			'custom_header_block_id'     => $this->parse_block_selection( sanitize_text_field( wp_unslash( $_POST['custom_header_block_id'] ?? '' ) ) ),
 			'custom_footer_block_id'     => $this->parse_block_selection( sanitize_text_field( wp_unslash( $_POST['custom_footer_block_id'] ?? '' ) ) ),
 			'custom_css'                 => sanitize_textarea_field( wp_unslash( $_POST['custom_css'] ?? '' ) ),
+			'notes_enabled'              => isset( $_POST['notes_enabled'] ) ? 1 : 0,
 		);
 
 		if ( $retreat_id ) {
