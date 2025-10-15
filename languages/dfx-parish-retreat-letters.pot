@@ -2401,3 +2401,33 @@ msgstr ""
 #: includes/class-security.php:149
 msgid "Place this line in your wp-config.php file to secure the key."
 msgstr ""
+
+#: includes/class-admin.php:983
+msgid "Enable Notes Field"
+msgstr ""
+
+#: includes/class-admin.php:988
+msgid "Enable optional notes field for attendants"
+msgstr ""
+
+#: includes/class-admin.php:990
+msgid "When enabled, an optional notes field will be available for each attendant and displayed in the attendants list."
+msgstr ""
+
+#: includes/class-admin.php:3205
+#: includes/class-admin.php:3431
+msgid "Notes"
+msgstr ""
+
+#: includes/class-admin.php:3236
+#: includes/class-attendant.php:342
+msgid "No notes"
+msgstr ""
+
+#: includes/class-admin.php:3436
+msgid "Optional notes for this attendant."
+msgstr ""
+
+#: includes/class-admin.php:2763
+msgid "[\"notes\", \"note\", \"comments\", \"comment\"]"
+msgstr ""

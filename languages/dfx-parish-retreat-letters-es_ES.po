@@ -2400,3 +2400,33 @@ msgstr "No se pudo crear el fichero ZIP"
 #: includes/class-dfx-parish-retreat-letters.php:2113
 msgid "Failed to generate ZIP file."
 msgstr "Fallo al generar fichero ZIP"
+
+#: includes/class-admin.php:983
+msgid "Enable Notes Field"
+msgstr "Activar campo de notas"
+
+#: includes/class-admin.php:988
+msgid "Enable optional notes field for attendants"
+msgstr "Activar campo de notas opcional para retirantes"
+
+#: includes/class-admin.php:990
+msgid "When enabled, an optional notes field will be available for each attendant and displayed in the attendants list."
+msgstr "Cuando esté activado, estará disponible un campo de notas opcional para cada retirante y se mostrará en la lista de retirantes."
+
+#: includes/class-admin.php:3205
+#: includes/class-admin.php:3431
+msgid "Notes"
+msgstr "Notas"
+
+#: includes/class-admin.php:3236
+#: includes/class-attendant.php:342
+msgid "No notes"
+msgstr "Sin notas"
+
+#: includes/class-admin.php:3436
+msgid "Optional notes for this attendant."
+msgstr "Notas opcionales para este retirante."
+
+#: includes/class-admin.php:2763
+msgid "[\"notes\", \"note\", \"comments\", \"comment\"]"
+msgstr "[\"notas\", \"nota\", \"comentarios\", \"comentario\"]"
