@@ -49,7 +49,7 @@ class GlobalSettingsTest extends TestCase {
             $this->markTestSkipped('Database class not available');
         }
 
-        $this->assertEquals('1.6.2', DFX_Parish_Retreat_Letters_Database::DB_VERSION);
+        $this->assertEquals('1.6.3', DFX_Parish_Retreat_Letters_Database::DB_VERSION);
     }
 
     public function test_retreat_model_has_css_sanitization() {

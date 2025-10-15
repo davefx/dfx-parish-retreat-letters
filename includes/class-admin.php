@@ -978,6 +978,18 @@ class DFX_Parish_Retreat_Letters_Admin {
 											<p class="description"><?php esc_html_e( 'This text will appear next to the disclaimer acceptance checkbox. Only used if disclaimer text is provided.', 'dfx-parish-retreat-letters' ); ?></p>
 										</td>
 									</tr>
+									<tr>
+										<th scope="row">
+											<label for="notes_enabled"><?php esc_html_e( 'Enable Notes Field', 'dfx-parish-retreat-letters' ); ?></label>
+										</th>
+										<td>
+											<label>
+												<input type="checkbox" id="notes_enabled" name="notes_enabled" value="1" <?php checked( ! empty( $retreat->notes_enabled ) ); ?>>
+												<?php esc_html_e( 'Enable optional notes field for attendants', 'dfx-parish-retreat-letters' ); ?>
+											</label>
+											<p class="description"><?php esc_html_e( 'When enabled, an optional notes field will be available for each attendant and displayed in the attendants list.', 'dfx-parish-retreat-letters' ); ?></p>
+										</td>
+									</tr>
 									<?php if ( post_type_exists( 'wp_block' ) ) : ?>
 									<?php
 									$per_retreat_customization_enabled = $this->global_settings->is_per_retreat_customization_enabled();
@@ -2748,6 +2760,8 @@ class DFX_Parish_Retreat_Letters_Admin {
 			'emergency_contact_phone' => json_decode( __('["emergency contact phone", "emergency phone", "contact phone", "phone"]', 'dfx-parish-retreat-letters' ), true ),
 			/* translators: JSON string with list of allowed headers for field emergency_contact_email */
 			'emergency_contact_email' => json_decode( __('["emergency contact email", "emergency email", "contact email", "email"]', 'dfx-parish-retreat-letters' ), true ),
+			/* translators: JSON string with list of allowed headers for field notes */
+			'notes' => json_decode( __('["notes", "note", "comments", "comment"]', 'dfx-parish-retreat-letters' ), true ),
 		);
 
 		// Normalize headers (lowercase, trim)
@@ -2861,6 +2875,11 @@ class DFX_Parish_Retreat_Letters_Admin {
 		// Ensure emergency_contact_email is always present (optional field)
 		if ( ! isset( $mapped_data['emergency_contact_email'] ) ) {
 			$mapped_data['emergency_contact_email'] = '';
+		}
+		
+		// Ensure notes is always present (optional field)
+		if ( ! isset( $mapped_data['notes'] ) ) {
+			$mapped_data['notes'] = '';
 		}
 
 		return $mapped_data;
@@ -3190,6 +3209,9 @@ class DFX_Parish_Retreat_Letters_Admin {
 							<th scope="col" class="manage-column"><?php esc_html_e( 'Surnames', 'dfx-parish-retreat-letters' ); ?></th>
 							<th scope="col" class="manage-column"><?php esc_html_e( 'Date of Birth', 'dfx-parish-retreat-letters' ); ?></th>
 							<th scope="col" class="manage-column"><?php esc_html_e( 'Emergency Contact', 'dfx-parish-retreat-letters' ); ?></th>
+							<?php if ( ! empty( $retreat->notes_enabled ) ) : ?>
+							<th scope="col" class="manage-column"><?php esc_html_e( 'Notes', 'dfx-parish-retreat-letters' ); ?></th>
+							<?php endif; ?>
 							<th scope="col" class="manage-column"><?php esc_html_e( 'Messages', 'dfx-parish-retreat-letters' ); ?></th>
 							<th scope="col" class="manage-column"><?php esc_html_e( 'Actions', 'dfx-parish-retreat-letters' ); ?></th>
 						</tr>
@@ -3218,6 +3240,17 @@ class DFX_Parish_Retreat_Letters_Admin {
 											<br><small><?php echo esc_html( $attendant->emergency_contact_email ); ?></small>
 										<?php endif; ?>
 									</td>
+									<?php if ( ! empty( $retreat->notes_enabled ) ) : ?>
+									<td>
+										<?php
+										if ( ! empty( $attendant->notes ) ) {
+											echo esc_html( wp_trim_words( $attendant->notes, 10, '...' ) );
+										} else {
+											echo '<span class="description">' . esc_html__( 'No notes', 'dfx-parish-retreat-letters' ) . '</span>';
+										}
+										?>
+									</td>
+									<?php endif; ?>
 									<td>
 										<?php if ( $message_count > 0 ) : ?>
 											<a href="<?php echo esc_url( admin_url( 'admin.php?page=dfx-prl-messages&attendant_id=' . $attendant->id ) ); ?>">
@@ -3393,6 +3426,17 @@ class DFX_Parish_Retreat_Letters_Admin {
 								<p class="description"><?php esc_html_e( 'Enter email address for emergency contact.', 'dfx-parish-retreat-letters' ); ?></p>
 							</td>
 						</tr>
+						<?php if ( ! empty( $retreat->notes_enabled ) ) : ?>
+						<tr>
+							<th scope="row">
+								<label for="notes"><?php esc_html_e( 'Notes', 'dfx-parish-retreat-letters' ); ?> <span class="description">(<?php esc_html_e( 'optional', 'dfx-parish-retreat-letters' ); ?>)</span></label>
+							</th>
+							<td>
+								<textarea id="notes" name="notes" rows="4" class="large-text"><?php echo esc_textarea( $attendant->notes ?? '' ); ?></textarea>
+								<p class="description"><?php esc_html_e( 'Optional notes for this attendant.', 'dfx-parish-retreat-letters' ); ?></p>
+							</td>
+						</tr>
+						<?php endif; ?>
 					</tbody>
 				</table>
 
