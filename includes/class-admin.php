@@ -2807,7 +2807,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 	 * @return array Array of missing required field names.
 	 */
 	private function get_missing_required_fields( $field_map ) {
-		$required_fields = array( 'name', 'surnames', 'date_of_birth', 'emergency_contact_name', 'emergency_contact_surname', 'emergency_contact_phone' );
+		$required_fields = array( 'name', 'surnames', 'date_of_birth', 'emergency_contact_name', 'emergency_contact_phone' );
 		$missing_fields = array();
 
 		foreach ( $required_fields as $field ) {
@@ -3404,10 +3404,10 @@ class DFX_Parish_Retreat_Letters_Admin {
 						</tr>
 						<tr>
 							<th scope="row">
-								<label for="emergency_contact_surname"><?php esc_html_e( 'Emergency Contact Surname', 'dfx-parish-retreat-letters' ); ?> <span class="description">(<?php esc_html_e( 'required', 'dfx-parish-retreat-letters' ); ?>)</span></label>
+								<label for="emergency_contact_surname"><?php esc_html_e( 'Emergency Contact Surname', 'dfx-parish-retreat-letters' ); ?> <span class="description">(<?php esc_html_e( 'optional', 'dfx-parish-retreat-letters' ); ?>)</span></label>
 							</th>
 							<td>
-								<input type="text" id="emergency_contact_surname" name="emergency_contact_surname" value="<?php echo esc_attr( $attendant->emergency_contact_surname ?? '' ); ?>" class="regular-text" required>
+								<input type="text" id="emergency_contact_surname" name="emergency_contact_surname" value="<?php echo esc_attr( $attendant->emergency_contact_surname ?? '' ); ?>" class="regular-text">
 							</td>
 						</tr>
 						<tr>
