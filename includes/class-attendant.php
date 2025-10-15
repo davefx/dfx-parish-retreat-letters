@@ -394,7 +394,7 @@ class DFX_Parish_Retreat_Letters_Attendant {
 		// Check required fields
 		if ( empty( $data['retreat_id'] ) || empty( $data['name'] ) || empty( $data['surnames'] ) || 
 			 empty( $data['date_of_birth'] ) || empty( $data['emergency_contact_name'] ) || 
-			 empty( $data['emergency_contact_surname'] ) || empty( $data['emergency_contact_phone'] ) ) {
+			 empty( $data['emergency_contact_phone'] ) ) {
 			$admin_manager->add_admin_notice(
 				__( 'All fields are required.', 'dfx-parish-retreat-letters' ),
 				'error'
@@ -516,7 +516,6 @@ class DFX_Parish_Retreat_Letters_Attendant {
 
 		// Basic validation for emergency contact data
 		if ( empty( $sanitized_data['emergency_contact_name'] ) || 
-			 empty( $sanitized_data['emergency_contact_surname'] ) || 
 			 empty( $sanitized_data['emergency_contact_phone'] ) ) {
 			return false;
 		}
