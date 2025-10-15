@@ -71,8 +71,9 @@ class DFX_Parish_Retreat_Letters_Attendant {
 				'emergency_contact_phone'   => $sanitized_data['emergency_contact_phone'],
 				'emergency_contact_email'   => $sanitized_data['emergency_contact_email'],
 				'message_url_token'         => $message_url_token,
+				'notes'                     => $sanitized_data['notes'],
 			),
-			array( '%d', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s' )
+			array( '%d', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s' )
 		);
 
 		return $result ? $wpdb->insert_id : false;
@@ -124,9 +125,10 @@ class DFX_Parish_Retreat_Letters_Attendant {
 				'emergency_contact_surname' => $sanitized_data['emergency_contact_surname'],
 				'emergency_contact_phone'   => $sanitized_data['emergency_contact_phone'],
 				'emergency_contact_email'   => $sanitized_data['emergency_contact_email'],
+				'notes'                     => $sanitized_data['notes'],
 			),
 			array( 'id' => $id ),
-			array( '%d', '%s', '%s', '%s', '%s', '%s', '%s', '%s' ),
+			array( '%d', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s' ),
 			array( '%d' )
 		); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
 
@@ -330,6 +332,11 @@ class DFX_Parish_Retreat_Letters_Attendant {
 	 */
 	public function export_csv_data( $retreat_id ) {
 		$attendants = $this->get_by_retreat( $retreat_id, array( 'per_page' => -1 ) );
+		
+		// Get retreat to check if notes are enabled
+		$retreat_model = new DFX_Parish_Retreat_Letters_Retreat();
+		$retreat = $retreat_model->get( $retreat_id );
+		$notes_enabled = ! empty( $retreat->notes_enabled );
 
 		$headers = array(
 			__( 'Name', 'dfx-parish-retreat-letters' ),
@@ -340,10 +347,14 @@ class DFX_Parish_Retreat_Letters_Attendant {
 			__( 'Emergency Contact Phone', 'dfx-parish-retreat-letters' ),
 			__( 'Emergency Contact Email', 'dfx-parish-retreat-letters' ),
 		);
+		
+		if ( $notes_enabled ) {
+			$headers[] = __( 'Notes', 'dfx-parish-retreat-letters' );
+		}
 
 		$rows = array();
 		foreach ( $attendants as $attendant ) {
-			$rows[] = array(
+			$row = array(
 				$attendant->name,
 				$attendant->surnames,
 				$attendant->date_of_birth,
@@ -352,6 +363,12 @@ class DFX_Parish_Retreat_Letters_Attendant {
 				$attendant->emergency_contact_phone,
 				$attendant->emergency_contact_email,
 			);
+			
+			if ( $notes_enabled ) {
+				$row[] = $attendant->notes ?? '';
+			}
+			
+			$rows[] = $row;
 		}
 
 		return array(
@@ -377,6 +394,7 @@ class DFX_Parish_Retreat_Letters_Attendant {
 			'emergency_contact_surname' => sanitize_text_field( $data['emergency_contact_surname'] ?? '' ),
 			'emergency_contact_phone'   => sanitize_text_field( $data['emergency_contact_phone'] ?? '' ),
 			'emergency_contact_email'   => sanitize_email( $data['emergency_contact_email'] ?? '' ),
+			'notes'                     => sanitize_textarea_field( $data['notes'] ?? '' ),
 		);
 	}
 

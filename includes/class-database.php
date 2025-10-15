@@ -38,7 +38,7 @@ class DFX_Parish_Retreat_Letters_Database {
 	 * @since 1.0.0
 	 * @var string
 	 */
-	const DB_VERSION = '1.6.2';
+	const DB_VERSION = '1.6.3';
 
 	/**
 	 * The database version option name.
@@ -187,6 +187,7 @@ class DFX_Parish_Retreat_Letters_Database {
 			custom_header_block_id varchar(100) NULL DEFAULT NULL,
 			custom_footer_block_id varchar(100) NULL DEFAULT NULL,
 			custom_css text NULL DEFAULT NULL,
+			notes_enabled tinyint(1) NOT NULL DEFAULT 0,
 			created_at datetime DEFAULT CURRENT_TIMESTAMP,
 			updated_at datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 			PRIMARY KEY (id),
@@ -210,6 +211,7 @@ class DFX_Parish_Retreat_Letters_Database {
 			emergency_contact_phone varchar(20) NOT NULL,
 			emergency_contact_email varchar(255) NULL DEFAULT NULL,
 			message_url_token VARCHAR(255) NULL DEFAULT NULL,
+			notes text NULL DEFAULT NULL,
 			created_at datetime DEFAULT CURRENT_TIMESTAMP,
 			updated_at datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 			PRIMARY KEY (id),

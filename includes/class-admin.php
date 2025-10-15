@@ -704,6 +704,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 			'custom_header_block_id'     => $this->parse_block_selection( sanitize_text_field( wp_unslash( $_POST['custom_header_block_id'] ?? '' ) ) ),
 			'custom_footer_block_id'     => $this->parse_block_selection( sanitize_text_field( wp_unslash( $_POST['custom_footer_block_id'] ?? '' ) ) ),
 			'custom_css'                 => sanitize_textarea_field( wp_unslash( $_POST['custom_css'] ?? '' ) ),
+			'notes_enabled'              => isset( $_POST['notes_enabled'] ) ? 1 : 0,
 		);
 
 		if ( $retreat_id ) {
@@ -976,6 +977,18 @@ class DFX_Parish_Retreat_Letters_Admin {
 										<td>
 											<input type="text" id="disclaimer_acceptance_text" name="disclaimer_acceptance_text" value="<?php echo esc_attr( $retreat->disclaimer_acceptance_text ?? '' ); ?>" class="large-text" placeholder="<?php esc_attr_e( 'I accept the terms and conditions', 'dfx-parish-retreat-letters' ); ?>">
 											<p class="description"><?php esc_html_e( 'This text will appear next to the disclaimer acceptance checkbox. Only used if disclaimer text is provided.', 'dfx-parish-retreat-letters' ); ?></p>
+										</td>
+									</tr>
+									<tr>
+										<th scope="row">
+											<label for="notes_enabled"><?php esc_html_e( 'Enable Notes Field', 'dfx-parish-retreat-letters' ); ?></label>
+										</th>
+										<td>
+											<label>
+												<input type="checkbox" id="notes_enabled" name="notes_enabled" value="1" <?php checked( ! empty( $retreat->notes_enabled ) ); ?>>
+												<?php esc_html_e( 'Enable optional notes field for attendants', 'dfx-parish-retreat-letters' ); ?>
+											</label>
+											<p class="description"><?php esc_html_e( 'When enabled, an optional notes field will be available for each attendant and displayed in the attendants list.', 'dfx-parish-retreat-letters' ); ?></p>
 										</td>
 									</tr>
 									<?php if ( post_type_exists( 'wp_block' ) ) : ?>
@@ -2473,6 +2486,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 			'emergency_contact_surname' => sanitize_text_field( wp_unslash( $_POST['emergency_contact_surname'] ?? '' ) ),
 			'emergency_contact_phone'   => sanitize_text_field( wp_unslash( $_POST['emergency_contact_phone'] ?? '' ) ),
 			'emergency_contact_email'   => sanitize_email( wp_unslash( $_POST['emergency_contact_email'] ?? '' ) ),
+			'notes'                     => sanitize_textarea_field( wp_unslash( $_POST['notes'] ?? '' ) ),
 		);
 
 		if ( $attendant_id ) {
@@ -2748,6 +2762,8 @@ class DFX_Parish_Retreat_Letters_Admin {
 			'emergency_contact_phone' => json_decode( __('["emergency contact phone", "emergency phone", "contact phone", "phone"]', 'dfx-parish-retreat-letters' ), true ),
 			/* translators: JSON string with list of allowed headers for field emergency_contact_email */
 			'emergency_contact_email' => json_decode( __('["emergency contact email", "emergency email", "contact email", "email"]', 'dfx-parish-retreat-letters' ), true ),
+			/* translators: JSON string with list of allowed headers for field notes */
+			'notes' => json_decode( __('["notes", "note", "comments", "comment"]', 'dfx-parish-retreat-letters' ), true ),
 		);
 
 		// Normalize headers (lowercase, trim)
@@ -2861,6 +2877,11 @@ class DFX_Parish_Retreat_Letters_Admin {
 		// Ensure emergency_contact_email is always present (optional field)
 		if ( ! isset( $mapped_data['emergency_contact_email'] ) ) {
 			$mapped_data['emergency_contact_email'] = '';
+		}
+		
+		// Ensure notes is always present (optional field)
+		if ( ! isset( $mapped_data['notes'] ) ) {
+			$mapped_data['notes'] = '';
 		}
 
 		return $mapped_data;
@@ -3190,6 +3211,9 @@ class DFX_Parish_Retreat_Letters_Admin {
 							<th scope="col" class="manage-column"><?php esc_html_e( 'Surnames', 'dfx-parish-retreat-letters' ); ?></th>
 							<th scope="col" class="manage-column"><?php esc_html_e( 'Date of Birth', 'dfx-parish-retreat-letters' ); ?></th>
 							<th scope="col" class="manage-column"><?php esc_html_e( 'Emergency Contact', 'dfx-parish-retreat-letters' ); ?></th>
+							<?php if ( ! empty( $retreat->notes_enabled ) ) : ?>
+							<th scope="col" class="manage-column"><?php esc_html_e( 'Notes', 'dfx-parish-retreat-letters' ); ?></th>
+							<?php endif; ?>
 							<th scope="col" class="manage-column"><?php esc_html_e( 'Messages', 'dfx-parish-retreat-letters' ); ?></th>
 							<th scope="col" class="manage-column"><?php esc_html_e( 'Actions', 'dfx-parish-retreat-letters' ); ?></th>
 						</tr>
@@ -3218,6 +3242,17 @@ class DFX_Parish_Retreat_Letters_Admin {
 											<br><small><?php echo esc_html( $attendant->emergency_contact_email ); ?></small>
 										<?php endif; ?>
 									</td>
+									<?php if ( ! empty( $retreat->notes_enabled ) ) : ?>
+									<td>
+										<?php
+										if ( ! empty( $attendant->notes ) ) {
+											echo wpautop( esc_html( $attendant->notes ) );
+										} else {
+											echo '<span class="description">' . esc_html__( 'No notes', 'dfx-parish-retreat-letters' ) . '</span>';
+										}
+										?>
+									</td>
+									<?php endif; ?>
 									<td>
 										<?php if ( $message_count > 0 ) : ?>
 											<a href="<?php echo esc_url( admin_url( 'admin.php?page=dfx-prl-messages&attendant_id=' . $attendant->id ) ); ?>">
@@ -3393,6 +3428,17 @@ class DFX_Parish_Retreat_Letters_Admin {
 								<p class="description"><?php esc_html_e( 'Enter email address for emergency contact.', 'dfx-parish-retreat-letters' ); ?></p>
 							</td>
 						</tr>
+						<?php if ( ! empty( $retreat->notes_enabled ) ) : ?>
+						<tr>
+							<th scope="row">
+								<label for="notes"><?php esc_html_e( 'Notes', 'dfx-parish-retreat-letters' ); ?> <span class="description">(<?php esc_html_e( 'optional', 'dfx-parish-retreat-letters' ); ?>)</span></label>
+							</th>
+							<td>
+								<textarea id="notes" name="notes" rows="4" class="large-text"><?php echo esc_textarea( $attendant->notes ?? '' ); ?></textarea>
+								<p class="description"><?php esc_html_e( 'Optional notes for this attendant.', 'dfx-parish-retreat-letters' ); ?></p>
+							</td>
+						</tr>
+						<?php endif; ?>
 					</tbody>
 				</table>
 
