@@ -1030,6 +1030,10 @@ msgstr ""
 msgid "Emergency Contact Email"
 msgstr ""
 
+#: includes/class-attendant.php:349
+msgid "Message URL"
+msgstr ""
+
 #: includes/class-admin.php:3424
 #: includes/class-admin.php:3434
 msgid "optional"
