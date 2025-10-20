@@ -340,6 +340,9 @@ class DFX_Parish_Retreat_Letters_Attendant {
 		$retreat = $retreat_model->get( $retreat_id );
 		$notes_enabled = ! empty( $retreat->notes_enabled );
 
+		// Get responsible person model for looking up names
+		$responsible_person_model = new DFX_Parish_Retreat_Letters_ResponsiblePerson();
+
 		$headers = array(
 			__( 'Name', 'dfx-parish-retreat-letters' ),
 			__( 'Surnames', 'dfx-parish-retreat-letters' ),
@@ -348,6 +351,7 @@ class DFX_Parish_Retreat_Letters_Attendant {
 			__( 'Emergency Contact Surname', 'dfx-parish-retreat-letters' ),
 			__( 'Emergency Contact Phone', 'dfx-parish-retreat-letters' ),
 			__( 'Emergency Contact Email', 'dfx-parish-retreat-letters' ),
+			__( 'Responsible Person', 'dfx-parish-retreat-letters' ),
 		);
 		
 		if ( $notes_enabled ) {
@@ -356,6 +360,15 @@ class DFX_Parish_Retreat_Letters_Attendant {
 
 		$rows = array();
 		foreach ( $attendants as $attendant ) {
+			// Get responsible person name if assigned
+			$responsible_person_name = '';
+			if ( ! empty( $attendant->responsible_person_id ) ) {
+				$responsible_person = $responsible_person_model->get( $attendant->responsible_person_id );
+				if ( $responsible_person ) {
+					$responsible_person_name = $responsible_person->name;
+				}
+			}
+
 			$row = array(
 				$attendant->name,
 				$attendant->surnames,
@@ -364,6 +377,7 @@ class DFX_Parish_Retreat_Letters_Attendant {
 				$attendant->emergency_contact_surname,
 				$attendant->emergency_contact_phone,
 				$attendant->emergency_contact_email,
+				$responsible_person_name,
 			);
 			
 			if ( $notes_enabled ) {

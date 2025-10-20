@@ -105,6 +105,14 @@ class DFX_Parish_Retreat_Letters_Admin {
 	private $global_settings;
 
 	/**
+	 * The responsible person model instance.
+	 *
+	 * @since 1.7.0
+	 * @var DFX_Parish_Retreat_Letters_ResponsiblePerson
+	 */
+	private $responsible_person_model;
+
+	/**
 	 * Get the single instance of the class.
 	 *
 	 * @since 1.0.0
@@ -128,6 +136,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 		$this->message_model = new DFX_Parish_Retreat_Letters_ConfidentialMessage();
 		$this->file_model = new DFX_Parish_Retreat_Letters_MessageFile();
 		$this->print_log_model = new DFX_Parish_Retreat_Letters_PrintLog();
+		$this->responsible_person_model = new DFX_Parish_Retreat_Letters_ResponsiblePerson();
 		$this->security = DFX_Parish_Retreat_Letters_Security::get_instance();
 		$this->gdpr = DFX_Parish_Retreat_Letters_GDPR::get_instance();
 		$this->permissions = DFX_Parish_Retreat_Letters_Permissions::get_instance();
@@ -160,6 +169,10 @@ class DFX_Parish_Retreat_Letters_Admin {
 		add_action( 'wp_ajax_dfx_prl_send_invitation', array( $this, 'ajax_send_invitation' ) );
 		add_action( 'wp_ajax_dfx_prl_cancel_invitation', array( $this, 'ajax_cancel_invitation' ) );
 		add_action( 'wp_ajax_dfx_prl_reset_rate_limits', array( $this, 'ajax_reset_rate_limits' ) );
+
+		// Add AJAX handlers for responsible persons
+		add_action( 'wp_ajax_dfx_prl_add_responsible_person', array( $this, 'ajax_add_responsible_person' ) );
+		add_action( 'wp_ajax_dfx_prl_delete_responsible_person', array( $this, 'ajax_delete_responsible_person' ) );
 	}
 
 	/**
@@ -580,6 +593,9 @@ class DFX_Parish_Retreat_Letters_Admin {
 				break;
 			case 'import_attendants':
 				$this->attendants_import_page( $retreat_id );
+				break;
+			case 'responsible_persons':
+				$this->responsible_persons_page( $retreat_id );
 				break;
 			default:
 				$this->display_retreats_list();
@@ -3189,6 +3205,9 @@ class DFX_Parish_Retreat_Letters_Admin {
 						<a href="<?php echo esc_url( admin_url( 'admin.php?page=dfx-prl-retreats&action=import_attendants&retreat_id=' . $retreat->id ) ); ?>" class="button">
 							<?php esc_html_e( 'Import CSV', 'dfx-parish-retreat-letters' ); ?>
 						</a>
+						<a href="<?php echo esc_url( admin_url( 'admin.php?page=dfx-prl-retreats&action=responsible_persons&retreat_id=' . $retreat->id ) ); ?>" class="button">
+							<?php esc_html_e( 'Manage Responsible Persons', 'dfx-parish-retreat-letters' ); ?>
+						</a>
 					</div>
 					<?php if ( $total_pages > 1 ) : ?>
 						<div class="tablenav-pages">
@@ -3211,6 +3230,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 							<th scope="col" class="manage-column"><?php esc_html_e( 'Surnames', 'dfx-parish-retreat-letters' ); ?></th>
 							<th scope="col" class="manage-column"><?php esc_html_e( 'Date of Birth', 'dfx-parish-retreat-letters' ); ?></th>
 							<th scope="col" class="manage-column"><?php esc_html_e( 'Emergency Contact', 'dfx-parish-retreat-letters' ); ?></th>
+							<th scope="col" class="manage-column"><?php esc_html_e( 'Responsible Person', 'dfx-parish-retreat-letters' ); ?></th>
 							<?php if ( ! empty( $retreat->notes_enabled ) ) : ?>
 							<th scope="col" class="manage-column"><?php esc_html_e( 'Notes', 'dfx-parish-retreat-letters' ); ?></th>
 							<?php endif; ?>
@@ -3224,6 +3244,11 @@ class DFX_Parish_Retreat_Letters_Admin {
 								<?php
 								// Get message count for this attendant
 								$message_count = $this->message_model->get_count_by_attendant( $attendant->id );
+								// Get responsible person if assigned
+								$responsible_person = null;
+								if ( ! empty( $attendant->responsible_person_id ) ) {
+									$responsible_person = $this->responsible_person_model->get( $attendant->responsible_person_id );
+								}
 								?>
 								<tr>
 									<td>
@@ -3241,6 +3266,15 @@ class DFX_Parish_Retreat_Letters_Admin {
 										<?php if ( ! empty( $attendant->emergency_contact_email ) ) : ?>
 											<br><small><?php echo esc_html( $attendant->emergency_contact_email ); ?></small>
 										<?php endif; ?>
+									</td>
+									<td>
+										<?php
+										if ( $responsible_person ) {
+											echo esc_html( $responsible_person->name );
+										} else {
+											echo '<span class="description">' . esc_html__( 'Not assigned', 'dfx-parish-retreat-letters' ) . '</span>';
+										}
+										?>
 									</td>
 									<?php if ( ! empty( $retreat->notes_enabled ) ) : ?>
 									<td>
@@ -3439,6 +3473,30 @@ class DFX_Parish_Retreat_Letters_Admin {
 							</td>
 						</tr>
 						<?php endif; ?>
+						<tr>
+							<th scope="row">
+								<label for="responsible_person_id"><?php esc_html_e( 'Responsible Person', 'dfx-parish-retreat-letters' ); ?> <span class="description">(<?php esc_html_e( 'optional', 'dfx-parish-retreat-letters' ); ?>)</span></label>
+							</th>
+							<td>
+								<?php
+								$responsible_persons = $this->responsible_person_model->get_by_retreat( $retreat->id );
+								?>
+								<select id="responsible_person_id" name="responsible_person_id" class="regular-text">
+									<option value=""><?php esc_html_e( '-- Select Responsible Person --', 'dfx-parish-retreat-letters' ); ?></option>
+									<?php foreach ( $responsible_persons as $person ) : ?>
+										<option value="<?php echo esc_attr( $person->id ); ?>" <?php selected( $attendant->responsible_person_id ?? '', $person->id ); ?>>
+											<?php echo esc_html( $person->name ); ?>
+										</option>
+									<?php endforeach; ?>
+								</select>
+								<p class="description">
+									<?php esc_html_e( 'Select the person responsible for this attendant.', 'dfx-parish-retreat-letters' ); ?>
+									<a href="<?php echo esc_url( admin_url( 'admin.php?page=dfx-prl-retreats&action=responsible_persons&retreat_id=' . $retreat->id ) ); ?>" target="_blank">
+										<?php esc_html_e( 'Manage responsible persons', 'dfx-parish-retreat-letters' ); ?>
+									</a>
+								</p>
+							</td>
+						</tr>
 					</tbody>
 				</table>
 
@@ -4760,6 +4818,216 @@ class DFX_Parish_Retreat_Letters_Admin {
 				absint( $count )
 			)
 		) );
+	}
+
+	/**
+	 * Display the responsible persons management page.
+	 *
+	 * @since 1.7.0
+	 * @param int $retreat_id Retreat ID.
+	 */
+	private function responsible_persons_page( $retreat_id ) {
+		// Check permissions
+		if ( ! $this->permissions->current_user_can_manage_retreat( $retreat_id ) ) {
+			wp_die( esc_html__( 'You do not have permission to manage this retreat.', 'dfx-parish-retreat-letters' ) );
+		}
+
+		$retreat = $this->retreat_model->get( $retreat_id );
+		if ( ! $retreat ) {
+			wp_die( esc_html__( 'Retreat not found.', 'dfx-parish-retreat-letters' ) );
+		}
+
+		$responsible_persons = $this->responsible_person_model->get_by_retreat( $retreat_id );
+		$this->render_responsible_persons_page( $retreat, $responsible_persons );
+	}
+
+	/**
+	 * Render the responsible persons management page.
+	 *
+	 * @since 1.7.0
+	 * @param object $retreat Retreat object.
+	 * @param array  $responsible_persons List of responsible persons.
+	 */
+	private function render_responsible_persons_page( $retreat, $responsible_persons ) {
+		?>
+		<div class="wrap">
+			<h1><?php esc_html_e( 'Manage Responsible Persons', 'dfx-parish-retreat-letters' ); ?></h1>
+			<hr class="wp-header-end">
+
+			<!-- Breadcrumb -->
+			<p class="description">
+				<a href="<?php echo esc_url( admin_url( 'admin.php?page=dfx-prl-retreats' ) ); ?>"><?php esc_html_e( 'Retreats', 'dfx-parish-retreat-letters' ); ?></a>
+				&gt; <a href="<?php echo esc_url( admin_url( 'admin.php?page=dfx-prl-retreats&action=attendants&retreat_id=' . $retreat->id ) ); ?>"><?php echo esc_html( $retreat->name ); ?></a>
+				&gt; <?php esc_html_e( 'Responsible Persons', 'dfx-parish-retreat-letters' ); ?>
+			</p>
+
+			<?php $this->display_admin_notices(); ?>
+
+			<div class="card">
+				<h2><?php esc_html_e( 'Add Responsible Person', 'dfx-parish-retreat-letters' ); ?></h2>
+				<form id="dfx-prl-add-responsible-person-form">
+					<?php wp_nonce_field( 'dfx_prl_add_responsible_person', 'dfx_prl_responsible_person_nonce' ); ?>
+					<input type="hidden" name="retreat_id" value="<?php echo esc_attr( $retreat->id ); ?>">
+					<table class="form-table">
+						<tbody>
+							<tr>
+								<th scope="row">
+									<label for="responsible_person_name"><?php esc_html_e( 'Name', 'dfx-parish-retreat-letters' ); ?></label>
+								</th>
+								<td>
+									<input type="text" id="responsible_person_name" name="name" class="regular-text" required>
+									<p class="description"><?php esc_html_e( 'Enter the name of the person responsible for attendants.', 'dfx-parish-retreat-letters' ); ?></p>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+					<p class="submit">
+						<button type="submit" class="button button-primary"><?php esc_html_e( 'Add Person', 'dfx-parish-retreat-letters' ); ?></button>
+					</p>
+				</form>
+			</div>
+
+			<h2><?php esc_html_e( 'Current Responsible Persons', 'dfx-parish-retreat-letters' ); ?></h2>
+
+			<?php if ( empty( $responsible_persons ) ) : ?>
+				<p><?php esc_html_e( 'No responsible persons have been added yet. Add one above to get started.', 'dfx-parish-retreat-letters' ); ?></p>
+			<?php else : ?>
+				<table class="wp-list-table widefat fixed striped">
+					<thead>
+						<tr>
+							<th><?php esc_html_e( 'Name', 'dfx-parish-retreat-letters' ); ?></th>
+							<th><?php esc_html_e( 'Actions', 'dfx-parish-retreat-letters' ); ?></th>
+						</tr>
+					</thead>
+					<tbody>
+						<?php foreach ( $responsible_persons as $person ) : ?>
+							<tr data-person-id="<?php echo esc_attr( $person->id ); ?>">
+								<td><?php echo esc_html( $person->name ); ?></td>
+								<td>
+									<button type="button" class="button button-small dfx-prl-delete-responsible-person" data-person-id="<?php echo esc_attr( $person->id ); ?>" data-retreat-id="<?php echo esc_attr( $retreat->id ); ?>">
+										<?php esc_html_e( 'Delete', 'dfx-parish-retreat-letters' ); ?>
+									</button>
+								</td>
+							</tr>
+						<?php endforeach; ?>
+					</tbody>
+				</table>
+			<?php endif; ?>
+
+			<p>
+				<a href="<?php echo esc_url( admin_url( 'admin.php?page=dfx-prl-retreats&action=attendants&retreat_id=' . $retreat->id ) ); ?>" class="button">
+					<?php esc_html_e( 'Back to Attendants', 'dfx-parish-retreat-letters' ); ?>
+				</a>
+			</p>
+
+			<script type="text/javascript">
+			jQuery(document).ready(function($) {
+				// Handle add responsible person form submission
+				$('#dfx-prl-add-responsible-person-form').on('submit', function(e) {
+					e.preventDefault();
+					
+					var formData = $(this).serialize();
+					formData += '&action=dfx_prl_add_responsible_person';
+					
+					$.post(ajaxurl, formData, function(response) {
+						if (response.success) {
+							location.reload();
+						} else {
+							alert(response.data.message || '<?php esc_html_e( 'Error adding responsible person.', 'dfx-parish-retreat-letters' ); ?>');
+						}
+					});
+				});
+
+				// Handle delete responsible person
+				$('.dfx-prl-delete-responsible-person').on('click', function() {
+					if (!confirm('<?php esc_html_e( 'Are you sure you want to delete this responsible person? This will not delete attendants, but will unassign this person from all attendants.', 'dfx-parish-retreat-letters' ); ?>')) {
+						return;
+					}
+					
+					var personId = $(this).data('person-id');
+					var retreatId = $(this).data('retreat-id');
+					var $row = $(this).closest('tr');
+					
+					$.post(ajaxurl, {
+						action: 'dfx_prl_delete_responsible_person',
+						person_id: personId,
+						retreat_id: retreatId,
+						nonce: '<?php echo esc_js( wp_create_nonce( 'dfx_prl_delete_responsible_person' ) ); ?>'
+					}, function(response) {
+						if (response.success) {
+							$row.fadeOut(function() {
+								$(this).remove();
+								
+								// Check if table is empty
+								if ($('table tbody tr').length === 0) {
+									location.reload();
+								}
+							});
+						} else {
+							alert(response.data.message || '<?php esc_html_e( 'Error deleting responsible person.', 'dfx-parish-retreat-letters' ); ?>');
+						}
+					});
+				});
+			});
+			</script>
+		</div>
+		<?php
+	}
+
+	/**
+	 * AJAX handler for adding a responsible person.
+	 *
+	 * @since 1.7.0
+	 */
+	public function ajax_add_responsible_person() {
+		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['dfx_prl_responsible_person_nonce'] ?? '' ) ), 'dfx_prl_add_responsible_person' ) ) {
+			wp_send_json_error( array( 'message' => __( 'Security check failed.', 'dfx-parish-retreat-letters' ) ) );
+		}
+
+		$retreat_id = absint( $_POST['retreat_id'] ?? 0 );
+
+		// Check permissions
+		if ( ! $this->permissions->current_user_can_manage_retreat( $retreat_id ) ) {
+			wp_send_json_error( array( 'message' => __( 'You do not have permission to manage this retreat.', 'dfx-parish-retreat-letters' ) ) );
+		}
+
+		$result = $this->responsible_person_model->create( array(
+			'retreat_id' => $retreat_id,
+			'name'       => sanitize_text_field( wp_unslash( $_POST['name'] ?? '' ) ),
+		) );
+
+		if ( $result ) {
+			wp_send_json_success( array( 'message' => __( 'Responsible person added successfully.', 'dfx-parish-retreat-letters' ) ) );
+		} else {
+			wp_send_json_error( array( 'message' => __( 'Error adding responsible person.', 'dfx-parish-retreat-letters' ) ) );
+		}
+	}
+
+	/**
+	 * AJAX handler for deleting a responsible person.
+	 *
+	 * @since 1.7.0
+	 */
+	public function ajax_delete_responsible_person() {
+		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ?? '' ) ), 'dfx_prl_delete_responsible_person' ) ) {
+			wp_send_json_error( array( 'message' => __( 'Security check failed.', 'dfx-parish-retreat-letters' ) ) );
+		}
+
+		$person_id = absint( $_POST['person_id'] ?? 0 );
+		$retreat_id = absint( $_POST['retreat_id'] ?? 0 );
+
+		// Check permissions
+		if ( ! $this->permissions->current_user_can_manage_retreat( $retreat_id ) ) {
+			wp_send_json_error( array( 'message' => __( 'You do not have permission to manage this retreat.', 'dfx-parish-retreat-letters' ) ) );
+		}
+
+		$result = $this->responsible_person_model->delete( $person_id );
+
+		if ( $result ) {
+			wp_send_json_success( array( 'message' => __( 'Responsible person deleted successfully.', 'dfx-parish-retreat-letters' ) ) );
+		} else {
+			wp_send_json_error( array( 'message' => __( 'Error deleting responsible person.', 'dfx-parish-retreat-letters' ) ) );
+		}
 	}
 
 	/**
