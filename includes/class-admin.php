@@ -2617,20 +2617,28 @@ class DFX_Parish_Retreat_Letters_Admin {
 			);
 
 			if ( $existing_attendant_id ) {
-				// Update emergency contact information for existing attendant
-				$emergency_contact_data = array(
-					'emergency_contact_name'    => $mapped_data['emergency_contact_name'],
-					'emergency_contact_surname' => $mapped_data['emergency_contact_surname'],
-					'emergency_contact_phone'   => $mapped_data['emergency_contact_phone'],
-					'emergency_contact_email'   => $mapped_data['emergency_contact_email'],
-				);
+				// Update emergency contact information for existing attendant only if provided
+				$has_emergency_contact = ! empty( $mapped_data['emergency_contact_name'] ) || 
+					! empty( $mapped_data['emergency_contact_phone'] );
+				
+				if ( $has_emergency_contact ) {
+					$emergency_contact_data = array(
+						'emergency_contact_name'    => $mapped_data['emergency_contact_name'],
+						'emergency_contact_surname' => $mapped_data['emergency_contact_surname'],
+						'emergency_contact_phone'   => $mapped_data['emergency_contact_phone'],
+						'emergency_contact_email'   => $mapped_data['emergency_contact_email'],
+					);
 
-				if ( $this->attendant_model->update_emergency_contact( $existing_attendant_id, $emergency_contact_data ) ) {
-					$updated++;
+					if ( $this->attendant_model->update_emergency_contact( $existing_attendant_id, $emergency_contact_data ) ) {
+						$updated++;
+					} else {
+						$errors++;
+						/* translators: %d: line number where the error occurred */
+						$error_details[] = sprintf( __( 'Line %d: Failed to update emergency contact for existing attendant', 'dfx-parish-retreat-letters' ), $line_number );
+					}
 				} else {
-					$errors++;
-					/* translators: %d: line number where the error occurred */
-					$error_details[] = sprintf( __( 'Line %d: Failed to update emergency contact for existing attendant', 'dfx-parish-retreat-letters' ), $line_number );
+					// Attendant exists but no emergency contact to update, skip
+					$skipped++;
 				}
 			} else {
 				// Create new attendant
@@ -2807,7 +2815,9 @@ class DFX_Parish_Retreat_Letters_Admin {
 	 * @return array Array of missing required field names.
 	 */
 	private function get_missing_required_fields( $field_map ) {
-		$required_fields = array( 'name', 'surnames', 'date_of_birth', 'emergency_contact_name', 'emergency_contact_phone' );
+		// Only name, surnames, and date of birth are always required
+		// Emergency contact fields are optional
+		$required_fields = array( 'name', 'surnames', 'date_of_birth' );
 		$missing_fields = array();
 
 		foreach ( $required_fields as $field ) {
@@ -2822,15 +2832,6 @@ class DFX_Parish_Retreat_Letters_Admin {
 						break;
 					case 'date_of_birth':
 						$missing_fields[] = __( 'Date of Birth', 'dfx-parish-retreat-letters' );
-						break;
-					case 'emergency_contact_name':
-						$missing_fields[] = __( 'Emergency Contact Name', 'dfx-parish-retreat-letters' );
-						break;
-					case 'emergency_contact_surname':
-						$missing_fields[] = __( 'Emergency Contact Surname', 'dfx-parish-retreat-letters' );
-						break;
-					case 'emergency_contact_phone':
-						$missing_fields[] = __( 'Emergency Contact Phone', 'dfx-parish-retreat-letters' );
 						break;
 				}
 			}
@@ -2874,7 +2875,16 @@ class DFX_Parish_Retreat_Letters_Admin {
 			}
 		}
 
-		// Ensure emergency_contact_email is always present (optional field)
+		// Ensure emergency contact fields are always present (now optional fields)
+		if ( ! isset( $mapped_data['emergency_contact_name'] ) ) {
+			$mapped_data['emergency_contact_name'] = '';
+		}
+		if ( ! isset( $mapped_data['emergency_contact_surname'] ) ) {
+			$mapped_data['emergency_contact_surname'] = '';
+		}
+		if ( ! isset( $mapped_data['emergency_contact_phone'] ) ) {
+			$mapped_data['emergency_contact_phone'] = '';
+		}
 		if ( ! isset( $mapped_data['emergency_contact_email'] ) ) {
 			$mapped_data['emergency_contact_email'] = '';
 		}
