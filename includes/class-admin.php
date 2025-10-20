@@ -3154,6 +3154,9 @@ class DFX_Parish_Retreat_Letters_Admin {
 	 * @param int    $total_items Total number of items.
 	 */
 	private function render_attendants_list_page( $retreat, $attendants, $search, $page_num, $total_pages, $total_items ) {
+		// Check if retreat has any responsible persons defined
+		$responsible_persons = $this->responsible_person_model->get_by_retreat( $retreat->id );
+		$has_responsible_persons = ! empty( $responsible_persons );
 		?>
 		<div class="wrap">
 			<h1 class="wp-heading-inline">
@@ -3230,7 +3233,9 @@ class DFX_Parish_Retreat_Letters_Admin {
 							<th scope="col" class="manage-column"><?php esc_html_e( 'Surnames', 'dfx-parish-retreat-letters' ); ?></th>
 							<th scope="col" class="manage-column"><?php esc_html_e( 'Date of Birth', 'dfx-parish-retreat-letters' ); ?></th>
 							<th scope="col" class="manage-column"><?php esc_html_e( 'Emergency Contact', 'dfx-parish-retreat-letters' ); ?></th>
+							<?php if ( $has_responsible_persons ) : ?>
 							<th scope="col" class="manage-column"><?php esc_html_e( 'Responsible Person', 'dfx-parish-retreat-letters' ); ?></th>
+							<?php endif; ?>
 							<?php if ( ! empty( $retreat->notes_enabled ) ) : ?>
 							<th scope="col" class="manage-column"><?php esc_html_e( 'Notes', 'dfx-parish-retreat-letters' ); ?></th>
 							<?php endif; ?>
@@ -3270,6 +3275,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 											<br><small><?php echo esc_html( $attendant->emergency_contact_email ); ?></small>
 										<?php endif; ?>
 									</td>
+									<?php if ( $has_responsible_persons ) : ?>
 									<td>
 										<?php
 										if ( $responsible_person ) {
@@ -3279,6 +3285,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 										}
 										?>
 									</td>
+									<?php endif; ?>
 									<?php if ( ! empty( $retreat->notes_enabled ) ) : ?>
 									<td>
 										<?php
@@ -3484,14 +3491,16 @@ class DFX_Parish_Retreat_Letters_Admin {
 							</td>
 						</tr>
 						<?php endif; ?>
+						<?php
+						// Only show responsible person field if there are responsible persons defined for this retreat
+						$responsible_persons = $this->responsible_person_model->get_by_retreat( $retreat->id );
+						if ( ! empty( $responsible_persons ) ) :
+						?>
 						<tr>
 							<th scope="row">
 								<label for="responsible_person_id"><?php esc_html_e( 'Responsible Person', 'dfx-parish-retreat-letters' ); ?> <span class="description">(<?php esc_html_e( 'optional', 'dfx-parish-retreat-letters' ); ?>)</span></label>
 							</th>
 							<td>
-								<?php
-								$responsible_persons = $this->responsible_person_model->get_by_retreat( $retreat->id );
-								?>
 								<select id="responsible_person_id" name="responsible_person_id" class="regular-text">
 									<option value=""><?php esc_html_e( '-- Select Responsible Person --', 'dfx-parish-retreat-letters' ); ?></option>
 									<?php foreach ( $responsible_persons as $person ) : ?>
@@ -3508,6 +3517,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 								</p>
 							</td>
 						</tr>
+						<?php endif; ?>
 					</tbody>
 				</table>
 

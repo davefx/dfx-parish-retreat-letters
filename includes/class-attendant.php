@@ -342,6 +342,10 @@ class DFX_Parish_Retreat_Letters_Attendant {
 
 		// Get responsible person model for looking up names
 		$responsible_person_model = new DFX_Parish_Retreat_Letters_ResponsiblePerson();
+		
+		// Check if retreat has any responsible persons defined
+		$responsible_persons = $responsible_person_model->get_by_retreat( $retreat_id );
+		$has_responsible_persons = ! empty( $responsible_persons );
 
 		$headers = array(
 			__( 'Name', 'dfx-parish-retreat-letters' ),
@@ -351,9 +355,13 @@ class DFX_Parish_Retreat_Letters_Attendant {
 			__( 'Emergency Contact Surname', 'dfx-parish-retreat-letters' ),
 			__( 'Emergency Contact Phone', 'dfx-parish-retreat-letters' ),
 			__( 'Emergency Contact Email', 'dfx-parish-retreat-letters' ),
-			__( 'Responsible Person', 'dfx-parish-retreat-letters' ),
-			__( 'Message URL', 'dfx-parish-retreat-letters' ),
 		);
+		
+		if ( $has_responsible_persons ) {
+			$headers[] = __( 'Responsible Person', 'dfx-parish-retreat-letters' );
+		}
+		
+		$headers[] = __( 'Message URL', 'dfx-parish-retreat-letters' );
 		
 		if ( $notes_enabled ) {
 			$headers[] = __( 'Notes', 'dfx-parish-retreat-letters' );
@@ -361,20 +369,6 @@ class DFX_Parish_Retreat_Letters_Attendant {
 
 		$rows = array();
 		foreach ( $attendants as $attendant ) {
-			// Get responsible person name if assigned
-			$responsible_person_name = '';
-			if ( ! empty( $attendant->responsible_person_id ) ) {
-				$responsible_person = $responsible_person_model->get( $attendant->responsible_person_id );
-				if ( $responsible_person ) {
-					$responsible_person_name = $responsible_person->name;
-				}
-			}
-
-			// Generate message URL if token exists
-			$message_url = ! empty( $attendant->message_url_token ) 
-				? home_url( '/messages/' . $attendant->message_url_token )
-				: '';
-
 			$row = array(
 				$attendant->name,
 				$attendant->surnames,
@@ -383,9 +377,25 @@ class DFX_Parish_Retreat_Letters_Attendant {
 				$attendant->emergency_contact_surname,
 				$attendant->emergency_contact_phone,
 				$attendant->emergency_contact_email,
-				$responsible_person_name,
-				$message_url,
 			);
+			
+			if ( $has_responsible_persons ) {
+				// Get responsible person name if assigned
+				$responsible_person_name = '';
+				if ( ! empty( $attendant->responsible_person_id ) ) {
+					$responsible_person = $responsible_person_model->get( $attendant->responsible_person_id );
+					if ( $responsible_person ) {
+						$responsible_person_name = $responsible_person->name;
+					}
+				}
+				$row[] = $responsible_person_name;
+			}
+
+			// Generate message URL if token exists
+			$message_url = ! empty( $attendant->message_url_token ) 
+				? home_url( '/messages/' . $attendant->message_url_token )
+				: '';
+			$row[] = $message_url;
 			
 			if ( $notes_enabled ) {
 				$row[] = $attendant->notes ?? '';
