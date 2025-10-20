@@ -38,7 +38,7 @@ class DFX_Parish_Retreat_Letters_Database {
 	 * @since 1.0.0
 	 * @var string
 	 */
-	const DB_VERSION = '1.6.3';
+	const DB_VERSION = '1.7.0';
 
 	/**
 	 * The database version option name.
@@ -113,6 +113,14 @@ class DFX_Parish_Retreat_Letters_Database {
 	private $audit_log_table;
 
 	/**
+	 * The table name for responsible persons.
+	 *
+	 * @since 1.7.0
+	 * @var string
+	 */
+	private $responsible_persons_table;
+
+	/**
 	 * Get the single instance of the class.
 	 *
 	 * @since 1.0.0
@@ -144,6 +152,7 @@ class DFX_Parish_Retreat_Letters_Database {
 		$this->permissions_table = $prefix . 'dfx_prl_retreat_permissions';
 		$this->invitations_table = $prefix . 'dfx_prl_retreat_invitations';
 		$this->audit_log_table = $prefix . 'dfx_prl_permission_audit_log';
+		$this->responsible_persons_table = $prefix . 'dfx_prl_responsible_persons';
 		
 		// Only check for database upgrades if WordPress is fully loaded
 		if ( did_action( 'init' ) || current_action() === 'init' ) {
@@ -212,6 +221,7 @@ class DFX_Parish_Retreat_Letters_Database {
 			emergency_contact_email varchar(255) NULL DEFAULT NULL,
 			message_url_token VARCHAR(255) NULL DEFAULT NULL,
 			notes text NULL DEFAULT NULL,
+			responsible_person_id mediumint(9) NULL DEFAULT NULL,
 			created_at datetime DEFAULT CURRENT_TIMESTAMP,
 			updated_at datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 			PRIMARY KEY (id),
@@ -219,7 +229,8 @@ class DFX_Parish_Retreat_Letters_Database {
 			INDEX idx_name (name),
 			INDEX idx_surnames (surnames),
 			INDEX idx_emergency_contact_email (emergency_contact_email),
-			INDEX idx_message_url_token (message_url_token)
+			INDEX idx_message_url_token (message_url_token),
+			INDEX idx_responsible_person_id (responsible_person_id)
 		) $charset_collate;";
 
 		dbDelta( $attendants_sql );
@@ -353,6 +364,20 @@ class DFX_Parish_Retreat_Letters_Database {
 
 		dbDelta( $audit_log_sql );
 
+		// Create responsible persons table (from v1.7.0)
+		$responsible_persons_sql = "CREATE TABLE {$this->responsible_persons_table} (
+			id mediumint(9) NOT NULL AUTO_INCREMENT,
+			retreat_id mediumint(9) NOT NULL,
+			name varchar(255) NOT NULL,
+			created_at datetime DEFAULT CURRENT_TIMESTAMP,
+			updated_at datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+			PRIMARY KEY (id),
+			INDEX idx_retreat_id (retreat_id),
+			INDEX idx_name (name)
+		) $charset_collate;";
+
+		dbDelta( $responsible_persons_sql );
+
 		// Add the manage_retreat_plugin capability to administrator role (from v1.3.0)
 		$admin_role = get_role( 'administrator' );
 		if ( $admin_role ) {
@@ -388,6 +413,7 @@ class DFX_Parish_Retreat_Letters_Database {
 		$wpdb->query( "DROP TABLE IF EXISTS {$this->message_files_table}" ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 		$wpdb->query( "DROP TABLE IF EXISTS {$this->messages_table}" ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 		$wpdb->query( "DROP TABLE IF EXISTS {$this->attendants_table}" ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		$wpdb->query( "DROP TABLE IF EXISTS {$this->responsible_persons_table}" ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 		$wpdb->query( "DROP TABLE IF EXISTS {$this->retreats_table}" ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 		
 		// Remove custom capabilities
@@ -477,6 +503,16 @@ class DFX_Parish_Retreat_Letters_Database {
 	 */
 	public function get_audit_log_table() {
 		return $this->audit_log_table;
+	}
+
+	/**
+	 * Get the responsible persons table name.
+	 *
+	 * @since 1.7.0
+	 * @return string
+	 */
+	public function get_responsible_persons_table() {
+		return $this->responsible_persons_table;
 	}
 
 	/**

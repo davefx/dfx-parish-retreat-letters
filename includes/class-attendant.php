@@ -72,8 +72,9 @@ class DFX_Parish_Retreat_Letters_Attendant {
 				'emergency_contact_email'   => $sanitized_data['emergency_contact_email'],
 				'message_url_token'         => $message_url_token,
 				'notes'                     => $sanitized_data['notes'],
+				'responsible_person_id'     => $sanitized_data['responsible_person_id'],
 			),
-			array( '%d', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s' )
+			array( '%d', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%d' )
 		);
 
 		return $result ? $wpdb->insert_id : false;
@@ -126,9 +127,10 @@ class DFX_Parish_Retreat_Letters_Attendant {
 				'emergency_contact_phone'   => $sanitized_data['emergency_contact_phone'],
 				'emergency_contact_email'   => $sanitized_data['emergency_contact_email'],
 				'notes'                     => $sanitized_data['notes'],
+				'responsible_person_id'     => $sanitized_data['responsible_person_id'],
 			),
 			array( 'id' => $id ),
-			array( '%d', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s' ),
+			array( '%d', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%d' ),
 			array( '%d' )
 		); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
 
@@ -395,6 +397,7 @@ class DFX_Parish_Retreat_Letters_Attendant {
 			'emergency_contact_phone'   => sanitize_text_field( $data['emergency_contact_phone'] ?? '' ),
 			'emergency_contact_email'   => sanitize_email( $data['emergency_contact_email'] ?? '' ),
 			'notes'                     => sanitize_textarea_field( $data['notes'] ?? '' ),
+			'responsible_person_id'     => ! empty( $data['responsible_person_id'] ) ? absint( $data['responsible_person_id'] ) : null,
 		);
 	}
 

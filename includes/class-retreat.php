@@ -164,6 +164,10 @@ class DFX_Parish_Retreat_Letters_Retreat {
 		$invitations_model = DFX_Parish_Retreat_Letters_Invitations::get_instance();
 		$invitations_model->delete_by_retreat( $id );
 
+		// Delete all responsible persons for this retreat
+		$responsible_person_model = new DFX_Parish_Retreat_Letters_ResponsiblePerson();
+		$responsible_person_model->delete_by_retreat( $id );
+
 		// Delete the retreat
 		$result = $wpdb->delete( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
 			$this->database->get_retreats_table(),

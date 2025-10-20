@@ -30,7 +30,8 @@ class ComprehensiveInfrastructureTest extends TestCase {
             '/includes/class-permissions.php',
             '/includes/class-invitations.php',
             '/includes/class-message-file.php',
-            '/includes/class-print-log.php'
+            '/includes/class-print-log.php',
+            '/includes/class-responsible-person.php'
         ];
 
         foreach ($required_files as $file) {
@@ -62,7 +63,8 @@ class ComprehensiveInfrastructureTest extends TestCase {
             '/includes/class-permissions.php',
             '/includes/class-invitations.php',
             '/includes/class-message-file.php',
-            '/includes/class-print-log.php'
+            '/includes/class-print-log.php',
+            '/includes/class-responsible-person.php'
         ];
         
         foreach ($class_files as $file) {
@@ -84,7 +86,8 @@ class ComprehensiveInfrastructureTest extends TestCase {
             'DFX_Parish_Retreat_Letters_Permissions',
             'DFX_Parish_Retreat_Letters_Invitations',
             'DFX_Parish_Retreat_Letters_MessageFile',
-            'DFX_Parish_Retreat_Letters_PrintLog'
+            'DFX_Parish_Retreat_Letters_PrintLog',
+            'DFX_Parish_Retreat_Letters_ResponsiblePerson'
         ];
 
         foreach ($core_classes as $class) {
@@ -518,7 +521,7 @@ class ComprehensiveInfrastructureTest extends TestCase {
         
         // Test that the database class has the current version
         if (class_exists('DFX_Parish_Retreat_Letters_Database')) {
-            $this->assertEquals('1.6.3', DFX_Parish_Retreat_Letters_Database::DB_VERSION, 'Database version should be 1.6.3');
+            $this->assertEquals('1.7.0', DFX_Parish_Retreat_Letters_Database::DB_VERSION, 'Database version should be 1.7.0');
             
             // Test that the database instance can be created
             $database = DFX_Parish_Retreat_Letters_Database::get_instance();
