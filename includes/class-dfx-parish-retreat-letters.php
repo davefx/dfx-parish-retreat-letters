@@ -2246,7 +2246,7 @@ class DFX_Parish_Retreat_Letters {
 						page-break-before: auto;
 						page-break-after: always;
 						/* Scale to fit remaining space after To/From header */
-						min-height: calc(100vh - 200px);
+						min-height: auto;
 						max-height: calc(100vh - 200px);
 					}
 					

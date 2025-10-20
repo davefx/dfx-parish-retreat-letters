@@ -686,9 +686,9 @@ class ComprehensiveInfrastructureTest extends TestCase {
         $this->assertNotFalse($sourceContent, 'Should be able to read the main class file');
         
         // Test 1: Verify first image container has correct min-height to account for To/From header
-        // After the fix, it should be calc(100vh - 200px), not the old calc(100vh - 150px)
-        $this->assertStringContainsString('min-height: calc(100vh - 200px);', $sourceContent,
-            'First image container min-height should be calc(100vh - 200px) to fit below To/From header');
+        // After the fix, min-height should be auto to allow natural sizing, not a fixed calc value
+        $this->assertStringContainsString('min-height: auto;', $sourceContent,
+            'First image container min-height should be auto to allow natural sizing below To/From header');
         
         // Test 2: Verify first image container has correct max-height
         $this->assertStringContainsString('max-height: calc(100vh - 200px);', $sourceContent,
@@ -713,15 +713,15 @@ class ComprehensiveInfrastructureTest extends TestCase {
         $this->assertStringContainsString('max-height: 100vh;', $sourceContent,
             'Subsequent images should use full viewport height');
         
-        // Test 7: Extract and validate the actual numeric value to ensure it's not the old 150px
-        // This regex matches the multi-image:first-child block and extracts the min-height value
-        preg_match('/\.file-content\.multi-image:first-child\s*\{[^}]*min-height:\s*calc\(100vh\s*-\s*(\d+)px\)/s', $sourceContent, $minHeightMatches);
-        if (!empty($minHeightMatches[1])) {
-            $minHeightOffset = (int)$minHeightMatches[1];
-            $this->assertEquals(200, $minHeightOffset, 
-                'First image container min-height offset should be 200px, not the old 150px value');
-            $this->assertGreaterThan(150, $minHeightOffset, 
-                'First image container offset should be greater than old 150px to account for To field');
+        // Test 7: Extract and validate the actual numeric value for max-height (should be 200px)
+        // The min-height is now 'auto' for natural sizing, so we only check max-height
+        preg_match('/\.file-content\.multi-image:first-child\s*\{[^}]*max-height:\s*calc\(100vh\s*-\s*(\d+)px\)/s', $sourceContent, $maxHeightMatches);
+        if (!empty($maxHeightMatches[1])) {
+            $maxHeightOffset = (int)$maxHeightMatches[1];
+            $this->assertEquals(200, $maxHeightOffset, 
+                'First image container max-height offset should be 200px, not the old 150px value');
+            $this->assertGreaterThan(150, $maxHeightOffset, 
+                'First image container max-height offset should be greater than old 150px to account for To field');
         }
         
         // Test 8: Verify the image element max-height value
