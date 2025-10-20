@@ -595,4 +595,77 @@ class ComprehensiveInfrastructureTest extends TestCase {
             $this->markTestSkipped('Permissions class not available');
         }
     }
+
+    /**
+     * Test that ConfidentialMessage class has the new non-printed count method
+     */
+    public function testConfidentialMessageHasNonPrintedCountMethod() {
+        if (class_exists('DFX_Parish_Retreat_Letters_ConfidentialMessage')) {
+            $message = new DFX_Parish_Retreat_Letters_ConfidentialMessage();
+            $this->assertInstanceOf('DFX_Parish_Retreat_Letters_ConfidentialMessage', $message);
+            
+            // Test that the new method exists
+            $this->assertTrue(method_exists($message, 'get_non_printed_count_by_attendant'), 
+                'ConfidentialMessage class should have get_non_printed_count_by_attendant method');
+            
+            // Test that the existing count method also exists for comparison
+            $this->assertTrue(method_exists($message, 'get_count_by_attendant'), 
+                'ConfidentialMessage class should have get_count_by_attendant method');
+            
+            // Verify the method signature using reflection
+            $reflection = new ReflectionClass($message);
+            $method = $reflection->getMethod('get_non_printed_count_by_attendant');
+            
+            // The method should be public
+            $this->assertTrue($method->isPublic(), 'get_non_printed_count_by_attendant should be public');
+            
+            // Verify the method parameters
+            $params = $method->getParameters();
+            $this->assertEquals(2, count($params), 
+                'get_non_printed_count_by_attendant should accept 2 parameters');
+            
+            // First parameter should be attendant_id
+            $this->assertEquals('attendant_id', $params[0]->getName(), 
+                'First parameter should be attendant_id');
+            
+            // Second parameter should be args with default value
+            $this->assertEquals('args', $params[1]->getName(), 
+                'Second parameter should be args');
+            $this->assertTrue($params[1]->isDefaultValueAvailable(), 
+                'Second parameter should have a default value');
+            
+            // Verify method return type hint if available (PHP 7.0+)
+            if (method_exists($method, 'getReturnType')) {
+                $returnType = $method->getReturnType();
+                // Return type may not be explicitly declared, which is fine for compatibility
+                if ($returnType !== null) {
+                    $this->assertEquals('int', $returnType->getName(), 
+                        'get_non_printed_count_by_attendant should return int');
+                }
+            }
+        } else {
+            $this->markTestSkipped('ConfidentialMessage class not available');
+        }
+    }
+
+    /**
+     * Test that Database class has the print log table method
+     */
+    public function testDatabaseHasPrintLogTableMethod() {
+        if (class_exists('DFX_Parish_Retreat_Letters_Database')) {
+            $database = DFX_Parish_Retreat_Letters_Database::get_instance();
+            $this->assertInstanceOf('DFX_Parish_Retreat_Letters_Database', $database);
+            
+            // Test that the print log table method exists (required for non-printed count)
+            $this->assertTrue(method_exists($database, 'get_message_print_log_table'), 
+                'Database class should have get_message_print_log_table method');
+            
+            // The method should be public
+            $reflection = new ReflectionClass($database);
+            $method = $reflection->getMethod('get_message_print_log_table');
+            $this->assertTrue($method->isPublic(), 'get_message_print_log_table should be public');
+        } else {
+            $this->markTestSkipped('Database class not available');
+        }
+    }
 }
