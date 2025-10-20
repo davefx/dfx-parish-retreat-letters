@@ -1578,8 +1578,12 @@ msgstr "Buscar Mensajes"
 msgid "Total messages: %d"
 msgstr "Mensajes totales: %d"
 
+#: includes/class-dfx-parish-retreat-letters.php:2289
+msgid "To"
+msgstr "Para"
+
 #: includes/class-admin.php:3803
-#: includes/class-dfx-parish-retreat-letters.php:2288
+#: includes/class-dfx-parish-retreat-letters.php:2300
 msgid "From"
 msgstr "De"
 

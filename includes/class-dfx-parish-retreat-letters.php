@@ -2282,12 +2282,25 @@ class DFX_Parish_Retreat_Letters {
 		</head>
 		<body>
 			<?php
+			// Display recipient name first, then sender name
+			echo '<div class="message-header" style="margin-bottom: 20px; font-weight: bold; border-bottom: 1px solid #ddd; padding-bottom: 10px;">';
+			
+			// Display recipient (attendant) name if available
+			if ( ! empty( $message->attendant_name ) ) {
+				echo esc_html__( 'To', 'dfx-parish-retreat-letters' ) . ': ' . esc_html( $message->attendant_name );
+				if ( ! empty( $message->attendant_surnames ) ) {
+					echo ' ' . esc_html( $message->attendant_surnames );
+				}
+				echo '<br>';
+			}
+			
 			// Display sender name if available
 			if ( ! empty( $message->sender_name ) ) {
-				echo '<div class="sender-info" style="margin-bottom: 20px; font-weight: bold; border-bottom: 1px solid #ddd; padding-bottom: 10px;">';
 				echo esc_html__( 'From', 'dfx-parish-retreat-letters' ) . ': ' . esc_html( $message->sender_name );
-				echo '</div>';
 			}
+			
+			echo '</div>';
+			?>
 
 			if ( $message->message_type === 'text' ) {
 				// For text messages, display the content
