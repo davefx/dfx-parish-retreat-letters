@@ -1578,8 +1578,12 @@ msgstr "Buscar Mensajes"
 msgid "Total messages: %d"
 msgstr "Mensajes totales: %d"
 
+#: includes/class-dfx-parish-retreat-letters.php:2289
+msgid "To"
+msgstr "Para"
+
 #: includes/class-admin.php:3803
-#: includes/class-dfx-parish-retreat-letters.php:2288
+#: includes/class-dfx-parish-retreat-letters.php:2300
 msgid "From"
 msgstr "De"
 
@@ -2344,6 +2348,10 @@ msgstr "[\"correo electrónico de contacto de emergencia\", \"correo electrónic
 #: includes/class-attendant.php:348
 msgid "Emergency Contact Email"
 msgstr "Email de contacto de emergencia"
+
+#: includes/class-attendant.php:349
+msgid "Message URL"
+msgstr "URL de Mensajes"
 
 #: includes/class-admin.php:3424
 #: includes/class-admin.php:3434

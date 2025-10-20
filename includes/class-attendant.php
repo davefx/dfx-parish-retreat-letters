@@ -352,6 +352,7 @@ class DFX_Parish_Retreat_Letters_Attendant {
 			__( 'Emergency Contact Phone', 'dfx-parish-retreat-letters' ),
 			__( 'Emergency Contact Email', 'dfx-parish-retreat-letters' ),
 			__( 'Responsible Person', 'dfx-parish-retreat-letters' ),
+			__( 'Message URL', 'dfx-parish-retreat-letters' ),
 		);
 		
 		if ( $notes_enabled ) {
@@ -369,6 +370,11 @@ class DFX_Parish_Retreat_Letters_Attendant {
 				}
 			}
 
+			// Generate message URL if token exists
+			$message_url = ! empty( $attendant->message_url_token ) 
+				? home_url( '/messages/' . $attendant->message_url_token )
+				: '';
+
 			$row = array(
 				$attendant->name,
 				$attendant->surnames,
@@ -378,6 +384,7 @@ class DFX_Parish_Retreat_Letters_Attendant {
 				$attendant->emergency_contact_phone,
 				$attendant->emergency_contact_email,
 				$responsible_person_name,
+				$message_url,
 			);
 			
 			if ( $notes_enabled ) {

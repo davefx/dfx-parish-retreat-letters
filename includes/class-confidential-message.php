@@ -103,7 +103,7 @@ class DFX_Parish_Retreat_Letters_ConfidentialMessage {
 		$attendants_table = $this->database->get_attendants_table();
 
 		$result = $wpdb->get_row( $wpdb->prepare(
-			"SELECT m.*, a.retreat_id 
+			"SELECT m.*, a.retreat_id, a.name as attendant_name, a.surnames as attendant_surnames 
 			 FROM `{$messages_table}` m
 			 INNER JOIN `{$attendants_table}` a ON m.attendant_id = a.id
 			 WHERE m.id = %d", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
@@ -249,6 +249,50 @@ class DFX_Parish_Retreat_Letters_ConfidentialMessage {
 				FROM ' . $this->database->get_messages_table() . ' m
 				INNER JOIN ' . $this->database->get_attendants_table() . ' a ON m.attendant_id = a.id
 				WHERE ' . $where_clause;
+
+		if ( ! empty( $where_values ) ) {
+			$sql = $wpdb->prepare( $sql, $where_values ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+		}
+
+		$count = $wpdb->get_var( $sql ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.PreparedSQL.NotPrepared
+
+		return (int) $count;
+	}
+
+	/**
+	 * Get count of non-printed messages by attendant ID.
+	 *
+	 * @since 1.7.0
+	 * @param int   $attendant_id Attendant ID.
+	 * @param array $args         Query arguments.
+	 * @return int Non-printed message count.
+	 */
+	public function get_non_printed_count_by_attendant( $attendant_id, $args = array() ) {
+		global $wpdb;
+
+		$where_clause = 'm.attendant_id = %d';
+		$where_values = array( $attendant_id );
+
+		// Filter by message type
+		if ( ! empty( $args['message_type'] ) ) {
+			$where_clause .= ' AND m.message_type = %s';
+			$where_values[] = $args['message_type'];
+		}
+
+		// Add search functionality
+		if ( ! empty( $args['search'] ) ) {
+			$where_clause .= ' AND (a.name LIKE %s OR a.surnames LIKE %s OR m.sender_name LIKE %s)';
+			$search_term = '%' . $wpdb->esc_like( $args['search'] ) . '%';
+			$where_values[] = $search_term;
+			$where_values[] = $search_term;
+			$where_values[] = $search_term;
+		}
+
+		$sql = 'SELECT COUNT(*) 
+				FROM ' . $this->database->get_messages_table() . ' m
+				INNER JOIN ' . $this->database->get_attendants_table() . ' a ON m.attendant_id = a.id
+				LEFT JOIN ' . $this->database->get_message_print_log_table() . ' p ON m.id = p.message_id
+				WHERE ' . $where_clause . ' AND p.id IS NULL';
 
 		if ( ! empty( $where_values ) ) {
 			$sql = $wpdb->prepare( $sql, $where_values ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared

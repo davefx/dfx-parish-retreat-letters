@@ -3244,6 +3244,9 @@ class DFX_Parish_Retreat_Letters_Admin {
 								<?php
 								// Get message count for this attendant
 								$message_count = $this->message_model->get_count_by_attendant( $attendant->id );
+								// Get non-printed message count for this attendant
+								$non_printed_count = $this->message_model->get_non_printed_count_by_attendant( $attendant->id );
+
 								// Get responsible person if assigned
 								$responsible_person = null;
 								if ( ! empty( $attendant->responsible_person_id ) ) {
@@ -3296,6 +3299,14 @@ class DFX_Parish_Retreat_Letters_Admin {
 													esc_html( _n( '%d message', '%d messages', $message_count, 'dfx-parish-retreat-letters' ) ),
 													esc_html( $message_count )
 												);
+												// Show non-printed count if there are any non-printed messages
+												if ( $non_printed_count > 0 ) {
+													printf(
+														/* translators: %d: Number of non-printed messages */
+														esc_html__( ' (%d non-printed)', 'dfx-parish-retreat-letters' ),
+														esc_html( $non_printed_count )
+													);
+												}
 												?>
 											</a>
 										<?php else : ?>
