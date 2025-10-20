@@ -2245,6 +2245,7 @@ class DFX_Parish_Retreat_Letters {
 					.file-content.multi-image:first-child {
 						page-break-before: auto;
 						page-break-after: always;
+						page-break-inside: auto;  /* Allow breaking if needed, don't force to next page */
 						/* Scale to fit remaining space after To/From header */
 						min-height: 0;
 						max-height: calc(100vh - 200px);

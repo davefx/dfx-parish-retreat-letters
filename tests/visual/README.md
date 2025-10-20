@@ -35,12 +35,14 @@ The test validates that after adding the "To:" field to the print header:
     .file-content.multi-image {
         min-height: 100vh;  /* All images default to full page */
         page-break-after: always;
+        page-break-inside: avoid;  /* Don't break container across pages */
     }
     
     /* Override for first image to fit with header */
     .file-content.multi-image:first-child {
         min-height: 0;  /* Allow natural sizing */
         max-height: calc(100vh - 200px);  /* Constrain to fit below header */
+        page-break-inside: auto;  /* CRITICAL: Override avoid to allow on same page as header */
     }
     
     .file-content.multi-image:first-child .file-image {
@@ -48,6 +50,16 @@ The test validates that after adding the "To:" field to the print header:
     }
 }
 ```
+
+### Critical Fix: page-break-inside
+
+The most important part of this fix is `page-break-inside: auto` for the first image container. 
+
+**Why this matters**:
+- The base class has `page-break-inside: avoid` which tells the browser NOT to break the element across pages
+- When the first image container + header would exceed one page, the browser moves the ENTIRE container to page 2 to keep it intact
+- By setting `page-break-inside: auto` for the first child, we override this behavior
+- This allows the first image to stay on page 1 with the header, even if it would need to break (which it won't, due to our height constraints)
 
 ### Troubleshooting
 
