@@ -686,9 +686,9 @@ class ComprehensiveInfrastructureTest extends TestCase {
         $this->assertNotFalse($sourceContent, 'Should be able to read the main class file');
         
         // Test 1: Verify first image container has correct min-height to account for To/From header
-        // After the fix, min-height should be auto to allow natural sizing, not a fixed calc value
-        $this->assertStringContainsString('min-height: auto;', $sourceContent,
-            'First image container min-height should be auto to allow natural sizing below To/From header');
+        // After the fix, min-height should be 0 to allow natural sizing (overriding the 100vh from base class)
+        $this->assertStringContainsString('min-height: 0;', $sourceContent,
+            'First image container min-height should be 0 to override base 100vh and allow natural sizing below To/From header');
         
         // Test 2: Verify first image container has correct max-height
         $this->assertStringContainsString('max-height: calc(100vh - 200px);', $sourceContent,
