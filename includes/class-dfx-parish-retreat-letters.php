@@ -2243,10 +2243,11 @@ class DFX_Parish_Retreat_Letters {
 					
 					/* First image should stay on same page as sender name */
 					.file-content.multi-image:first-child {
-						page-break-before: auto;
+						page-break-before: avoid;  /* Keep with header above */
 						page-break-after: always;
-						page-break-inside: auto;  /* Allow breaking if needed, don't force to next page */
+						page-break-inside: avoid;  /* Don't break the image container */
 						/* Scale to fit remaining space after To/From header */
+						display: block;  /* Override flex to use simpler layout */
 						min-height: 0;
 						max-height: calc(100vh - 200px);
 					}

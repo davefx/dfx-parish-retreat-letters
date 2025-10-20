@@ -694,9 +694,13 @@ class ComprehensiveInfrastructureTest extends TestCase {
         $this->assertStringContainsString('max-height: calc(100vh - 200px);', $sourceContent,
             'First image container max-height should be calc(100vh - 200px) to fit below To/From header');
         
-        // Test 2b: Verify page-break-inside is overridden for first image
-        $this->assertStringContainsString('page-break-inside: auto;', $sourceContent,
-            'First image container should have page-break-inside: auto to override base class avoid value');
+        // Test 2b: Verify page-break-before is set to avoid for first image
+        $this->assertStringContainsString('page-break-before: avoid;', $sourceContent,
+            'First image container should have page-break-before: avoid to keep with header');
+        
+        // Test 2c: Verify display is changed to block for first image
+        $this->assertStringContainsString('display: block;', $sourceContent,
+            'First image container should use display: block instead of flex for simpler layout');
         
         // Test 3: Verify first image element has correct max-height
         // Should be calc(100vh - 150px) after the fix, not the old calc(100vh - 100px)

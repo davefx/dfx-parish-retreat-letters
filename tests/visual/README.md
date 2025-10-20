@@ -33,6 +33,9 @@ The test validates that after adding the "To:" field to the print header:
 @media print {
     /* Base class for all multi-image containers */
     .file-content.multi-image {
+        display: flex;
+        align-items: center;
+        justify-content: center;
         min-height: 100vh;  /* All images default to full page */
         page-break-after: always;
         page-break-inside: avoid;  /* Don't break container across pages */
@@ -40,9 +43,11 @@ The test validates that after adding the "To:" field to the print header:
     
     /* Override for first image to fit with header */
     .file-content.multi-image:first-child {
+        display: block;  /* Override flex - simpler layout for first image */
         min-height: 0;  /* Allow natural sizing */
         max-height: calc(100vh - 200px);  /* Constrain to fit below header */
-        page-break-inside: auto;  /* CRITICAL: Override avoid to allow on same page as header */
+        page-break-before: avoid;  /* Keep with header above */
+        page-break-inside: avoid;  /* Don't break the container */
     }
     
     .file-content.multi-image:first-child .file-image {
@@ -51,15 +56,17 @@ The test validates that after adding the "To:" field to the print header:
 }
 ```
 
-### Critical Fix: page-break-inside
+### Critical Fixes
 
-The most important part of this fix is `page-break-inside: auto` for the first image container. 
+1. **display: block** - The first image uses `display: block` instead of `display: flex`. This simplifies the layout and prevents flex-related issues with centering that could cause unexpected height calculations.
 
-**Why this matters**:
-- The base class has `page-break-inside: avoid` which tells the browser NOT to break the element across pages
-- When the first image container + header would exceed one page, the browser moves the ENTIRE container to page 2 to keep it intact
-- By setting `page-break-inside: auto` for the first child, we override this behavior
-- This allows the first image to stay on page 1 with the header, even if it would need to break (which it won't, due to our height constraints)
+2. **page-break-before: avoid** - Keeps the first image container with the header above it, preventing a break between the header and the image.
+
+3. **page-break-inside: avoid** - Ensures the image container itself isn't broken across pages (this is correct - we never want to break an image).
+
+4. **min-height: 0** - Allows the container to size naturally based on content, overriding the base class's `min-height: 100vh`.
+
+5. **max-height: calc(100vh - 200px)** - Constrains the container to fit within the remaining page space after the header.
 
 ### Troubleshooting
 
