@@ -103,7 +103,7 @@ class DFX_Parish_Retreat_Letters_ConfidentialMessage {
 		$attendants_table = $this->database->get_attendants_table();
 
 		$result = $wpdb->get_row( $wpdb->prepare(
-			"SELECT m.*, a.retreat_id 
+			"SELECT m.*, a.retreat_id, a.name as attendant_name, a.surnames as attendant_surnames 
 			 FROM `{$messages_table}` m
 			 INNER JOIN `{$attendants_table}` a ON m.attendant_id = a.id
 			 WHERE m.id = %d", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared

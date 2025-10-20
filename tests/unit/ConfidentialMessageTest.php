@@ -565,6 +565,57 @@ class ConfidentialMessageTest extends TestCase {
     }
 
     /**
+     * Test that get() method includes attendant name and surnames
+     */
+    public function testGetIncludesAttendantInformation() {
+        // Mock the database instance
+        $database_mock = $this->createMock('DFX_Parish_Retreat_Letters_Database');
+        $database_mock->method('get_messages_table')->willReturn('wp_dfx_messages');
+        $database_mock->method('get_attendants_table')->willReturn('wp_dfx_attendants');
+        
+        // Mock global wpdb
+        global $wpdb;
+        $wpdb = $this->createMock('wpdb');
+        
+        $message_with_attendant = (object) [
+            'id' => 1,
+            'attendant_id' => 1,
+            'sender_name' => 'Father John',
+            'encrypted_content' => 'encrypted_content_here',
+            'content_salt' => 'random_salt_123456',
+            'message_type' => 'personal',
+            'retreat_id' => 1,
+            'attendant_name' => 'John',
+            'attendant_surnames' => 'Doe',
+            'created_at' => '2024-01-01 12:00:00'
+        ];
+        
+        $wpdb->expects($this->once())
+             ->method('get_row')
+             ->willReturn($message_with_attendant);
+             
+        $wpdb->expects($this->once())
+             ->method('prepare')
+             ->willReturn("SELECT m.*, a.retreat_id, a.name as attendant_name, a.surnames as attendant_surnames FROM wp_dfx_messages m INNER JOIN wp_dfx_attendants a ON m.attendant_id = a.id WHERE m.id = 1");
+        
+        // Create message instance and inject mocked dependencies
+        $message = new DFX_Parish_Retreat_Letters_ConfidentialMessage();
+        
+        $reflection = new ReflectionClass($message);
+        $database_property = $reflection->getProperty('database');
+        $database_property->setAccessible(true);
+        $database_property->setValue($message, $database_mock);
+        
+        $result = $message->get(1);
+        
+        $this->assertNotNull($result);
+        $this->assertEquals(1, $result->id);
+        $this->assertEquals('John', $result->attendant_name);
+        $this->assertEquals('Doe', $result->attendant_surnames);
+        $this->assertEquals('Father John', $result->sender_name);
+    }
+
+    /**
      * Test get count by attendant ID
      */
     public function testGetCountByAttendant() {

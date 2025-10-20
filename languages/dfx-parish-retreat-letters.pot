@@ -1239,8 +1239,12 @@ msgstr ""
 msgid "Total messages: %d"
 msgstr ""
 
+#: includes/class-dfx-parish-retreat-letters.php:2289
+msgid "To"
+msgstr ""
+
 #: includes/class-admin.php:3803
-#: includes/class-dfx-parish-retreat-letters.php:2288
+#: includes/class-dfx-parish-retreat-letters.php:2300
 msgid "From"
 msgstr ""
 
