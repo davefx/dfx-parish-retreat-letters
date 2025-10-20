@@ -2300,7 +2300,6 @@ class DFX_Parish_Retreat_Letters {
 			}
 			
 			echo '</div>';
-			?>
 
 			if ( $message->message_type === 'text' ) {
 				// For text messages, display the content
