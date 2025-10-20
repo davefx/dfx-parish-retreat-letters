@@ -491,4 +491,104 @@ class AttendantTest extends TestCase {
             $this->markTestSkipped('search method not found');
         }
     }
+
+    /**
+     * Test CSV export includes message URL
+     */
+    public function testExportCsvDataIncludesMessageUrl() {
+        // Mock the database instance
+        $database_mock = $this->createMock('DFX_Parish_Retreat_Letters_Database');
+        $database_mock->method('get_attendants_table')->willReturn('wp_dfx_attendants');
+        
+        // Mock the retreat model
+        $retreat_mock = $this->createMock('DFX_Parish_Retreat_Letters_Retreat');
+        
+        // Create a mock retreat object with notes_enabled
+        $retreat_obj = (object) [
+            'id' => 1,
+            'name' => 'Test Retreat',
+            'notes_enabled' => false
+        ];
+        
+        $retreat_mock->method('get')->willReturn($retreat_obj);
+        
+        // Mock global wpdb
+        global $wpdb;
+        $wpdb = $this->createMock('wpdb');
+        
+        // Create mock attendants with message_url_token
+        $mock_attendants = [
+            (object) [
+                'id' => 1,
+                'retreat_id' => 1,
+                'name' => 'John',
+                'surnames' => 'Doe',
+                'date_of_birth' => '1980-01-01',
+                'emergency_contact_name' => 'Jane',
+                'emergency_contact_surname' => 'Doe',
+                'emergency_contact_phone' => '+1234567890',
+                'emergency_contact_email' => 'jane@example.com',
+                'message_url_token' => 'test_token_123',
+                'notes' => ''
+            ],
+            (object) [
+                'id' => 2,
+                'retreat_id' => 1,
+                'name' => 'Alice',
+                'surnames' => 'Smith',
+                'date_of_birth' => '1985-05-15',
+                'emergency_contact_name' => 'Bob',
+                'emergency_contact_surname' => 'Smith',
+                'emergency_contact_phone' => '+0987654321',
+                'emergency_contact_email' => 'bob@example.com',
+                'message_url_token' => '',  // Empty token
+                'notes' => ''
+            ]
+        ];
+        
+        $wpdb->method('get_results')->willReturn($mock_attendants);
+        $wpdb->method('prepare')->willReturn('SELECT * FROM wp_dfx_attendants WHERE retreat_id = 1');
+        
+        // Mock home_url function
+        Functions\when('home_url')->alias(function($path) {
+            return 'https://example.com' . $path;
+        });
+        
+        // Mock wp_parse_args function
+        Functions\when('wp_parse_args')->alias(function($args, $defaults) {
+            return array_merge($defaults, $args);
+        });
+        
+        // Create attendant instance and inject mocked database
+        $attendant = new DFX_Parish_Retreat_Letters_Attendant();
+        
+        $reflection = new ReflectionClass($attendant);
+        $database_property = $reflection->getProperty('database');
+        $database_property->setAccessible(true);
+        $database_property->setValue($attendant, $database_mock);
+        
+        // Call export_csv_data
+        $csv_data = $attendant->export_csv_data(1);
+        
+        // Verify headers include Message URL
+        $this->assertIsArray($csv_data);
+        $this->assertArrayHasKey('headers', $csv_data);
+        $this->assertArrayHasKey('rows', $csv_data);
+        $this->assertContains('Message URL', $csv_data['headers']);
+        
+        // Verify Message URL is in the correct position (after Emergency Contact Email)
+        $header_index = array_search('Message URL', $csv_data['headers']);
+        $this->assertNotFalse($header_index, 'Message URL header should be present');
+        
+        // Verify rows contain message URLs
+        $this->assertCount(2, $csv_data['rows']);
+        
+        // First attendant has a token, should have a full URL
+        $first_row = $csv_data['rows'][0];
+        $this->assertEquals('https://example.com/messages/test_token_123', $first_row[$header_index]);
+        
+        // Second attendant has no token, should have empty string
+        $second_row = $csv_data['rows'][1];
+        $this->assertEquals('', $second_row[$header_index]);
+    }
 }
