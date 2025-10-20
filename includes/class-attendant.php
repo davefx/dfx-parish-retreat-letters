@@ -337,17 +337,24 @@ class DFX_Parish_Retreat_Letters_Attendant {
 		$retreat_model = new DFX_Parish_Retreat_Letters_Retreat();
 		$retreat = $retreat_model->get( $retreat_id );
 		$notes_enabled = ! empty( $retreat->notes_enabled );
+		
+		// Check if emergency contacts are defined for this retreat
+		$has_emergency_contacts = $this->has_emergency_contacts( $retreat_id );
 
 		$headers = array(
 			__( 'Name', 'dfx-parish-retreat-letters' ),
 			__( 'Surnames', 'dfx-parish-retreat-letters' ),
 			__( 'Date of Birth', 'dfx-parish-retreat-letters' ),
-			__( 'Emergency Contact Name', 'dfx-parish-retreat-letters' ),
-			__( 'Emergency Contact Surname', 'dfx-parish-retreat-letters' ),
-			__( 'Emergency Contact Phone', 'dfx-parish-retreat-letters' ),
-			__( 'Emergency Contact Email', 'dfx-parish-retreat-letters' ),
-			__( 'Message URL', 'dfx-parish-retreat-letters' ),
 		);
+		
+		if ( $has_emergency_contacts ) {
+			$headers[] = __( 'Emergency Contact Name', 'dfx-parish-retreat-letters' );
+			$headers[] = __( 'Emergency Contact Surname', 'dfx-parish-retreat-letters' );
+			$headers[] = __( 'Emergency Contact Phone', 'dfx-parish-retreat-letters' );
+			$headers[] = __( 'Emergency Contact Email', 'dfx-parish-retreat-letters' );
+		}
+		
+		$headers[] = __( 'Message URL', 'dfx-parish-retreat-letters' );
 		
 		if ( $notes_enabled ) {
 			$headers[] = __( 'Notes', 'dfx-parish-retreat-letters' );
@@ -364,12 +371,16 @@ class DFX_Parish_Retreat_Letters_Attendant {
 				$attendant->name,
 				$attendant->surnames,
 				$attendant->date_of_birth,
-				$attendant->emergency_contact_name,
-				$attendant->emergency_contact_surname,
-				$attendant->emergency_contact_phone,
-				$attendant->emergency_contact_email,
-				$message_url,
 			);
+			
+			if ( $has_emergency_contacts ) {
+				$row[] = $attendant->emergency_contact_name;
+				$row[] = $attendant->emergency_contact_surname;
+				$row[] = $attendant->emergency_contact_phone;
+				$row[] = $attendant->emergency_contact_email;
+			}
+			
+			$row[] = $message_url;
 			
 			if ( $notes_enabled ) {
 				$row[] = $attendant->notes ?? '';
@@ -416,15 +427,31 @@ class DFX_Parish_Retreat_Letters_Attendant {
 		$admin_manager = DFX_Parish_Retreat_Letters_Admin::get_instance();
 
 
-		// Check required fields
+		// Check required fields (name, surnames, date of birth are always required)
 		if ( empty( $data['retreat_id'] ) || empty( $data['name'] ) || empty( $data['surnames'] ) || 
-			 empty( $data['date_of_birth'] ) || empty( $data['emergency_contact_name'] ) || 
-			 empty( $data['emergency_contact_phone'] ) ) {
+			 empty( $data['date_of_birth'] ) ) {
 			$admin_manager->add_admin_notice(
-				__( 'All fields are required.', 'dfx-parish-retreat-letters' ),
+				__( 'Name, surnames, and date of birth are required fields.', 'dfx-parish-retreat-letters' ),
 				'error'
 			);
 			return false;
+		}
+		
+		// Emergency contact is required only if at least one field is provided
+		// or if other attendants in this retreat already have emergency contacts
+		$has_any_emergency_contact = ! empty( $data['emergency_contact_name'] ) || 
+			! empty( $data['emergency_contact_phone'] );
+		$retreat_has_emergency_contacts = $this->has_emergency_contacts( $data['retreat_id'] );
+		
+		if ( $has_any_emergency_contact || $retreat_has_emergency_contacts ) {
+			// If providing emergency contact or retreat already has them, both name and phone are required
+			if ( empty( $data['emergency_contact_name'] ) || empty( $data['emergency_contact_phone'] ) ) {
+				$admin_manager->add_admin_notice(
+					__( 'Emergency contact name and phone are required when emergency contact information is provided.', 'dfx-parish-retreat-letters' ),
+					'error'
+				);
+				return false;
+			}
 		}
 
 		// Validate date format
@@ -436,8 +463,8 @@ class DFX_Parish_Retreat_Letters_Attendant {
 			return false;
 		}
 
-		// Basic phone number validation (allows various formats)
-		if ( ! preg_match( '/^[\d\s\-\+\(\)\.]+$/', $data['emergency_contact_phone'] ) ) {
+		// Basic phone number validation (allows various formats) - only if phone is provided
+		if ( ! empty( $data['emergency_contact_phone'] ) && ! preg_match( '/^[\d\s\-\+\(\)\.]+$/', $data['emergency_contact_phone'] ) ) {
 			$admin_manager->add_admin_notice(
 				__( 'Invalid emergency contact phone number format.', 'dfx-parish-retreat-letters' ),
 				'error'
@@ -564,5 +591,26 @@ class DFX_Parish_Retreat_Letters_Attendant {
 		); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
 
 		return $result !== false;
+	}
+
+	/**
+	 * Check if any attendants in a retreat have emergency contact information defined.
+	 *
+	 * @since 1.7.0
+	 * @param int $retreat_id Retreat ID.
+	 * @return bool True if at least one attendant has emergency contact, false otherwise.
+	 */
+	public function has_emergency_contacts( $retreat_id ) {
+		global $wpdb;
+
+		$table_name = $this->database->get_attendants_table();
+		$count = $wpdb->get_var( $wpdb->prepare(
+			"SELECT COUNT(*) FROM {$table_name} 
+			WHERE retreat_id = %d 
+			AND (emergency_contact_name != '' OR emergency_contact_phone != '')", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			$retreat_id
+		) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
+
+		return (bool) $count;
 	}
 }

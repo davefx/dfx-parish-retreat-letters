@@ -3138,6 +3138,9 @@ class DFX_Parish_Retreat_Letters_Admin {
 	 * @param int    $total_items Total number of items.
 	 */
 	private function render_attendants_list_page( $retreat, $attendants, $search, $page_num, $total_pages, $total_items ) {
+		// Check if this retreat has emergency contacts defined
+		$has_emergency_contacts = $this->attendant_model->has_emergency_contacts( $retreat->id );
+		
 		?>
 		<div class="wrap">
 			<h1 class="wp-heading-inline">
@@ -3210,7 +3213,9 @@ class DFX_Parish_Retreat_Letters_Admin {
 							<th scope="col" class="manage-column"><?php esc_html_e( 'Name', 'dfx-parish-retreat-letters' ); ?></th>
 							<th scope="col" class="manage-column"><?php esc_html_e( 'Surnames', 'dfx-parish-retreat-letters' ); ?></th>
 							<th scope="col" class="manage-column"><?php esc_html_e( 'Date of Birth', 'dfx-parish-retreat-letters' ); ?></th>
+							<?php if ( $has_emergency_contacts ) : ?>
 							<th scope="col" class="manage-column"><?php esc_html_e( 'Emergency Contact', 'dfx-parish-retreat-letters' ); ?></th>
+							<?php endif; ?>
 							<?php if ( ! empty( $retreat->notes_enabled ) ) : ?>
 							<th scope="col" class="manage-column"><?php esc_html_e( 'Notes', 'dfx-parish-retreat-letters' ); ?></th>
 							<?php endif; ?>
@@ -3237,6 +3242,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 									</td>
 									<td><?php echo esc_html( $attendant->surnames ); ?></td>
 									<td><?php echo esc_html( date_i18n( get_option( 'date_format' ), strtotime( $attendant->date_of_birth ) ) ); ?></td>
+									<?php if ( $has_emergency_contacts ) : ?>
 									<td>
 										<?php echo esc_html( $attendant->emergency_contact_name . ' ' . $attendant->emergency_contact_surname ); ?><br>
 										<small><?php echo esc_html( $attendant->emergency_contact_phone ); ?></small>
@@ -3244,6 +3250,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 											<br><small><?php echo esc_html( $attendant->emergency_contact_email ); ?></small>
 										<?php endif; ?>
 									</td>
+									<?php endif; ?>
 									<?php if ( ! empty( $retreat->notes_enabled ) ) : ?>
 									<td>
 										<?php
@@ -3361,6 +3368,10 @@ class DFX_Parish_Retreat_Letters_Admin {
 	private function render_attendant_add_edit_page( $retreat, $attendant = null ) {
 		$is_edit = ! is_null( $attendant );
 		$title = $is_edit ? __( 'Edit Attendant', 'dfx-parish-retreat-letters' ) : __( 'Add New Attendant', 'dfx-parish-retreat-letters' );
+		
+		// Check if this retreat has emergency contacts defined
+		$has_emergency_contacts = $this->attendant_model->has_emergency_contacts( $retreat->id );
+		
 		?>
 		<div class="wrap">
 			<h1><?php echo esc_html( $title ); ?></h1>
@@ -3404,6 +3415,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 								<input type="date" id="date_of_birth" name="date_of_birth" value="<?php echo esc_attr( $attendant->date_of_birth ?? '' ); ?>" required>
 							</td>
 						</tr>
+						<?php if ( $has_emergency_contacts ) : ?>
 						<tr>
 							<th scope="row">
 								<label for="emergency_contact_name"><?php esc_html_e( 'Emergency Contact Name', 'dfx-parish-retreat-letters' ); ?> <span class="description">(<?php esc_html_e( 'required', 'dfx-parish-retreat-letters' ); ?>)</span></label>
@@ -3438,6 +3450,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 								<p class="description"><?php esc_html_e( 'Enter email address for emergency contact.', 'dfx-parish-retreat-letters' ); ?></p>
 							</td>
 						</tr>
+						<?php endif; ?>
 						<?php if ( ! empty( $retreat->notes_enabled ) ) : ?>
 						<tr>
 							<th scope="row">
