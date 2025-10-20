@@ -614,4 +614,216 @@ class ConfidentialMessageTest extends TestCase {
         $this->assertEquals('Doe', $result->attendant_surnames);
         $this->assertEquals('Father John', $result->sender_name);
     }
+
+    /**
+     * Test get count by attendant ID
+     */
+    public function testGetCountByAttendant() {
+        // Mock the database instance
+        $database_mock = $this->createMock('DFX_Parish_Retreat_Letters_Database');
+        $database_mock->method('get_messages_table')->willReturn('wp_dfx_messages');
+        $database_mock->method('get_attendants_table')->willReturn('wp_dfx_attendants');
+        
+        // Mock global wpdb
+        global $wpdb;
+        $wpdb = $this->createMock('wpdb');
+        $wpdb->method('esc_like')->willReturnCallback(function($text) {
+            return addslashes($text);
+        });
+        $wpdb->expects($this->once())
+             ->method('get_var')
+             ->willReturn('5');
+        $wpdb->expects($this->once())
+             ->method('prepare')
+             ->willReturn("SELECT COUNT(*) FROM wp_dfx_messages m INNER JOIN wp_dfx_attendants a ON m.attendant_id = a.id WHERE m.attendant_id = 1");
+        
+        // Create message instance and inject mocked database
+        $message = new DFX_Parish_Retreat_Letters_ConfidentialMessage();
+        
+        $reflection = new ReflectionClass($message);
+        $database_property = $reflection->getProperty('database');
+        $database_property->setAccessible(true);
+        $database_property->setValue($message, $database_mock);
+        
+        $count = $message->get_count_by_attendant(1);
+        $this->assertEquals(5, $count);
+    }
+
+    /**
+     * Test get non-printed count by attendant ID
+     */
+    public function testGetNonPrintedCountByAttendant() {
+        // Mock the database instance
+        $database_mock = $this->createMock('DFX_Parish_Retreat_Letters_Database');
+        $database_mock->method('get_messages_table')->willReturn('wp_dfx_messages');
+        $database_mock->method('get_attendants_table')->willReturn('wp_dfx_attendants');
+        $database_mock->method('get_message_print_log_table')->willReturn('wp_dfx_message_print_log');
+        
+        // Mock global wpdb
+        global $wpdb;
+        $wpdb = $this->createMock('wpdb');
+        $wpdb->method('esc_like')->willReturnCallback(function($text) {
+            return addslashes($text);
+        });
+        $wpdb->expects($this->once())
+             ->method('get_var')
+             ->willReturn('2');
+        $wpdb->expects($this->once())
+             ->method('prepare')
+             ->willReturn("SELECT COUNT(*) FROM wp_dfx_messages m INNER JOIN wp_dfx_attendants a ON m.attendant_id = a.id LEFT JOIN wp_dfx_message_print_log p ON m.id = p.message_id WHERE m.attendant_id = 1 AND p.id IS NULL");
+        
+        // Create message instance and inject mocked database
+        $message = new DFX_Parish_Retreat_Letters_ConfidentialMessage();
+        
+        $reflection = new ReflectionClass($message);
+        $database_property = $reflection->getProperty('database');
+        $database_property->setAccessible(true);
+        $database_property->setValue($message, $database_mock);
+        
+        $count = $message->get_non_printed_count_by_attendant(1);
+        $this->assertEquals(2, $count);
+    }
+
+    /**
+     * Test get non-printed count with message type filter
+     */
+    public function testGetNonPrintedCountWithMessageTypeFilter() {
+        // Mock the database instance
+        $database_mock = $this->createMock('DFX_Parish_Retreat_Letters_Database');
+        $database_mock->method('get_messages_table')->willReturn('wp_dfx_messages');
+        $database_mock->method('get_attendants_table')->willReturn('wp_dfx_attendants');
+        $database_mock->method('get_message_print_log_table')->willReturn('wp_dfx_message_print_log');
+        
+        // Mock global wpdb
+        global $wpdb;
+        $wpdb = $this->createMock('wpdb');
+        $wpdb->method('esc_like')->willReturnCallback(function($text) {
+            return addslashes($text);
+        });
+        $wpdb->expects($this->once())
+             ->method('get_var')
+             ->willReturn('1');
+        $wpdb->expects($this->once())
+             ->method('prepare')
+             ->willReturn("SELECT COUNT(*) FROM wp_dfx_messages m INNER JOIN wp_dfx_attendants a ON m.attendant_id = a.id LEFT JOIN wp_dfx_message_print_log p ON m.id = p.message_id WHERE m.attendant_id = 1 AND m.message_type = 'personal' AND p.id IS NULL");
+        
+        // Create message instance and inject mocked database
+        $message = new DFX_Parish_Retreat_Letters_ConfidentialMessage();
+        
+        $reflection = new ReflectionClass($message);
+        $database_property = $reflection->getProperty('database');
+        $database_property->setAccessible(true);
+        $database_property->setValue($message, $database_mock);
+        
+        $count = $message->get_non_printed_count_by_attendant(1, ['message_type' => 'personal']);
+        $this->assertEquals(1, $count);
+    }
+
+    /**
+     * Test get non-printed count with search filter
+     */
+    public function testGetNonPrintedCountWithSearchFilter() {
+        // Mock the database instance
+        $database_mock = $this->createMock('DFX_Parish_Retreat_Letters_Database');
+        $database_mock->method('get_messages_table')->willReturn('wp_dfx_messages');
+        $database_mock->method('get_attendants_table')->willReturn('wp_dfx_attendants');
+        $database_mock->method('get_message_print_log_table')->willReturn('wp_dfx_message_print_log');
+        
+        // Mock global wpdb
+        global $wpdb;
+        $wpdb = $this->createMock('wpdb');
+        $wpdb->method('esc_like')->willReturnCallback(function($text) {
+            return addslashes($text);
+        });
+        $wpdb->expects($this->once())
+             ->method('get_var')
+             ->willReturn('1');
+        $wpdb->expects($this->once())
+             ->method('prepare')
+             ->willReturn("SELECT COUNT(*) FROM wp_dfx_messages m INNER JOIN wp_dfx_attendants a ON m.attendant_id = a.id LEFT JOIN wp_dfx_message_print_log p ON m.id = p.message_id WHERE m.attendant_id = 1 AND (a.name LIKE '%John%' OR a.surnames LIKE '%John%' OR m.sender_name LIKE '%John%') AND p.id IS NULL");
+        
+        // Create message instance and inject mocked database
+        $message = new DFX_Parish_Retreat_Letters_ConfidentialMessage();
+        
+        $reflection = new ReflectionClass($message);
+        $database_property = $reflection->getProperty('database');
+        $database_property->setAccessible(true);
+        $database_property->setValue($message, $database_mock);
+        
+        $count = $message->get_non_printed_count_by_attendant(1, ['search' => 'John']);
+        $this->assertEquals(1, $count);
+    }
+
+    /**
+     * Test get non-printed count returns zero when all messages are printed
+     */
+    public function testGetNonPrintedCountReturnsZeroWhenAllPrinted() {
+        // Mock the database instance
+        $database_mock = $this->createMock('DFX_Parish_Retreat_Letters_Database');
+        $database_mock->method('get_messages_table')->willReturn('wp_dfx_messages');
+        $database_mock->method('get_attendants_table')->willReturn('wp_dfx_attendants');
+        $database_mock->method('get_message_print_log_table')->willReturn('wp_dfx_message_print_log');
+        
+        // Mock global wpdb
+        global $wpdb;
+        $wpdb = $this->createMock('wpdb');
+        $wpdb->method('esc_like')->willReturnCallback(function($text) {
+            return addslashes($text);
+        });
+        $wpdb->expects($this->once())
+             ->method('get_var')
+             ->willReturn('0');
+        $wpdb->expects($this->once())
+             ->method('prepare')
+             ->willReturn("SELECT COUNT(*) FROM wp_dfx_messages m INNER JOIN wp_dfx_attendants a ON m.attendant_id = a.id LEFT JOIN wp_dfx_message_print_log p ON m.id = p.message_id WHERE m.attendant_id = 1 AND p.id IS NULL");
+        
+        // Create message instance and inject mocked database
+        $message = new DFX_Parish_Retreat_Letters_ConfidentialMessage();
+        
+        $reflection = new ReflectionClass($message);
+        $database_property = $reflection->getProperty('database');
+        $database_property->setAccessible(true);
+        $database_property->setValue($message, $database_mock);
+        
+        $count = $message->get_non_printed_count_by_attendant(1);
+        $this->assertEquals(0, $count);
+    }
+
+    /**
+     * Test get non-printed count returns integer type
+     */
+    public function testGetNonPrintedCountReturnsInteger() {
+        // Mock the database instance
+        $database_mock = $this->createMock('DFX_Parish_Retreat_Letters_Database');
+        $database_mock->method('get_messages_table')->willReturn('wp_dfx_messages');
+        $database_mock->method('get_attendants_table')->willReturn('wp_dfx_attendants');
+        $database_mock->method('get_message_print_log_table')->willReturn('wp_dfx_message_print_log');
+        
+        // Mock global wpdb - return string like real database would
+        global $wpdb;
+        $wpdb = $this->createMock('wpdb');
+        $wpdb->method('esc_like')->willReturnCallback(function($text) {
+            return addslashes($text);
+        });
+        $wpdb->expects($this->once())
+             ->method('get_var')
+             ->willReturn('3'); // Return string, not integer
+        $wpdb->expects($this->once())
+             ->method('prepare')
+             ->willReturn("SELECT COUNT(*) FROM wp_dfx_messages m INNER JOIN wp_dfx_attendants a ON m.attendant_id = a.id LEFT JOIN wp_dfx_message_print_log p ON m.id = p.message_id WHERE m.attendant_id = 1 AND p.id IS NULL");
+        
+        // Create message instance and inject mocked database
+        $message = new DFX_Parish_Retreat_Letters_ConfidentialMessage();
+        
+        $reflection = new ReflectionClass($message);
+        $database_property = $reflection->getProperty('database');
+        $database_property->setAccessible(true);
+        $database_property->setValue($message, $database_mock);
+        
+        $count = $message->get_non_printed_count_by_attendant(1);
+        
+        // Verify it returns an integer, not a string
+        $this->assertIsInt($count);
+        $this->assertEquals(3, $count);
+    }
 }
