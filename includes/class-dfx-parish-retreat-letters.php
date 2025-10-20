@@ -2245,9 +2245,9 @@ class DFX_Parish_Retreat_Letters {
 					.file-content.multi-image:first-child {
 						page-break-before: auto;
 						page-break-after: always;
-						/* Scale to fit remaining space after sender info */
-						min-height: calc(100vh - 150px);
-						max-height: calc(100vh - 150px);
+						/* Scale to fit remaining space after To/From header */
+						min-height: calc(100vh - 200px);
+						max-height: calc(100vh - 200px);
 					}
 					
 					/* Last image should not force a page break after */
@@ -2266,9 +2266,9 @@ class DFX_Parish_Retreat_Letters {
 						object-fit: contain;
 					}
 					
-					/* First image gets special scaling to fit under sender name */
+					/* First image gets special scaling to fit under To/From header */
 					.file-content.multi-image:first-child .file-image {
-						max-height: calc(100vh - 100px);
+						max-height: calc(100vh - 150px);
 						max-width: 100vw;
 					}
 					
