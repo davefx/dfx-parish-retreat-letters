@@ -663,7 +663,16 @@ class DFX_Parish_Retreat_Letters {
 						<label for="message_files"><?php esc_html_e( 'Attach Files', 'dfx-parish-retreat-letters' ); ?> <span class="required">*</span></label>
 						<input type="file" id="message_files" name="message_files[]" multiple accept=".pdf,.doc,.docx,.txt,.jpg,.jpeg,.png,.gif">
 						<p class="dfx-help-text">
-							<?php esc_html_e( 'Allowed file types: PDF, DOC, DOCX, TXT, JPG, PNG, GIF. Maximum 5MB per file.', 'dfx-parish-retreat-letters' ); ?>
+							<?php
+							$max_per_file = $this->security->get_max_upload_size();
+							$max_combined = $this->security->get_max_combined_upload_size();
+							printf(
+								/* translators: %1$s: maximum size per file, %2$s: maximum combined size */
+								esc_html__( 'Allowed file types: PDF, DOC, DOCX, TXT, JPG, PNG, GIF. Maximum %1$s per file, %2$s total.', 'dfx-parish-retreat-letters' ),
+								esc_html( $max_per_file ),
+								esc_html( $max_combined )
+							);
+							?>
 						</p>
 						<div id="dfx-file-list"></div>
 					</div>
@@ -1871,11 +1880,13 @@ class DFX_Parish_Retreat_Letters {
 				// Delete the message since the upload was incomplete
 				$message_model->delete( $message_id );
 
+				$max_combined_size = $this->security->get_max_combined_upload_size();
 				$error_message = sprintf(
-					/* translators: %1$d: number of files received, %2$d: number of files expected */
-					__( 'Only %1$d of %2$d files were received. The total file size likely exceeds the server upload limit. Please reduce the file sizes or upload fewer files at once.', 'dfx-parish-retreat-letters' ),
+					/* translators: %1$d: number of files received, %2$d: number of files expected, %3$s: maximum combined upload size */
+					__( 'Only %1$d of %2$d files were received. The total file size likely exceeds the server upload limit of %3$s. Please reduce the file sizes or upload fewer files at once.', 'dfx-parish-retreat-letters' ),
 					$received_file_count,
-					$expected_file_count
+					$expected_file_count,
+					$max_combined_size
 				);
 
 				wp_send_json_error( array( 'message' => $error_message ) );
@@ -1911,7 +1922,12 @@ class DFX_Parish_Retreat_Letters {
 				if ( ! empty( $upload_result['errors'] ) ) {
 					$error_message .= implode( ' ', $upload_result['errors'] );
 				} else {
-					$error_message .= __( 'Some files may be too large or the total size exceeds the server limit. Please reduce file sizes or upload fewer files.', 'dfx-parish-retreat-letters' );
+					$max_combined_size = $this->security->get_max_combined_upload_size();
+					$error_message .= sprintf(
+						/* translators: %s: maximum combined upload size */
+						__( 'Some files may be too large or the total size exceeds the server limit of %s. Please reduce file sizes or upload fewer files.', 'dfx-parish-retreat-letters' ),
+						$max_combined_size
+					);
 				}
 
 				wp_send_json_error( array( 'message' => $error_message ) );
