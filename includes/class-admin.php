@@ -5116,7 +5116,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 								<label for="user_id"><?php esc_html_e( 'Select User', 'dfx-parish-retreat-letters' ); ?></label>
 							</th>
 							<td>
-								<select name="user_id" id="user_id" class="dfx-user-select" style="width: 300px;" required>
+								<select name="user_id" id="user_id" class="dfx-prl-user-select" style="width: 300px;" required>
 									<option value=""><?php esc_html_e( 'Choose a user...', 'dfx-parish-retreat-letters' ); ?></option>
 									<?php foreach ( $non_admin_users as $user ) : ?>
 										<?php if ( ! $user->has_cap( 'manage_retreat_plugin' ) ) : ?>
@@ -5148,7 +5148,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 			jQuery(document).ready(function($) {
 				// Initialize Select2 for user selection
 				if ($.fn.select2) {
-					$('.dfx-user-select').select2({
+					$('.dfx-prl-user-select').select2({
 						placeholder: '<?php esc_html_e( 'Choose a user...', 'dfx-parish-retreat-letters' ); ?>',
 						allowClear: true,
 						width: '100%'

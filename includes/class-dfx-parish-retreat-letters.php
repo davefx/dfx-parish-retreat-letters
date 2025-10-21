@@ -598,8 +598,8 @@ class DFX_Parish_Retreat_Letters {
 	 */
 	private function render_message_form( $attendant, $retreat = null ) {
 		?>
-		<div class="dfx-message-form-container">
-			<div class="dfx-message-form-content">
+		<div class="dfx-prl-message-form-container">
+			<div class="dfx-prl-message-form-content">
 				<h1><?php esc_html_e( 'Send a Confidential Message', 'dfx-parish-retreat-letters' ); ?></h1>
 
 				<div class="dfx-prl-retreat-info">
@@ -610,14 +610,14 @@ class DFX_Parish_Retreat_Letters {
 				</div>
 
 				<?php if ( ! empty( $attendant->custom_message ) ) : ?>
-				<div class="dfx-custom-message">
+				<div class="dfx-prl-custom-message">
 					<?php echo wp_kses_post( wpautop( $attendant->custom_message ) ); ?>
 				</div>
 				<?php endif; ?>
 
-				<div id="dfx-message-notices"></div>
+				<div id="dfx-prl-message-notices"></div>
 
-				<form id="dfx-message-form" enctype="multipart/form-data">
+				<form id="dfx-prl-message-form" enctype="multipart/form-data">
 					<?php wp_nonce_field( 'dfx_prl_submit_message', 'message_nonce' ); ?>
 					<input type="hidden" name="action" value="dfx_prl_submit_message">
 					<input type="hidden" name="attendant_id" value="<?php echo esc_attr( $attendant->id ); ?>">
@@ -627,9 +627,9 @@ class DFX_Parish_Retreat_Letters {
 						<input type="text" id="sender_name" name="sender_name" required maxlength="255" placeholder="<?php esc_attr_e( 'Enter your name', 'dfx-parish-retreat-letters' ); ?>">
 					</div>
 
-					<div class="dfx-message-mode">
+					<div class="dfx-prl-message-mode">
 						<h3><?php esc_html_e( 'Choose message type:', 'dfx-parish-retreat-letters' ); ?></h3>
-						<div class="dfx-mode-selector">
+						<div class="dfx-prl-mode-selector">
 							<label>
 								<input type="radio" name="message_mode" value="text" checked>
 								<?php esc_html_e( 'Text Message', 'dfx-parish-retreat-letters' ); ?>
@@ -641,10 +641,10 @@ class DFX_Parish_Retreat_Letters {
 						</div>
 					</div>
 
-					<div class="dfx-prl-form-group" id="dfx-text-group">
+					<div class="dfx-prl-form-group" id="dfx-prl-text-group">
 						<label for="message_content"><?php esc_html_e( 'Your Message', 'dfx-parish-retreat-letters' ); ?> <span class="required">*</span></label>
-						<div id="dfx-editor-container">
-							<div class="dfx-editor-toolbar">
+						<div id="dfx-prl-editor-container">
+							<div class="dfx-prl-editor-toolbar">
 								<button type="button" data-command="bold" title="<?php esc_attr_e( 'Bold', 'dfx-parish-retreat-letters' ); ?>"><strong>B</strong></button>
 								<button type="button" data-command="italic" title="<?php esc_attr_e( 'Italic', 'dfx-parish-retreat-letters' ); ?>"><em>I</em></button>
 								<button type="button" data-command="underline" title="<?php esc_attr_e( 'Underline', 'dfx-parish-retreat-letters' ); ?>"><u>U</u></button>
@@ -653,16 +653,16 @@ class DFX_Parish_Retreat_Letters {
 								<button type="button" data-command="undo" title="<?php esc_attr_e( 'Undo', 'dfx-parish-retreat-letters' ); ?>"><?php esc_html_e( 'Undo', 'dfx-parish-retreat-letters' ); ?></button>
 								<button type="button" data-command="redo" title="<?php esc_attr_e( 'Redo', 'dfx-parish-retreat-letters' ); ?>"><?php esc_html_e( 'Redo', 'dfx-parish-retreat-letters' ); ?></button>
 							</div>
-							<div id="message_content" contenteditable="true" class="dfx-editor" placeholder="<?php esc_attr_e( 'Write your confidential message here...', 'dfx-parish-retreat-letters' ); ?>"></div>
+							<div id="message_content" contenteditable="true" class="dfx-prl-editor" placeholder="<?php esc_attr_e( 'Write your confidential message here...', 'dfx-parish-retreat-letters' ); ?>"></div>
 							<textarea id="message_content_hidden" name="message_content" style="display: none;"></textarea>
 						</div>
-						<p class="dfx-help-text"><?php esc_html_e( 'You can use the toolbar to format your text, create lists, and paste images. HTML is allowed but will be filtered for security.', 'dfx-parish-retreat-letters' ); ?></p>
+						<p class="dfx-prl-help-text"><?php esc_html_e( 'You can use the toolbar to format your text, create lists, and paste images. HTML is allowed but will be filtered for security.', 'dfx-parish-retreat-letters' ); ?></p>
 					</div>
 
-					<div class="dfx-prl-form-group" id="dfx-file-group" style="display: none;">
+					<div class="dfx-prl-form-group" id="dfx-prl-file-group" style="display: none;">
 						<label for="message_files"><?php esc_html_e( 'Attach Files', 'dfx-parish-retreat-letters' ); ?> <span class="required">*</span></label>
 						<input type="file" id="message_files" name="message_files[]" multiple accept=".pdf,.doc,.docx,.txt,.jpg,.jpeg,.png,.gif">
-						<p class="dfx-help-text">
+						<p class="dfx-prl-help-text">
 							<?php
 							$max_per_file = $this->security->get_max_upload_size();
 							$max_combined = $this->security->get_max_combined_upload_size();
@@ -674,13 +674,13 @@ class DFX_Parish_Retreat_Letters {
 							);
 							?>
 						</p>
-						<div id="dfx-file-list"></div>
+						<div id="dfx-prl-file-list"></div>
 					</div>
 
 					<div class="dfx-prl-form-group">
-						<div class="dfx-captcha-container">
+						<div class="dfx-prl-captcha-container">
 							<label for="captcha_answer"><?php esc_html_e( 'Security Check', 'dfx-parish-retreat-letters' ); ?> <span class="required">*</span></label>
-							<div id="dfx-captcha-question"></div>
+							<div id="dfx-prl-captcha-question"></div>
 							<input type="text" id="captcha_answer" name="captcha_answer" required autocomplete="off" placeholder="<?php esc_html_e( 'Please enter the result', 'dfx-parish-retreat-letters' );?>">
 							<input type="hidden" id="captcha_token" name="captcha_token">
 						</div>
@@ -688,13 +688,13 @@ class DFX_Parish_Retreat_Letters {
 
 					<?php if ( ! empty( $attendant->disclaimer_text ) ) : ?>
 					<div class="dfx-prl-form-group">
-						<div class="dfx-disclaimer-container">
+						<div class="dfx-prl-disclaimer-container">
 							<h3><?php esc_html_e( 'Legal Disclaimer', 'dfx-parish-retreat-letters' ); ?></h3>
-							<div class="dfx-disclaimer-text">
+							<div class="dfx-prl-disclaimer-text">
 								<?php echo wp_kses_post( wpautop( $attendant->disclaimer_text ) ); ?>
 							</div>
-							<div class="dfx-disclaimer-acceptance">
-								<label class="dfx-checkbox-label">
+							<div class="dfx-prl-disclaimer-acceptance">
+								<label class="dfx-prl-checkbox-label">
 									<input type="checkbox" id="disclaimer_accepted" name="disclaimer_accepted" required>
 									<span class="required">*</span>
 									<?php
@@ -710,9 +710,9 @@ class DFX_Parish_Retreat_Letters {
 					<?php endif; ?>
 
 					<div class="dfx-prl-form-group">
-						<button type="submit" id="dfx-submit-btn" class="dfx-submit-button">
-							<span class="dfx-submit-text"><?php esc_html_e( 'Send Confidential Message', 'dfx-parish-retreat-letters' ); ?></span>
-							<span class="dfx-loading-spinner" style="display: none;">
+						<button type="submit" id="dfx-prl-submit-btn" class="dfx-prl-submit-button">
+							<span class="dfx-prl-submit-text"><?php esc_html_e( 'Send Confidential Message', 'dfx-parish-retreat-letters' ); ?></span>
+							<span class="dfx-prl-loading-spinner" style="display: none;">
 								<?php esc_html_e( 'Sending...', 'dfx-parish-retreat-letters' ); ?>
 							</span>
 						</button>
@@ -733,7 +733,7 @@ class DFX_Parish_Retreat_Letters {
 		</div>
 
 		<style>
-		.dfx-message-form-container {
+		.dfx-prl-message-form-container {
 			max-width: 800px;
 			margin: 2rem auto;
 			padding: 2rem;
@@ -742,7 +742,7 @@ class DFX_Parish_Retreat_Letters {
 			border-radius: 8px;
 		}
 
-		.dfx-message-form-content h1 {
+		.dfx-prl-message-form-content h1 {
 			color: #333;
 			margin-bottom: 1rem;
 			text-align: center;
@@ -762,7 +762,7 @@ class DFX_Parish_Retreat_Letters {
 			font-size: 1.1rem;
 		}
 
-		.dfx-custom-message {
+		.dfx-prl-custom-message {
 			background: #e7f3ff;
 			padding: 1.5rem;
 			border-radius: 4px;
@@ -770,15 +770,15 @@ class DFX_Parish_Retreat_Letters {
 			border-left: 4px solid #0073aa;
 		}
 
-		.dfx-custom-message p {
+		.dfx-prl-custom-message p {
 			margin-bottom: 1rem;
 		}
 
-		.dfx-custom-message p:last-child {
+		.dfx-prl-custom-message p:last-child {
 			margin-bottom: 0;
 		}
 
-		.dfx-message-mode {
+		.dfx-prl-message-mode {
 			margin-bottom: 1.5rem;
 			padding: 1rem;
 			background: #f8f9fa;
@@ -786,18 +786,18 @@ class DFX_Parish_Retreat_Letters {
 			border: 1px solid #ddd;
 		}
 
-		.dfx-message-mode h3 {
+		.dfx-prl-message-mode h3 {
 			margin-top: 0;
 			margin-bottom: 1rem;
 			color: #333;
 		}
 
-		.dfx-mode-selector {
+		.dfx-prl-mode-selector {
 			display: flex;
 			gap: 2rem;
 		}
 
-		.dfx-mode-selector label {
+		.dfx-prl-mode-selector label {
 			display: flex;
 			align-items: center;
 			gap: 0.5rem;
@@ -805,7 +805,7 @@ class DFX_Parish_Retreat_Letters {
 			font-weight: 600;
 		}
 
-		.dfx-mode-selector input[type="radio"] {
+		.dfx-prl-mode-selector input[type="radio"] {
 			margin: 0;
 		}
 
@@ -839,7 +839,7 @@ class DFX_Parish_Retreat_Letters {
 			min-height: 150px;
 		}
 
-		.dfx-editor {
+		.dfx-prl-editor {
 			min-height: 150px;
 			max-height: 400px;
 			overflow-y: auto;
@@ -854,40 +854,40 @@ class DFX_Parish_Retreat_Letters {
 			margin-top: 0.5rem;
 		}
 
-		.dfx-editor:focus {
+		.dfx-prl-editor:focus {
 			border-color: #007cba;
 			box-shadow: 0 0 0 1px #007cba;
 		}
 
-		.dfx-editor[contenteditable="true"]:empty:before {
+		.dfx-prl-editor[contenteditable="true"]:empty:before {
 			content: attr(placeholder);
 			color: #999;
 			pointer-events: none;
 		}
 
-		.dfx-editor.empty:before {
+		.dfx-prl-editor.empty:before {
 			content: attr(placeholder);
 			color: #999;
 			pointer-events: none;
 		}
 
-		.dfx-editor img {
+		.dfx-prl-editor img {
 			max-width: 100%;
 			height: auto;
 			border-radius: 4px;
 			margin: 0.5rem 0;
 		}
 
-		.dfx-editor ul, .dfx-editor ol {
+		.dfx-prl-editor ul, .dfx-prl-editor ol {
 			margin: 1rem 0;
 			padding-left: 2rem;
 		}
 
-		.dfx-editor li {
+		.dfx-prl-editor li {
 			margin-bottom: 0.25rem;
 		}
 
-		.dfx-editor-toolbar {
+		.dfx-prl-editor-toolbar {
 			margin-bottom: 0.5rem;
 			display: flex;
 			gap: 0.5rem;
@@ -898,7 +898,7 @@ class DFX_Parish_Retreat_Letters {
 			border-radius: 4px;
 		}
 
-		.dfx-editor-toolbar button {
+		.dfx-prl-editor-toolbar button {
 			padding: 0.375rem 0.75rem;
 			border: 1px solid #ddd;
 			background: white;
@@ -908,38 +908,38 @@ class DFX_Parish_Retreat_Letters {
 			transition: all 0.2s;
 		}
 
-		.dfx-editor-toolbar button:hover {
+		.dfx-prl-editor-toolbar button:hover {
 			background: #e9ecef;
 			border-color: #adb5bd;
 		}
 
-		.dfx-editor-toolbar button:active,
-		.dfx-editor-toolbar button.active {
+		.dfx-prl-editor-toolbar button:active,
+		.dfx-prl-editor-toolbar button.active {
 			background: #007cba;
 			color: white;
 			border-color: #005a87;
 		}
 
-		.dfx-help-text {
+		.dfx-prl-help-text {
 			font-size: 0.9rem;
 			color: #666;
 			margin-top: 0.25rem;
 		}
 
-		.dfx-captcha-container {
+		.dfx-prl-captcha-container {
 			background: #f8f9fa;
 			padding: 1rem;
 			border-radius: 4px;
 			border: 1px solid #ddd;
 		}
 
-		#dfx-captcha-question {
+		#dfx-prl-captcha-question {
 			font-weight: 600;
 			margin-bottom: 0.5rem;
 			color: #333;
 		}
 
-		.dfx-disclaimer-container {
+		.dfx-prl-disclaimer-container {
 			background: #fffbe6;
 			padding: 1.5rem;
 			border-radius: 4px;
@@ -947,14 +947,14 @@ class DFX_Parish_Retreat_Letters {
 			margin-bottom: 1rem;
 		}
 
-		.dfx-disclaimer-container h3 {
+		.dfx-prl-disclaimer-container h3 {
 			margin-top: 0;
 			margin-bottom: 1rem;
 			color: #b7950b;
 			font-size: 1.1rem;
 		}
 
-		.dfx-disclaimer-text {
+		.dfx-prl-disclaimer-text {
 			background: white;
 			padding: 1rem;
 			border-radius: 4px;
@@ -964,22 +964,22 @@ class DFX_Parish_Retreat_Letters {
 			line-height: 1.6;
 		}
 
-		.dfx-disclaimer-text p {
+		.dfx-prl-disclaimer-text p {
 			margin-bottom: 0.75rem;
 		}
 
-		.dfx-disclaimer-text p:last-child {
+		.dfx-prl-disclaimer-text p:last-child {
 			margin-bottom: 0;
 		}
 
-		.dfx-disclaimer-acceptance {
+		.dfx-prl-disclaimer-acceptance {
 			padding: 0.75rem;
 			background: #fcf3cf;
 			border-radius: 4px;
 			border: 1px solid #f4d03f;
 		}
 
-		.dfx-checkbox-label {
+		.dfx-prl-checkbox-label {
 			display: flex;
 			align-items: flex-start;
 			gap: 0.75rem;
@@ -989,19 +989,19 @@ class DFX_Parish_Retreat_Letters {
 			line-height: 1.4;
 		}
 
-		.dfx-checkbox-label input[type="checkbox"] {
+		.dfx-prl-checkbox-label input[type="checkbox"] {
 			margin: 0;
 			transform: scale(1.2);
 			flex-shrink: 0;
 			margin-top: 0.1rem;
 		}
 
-		.dfx-checkbox-label .required {
+		.dfx-prl-checkbox-label .required {
 			color: #d63384;
 			flex-shrink: 0;
 		}
 
-		.dfx-submit-button {
+		.dfx-prl-submit-button {
 			background: #007cba;
 			color: white;
 			padding: 1rem 2rem;
@@ -1013,11 +1013,11 @@ class DFX_Parish_Retreat_Letters {
 			transition: background-color 0.3s;
 		}
 
-		.dfx-submit-button:hover:not(:disabled) {
+		.dfx-prl-submit-button:hover:not(:disabled) {
 			background: #005a87;
 		}
 
-		.dfx-submit-button:disabled {
+		.dfx-prl-submit-button:disabled {
 			background: #6c757d;
 			cursor: not-allowed;
 		}
@@ -1042,29 +1042,29 @@ class DFX_Parish_Retreat_Letters {
 			margin-bottom: 0.5rem;
 		}
 
-		.dfx-notice {
+		.dfx-prl-notice {
 			padding: 1rem;
 			margin-bottom: 1rem;
 			border-radius: 4px;
 		}
 
-		.dfx-notice.success {
+		.dfx-prl-notice.success {
 			background: #d4edda;
 			color: #155724;
 			border: 1px solid #c3e6cb;
 		}
 
-		.dfx-notice.error {
+		.dfx-prl-notice.error {
 			background: #f8d7da;
 			color: #721c24;
 			border: 1px solid #f5c6cb;
 		}
 
-		#dfx-file-list {
+		#dfx-prl-file-list {
 			margin-top: 0.5rem;
 		}
 
-		.dfx-file-item {
+		.dfx-prl-file-item {
 			display: flex;
 			justify-content: space-between;
 			align-items: center;
@@ -1075,7 +1075,7 @@ class DFX_Parish_Retreat_Letters {
 			margin-bottom: 0.5rem;
 		}
 
-		.dfx-file-remove {
+		.dfx-prl-file-remove {
 			background: #dc3545;
 			color: white;
 			border: none;
@@ -1086,12 +1086,12 @@ class DFX_Parish_Retreat_Letters {
 		}
 
 		@media (max-width: 768px) {
-			.dfx-message-form-container {
+			.dfx-prl-message-form-container {
 				margin: 1rem;
 				padding: 1rem;
 			}
 
-			.dfx-mode-selector {
+			.dfx-prl-mode-selector {
 				flex-direction: column;
 				gap: 1rem;
 			}
@@ -1229,13 +1229,13 @@ class DFX_Parish_Retreat_Letters {
 			$('input[name="message_mode"]').on('change', function() {
 				var mode = $(this).val();
 				if (mode === 'text') {
-					$('#dfx-text-group').show();
-					$('#dfx-file-group').hide();
+					$('#dfx-prl-text-group').show();
+					$('#dfx-prl-file-group').hide();
 					hiddenInput.prop('required', true);
 					$('#message_files').prop('required', false);
 				} else {
-					$('#dfx-text-group').hide();
-					$('#dfx-file-group').show();
+					$('#dfx-prl-text-group').hide();
+					$('#dfx-prl-file-group').show();
 					hiddenInput.prop('required', false);
 					$('#message_files').prop('required', true);
 				}
@@ -1278,7 +1278,7 @@ class DFX_Parish_Retreat_Letters {
 			});
 
 			// Form submission
-			$('#dfx-message-form').on('submit', function(e) {
+			$('#dfx-prl-message-form').on('submit', function(e) {
 				console.log('Form submit event triggered');
 				e.preventDefault();
 				e.stopPropagation();
@@ -1296,7 +1296,7 @@ class DFX_Parish_Retreat_Letters {
 			});
 
 			// Editor toolbar
-			$('.dfx-editor-toolbar button').on('click', function(e) {
+			$('.dfx-prl-editor-toolbar button').on('click', function(e) {
 				e.preventDefault();
 				e.stopPropagation();
 
@@ -1408,7 +1408,7 @@ class DFX_Parish_Retreat_Letters {
 
 			// Update toolbar button states based on current selection
 			function updateToolbarStates() {
-				$('.dfx-editor-toolbar button').each(function() {
+				$('.dfx-prl-editor-toolbar button').each(function() {
 					var command = $(this).data('command');
 					var isActive = false;
 
@@ -1524,7 +1524,7 @@ class DFX_Parish_Retreat_Letters {
 				}
 
 				// Set question text with proper string
-				var questionElement = $('#dfx-captcha-question');
+				var questionElement = $('#dfx-prl-captcha-question');
 				if (questionElement.length) {
 					questionElement.html('<?php echo esc_js( __( 'Please solve: ', 'dfx-parish-retreat-letters' ) ); ?><strong>' + question + '</strong>');
 				} else {
@@ -1555,13 +1555,13 @@ class DFX_Parish_Retreat_Letters {
 			}
 
 			function displaySelectedFiles(files) {
-				var container = $('#dfx-file-list');
+				var container = $('#dfx-prl-file-list');
 				container.empty();
 
 				Array.from(files).forEach(function(file, index) {
-					var fileItem = $('<div class="dfx-file-item">' +
+					var fileItem = $('<div class="dfx-prl-file-item">' +
 						'<span>' + file.name + ' (' + formatFileSize(file.size) + ')</span>' +
-						'<button type="button" class="dfx-file-remove" data-index="' + index + '"><?php echo esc_js( __( 'Remove', 'dfx-parish-retreat-letters' ) ); ?></button>' +
+						'<button type="button" class="dfx-prl-file-remove" data-index="' + index + '"><?php echo esc_js( __( 'Remove', 'dfx-parish-retreat-letters' ) ); ?></button>' +
 						'</div>');
 
 					container.append(fileItem);
@@ -1576,7 +1576,7 @@ class DFX_Parish_Retreat_Letters {
 				return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
 			}
 
-			$(document).on('click', '.dfx-file-remove', function() {
+			$(document).on('click', '.dfx-prl-file-remove', function() {
 				var fileInput = $('#message_files')[0];
 				var files = Array.from(fileInput.files);
 				var indexToRemove = parseInt($(this).data('index'));
@@ -1591,7 +1591,7 @@ class DFX_Parish_Retreat_Letters {
 			});
 
 			function submitMessage() {
-				var form = $('#dfx-message-form')[0];
+				var form = $('#dfx-prl-message-form')[0];
 				var formData = new FormData(form);
 
 				// Validate mode-specific requirements
@@ -1659,9 +1659,9 @@ class DFX_Parish_Retreat_Letters {
 				}
 
 				// Disable submit button
-				$('#dfx-submit-btn').prop('disabled', true);
-				$('.dfx-submit-text').hide();
-				$('.dfx-loading-spinner').show();
+				$('#dfx-prl-submit-btn').prop('disabled', true);
+				$('.dfx-prl-submit-text').hide();
+				$('.dfx-prl-loading-spinner').show();
 
 				$.ajax({
 					url: '<?php echo esc_url( admin_url( 'admin-ajax.php' ) ); ?>',
@@ -1673,8 +1673,8 @@ class DFX_Parish_Retreat_Letters {
 						if (response.success) {
 							showNotice('<?php echo esc_js( __( 'Your message has been sent successfully and securely stored.', 'dfx-parish-retreat-letters' ) ); ?>', 'success');
 							// Hide the form completely and show only success message
-							$('#dfx-message-form').hide();
-							$('.dfx-message-mode').hide(); // Hide mode selector too
+							$('#dfx-prl-message-form').hide();
+							$('.dfx-prl-message-mode').hide(); // Hide mode selector too
 						} else {
 							var errorMessage = '<?php echo esc_js( __( 'An error occurred while sending your message.', 'dfx-parish-retreat-letters' ) ); ?>';
 							if (response.data && response.data.message) {
@@ -1718,15 +1718,15 @@ class DFX_Parish_Retreat_Letters {
 						showNotice(errorMessage, 'error');
 					},
 					complete: function() {
-						$('#dfx-submit-btn').prop('disabled', false);
-						$('.dfx-submit-text').show();
-						$('.dfx-loading-spinner').hide();
+						$('#dfx-prl-submit-btn').prop('disabled', false);
+						$('.dfx-prl-submit-text').show();
+						$('.dfx-prl-loading-spinner').hide();
 					}
 				});
 			}
 
 			function updateSubmitButtonState() {
-				var submitBtn = $('#dfx-submit-btn');
+				var submitBtn = $('#dfx-prl-submit-btn');
 				var disclaimerCheckbox = $('#disclaimer_accepted');
 
 				// If disclaimer checkbox exists and is not checked, disable submit button
@@ -1739,8 +1739,8 @@ class DFX_Parish_Retreat_Letters {
 			}
 
 			function showNotice(message, type) {
-				var notice = $('<div class="dfx-notice ' + type + '">' + message + '</div>');
-				$('#dfx-message-notices').html(notice);
+				var notice = $('<div class="dfx-prl-notice ' + type + '">' + message + '</div>');
+				$('#dfx-prl-message-notices').html(notice);
 
 				$('html, body').animate({
 					scrollTop: notice.offset().top - 20
