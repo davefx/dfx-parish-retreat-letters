@@ -2242,14 +2242,12 @@ class DFX_Parish_Retreat_Letters {
 					}
 					
 					/* First image should stay on same page as sender name */
-					.file-content.multi-image:first-child {
-						page-break-before: avoid;  /* Keep with header above */
+					.file-content.multi-image:nth-child(2)
+					{
+						page-break-before: auto;
 						page-break-after: always;
-						page-break-inside: avoid;  /* Don't break the image container */
-						/* Scale to fit remaining space after To/From header */
-						display: block;  /* Override flex to use simpler layout */
-						min-height: 0;
-						max-height: calc(100vh - 200px);
+                                                min-height: calc(100vh - 200px);
+                                                max-height: calc(100vh - 200px);
 					}
 					
 					/* Last image should not force a page break after */
@@ -2269,13 +2267,13 @@ class DFX_Parish_Retreat_Letters {
 					}
 					
 					/* First image gets special scaling to fit under To/From header */
-					.file-content.multi-image:first-child .file-image {
+					.file-content.multi-image:nth-child(2) .file-image {
 						max-height: calc(100vh - 150px);
 						max-width: 100vw;
 					}
 					
 					/* Subsequent images use full page height */
-					.file-content.multi-image:not(:first-child) .file-image {
+					.file-content.multi-image:not(:nth-child(2)) .file-image {
 						max-height: 100vh;
 						max-width: 100vw;
 					}
