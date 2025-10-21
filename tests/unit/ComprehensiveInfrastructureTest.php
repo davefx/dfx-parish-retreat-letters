@@ -668,4 +668,88 @@ class ComprehensiveInfrastructureTest extends TestCase {
             $this->markTestSkipped('Database class not available');
         }
     }
+
+    /**
+     * Test that render_print_page has correct CSS for first image in multi-file messages
+     * 
+     * This test verifies the fix for issue #109 where the first image doesn't fit on the first page
+     * after adding the "To:" field. The CSS calculations should account for both "To:" and "From:" headers.
+     */
+    public function testRenderPrintPageFirstImageCSSCalculations() {
+        $plugin_dir = dirname(__DIR__, 2);
+        $main_class_file = $plugin_dir . '/includes/class-dfx-parish-retreat-letters.php';
+        
+        $this->assertFileExists($main_class_file, 'Main plugin class file should exist');
+        
+        // Read the source file to verify CSS values
+        $sourceContent = file_get_contents($main_class_file);
+        $this->assertNotFalse($sourceContent, 'Should be able to read the main class file');
+        
+        // Test 1: Verify first image (second child) container has correct min-height
+        // User discovered the first image is actually the second child in the parent div
+        $this->assertStringContainsString('min-height: calc(100vh - 200px);', $sourceContent,
+            'First image container min-height should be calc(100vh - 200px) to fit below To/From header');
+        
+        // Test 2: Verify first image container has correct max-height
+        $this->assertStringContainsString('max-height: calc(100vh - 200px);', $sourceContent,
+            'First image container max-height should be calc(100vh - 200px) to fit below To/From header');
+        
+        // Test 3: Verify first image element has correct max-height
+        // Should be calc(100vh - 150px) after the fix, not the old calc(100vh - 100px)
+        $this->assertStringContainsString('max-height: calc(100vh - 150px);', $sourceContent,
+            'First image element max-height should be calc(100vh - 150px) to fit below To/From header');
+        
+        // Test 4: Verify the comment was updated to reflect the To/From header
+        $this->assertStringContainsString('To/From header', $sourceContent,
+            'CSS comments should mention To/From header instead of just sender info');
+        
+        // Test 5: Verify nth-child(2) CSS selector is used for first image
+        $this->assertStringContainsString('.file-content.multi-image:nth-child(2)', $sourceContent,
+            'CSS should use :nth-child(2) selector for first image (it is second child in parent div)');
+        
+        // Test 6: Verify subsequent images use full page height (unchanged behavior)
+        $this->assertStringContainsString('.file-content.multi-image:not(:nth-child(2))', $sourceContent,
+            'CSS should have styling for subsequent images using :not(:nth-child(2))');
+        $this->assertStringContainsString('max-height: 100vh;', $sourceContent,
+            'Subsequent images should use full viewport height');
+        
+        // Test 7: Extract and validate the actual numeric value for min-height and max-height (should be 200px)
+        preg_match('/\.file-content\.multi-image:nth-child\(2\)[^}]*min-height:\s*calc\(100vh\s*-\s*(\d+)px\)/s', $sourceContent, $minHeightMatches);
+        if (!empty($minHeightMatches[1])) {
+            $minHeightOffset = (int)$minHeightMatches[1];
+            $this->assertEquals(200, $minHeightOffset, 
+                'First image container min-height offset should be 200px to account for To/From header');
+        }
+        
+        preg_match('/\.file-content\.multi-image:nth-child\(2\)[^}]*max-height:\s*calc\(100vh\s*-\s*(\d+)px\)/s', $sourceContent, $maxHeightMatches);
+        if (!empty($maxHeightMatches[1])) {
+            $maxHeightOffset = (int)$maxHeightMatches[1];
+            $this->assertEquals(200, $maxHeightOffset, 
+                'First image container max-height offset should be 200px, not the old 150px value');
+            $this->assertGreaterThan(150, $maxHeightOffset, 
+                'First image container max-height offset should be greater than old 150px to account for To field');
+        }
+        
+        // Test 8: Verify the image element max-height value
+        preg_match('/\.file-content\.multi-image:nth-child\(2\)\s+\.file-image\s*\{[^}]*max-height:\s*calc\(100vh\s*-\s*(\d+)px\)/s', $sourceContent, $imageMaxHeightMatches);
+        if (!empty($imageMaxHeightMatches[1])) {
+            $imageMaxHeightOffset = (int)$imageMaxHeightMatches[1];
+            $this->assertEquals(150, $imageMaxHeightOffset, 
+                'First image element max-height offset should be 150px, not the old 100px value');
+            $this->assertGreaterThan(100, $imageMaxHeightOffset, 
+                'First image element offset should be greater than old 100px to account for To field');
+        }
+        
+        // Test 9: Verify that render_print_page method exists
+        if (class_exists('DFX_Parish_Retreat_Letters')) {
+            $plugin = DFX_Parish_Retreat_Letters::get_instance();
+            $reflection = new ReflectionClass($plugin);
+            $this->assertTrue($reflection->hasMethod('render_print_page'), 
+                'Plugin class should have render_print_page method');
+            
+            $method = $reflection->getMethod('render_print_page');
+            $this->assertTrue($method->isPrivate(), 
+                'render_print_page should be private for security');
+        }
+    }
 }

@@ -2242,12 +2242,12 @@ class DFX_Parish_Retreat_Letters {
 					}
 					
 					/* First image should stay on same page as sender name */
-					.file-content.multi-image:first-child {
+					.file-content.multi-image:nth-child(2)
+					{
 						page-break-before: auto;
 						page-break-after: always;
-						/* Scale to fit remaining space after sender info */
-						min-height: calc(100vh - 150px);
-						max-height: calc(100vh - 150px);
+                                                min-height: calc(100vh - 200px);
+                                                max-height: calc(100vh - 200px);
 					}
 					
 					/* Last image should not force a page break after */
@@ -2266,14 +2266,14 @@ class DFX_Parish_Retreat_Letters {
 						object-fit: contain;
 					}
 					
-					/* First image gets special scaling to fit under sender name */
-					.file-content.multi-image:first-child .file-image {
-						max-height: calc(100vh - 100px);
+					/* First image gets special scaling to fit under To/From header */
+					.file-content.multi-image:nth-child(2) .file-image {
+						max-height: calc(100vh - 150px);
 						max-width: 100vw;
 					}
 					
 					/* Subsequent images use full page height */
-					.file-content.multi-image:not(:first-child) .file-image {
+					.file-content.multi-image:not(:nth-child(2)) .file-image {
 						max-height: 100vh;
 						max-width: 100vw;
 					}
@@ -2300,7 +2300,6 @@ class DFX_Parish_Retreat_Letters {
 			}
 			
 			echo '</div>';
-			?>
 
 			if ( $message->message_type === 'text' ) {
 				// For text messages, display the content
