@@ -663,7 +663,16 @@ class DFX_Parish_Retreat_Letters {
 						<label for="message_files"><?php esc_html_e( 'Attach Files', 'dfx-parish-retreat-letters' ); ?> <span class="required">*</span></label>
 						<input type="file" id="message_files" name="message_files[]" multiple accept=".pdf,.doc,.docx,.txt,.jpg,.jpeg,.png,.gif">
 						<p class="dfx-help-text">
-							<?php esc_html_e( 'Allowed file types: PDF, DOC, DOCX, TXT, JPG, PNG, GIF. Maximum 5MB per file.', 'dfx-parish-retreat-letters' ); ?>
+							<?php
+							$max_per_file = $this->security->get_max_upload_size();
+							$max_combined = $this->security->get_max_combined_upload_size();
+							printf(
+								/* translators: %1$s: maximum size per file, %2$s: maximum combined size */
+								esc_html__( 'Allowed file types: PDF, DOC, DOCX, TXT, JPG, PNG, GIF. Maximum %1$s per file, %2$s total.', 'dfx-parish-retreat-letters' ),
+								esc_html( $max_per_file ),
+								esc_html( $max_combined )
+							);
+							?>
 						</p>
 						<div id="dfx-file-list"></div>
 					</div>
@@ -1643,6 +1652,12 @@ class DFX_Parish_Retreat_Letters {
 				// Add message mode to form data
 				formData.append('message_mode', mode);
 
+				// Add expected file count for validation
+				if (mode === 'file') {
+					var fileCount = $('#message_files')[0].files.length;
+					formData.append('expected_file_count', fileCount);
+				}
+
 				// Disable submit button
 				$('#dfx-submit-btn').prop('disabled', true);
 				$('.dfx-submit-text').hide();
@@ -1856,6 +1871,27 @@ class DFX_Parish_Retreat_Letters {
 		// Handle file uploads only if in file mode
 		$upload_result = array( 'uploaded_count' => 0, 'errors' => array() );
 		if ( $message_mode === 'file' && ! empty( $_FILES['message_files']['name'][0] ) ) {
+			// Check if expected file count matches received file count
+			// This detects when post_max_size is exceeded and PHP truncates the upload
+			$expected_file_count = isset( $_POST['expected_file_count'] ) ? absint( $_POST['expected_file_count'] ) : 0;
+			$received_file_count = count( array_filter( $_FILES['message_files']['name'] ) ); // Count non-empty filenames
+
+			if ( $expected_file_count > 0 && $received_file_count < $expected_file_count ) {
+				// Delete the message since the upload was incomplete
+				$message_model->delete( $message_id );
+
+				$max_combined_size = $this->security->get_max_combined_upload_size();
+				$error_message = sprintf(
+					/* translators: %1$d: number of files received, %2$d: number of files expected, %3$s: maximum combined upload size */
+					__( 'Only %1$d of %2$d files were received. The total file size likely exceeds the server upload limit of %3$s. Please reduce the file sizes or upload fewer files at once.', 'dfx-parish-retreat-letters' ),
+					$received_file_count,
+					$expected_file_count,
+					$max_combined_size
+				);
+
+				wp_send_json_error( array( 'message' => $error_message ) );
+			}
+
 			$upload_result = $this->handle_file_uploads( $message_id, $_FILES['message_files'] );
 
 			// If no files were uploaded successfully, return an error
@@ -1866,6 +1902,32 @@ class DFX_Parish_Retreat_Letters {
 				$error_message = __( 'No files could be uploaded.', 'dfx-parish-retreat-letters' );
 				if ( ! empty( $upload_result['errors'] ) ) {
 					$error_message .= ' ' . implode( ' ', $upload_result['errors'] );
+				}
+
+				wp_send_json_error( array( 'message' => $error_message ) );
+			}
+
+			// If expected file count was provided and some files failed to upload, return an error
+			if ( $expected_file_count > 0 && $upload_result['uploaded_count'] < $expected_file_count ) {
+				// Delete the message since upload was incomplete
+				$message_model->delete( $message_id );
+
+				$error_message = sprintf(
+					/* translators: %1$d: number of files uploaded, %2$d: number of files expected */
+					__( 'Only %1$d of %2$d files could be uploaded. ', 'dfx-parish-retreat-letters' ),
+					$upload_result['uploaded_count'],
+					$expected_file_count
+				);
+
+				if ( ! empty( $upload_result['errors'] ) ) {
+					$error_message .= implode( ' ', $upload_result['errors'] );
+				} else {
+					$max_combined_size = $this->security->get_max_combined_upload_size();
+					$error_message .= sprintf(
+						/* translators: %s: maximum combined upload size */
+						__( 'Some files may be too large or the total size exceeds the server limit of %s. Please reduce file sizes or upload fewer files.', 'dfx-parish-retreat-letters' ),
+						$max_combined_size
+					);
 				}
 
 				wp_send_json_error( array( 'message' => $error_message ) );
@@ -1923,12 +1985,42 @@ class DFX_Parish_Retreat_Letters {
 
 			// Check for upload errors
 			if ( $files['error'][$i] !== UPLOAD_ERR_OK ) {
-				$errors[] = sprintf(
-					/* translators: %1$s: file name, %2$d: error code number */
-					__( 'File "%1$s" upload failed with error code %2$d.', 'dfx-parish-retreat-letters' ),
-					$filename,
-					$files['error'][$i]
-				);
+				// Provide specific error messages for common upload errors
+				$error_message = '';
+				switch ( $files['error'][$i] ) {
+					case UPLOAD_ERR_INI_SIZE:
+						$error_message = sprintf(
+							/* translators: %s: file name */
+							__( 'File "%s" exceeds the maximum upload size limit.', 'dfx-parish-retreat-letters' ),
+							$filename
+						);
+						break;
+					case UPLOAD_ERR_FORM_SIZE:
+						$error_message = sprintf(
+							/* translators: %s: file name */
+							__( 'File "%s" is too large.', 'dfx-parish-retreat-letters' ),
+							$filename
+						);
+						break;
+					case UPLOAD_ERR_PARTIAL:
+						$error_message = sprintf(
+							/* translators: %s: file name */
+							__( 'File "%s" was only partially uploaded. Please try again.', 'dfx-parish-retreat-letters' ),
+							$filename
+						);
+						break;
+					case UPLOAD_ERR_NO_FILE:
+						// Skip empty file slots silently
+						continue 2;
+					default:
+						$error_message = sprintf(
+							/* translators: %1$s: file name, %2$d: error code number */
+							__( 'File "%1$s" upload failed with error code %2$d.', 'dfx-parish-retreat-letters' ),
+							$filename,
+							$files['error'][$i]
+						);
+				}
+				$errors[] = $error_message;
 				continue;
 			}
 

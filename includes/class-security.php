@@ -381,6 +381,85 @@ class DFX_Parish_Retreat_Letters_Security {
 	}
 
 	/**
+	 * Parse size string (e.g., "2M", "8M") to bytes.
+	 *
+	 * @since 1.2.0
+	 * @param string $size Size string from PHP configuration.
+	 * @return int Size in bytes.
+	 */
+	private function parse_size( $size ) {
+		$unit = preg_replace( '/[^bkmgtpezy]/i', '', $size );
+		$size = preg_replace( '/[^0-9\.]/', '', $size );
+		
+		if ( $unit ) {
+			return (int) round( $size * pow( 1024, stripos( 'bkmgtpezy', $unit[0] ) ) );
+		}
+		
+		return (int) round( $size );
+	}
+
+	/**
+	 * Get the maximum upload file size from server configuration.
+	 *
+	 * @since 1.2.0
+	 * @param bool $formatted Whether to return formatted string or bytes.
+	 * @return string|int Formatted string (e.g., "2 MB") or bytes.
+	 */
+	public function get_max_upload_size( $formatted = true ) {
+		$upload_max_filesize = ini_get( 'upload_max_filesize' );
+		$post_max_size = ini_get( 'post_max_size' );
+		
+		$upload_bytes = $this->parse_size( $upload_max_filesize );
+		$post_bytes = $this->parse_size( $post_max_size );
+		
+		// The effective limit is the minimum of the two
+		$max_bytes = min( $upload_bytes, $post_bytes );
+		
+		if ( $formatted ) {
+			return $this->format_bytes( $max_bytes );
+		}
+		
+		return $max_bytes;
+	}
+
+	/**
+	 * Get the maximum combined upload size (post_max_size).
+	 *
+	 * @since 1.2.0
+	 * @param bool $formatted Whether to return formatted string or bytes.
+	 * @return string|int Formatted string (e.g., "8 MB") or bytes.
+	 */
+	public function get_max_combined_upload_size( $formatted = true ) {
+		$post_max_size = ini_get( 'post_max_size' );
+		$post_bytes = $this->parse_size( $post_max_size );
+		
+		if ( $formatted ) {
+			return $this->format_bytes( $post_bytes );
+		}
+		
+		return $post_bytes;
+	}
+
+	/**
+	 * Format bytes to human-readable string.
+	 *
+	 * @since 1.2.0
+	 * @param int $bytes Number of bytes.
+	 * @return string Formatted string (e.g., "2 MB").
+	 */
+	private function format_bytes( $bytes ) {
+		if ( $bytes >= 1073741824 ) {
+			return number_format( $bytes / 1073741824, 2 ) . ' GB';
+		} elseif ( $bytes >= 1048576 ) {
+			return number_format( $bytes / 1048576, 2 ) . ' MB';
+		} elseif ( $bytes >= 1024 ) {
+			return number_format( $bytes / 1024, 2 ) . ' KB';
+		} else {
+			return $bytes . ' bytes';
+		}
+	}
+
+	/**
 	 * Validate and sanitize file upload.
 	 *
 	 * @since 1.2.0
@@ -393,8 +472,8 @@ class DFX_Parish_Retreat_Letters_Security {
 			return false;
 		}
 
-		// Check file size (5MB limit)
-		$max_size = 5 * 1024 * 1024; // 5MB
+		// Check file size against server limit
+		$max_size = $this->get_max_upload_size( false );
 		if ( $file['size'] > $max_size ) {
 			return false;
 		}
@@ -480,7 +559,7 @@ class DFX_Parish_Retreat_Letters_Security {
 					$extension,
 					$mime_type,
 					$allowed_types[ $extension ]
-				), E_USER_ERROR );
+				), E_USER_WARNING );
 
 				return false;
 			}
