@@ -349,6 +349,7 @@ Contributions are welcome! Please:
 - Fix: When a message has more than one image, fix the first image size so it fits in the first page
 - Fix: If an image or file cannot be uploaded, return an error instead of accepting the partial message with missing files.
 - Feature: Show actual server limits.
+- Change: Corrected CSS and JS prefix from "dfx" to "dfx-prl" or "dfx_prl". CSS customizations should be adapted
 
 ### 25.10.15
 
