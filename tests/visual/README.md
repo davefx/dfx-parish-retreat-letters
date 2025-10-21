@@ -41,32 +41,29 @@ The test validates that after adding the "To:" field to the print header:
         page-break-inside: avoid;  /* Don't break container across pages */
     }
     
-    /* Override for first image to fit with header */
-    .file-content.multi-image:first-child {
-        display: block;  /* Override flex - simpler layout for first image */
-        min-height: 0;  /* Allow natural sizing */
+    /* First image (second child) to fit with header */
+    /* Note: The first image is :nth-child(2) because there's another element before it */
+    .file-content.multi-image:nth-child(2) {
+        min-height: calc(100vh - 200px);  /* Constrain to fit below header */
         max-height: calc(100vh - 200px);  /* Constrain to fit below header */
-        page-break-before: avoid;  /* Keep with header above */
-        page-break-inside: avoid;  /* Don't break the container */
     }
     
-    .file-content.multi-image:first-child .file-image {
+    .file-content.multi-image:nth-child(2) .file-image {
         max-height: calc(100vh - 150px);  /* Image constrained within container */
+    }
+    
+    /* Subsequent images use full page height */
+    .file-content.multi-image:not(:nth-child(2)) .file-image {
+        max-height: 100vh;
     }
 }
 ```
 
-### Critical Fixes
+### Critical Discovery
 
-1. **display: block** - The first image uses `display: block` instead of `display: flex`. This simplifies the layout and prevents flex-related issues with centering that could cause unexpected height calculations.
+The first image is actually the **second child** (`:nth-child(2)`) in its parent div, not the first child. This is because there's another element before the first image container in the DOM structure.
 
-2. **page-break-before: avoid** - Keeps the first image container with the header above it, preventing a break between the header and the image.
-
-3. **page-break-inside: avoid** - Ensures the image container itself isn't broken across pages (this is correct - we never want to break an image).
-
-4. **min-height: 0** - Allows the container to size naturally based on content, overriding the base class's `min-height: 100vh`.
-
-5. **max-height: calc(100vh - 200px)** - Constrains the container to fit within the remaining page space after the header.
+Using `:first-child` was targeting the wrong element, which is why the fix wasn't working. The correct selector is `:nth-child(2)`.
 
 ### Troubleshooting
 
