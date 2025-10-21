@@ -3,7 +3,7 @@ Contributors: davefx
 Tags: parish, retreat, letters, confidential, GDPR
 Requires at least: 5.0
 Tested up to: 6.8
-Stable tag: 25.10.15
+Stable tag: 25.10.21
 Requires PHP: 7.4
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
@@ -340,6 +340,15 @@ Contributions are welcome! Please:
 5. Include appropriate tests and documentation
 
 ## Changelog
+
+### 25.10.21
+
+- Feature: Display number of non-printed messages in the attendant list
+- Feature: When printing a message, print the recipientname before the sender name
+- Feature: Adding Message URL column when exporting to CSV
+- Fix: When a message has more than one image, fix the first image size so it fits in the first page
+- Fix: If an image or file cannot be uploaded, return an error instead of accepting the partial message with missing files.
+- Feature: Show actual server limits.
 
 ### 25.10.15
 
