@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2025-10-20T11:23:00+00:00\n"
+"POT-Creation-Date: 2025-10-21T09:27:03+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: dfx-parish-retreat-letters\n"
@@ -61,7 +61,7 @@ msgstr ""
 #: includes/class-admin.php:4255
 #: includes/class-admin.php:4305
 #: includes/class-admin.php:4756
-#: includes/class-dfx-parish-retreat-letters.php:1754
+#: includes/class-dfx-parish-retreat-letters.php:1769
 #: includes/class-gdpr.php:409
 #: includes/class-gdpr.php:443
 msgid "Security check failed."
@@ -1247,7 +1247,7 @@ msgid "Total messages: %d"
 msgstr ""
 
 #: includes/class-admin.php:3813
-#: includes/class-dfx-parish-retreat-letters.php:2299
+#: includes/class-dfx-parish-retreat-letters.php:2391
 msgid "From"
 msgstr ""
 
@@ -1346,7 +1346,7 @@ msgid "File not found or access denied."
 msgstr ""
 
 #: includes/class-admin.php:4023
-#: includes/class-dfx-parish-retreat-letters.php:2006
+#: includes/class-dfx-parish-retreat-letters.php:2098
 msgid "Message not found."
 msgstr ""
 
@@ -1636,7 +1636,7 @@ msgstr ""
 
 #: includes/class-admin.php:4714
 #: includes/class-admin.php:4740
-#: includes/class-dfx-parish-retreat-letters.php:1680
+#: includes/class-dfx-parish-retreat-letters.php:1695
 msgid "A network error occurred. Please try again."
 msgstr ""
 
@@ -1950,247 +1950,299 @@ msgstr ""
 msgid "Attach Files"
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:666
-msgid "Allowed file types: PDF, DOC, DOCX, TXT, JPG, PNG, GIF. Maximum 5MB per file."
+#. translators: %1$s: maximum size per file, %2$s: maximum combined size
+#: includes/class-dfx-parish-retreat-letters.php:671
+#, php-format
+msgid "Allowed file types: PDF, DOC, DOCX, TXT, JPG, PNG, GIF. Maximum %1$s per file, %2$s total."
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:673
+#: includes/class-dfx-parish-retreat-letters.php:682
 msgid "Security Check"
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:675
+#: includes/class-dfx-parish-retreat-letters.php:684
 msgid "Please enter the result"
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:683
+#: includes/class-dfx-parish-retreat-letters.php:692
 msgid "Legal Disclaimer"
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:694
+#: includes/class-dfx-parish-retreat-letters.php:703
 msgid "I accept the terms and conditions stated above"
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:705
+#: includes/class-dfx-parish-retreat-letters.php:714
 msgid "Send Confidential Message"
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:707
+#: includes/class-dfx-parish-retreat-letters.php:716
 msgid "Sending..."
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:714
+#: includes/class-dfx-parish-retreat-letters.php:723
 msgid "Privacy & Security"
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:716
+#: includes/class-dfx-parish-retreat-letters.php:725
 msgid "Your message will be encrypted and stored securely."
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:717
+#: includes/class-dfx-parish-retreat-letters.php:726
 msgid "Only authorized retreat administrators can access your message."
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:718
+#: includes/class-dfx-parish-retreat-letters.php:727
 msgid "Messages can only be viewed when printed - no content is displayed on screen."
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:719
+#: includes/class-dfx-parish-retreat-letters.php:728
 msgid "Your IP address will be anonymized after 30 days for privacy compliance."
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:720
+#: includes/class-dfx-parish-retreat-letters.php:729
 msgid "All data is handled in accordance with GDPR and Spanish privacy laws."
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:1520
+#: includes/class-dfx-parish-retreat-letters.php:1529
 msgid "Please solve: "
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:1555
+#: includes/class-dfx-parish-retreat-letters.php:1564
 msgid "Remove"
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:1595
+#: includes/class-dfx-parish-retreat-letters.php:1604
 msgid "Please enter a message."
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:1601
+#: includes/class-dfx-parish-retreat-letters.php:1610
 msgid "Please select at least one file."
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:1611
-#: includes/class-dfx-parish-retreat-letters.php:1772
+#: includes/class-dfx-parish-retreat-letters.php:1620
+#: includes/class-dfx-parish-retreat-letters.php:1787
 msgid "Please complete the security check."
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:1616
+#: includes/class-dfx-parish-retreat-letters.php:1625
 msgid "Security check error. Please refresh the page."
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:1624
+#: includes/class-dfx-parish-retreat-letters.php:1633
 msgid "Security check error. Please try again."
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:1630
+#: includes/class-dfx-parish-retreat-letters.php:1639
 msgid "Incorrect security answer. Please try again."
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:1639
+#: includes/class-dfx-parish-retreat-letters.php:1648
 msgid "Please accept the legal disclaimer to proceed."
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:1659
+#: includes/class-dfx-parish-retreat-letters.php:1674
 msgid "Your message has been sent successfully and securely stored."
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:1664
+#: includes/class-dfx-parish-retreat-letters.php:1679
 msgid "An error occurred while sending your message."
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:1684
+#: includes/class-dfx-parish-retreat-letters.php:1699
 msgid "The request timed out. Please check your connection and try again."
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:1687
+#: includes/class-dfx-parish-retreat-letters.php:1702
 msgid "Cannot connect to the server. Please check your internet connection."
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:1689
+#: includes/class-dfx-parish-retreat-letters.php:1704
 msgid "Access denied. Please refresh the page and try again."
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:1691
+#: includes/class-dfx-parish-retreat-letters.php:1706
 msgid "The uploaded files are too large. Please reduce the file size and try again."
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:1693
+#: includes/class-dfx-parish-retreat-letters.php:1708
 msgid "A server error occurred. Please try again later or contact support if the problem persists."
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:1695
+#: includes/class-dfx-parish-retreat-letters.php:1710
 msgid "There was a problem with your request. Please refresh the page and try again."
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:1698
+#: includes/class-dfx-parish-retreat-letters.php:1713
 msgid "There was a problem processing the server response. Please try again."
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:1700
+#: includes/class-dfx-parish-retreat-letters.php:1715
 msgid "The request was cancelled. Please try again."
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:1763
+#: includes/class-dfx-parish-retreat-letters.php:1778
 msgid "Too many submission attempts. Please wait before trying again."
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:1777
+#: includes/class-dfx-parish-retreat-letters.php:1792
 msgid "Incorrect security answer."
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:1783
+#: includes/class-dfx-parish-retreat-letters.php:1798
 msgid "Invalid attendant."
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:1803
+#: includes/class-dfx-parish-retreat-letters.php:1818
 msgid "You must accept the legal disclaimer to proceed."
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:1810
+#: includes/class-dfx-parish-retreat-letters.php:1825
 msgid "Sender name is required."
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:1816
+#: includes/class-dfx-parish-retreat-letters.php:1831
 msgid "Invalid message mode."
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:1830
+#: includes/class-dfx-parish-retreat-letters.php:1845
 msgid "Message content is required."
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:1836
+#: includes/class-dfx-parish-retreat-letters.php:1851
 msgid "At least one file is required."
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:1838
+#: includes/class-dfx-parish-retreat-letters.php:1853
 msgid "File upload message"
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:1853
+#: includes/class-dfx-parish-retreat-letters.php:1868
 msgid "Failed to save message."
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:1866
+#. translators: %1$d: number of files received, %2$d: number of files expected, %3$s: maximum combined upload size
+#: includes/class-dfx-parish-retreat-letters.php:1886
+#, php-format
+msgid "Only %1$d of %2$d files were received. The total file size likely exceeds the server upload limit of %3$s. Please reduce the file sizes or upload fewer files at once."
+msgstr ""
+
+#: includes/class-dfx-parish-retreat-letters.php:1902
 msgid "No files could be uploaded."
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:1875
+#. translators: %1$d: number of files uploaded, %2$d: number of files expected
+#: includes/class-dfx-parish-retreat-letters.php:1917
+#, php-format
+msgid "Only %1$d of %2$d files could be uploaded. "
+msgstr ""
+
+#. translators: %s: maximum combined upload size
+#: includes/class-dfx-parish-retreat-letters.php:1928
+#, php-format
+msgid "Some files may be too large or the total size exceeds the server limit of %s. Please reduce file sizes or upload fewer files."
+msgstr ""
+
+#: includes/class-dfx-parish-retreat-letters.php:1937
 msgid "Message sent successfully."
 msgstr ""
 
 #. translators: %d: number of files uploaded
-#: includes/class-dfx-parish-retreat-letters.php:1881
+#: includes/class-dfx-parish-retreat-letters.php:1943
 #, php-format
 msgid "Message sent successfully with %d file(s)."
 msgstr ""
 
 #. translators: %s: comma-separated list of file names that failed to upload
-#: includes/class-dfx-parish-retreat-letters.php:1889
+#: includes/class-dfx-parish-retreat-letters.php:1951
 #, php-format
 msgid "Note: Some files could not be uploaded: %s"
 msgstr ""
 
+#. translators: %s: file name
+#: includes/class-dfx-parish-retreat-letters.php:1994
+#, php-format
+msgid "File \"%s\" exceeds the maximum upload size limit."
+msgstr ""
+
+#. translators: %s: file name
+#: includes/class-dfx-parish-retreat-letters.php:2001
+#, php-format
+msgid "File \"%s\" is too large."
+msgstr ""
+
+#. translators: %s: file name
+#: includes/class-dfx-parish-retreat-letters.php:2008
+#, php-format
+msgid "File \"%s\" was only partially uploaded. Please try again."
+msgstr ""
+
 #. translators: %1$s: file name, %2$d: error code number
-#: includes/class-dfx-parish-retreat-letters.php:1928
+#: includes/class-dfx-parish-retreat-letters.php:2018
 #, php-format
 msgid "File \"%1$s\" upload failed with error code %2$d."
 msgstr ""
 
 #. translators: %s: file name
-#: includes/class-dfx-parish-retreat-letters.php:1947
+#: includes/class-dfx-parish-retreat-letters.php:2039
 #, php-format
 msgid "File \"%s\" failed validation (unsupported type or too large)."
 msgstr ""
 
 #. translators: %s: file name
-#: includes/class-dfx-parish-retreat-letters.php:1967
+#: includes/class-dfx-parish-retreat-letters.php:2059
 #, php-format
 msgid "File \"%s\" could not be saved to database."
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:1988
+#: includes/class-dfx-parish-retreat-letters.php:2080
 msgid "Invalid print request."
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:1993
+#: includes/class-dfx-parish-retreat-letters.php:2085
 msgid "Print token expired or invalid."
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:2049
+#: includes/class-dfx-parish-retreat-letters.php:2141
 msgid "File not found."
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:2079
+#: includes/class-dfx-parish-retreat-letters.php:2171
 msgid "ZIP functionality is not available on this server."
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:2085
+#: includes/class-dfx-parish-retreat-letters.php:2177
 msgid "Unable to create temporary file for ZIP download."
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:2093
+#: includes/class-dfx-parish-retreat-letters.php:2185
 msgid "Unable to create ZIP file."
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:2113
+#: includes/class-dfx-parish-retreat-letters.php:2205
 msgid "Failed to generate ZIP file."
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:2194
+#: includes/class-dfx-parish-retreat-letters.php:2286
 msgid "Print Message"
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:2290
+#: includes/class-dfx-parish-retreat-letters.php:2382
 msgid "To"
+msgstr ""
+
+#: includes/class-dfx-parish-retreat-letters.php:2438
+msgid "Word document content cannot be displayed for printing. Please download and print separately."
+msgstr ""
+
+#: includes/class-dfx-parish-retreat-letters.php:2439
+msgid "File size:"
+msgstr ""
+
+#. translators: %1$s: file type, %2$s: formatted file size
+#: includes/class-dfx-parish-retreat-letters.php:2453
+#, php-format
+msgid "File type: %1$s, Size: %2$s - Cannot display content for printing."
 msgstr ""
 
 #: includes/class-gdpr.php:179
