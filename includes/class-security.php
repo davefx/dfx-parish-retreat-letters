@@ -480,7 +480,7 @@ class DFX_Parish_Retreat_Letters_Security {
 					$extension,
 					$mime_type,
 					$allowed_types[ $extension ]
-				), E_USER_ERROR );
+				), E_USER_WARNING );
 
 				return false;
 			}
