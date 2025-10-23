@@ -2478,15 +2478,18 @@ class DFX_Parish_Retreat_Letters_Admin {
 		}
 
 		$data = array(
-			'retreat_id'                => $retreat_id,
-			'name'                      => sanitize_text_field( wp_unslash( $_POST['name'] ?? '' ) ),
-			'surnames'                  => sanitize_text_field( wp_unslash( $_POST['surnames'] ?? '' ) ),
-			'date_of_birth'             => sanitize_text_field( wp_unslash( $_POST['date_of_birth'] ?? '' ) ),
-			'emergency_contact_name'    => sanitize_text_field( wp_unslash( $_POST['emergency_contact_name'] ?? '' ) ),
-			'emergency_contact_surname' => sanitize_text_field( wp_unslash( $_POST['emergency_contact_surname'] ?? '' ) ),
-			'emergency_contact_phone'   => sanitize_text_field( wp_unslash( $_POST['emergency_contact_phone'] ?? '' ) ),
-			'emergency_contact_email'   => sanitize_email( wp_unslash( $_POST['emergency_contact_email'] ?? '' ) ),
-			'notes'                     => sanitize_textarea_field( wp_unslash( $_POST['notes'] ?? '' ) ),
+			'retreat_id'                      => $retreat_id,
+			'name'                            => sanitize_text_field( wp_unslash( $_POST['name'] ?? '' ) ),
+			'surnames'                        => sanitize_text_field( wp_unslash( $_POST['surnames'] ?? '' ) ),
+			'date_of_birth'                   => sanitize_text_field( wp_unslash( $_POST['date_of_birth'] ?? '' ) ),
+			'emergency_contact_name'          => sanitize_text_field( wp_unslash( $_POST['emergency_contact_name'] ?? '' ) ),
+			'emergency_contact_surname'       => sanitize_text_field( wp_unslash( $_POST['emergency_contact_surname'] ?? '' ) ),
+			'emergency_contact_phone'         => sanitize_text_field( wp_unslash( $_POST['emergency_contact_phone'] ?? '' ) ),
+			'emergency_contact_email'         => sanitize_email( wp_unslash( $_POST['emergency_contact_email'] ?? '' ) ),
+			'emergency_contact_relationship'  => sanitize_text_field( wp_unslash( $_POST['emergency_contact_relationship'] ?? '' ) ),
+			'invited_by'                      => sanitize_text_field( wp_unslash( $_POST['invited_by'] ?? '' ) ),
+			'incompatibilities'               => sanitize_textarea_field( wp_unslash( $_POST['incompatibilities'] ?? '' ) ),
+			'notes'                           => sanitize_textarea_field( wp_unslash( $_POST['notes'] ?? '' ) ),
 		);
 
 		if ( $attendant_id ) {
@@ -2762,6 +2765,12 @@ class DFX_Parish_Retreat_Letters_Admin {
 			'emergency_contact_phone' => json_decode( __('["emergency contact phone", "emergency phone", "contact phone", "phone"]', 'dfx-parish-retreat-letters' ), true ),
 			/* translators: JSON string with list of allowed headers for field emergency_contact_email */
 			'emergency_contact_email' => json_decode( __('["emergency contact email", "emergency email", "contact email", "email"]', 'dfx-parish-retreat-letters' ), true ),
+			/* translators: JSON string with list of allowed headers for field emergency_contact_relationship */
+			'emergency_contact_relationship' => json_decode( __('["emergency contact relationship", "relationship", "contact relationship"]', 'dfx-parish-retreat-letters' ), true ),
+			/* translators: JSON string with list of allowed headers for field invited_by */
+			'invited_by' => json_decode( __('["invited by", "invited", "inviter"]', 'dfx-parish-retreat-letters' ), true ),
+			/* translators: JSON string with list of allowed headers for field incompatibilities */
+			'incompatibilities' => json_decode( __('["incompatibilities", "incompatibility", "cannot be placed with"]', 'dfx-parish-retreat-letters' ), true ),
 			/* translators: JSON string with list of allowed headers for field notes */
 			'notes' => json_decode( __('["notes", "note", "comments", "comment"]', 'dfx-parish-retreat-letters' ), true ),
 		);
@@ -2877,6 +2886,21 @@ class DFX_Parish_Retreat_Letters_Admin {
 		// Ensure emergency_contact_email is always present (optional field)
 		if ( ! isset( $mapped_data['emergency_contact_email'] ) ) {
 			$mapped_data['emergency_contact_email'] = '';
+		}
+		
+		// Ensure emergency_contact_relationship is always present (optional field)
+		if ( ! isset( $mapped_data['emergency_contact_relationship'] ) ) {
+			$mapped_data['emergency_contact_relationship'] = '';
+		}
+		
+		// Ensure invited_by is always present (optional field)
+		if ( ! isset( $mapped_data['invited_by'] ) ) {
+			$mapped_data['invited_by'] = '';
+		}
+		
+		// Ensure incompatibilities is always present (optional field)
+		if ( ! isset( $mapped_data['incompatibilities'] ) ) {
+			$mapped_data['incompatibilities'] = '';
 		}
 		
 		// Ensure notes is always present (optional field)
@@ -3211,6 +3235,8 @@ class DFX_Parish_Retreat_Letters_Admin {
 							<th scope="col" class="manage-column"><?php esc_html_e( 'Surnames', 'dfx-parish-retreat-letters' ); ?></th>
 							<th scope="col" class="manage-column"><?php esc_html_e( 'Date of Birth', 'dfx-parish-retreat-letters' ); ?></th>
 							<th scope="col" class="manage-column"><?php esc_html_e( 'Emergency Contact', 'dfx-parish-retreat-letters' ); ?></th>
+							<th scope="col" class="manage-column"><?php esc_html_e( 'Invited By', 'dfx-parish-retreat-letters' ); ?></th>
+							<th scope="col" class="manage-column"><?php esc_html_e( 'Incompatibilities', 'dfx-parish-retreat-letters' ); ?></th>
 							<?php if ( ! empty( $retreat->notes_enabled ) ) : ?>
 							<th scope="col" class="manage-column"><?php esc_html_e( 'Notes', 'dfx-parish-retreat-letters' ); ?></th>
 							<?php endif; ?>
@@ -3238,11 +3264,35 @@ class DFX_Parish_Retreat_Letters_Admin {
 									<td><?php echo esc_html( $attendant->surnames ); ?></td>
 									<td><?php echo esc_html( date_i18n( get_option( 'date_format' ), strtotime( $attendant->date_of_birth ) ) ); ?></td>
 									<td>
-										<?php echo esc_html( $attendant->emergency_contact_name . ' ' . $attendant->emergency_contact_surname ); ?><br>
+										<?php 
+										echo esc_html( $attendant->emergency_contact_name . ' ' . $attendant->emergency_contact_surname );
+										if ( ! empty( $attendant->emergency_contact_relationship ) ) {
+											echo ' (' . esc_html( $attendant->emergency_contact_relationship ) . ')';
+										}
+										?>
+										<br>
 										<small><?php echo esc_html( $attendant->emergency_contact_phone ); ?></small>
 										<?php if ( ! empty( $attendant->emergency_contact_email ) ) : ?>
 											<br><small><?php echo esc_html( $attendant->emergency_contact_email ); ?></small>
 										<?php endif; ?>
+									</td>
+									<td>
+										<?php
+										if ( ! empty( $attendant->invited_by ) ) {
+											echo esc_html( $attendant->invited_by );
+										} else {
+											echo '<span class="description">' . esc_html__( 'N/A', 'dfx-parish-retreat-letters' ) . '</span>';
+										}
+										?>
+									</td>
+									<td>
+										<?php
+										if ( ! empty( $attendant->incompatibilities ) ) {
+											echo esc_html( $attendant->incompatibilities );
+										} else {
+											echo '<span class="description">' . esc_html__( 'N/A', 'dfx-parish-retreat-letters' ) . '</span>';
+										}
+										?>
 									</td>
 									<?php if ( ! empty( $retreat->notes_enabled ) ) : ?>
 									<td>
@@ -3438,6 +3488,33 @@ class DFX_Parish_Retreat_Letters_Admin {
 								<p class="description"><?php esc_html_e( 'Enter email address for emergency contact.', 'dfx-parish-retreat-letters' ); ?></p>
 							</td>
 						</tr>
+						<tr>
+							<th scope="row">
+								<label for="emergency_contact_relationship"><?php esc_html_e( 'Emergency Contact Relationship', 'dfx-parish-retreat-letters' ); ?> <span class="description">(<?php esc_html_e( 'optional', 'dfx-parish-retreat-letters' ); ?>)</span></label>
+							</th>
+							<td>
+								<input type="text" id="emergency_contact_relationship" name="emergency_contact_relationship" value="<?php echo esc_attr( $attendant->emergency_contact_relationship ?? '' ); ?>" class="regular-text">
+								<p class="description"><?php esc_html_e( 'Relationship to the emergency contact (e.g., husband, friend, daughter).', 'dfx-parish-retreat-letters' ); ?></p>
+							</td>
+						</tr>
+						<tr>
+							<th scope="row">
+								<label for="invited_by"><?php esc_html_e( 'Invited By', 'dfx-parish-retreat-letters' ); ?> <span class="description">(<?php esc_html_e( 'optional', 'dfx-parish-retreat-letters' ); ?>)</span></label>
+							</th>
+							<td>
+								<input type="text" id="invited_by" name="invited_by" value="<?php echo esc_attr( $attendant->invited_by ?? '' ); ?>" class="regular-text">
+								<p class="description"><?php esc_html_e( 'Name of the person who invited this attendant.', 'dfx-parish-retreat-letters' ); ?></p>
+							</td>
+						</tr>
+						<tr>
+							<th scope="row">
+								<label for="incompatibilities"><?php esc_html_e( 'Incompatibilities', 'dfx-parish-retreat-letters' ); ?> <span class="description">(<?php esc_html_e( 'optional', 'dfx-parish-retreat-letters' ); ?>)</span></label>
+							</th>
+							<td>
+								<textarea id="incompatibilities" name="incompatibilities" rows="3" class="large-text"><?php echo esc_textarea( $attendant->incompatibilities ?? '' ); ?></textarea>
+								<p class="description"><?php esc_html_e( 'Names of other attendants they should not be placed with.', 'dfx-parish-retreat-letters' ); ?></p>
+							</td>
+						</tr>
 						<?php if ( ! empty( $retreat->notes_enabled ) ) : ?>
 						<tr>
 							<th scope="row">
@@ -3551,6 +3628,9 @@ class DFX_Parish_Retreat_Letters_Admin {
 					<li><strong><?php esc_html_e( 'Emergency Contact Surname', 'dfx-parish-retreat-letters' ); ?></strong> <?php esc_html_e( '(or "Apellido del Contacto de Emergencia")', 'dfx-parish-retreat-letters' ); ?></li>
 					<li><strong><?php esc_html_e( 'Emergency Contact Phone', 'dfx-parish-retreat-letters' ); ?></strong> <?php esc_html_e( '(or "Teléfono del Contacto de Emergencia")', 'dfx-parish-retreat-letters' ); ?></li>
 					<li><strong><?php esc_html_e( 'Emergency Contact Email', 'dfx-parish-retreat-letters' ); ?></strong> <?php esc_html_e( '(optional, or "Correo del Contacto de Emergencia")', 'dfx-parish-retreat-letters' ); ?></li>
+					<li><strong><?php esc_html_e( 'Emergency Contact Relationship', 'dfx-parish-retreat-letters' ); ?></strong> <?php esc_html_e( '(optional)', 'dfx-parish-retreat-letters' ); ?></li>
+					<li><strong><?php esc_html_e( 'Invited By', 'dfx-parish-retreat-letters' ); ?></strong> <?php esc_html_e( '(optional)', 'dfx-parish-retreat-letters' ); ?></li>
+					<li><strong><?php esc_html_e( 'Incompatibilities', 'dfx-parish-retreat-letters' ); ?></strong> <?php esc_html_e( '(optional)', 'dfx-parish-retreat-letters' ); ?></li>
 				</ul>
 				<p><?php esc_html_e( 'Additional features:', 'dfx-parish-retreat-letters' ); ?></p>
 				<ul>
