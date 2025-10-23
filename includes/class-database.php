@@ -694,7 +694,58 @@ class DFX_Parish_Retreat_Letters_Database {
 		}
 	}
 
-
+	/**
+	 * Add new optional fields to attendants table.
+	 * 
+	 * This method adds three new optional columns to the attendants table:
+	 * - emergency_contact_relationship: Relationship to emergency contact
+	 * - invited_by: Name of person who invited the attendant
+	 * - incompatibilities: Names of attendants they should not be placed with
+	 *
+	 * @since 1.7.0
+	 */
+	private function add_attendant_optional_fields() {
+		global $wpdb;
+		
+		// Check if the attendants table exists
+		$table_exists = $wpdb->get_var( $wpdb->prepare( "SHOW TABLES LIKE %s", $this->attendants_table ) );
+		if ( $table_exists !== $this->attendants_table ) {
+			return; // Table doesn't exist, nothing to migrate
+		}
+		
+		$attendants_table = $this->attendants_table;
+		
+		// Check if columns already exist to avoid errors
+		$columns = $wpdb->get_col( "SHOW COLUMNS FROM {$attendants_table}" ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		
+		$columns_to_add = array();
+		
+		if ( ! in_array( 'emergency_contact_relationship', $columns, true ) ) {
+			$columns_to_add[] = 'ADD COLUMN emergency_contact_relationship varchar(255) NULL DEFAULT NULL AFTER emergency_contact_email';
+		}
+		
+		if ( ! in_array( 'invited_by', $columns, true ) ) {
+			$columns_to_add[] = 'ADD COLUMN invited_by varchar(255) NULL DEFAULT NULL AFTER emergency_contact_relationship';
+		}
+		
+		if ( ! in_array( 'incompatibilities', $columns, true ) ) {
+			$columns_to_add[] = 'ADD COLUMN incompatibilities text NULL DEFAULT NULL AFTER invited_by';
+		}
+		
+		// Only run ALTER TABLE if there are columns to add
+		if ( ! empty( $columns_to_add ) ) {
+			$alter_sql = "ALTER TABLE {$attendants_table} " . implode( ', ', $columns_to_add );
+			$wpdb->query( $alter_sql ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching,WordPress.DB.PreparedSQL.NotPrepared
+			
+			// Log the migration if debug mode is enabled
+			if ( defined( 'WP_DEBUG' ) && WP_DEBUG && function_exists( 'error_log' ) ) {
+				error_log( sprintf( // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log -- Debug-only logging when WP_DEBUG enabled
+					'DFX Parish Retreat Letters: Added %d new optional fields to attendants table',
+					count( $columns_to_add )
+				) );
+			}
+		}
+	}
 
 	/**
 	 * Remove foreign key constraints from audit log table.
@@ -818,6 +869,11 @@ class DFX_Parish_Retreat_Letters_Database {
 		// Migrate custom block ID format from bigint to varchar (v1.5.0)
 		if ( version_compare( $from_version, '1.5.0', '<' ) ) {
 			$this->migrate_custom_block_ids();
+		}
+		
+		// Add new optional fields to attendants table (v1.7.0)
+		if ( version_compare( $from_version, '1.7.0', '<' ) ) {
+			$this->add_attendant_optional_fields();
 		}
 		
 		// Always run the comprehensive setup which handles all tables and columns using dbDelta
