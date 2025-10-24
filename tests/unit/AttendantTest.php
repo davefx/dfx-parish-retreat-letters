@@ -591,4 +591,58 @@ class AttendantTest extends TestCase {
         $second_row = $csv_data['rows'][1];
         $this->assertEquals('', $second_row[$header_index]);
     }
+
+    /**
+     * Test that new optional fields are properly sanitized
+     */
+    public function testSanitizeNewOptionalFields() {
+        $attendant = new DFX_Parish_Retreat_Letters_Attendant();
+        
+        // Use reflection to access private method
+        $reflection = new ReflectionClass($attendant);
+        $sanitize_method = $reflection->getMethod('sanitize_attendant_data');
+        $sanitize_method->setAccessible(true);
+        
+        $test_data = [
+            'retreat_id' => '1',
+            'name' => 'John',
+            'surnames' => 'Doe',
+            'date_of_birth' => '1980-01-01',
+            'emergency_contact_name' => 'Jane',
+            'emergency_contact_surname' => 'Doe',
+            'emergency_contact_phone' => '+1234567890',
+            'emergency_contact_email' => 'jane@example.com',
+            'emergency_contact_relationship' => 'Wife  ',  // Extra spaces
+            'invited_by' => '  John Smith',  // Leading spaces
+            'incompatibilities' => "Mary Johnson\nBob Williams",  // Multiline text
+            'notes' => 'Some notes'
+        ];
+        
+        $result = $sanitize_method->invoke($attendant, $test_data);
+        
+        // Verify new fields are properly sanitized
+        $this->assertEquals('Wife', $result['emergency_contact_relationship'], 'Relationship should be trimmed');
+        $this->assertEquals('John Smith', $result['invited_by'], 'Invited by should be trimmed');
+        $this->assertIsString($result['incompatibilities'], 'Incompatibilities should be a string');
+        $this->assertStringContainsString('Mary Johnson', $result['incompatibilities'], 'Incompatibilities should contain the text');
+        
+        // Verify these fields are present even when empty
+        $empty_data = [
+            'retreat_id' => '1',
+            'name' => 'John',
+            'surnames' => 'Doe',
+            'date_of_birth' => '1980-01-01',
+            'emergency_contact_name' => 'Jane',
+            'emergency_contact_surname' => 'Doe',
+            'emergency_contact_phone' => '+1234567890',
+        ];
+        
+        $empty_result = $sanitize_method->invoke($attendant, $empty_data);
+        $this->assertArrayHasKey('emergency_contact_relationship', $empty_result);
+        $this->assertArrayHasKey('invited_by', $empty_result);
+        $this->assertArrayHasKey('incompatibilities', $empty_result);
+        $this->assertEquals('', $empty_result['emergency_contact_relationship']);
+        $this->assertEquals('', $empty_result['invited_by']);
+        $this->assertEquals('', $empty_result['incompatibilities']);
+    }
 }

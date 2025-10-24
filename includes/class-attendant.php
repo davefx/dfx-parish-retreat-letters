@@ -62,18 +62,21 @@ class DFX_Parish_Retreat_Letters_Attendant {
 		$result = $wpdb->insert(
 			$this->database->get_attendants_table(),
 			array(
-				'retreat_id'                => $sanitized_data['retreat_id'],
-				'name'                      => $sanitized_data['name'],
-				'surnames'                  => $sanitized_data['surnames'],
-				'date_of_birth'             => $sanitized_data['date_of_birth'],
-				'emergency_contact_name'    => $sanitized_data['emergency_contact_name'],
-				'emergency_contact_surname' => $sanitized_data['emergency_contact_surname'],
-				'emergency_contact_phone'   => $sanitized_data['emergency_contact_phone'],
-				'emergency_contact_email'   => $sanitized_data['emergency_contact_email'],
-				'message_url_token'         => $message_url_token,
-				'notes'                     => $sanitized_data['notes'],
+				'retreat_id'                      => $sanitized_data['retreat_id'],
+				'name'                            => $sanitized_data['name'],
+				'surnames'                        => $sanitized_data['surnames'],
+				'date_of_birth'                   => $sanitized_data['date_of_birth'],
+				'emergency_contact_name'          => $sanitized_data['emergency_contact_name'],
+				'emergency_contact_surname'       => $sanitized_data['emergency_contact_surname'],
+				'emergency_contact_phone'         => $sanitized_data['emergency_contact_phone'],
+				'emergency_contact_email'         => $sanitized_data['emergency_contact_email'],
+				'emergency_contact_relationship'  => $sanitized_data['emergency_contact_relationship'],
+				'invited_by'                      => $sanitized_data['invited_by'],
+				'incompatibilities'               => $sanitized_data['incompatibilities'],
+				'message_url_token'               => $message_url_token,
+				'notes'                           => $sanitized_data['notes'],
 			),
-			array( '%d', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s' )
+			array( '%d', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s' )
 		);
 
 		return $result ? $wpdb->insert_id : false;
@@ -117,18 +120,21 @@ class DFX_Parish_Retreat_Letters_Attendant {
 		$result = $wpdb->update(
 			$this->database->get_attendants_table(),
 			array(
-				'retreat_id'                => $sanitized_data['retreat_id'],
-				'name'                      => $sanitized_data['name'],
-				'surnames'                  => $sanitized_data['surnames'],
-				'date_of_birth'             => $sanitized_data['date_of_birth'],
-				'emergency_contact_name'    => $sanitized_data['emergency_contact_name'],
-				'emergency_contact_surname' => $sanitized_data['emergency_contact_surname'],
-				'emergency_contact_phone'   => $sanitized_data['emergency_contact_phone'],
-				'emergency_contact_email'   => $sanitized_data['emergency_contact_email'],
-				'notes'                     => $sanitized_data['notes'],
+				'retreat_id'                      => $sanitized_data['retreat_id'],
+				'name'                            => $sanitized_data['name'],
+				'surnames'                        => $sanitized_data['surnames'],
+				'date_of_birth'                   => $sanitized_data['date_of_birth'],
+				'emergency_contact_name'          => $sanitized_data['emergency_contact_name'],
+				'emergency_contact_surname'       => $sanitized_data['emergency_contact_surname'],
+				'emergency_contact_phone'         => $sanitized_data['emergency_contact_phone'],
+				'emergency_contact_email'         => $sanitized_data['emergency_contact_email'],
+				'emergency_contact_relationship'  => $sanitized_data['emergency_contact_relationship'],
+				'invited_by'                      => $sanitized_data['invited_by'],
+				'incompatibilities'               => $sanitized_data['incompatibilities'],
+				'notes'                           => $sanitized_data['notes'],
 			),
 			array( 'id' => $id ),
-			array( '%d', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s' ),
+			array( '%d', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s' ),
 			array( '%d' )
 		); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
 
@@ -186,8 +192,10 @@ class DFX_Parish_Retreat_Letters_Attendant {
 
 		// Add search functionality
 		if ( ! empty( $args['search'] ) ) {
-			$where_clause .= ' AND (name LIKE %s OR surnames LIKE %s OR emergency_contact_name LIKE %s OR emergency_contact_surname LIKE %s OR emergency_contact_email LIKE %s)';
+			$where_clause .= ' AND (name LIKE %s OR surnames LIKE %s OR emergency_contact_name LIKE %s OR emergency_contact_surname LIKE %s OR emergency_contact_email LIKE %s OR invited_by LIKE %s OR incompatibilities LIKE %s)';
 			$search_term   = '%' . $wpdb->esc_like( $args['search'] ) . '%';
+			$where_values[] = $search_term;
+			$where_values[] = $search_term;
 			$where_values[] = $search_term;
 			$where_values[] = $search_term;
 			$where_values[] = $search_term;
@@ -241,8 +249,10 @@ class DFX_Parish_Retreat_Letters_Attendant {
 		$where_values = array( $retreat_id );
 
 		if ( ! empty( $search ) ) {
-			$where_clause .= ' AND (name LIKE %s OR surnames LIKE %s OR emergency_contact_name LIKE %s OR emergency_contact_surname LIKE %s OR emergency_contact_email LIKE %s)';
+			$where_clause .= ' AND (name LIKE %s OR surnames LIKE %s OR emergency_contact_name LIKE %s OR emergency_contact_surname LIKE %s OR emergency_contact_email LIKE %s OR invited_by LIKE %s OR incompatibilities LIKE %s)';
 			$search_term   = '%' . $wpdb->esc_like( $search ) . '%';
+			$where_values[] = $search_term;
+			$where_values[] = $search_term;
 			$where_values[] = $search_term;
 			$where_values[] = $search_term;
 			$where_values[] = $search_term;
@@ -346,6 +356,9 @@ class DFX_Parish_Retreat_Letters_Attendant {
 			__( 'Emergency Contact Surname', 'dfx-parish-retreat-letters' ),
 			__( 'Emergency Contact Phone', 'dfx-parish-retreat-letters' ),
 			__( 'Emergency Contact Email', 'dfx-parish-retreat-letters' ),
+			__( 'Emergency Contact Relationship', 'dfx-parish-retreat-letters' ),
+			__( 'Invited By', 'dfx-parish-retreat-letters' ),
+			__( 'Incompatibilities', 'dfx-parish-retreat-letters' ),
 			__( 'Message URL', 'dfx-parish-retreat-letters' ),
 		);
 		
@@ -368,6 +381,9 @@ class DFX_Parish_Retreat_Letters_Attendant {
 				$attendant->emergency_contact_surname,
 				$attendant->emergency_contact_phone,
 				$attendant->emergency_contact_email,
+				$attendant->emergency_contact_relationship ?? '',
+				$attendant->invited_by ?? '',
+				$attendant->incompatibilities ?? '',
 				$message_url,
 			);
 			
@@ -393,15 +409,18 @@ class DFX_Parish_Retreat_Letters_Attendant {
 	 */
 	private function sanitize_attendant_data( $data ) {
 		return array(
-			'retreat_id'                => absint( $data['retreat_id'] ?? 0 ),
-			'name'                      => sanitize_text_field( $data['name'] ?? '' ),
-			'surnames'                  => sanitize_text_field( $data['surnames'] ?? '' ),
-			'date_of_birth'             => sanitize_text_field( $data['date_of_birth'] ?? '' ),
-			'emergency_contact_name'    => sanitize_text_field( $data['emergency_contact_name'] ?? '' ),
-			'emergency_contact_surname' => sanitize_text_field( $data['emergency_contact_surname'] ?? '' ),
-			'emergency_contact_phone'   => sanitize_text_field( $data['emergency_contact_phone'] ?? '' ),
-			'emergency_contact_email'   => sanitize_email( $data['emergency_contact_email'] ?? '' ),
-			'notes'                     => sanitize_textarea_field( $data['notes'] ?? '' ),
+			'retreat_id'                      => absint( $data['retreat_id'] ?? 0 ),
+			'name'                            => sanitize_text_field( $data['name'] ?? '' ),
+			'surnames'                        => sanitize_text_field( $data['surnames'] ?? '' ),
+			'date_of_birth'                   => sanitize_text_field( $data['date_of_birth'] ?? '' ),
+			'emergency_contact_name'          => sanitize_text_field( $data['emergency_contact_name'] ?? '' ),
+			'emergency_contact_surname'       => sanitize_text_field( $data['emergency_contact_surname'] ?? '' ),
+			'emergency_contact_phone'         => sanitize_text_field( $data['emergency_contact_phone'] ?? '' ),
+			'emergency_contact_email'         => sanitize_email( $data['emergency_contact_email'] ?? '' ),
+			'emergency_contact_relationship'  => sanitize_text_field( $data['emergency_contact_relationship'] ?? '' ),
+			'invited_by'                      => sanitize_text_field( $data['invited_by'] ?? '' ),
+			'incompatibilities'               => sanitize_textarea_field( $data['incompatibilities'] ?? '' ),
+			'notes'                           => sanitize_textarea_field( $data['notes'] ?? '' ),
 		);
 	}
 

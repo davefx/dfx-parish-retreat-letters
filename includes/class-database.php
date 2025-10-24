@@ -38,7 +38,7 @@ class DFX_Parish_Retreat_Letters_Database {
 	 * @since 1.0.0
 	 * @var string
 	 */
-	const DB_VERSION = '1.6.3';
+	const DB_VERSION = '1.7.0';
 
 	/**
 	 * The database version option name.
@@ -199,7 +199,7 @@ class DFX_Parish_Retreat_Letters_Database {
 
 		dbDelta( $retreats_sql );
 
-		// Create attendants table (with message_url_token from v1.2.0)
+		// Create attendants table (with message_url_token from v1.2.0, new fields from v1.7.0)
 		$attendants_sql = "CREATE TABLE {$this->attendants_table} (
 			id mediumint(9) NOT NULL AUTO_INCREMENT,
 			retreat_id mediumint(9) NOT NULL,
@@ -210,6 +210,9 @@ class DFX_Parish_Retreat_Letters_Database {
 			emergency_contact_surname varchar(255) NOT NULL,
 			emergency_contact_phone varchar(20) NOT NULL,
 			emergency_contact_email varchar(255) NULL DEFAULT NULL,
+			emergency_contact_relationship varchar(255) NULL DEFAULT NULL,
+			invited_by varchar(255) NULL DEFAULT NULL,
+			incompatibilities text NULL DEFAULT NULL,
 			message_url_token VARCHAR(255) NULL DEFAULT NULL,
 			notes text NULL DEFAULT NULL,
 			created_at datetime DEFAULT CURRENT_TIMESTAMP,
