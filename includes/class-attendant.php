@@ -75,8 +75,9 @@ class DFX_Parish_Retreat_Letters_Attendant {
 				'incompatibilities'               => $sanitized_data['incompatibilities'],
 				'message_url_token'               => $message_url_token,
 				'notes'                           => $sanitized_data['notes'],
+				'internal_notes'                  => $sanitized_data['internal_notes'],
 			),
-			array( '%d', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s' )
+			array( '%d', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s' )
 		);
 
 		return $result ? $wpdb->insert_id : false;
@@ -132,9 +133,10 @@ class DFX_Parish_Retreat_Letters_Attendant {
 				'invited_by'                      => $sanitized_data['invited_by'],
 				'incompatibilities'               => $sanitized_data['incompatibilities'],
 				'notes'                           => $sanitized_data['notes'],
+				'internal_notes'                  => $sanitized_data['internal_notes'],
 			),
 			array( 'id' => $id ),
-			array( '%d', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s' ),
+			array( '%d', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s' ),
 			array( '%d' )
 		); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
 
@@ -421,6 +423,7 @@ class DFX_Parish_Retreat_Letters_Attendant {
 			'invited_by'                      => sanitize_text_field( $data['invited_by'] ?? '' ),
 			'incompatibilities'               => sanitize_textarea_field( $data['incompatibilities'] ?? '' ),
 			'notes'                           => sanitize_textarea_field( $data['notes'] ?? '' ),
+			'internal_notes'                  => sanitize_textarea_field( $data['internal_notes'] ?? '' ),
 		);
 	}
 

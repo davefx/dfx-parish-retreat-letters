@@ -38,7 +38,7 @@ class DFX_Parish_Retreat_Letters_Database {
 	 * @since 1.0.0
 	 * @var string
 	 */
-	const DB_VERSION = '1.7.0';
+	const DB_VERSION = '1.8.0';
 
 	/**
 	 * The database version option name.
@@ -188,6 +188,7 @@ class DFX_Parish_Retreat_Letters_Database {
 			custom_footer_block_id varchar(100) NULL DEFAULT NULL,
 			custom_css text NULL DEFAULT NULL,
 			notes_enabled tinyint(1) NOT NULL DEFAULT 0,
+			internal_notes_enabled tinyint(1) NOT NULL DEFAULT 0,
 			created_at datetime DEFAULT CURRENT_TIMESTAMP,
 			updated_at datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 			PRIMARY KEY (id),
@@ -199,7 +200,7 @@ class DFX_Parish_Retreat_Letters_Database {
 
 		dbDelta( $retreats_sql );
 
-		// Create attendants table (with message_url_token from v1.2.0, new fields from v1.7.0)
+		// Create attendants table (with message_url_token from v1.2.0, new fields from v1.7.0, internal_notes from v1.8.0)
 		$attendants_sql = "CREATE TABLE {$this->attendants_table} (
 			id mediumint(9) NOT NULL AUTO_INCREMENT,
 			retreat_id mediumint(9) NOT NULL,
@@ -215,6 +216,7 @@ class DFX_Parish_Retreat_Letters_Database {
 			incompatibilities text NULL DEFAULT NULL,
 			message_url_token VARCHAR(255) NULL DEFAULT NULL,
 			notes text NULL DEFAULT NULL,
+			internal_notes text NULL DEFAULT NULL,
 			created_at datetime DEFAULT CURRENT_TIMESTAMP,
 			updated_at datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 			PRIMARY KEY (id),
