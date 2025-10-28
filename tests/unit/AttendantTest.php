@@ -615,7 +615,8 @@ class AttendantTest extends TestCase {
             'emergency_contact_relationship' => 'Wife  ',  // Extra spaces
             'invited_by' => '  John Smith',  // Leading spaces
             'incompatibilities' => "Mary Johnson\nBob Williams",  // Multiline text
-            'notes' => 'Some notes'
+            'notes' => 'Some notes',
+            'internal_notes' => 'Internal notes only  '  // With trailing spaces
         ];
         
         $result = $sanitize_method->invoke($attendant, $test_data);
@@ -625,6 +626,7 @@ class AttendantTest extends TestCase {
         $this->assertEquals('John Smith', $result['invited_by'], 'Invited by should be trimmed');
         $this->assertIsString($result['incompatibilities'], 'Incompatibilities should be a string');
         $this->assertStringContainsString('Mary Johnson', $result['incompatibilities'], 'Incompatibilities should contain the text');
+        $this->assertEquals('Internal notes only', $result['internal_notes'], 'Internal notes should be trimmed');
         
         // Verify these fields are present even when empty
         $empty_data = [
@@ -641,8 +643,103 @@ class AttendantTest extends TestCase {
         $this->assertArrayHasKey('emergency_contact_relationship', $empty_result);
         $this->assertArrayHasKey('invited_by', $empty_result);
         $this->assertArrayHasKey('incompatibilities', $empty_result);
+        $this->assertArrayHasKey('internal_notes', $empty_result);
         $this->assertEquals('', $empty_result['emergency_contact_relationship']);
         $this->assertEquals('', $empty_result['invited_by']);
         $this->assertEquals('', $empty_result['incompatibilities']);
+        $this->assertEquals('', $empty_result['internal_notes']);
+    }
+
+    /**
+     * Test that internal_notes field is NOT included in CSV export
+     */
+    public function testInternalNotesNotExportedInCSV() {
+        // Mock translate function
+        Functions\when('__')->alias(function($text) {
+            return $text;
+        });
+        
+        // Mock database
+        $database_mock = $this->createMock('DFX_Parish_Retreat_Letters_Database');
+        $database_mock->method('get_attendants_table')->willReturn('wp_dfx_attendants');
+        
+        // Mock wpdb
+        global $wpdb;
+        $wpdb = $this->createMock('wpdb');
+        
+        // Mock retreat with both notes and internal_notes enabled
+        $mock_retreat = (object)[
+            'id' => 1,
+            'notes_enabled' => true,
+            'internal_notes_enabled' => true
+        ];
+        
+        // Mock attendant with both notes and internal_notes
+        $mock_attendants = [
+            (object)[
+                'name' => 'John',
+                'surnames' => 'Doe',
+                'date_of_birth' => '1980-01-01',
+                'emergency_contact_name' => 'Jane',
+                'emergency_contact_surname' => 'Doe',
+                'emergency_contact_phone' => '+1234567890',
+                'emergency_contact_email' => 'jane@example.com',
+                'emergency_contact_relationship' => 'Wife',
+                'invited_by' => 'Bob',
+                'incompatibilities' => '',
+                'message_url_token' => 'test_token',
+                'notes' => 'This should be exported',
+                'internal_notes' => 'This should NOT be exported'
+            ]
+        ];
+        
+        $wpdb->method('get_results')->willReturn($mock_attendants);
+        $wpdb->method('prepare')->willReturn('SELECT * FROM wp_dfx_attendants');
+        
+        // Mock home_url
+        Functions\when('home_url')->alias(function($path) {
+            return 'https://example.com' . $path;
+        });
+        
+        // Mock wp_parse_args
+        Functions\when('wp_parse_args')->alias(function($args, $defaults) {
+            return array_merge($defaults, $args);
+        });
+        
+        // Create attendant instance
+        $attendant = new DFX_Parish_Retreat_Letters_Attendant();
+        
+        $reflection = new ReflectionClass($attendant);
+        $database_property = $reflection->getProperty('database');
+        $database_property->setAccessible(true);
+        $database_property->setValue($attendant, $database_mock);
+        
+        // Mock the retreat model to return our mock retreat
+        $retreat_model_mock = $this->getMockBuilder('DFX_Parish_Retreat_Letters_Retreat')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $retreat_model_mock->method('get')->willReturn($mock_retreat);
+        
+        // We need to mock the new statement in export_csv_data
+        // Since we can't easily do that, we'll verify the behavior by checking the export structure
+        
+        // Call export_csv_data
+        $csv_data = $attendant->export_csv_data(1);
+        
+        // Verify that 'Notes' header is present (when notes_enabled is true)
+        $this->assertContains('Notes', $csv_data['headers'], 'Notes header should be present when notes_enabled is true');
+        
+        // Verify that 'Internal Notes' header is NOT present (should never be exported)
+        $this->assertNotContains('Internal Notes', $csv_data['headers'], 'Internal Notes header should NEVER be present in CSV export');
+        
+        // Verify that the notes value is in the row data
+        $first_row = $csv_data['rows'][0];
+        $notes_index = array_search('Notes', $csv_data['headers']);
+        if ($notes_index !== false) {
+            $this->assertEquals('This should be exported', $first_row[$notes_index], 'Notes value should be in the exported data');
+        }
+        
+        // Verify the row doesn't have more columns than headers (which would happen if internal_notes was added)
+        $this->assertCount(count($csv_data['headers']), $first_row, 'Row should have same number of columns as headers');
     }
 }
