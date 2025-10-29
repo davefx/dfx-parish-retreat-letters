@@ -3253,6 +3253,9 @@ class DFX_Parish_Retreat_Letters_Admin {
 							<?php if ( ! empty( $retreat->notes_enabled ) ) : ?>
 							<th scope="col" class="manage-column"><?php esc_html_e( 'Notes', 'dfx-parish-retreat-letters' ); ?></th>
 							<?php endif; ?>
+							<?php if ( ! empty( $retreat->internal_notes_enabled ) ) : ?>
+							<th scope="col" class="manage-column"><?php esc_html_e( 'Internal Notes', 'dfx-parish-retreat-letters' ); ?></th>
+							<?php endif; ?>
 							<th scope="col" class="manage-column"><?php esc_html_e( 'Messages', 'dfx-parish-retreat-letters' ); ?></th>
 							<th scope="col" class="manage-column"><?php esc_html_e( 'Actions', 'dfx-parish-retreat-letters' ); ?></th>
 						</tr>
@@ -3312,6 +3315,17 @@ class DFX_Parish_Retreat_Letters_Admin {
 										<?php
 										if ( ! empty( $attendant->notes ) ) {
 											echo wpautop( esc_html( $attendant->notes ) );
+										} else {
+											echo '<span class="description">' . esc_html__( 'No notes', 'dfx-parish-retreat-letters' ) . '</span>';
+										}
+										?>
+									</td>
+									<?php endif; ?>
+									<?php if ( ! empty( $retreat->internal_notes_enabled ) ) : ?>
+									<td>
+										<?php
+										if ( ! empty( $attendant->internal_notes ) ) {
+											echo wpautop( esc_html( $attendant->internal_notes ) );
 										} else {
 											echo '<span class="description">' . esc_html__( 'No notes', 'dfx-parish-retreat-letters' ) . '</span>';
 										}
