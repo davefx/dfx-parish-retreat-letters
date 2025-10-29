@@ -1020,7 +1020,28 @@ class DFX_Parish_Retreat_Letters_Admin {
 											<p class="description">
 												<?php esc_html_e( 'Template message to request letters from emergency contacts. Available placeholders:', 'dfx-parish-retreat-letters' ); ?>
 												<br>
-												<code>[attendant_name]</code>, <code>[attendant_surnames]</code>, <code>[date_of_birth]</code>, <code>[emergency_contact_name]</code>, <code>[emergency_contact_surname]</code>, <code>[emergency_contact_phone]</code>, <code>[emergency_contact_email]</code>, <code>[emergency_contact_relationship]</code>, <code>[invited_by]</code>, <code>[incompatibilities]</code>, <code>[messages_url]</code>, <code>[retreat_name]</code>, <code>[retreat_location]</code>, <code>[retreat_start_date]</code>, <code>[retreat_end_date]</code>
+												<strong><?php esc_html_e( 'Attendant:', 'dfx-parish-retreat-letters' ); ?></strong>
+												<code>[attendant_name]</code> <?php esc_html_e( '(First name)', 'dfx-parish-retreat-letters' ); ?>,
+												<code>[attendant_surnames]</code> <?php esc_html_e( '(Surnames)', 'dfx-parish-retreat-letters' ); ?>,
+												<code>[date_of_birth]</code> <?php esc_html_e( '(Date of birth)', 'dfx-parish-retreat-letters' ); ?>
+												<br>
+												<strong><?php esc_html_e( 'Emergency Contact:', 'dfx-parish-retreat-letters' ); ?></strong>
+												<code>[emergency_contact_name]</code> <?php esc_html_e( '(First name)', 'dfx-parish-retreat-letters' ); ?>,
+												<code>[emergency_contact_surname]</code> <?php esc_html_e( '(Surname)', 'dfx-parish-retreat-letters' ); ?>,
+												<code>[emergency_contact_phone]</code> <?php esc_html_e( '(Phone)', 'dfx-parish-retreat-letters' ); ?>,
+												<code>[emergency_contact_email]</code> <?php esc_html_e( '(Email)', 'dfx-parish-retreat-letters' ); ?>,
+												<code>[emergency_contact_relationship]</code> <?php esc_html_e( '(Relationship)', 'dfx-parish-retreat-letters' ); ?>
+												<br>
+												<strong><?php esc_html_e( 'Other:', 'dfx-parish-retreat-letters' ); ?></strong>
+												<code>[invited_by]</code> <?php esc_html_e( '(Invited by)', 'dfx-parish-retreat-letters' ); ?>,
+												<code>[incompatibilities]</code> <?php esc_html_e( '(Incompatibilities)', 'dfx-parish-retreat-letters' ); ?>,
+												<code>[messages_url]</code> <?php esc_html_e( '(Message submission URL)', 'dfx-parish-retreat-letters' ); ?>
+												<br>
+												<strong><?php esc_html_e( 'Retreat:', 'dfx-parish-retreat-letters' ); ?></strong>
+												<code>[retreat_name]</code> <?php esc_html_e( '(Name)', 'dfx-parish-retreat-letters' ); ?>,
+												<code>[retreat_location]</code> <?php esc_html_e( '(Location)', 'dfx-parish-retreat-letters' ); ?>,
+												<code>[retreat_start_date]</code> <?php esc_html_e( '(Start date)', 'dfx-parish-retreat-letters' ); ?>,
+												<code>[retreat_end_date]</code> <?php esc_html_e( '(End date)', 'dfx-parish-retreat-letters' ); ?>
 											</p>
 										</td>
 									</tr>
