@@ -2490,6 +2490,12 @@ class DFX_Parish_Retreat_Letters_Admin {
 			wp_die( esc_html__( 'Security check failed.', 'dfx-parish-retreat-letters' ) );
 		}
 
+		// Get retreat to check which fields are enabled
+		$retreat = $this->retreat_model->get( $retreat_id );
+		if ( ! $retreat ) {
+			wp_die( esc_html__( 'Invalid retreat.', 'dfx-parish-retreat-letters' ) );
+		}
+
 		$data = array(
 			'retreat_id'                      => $retreat_id,
 			'name'                            => sanitize_text_field( wp_unslash( $_POST['name'] ?? '' ) ),
@@ -2502,9 +2508,21 @@ class DFX_Parish_Retreat_Letters_Admin {
 			'emergency_contact_relationship'  => sanitize_text_field( wp_unslash( $_POST['emergency_contact_relationship'] ?? '' ) ),
 			'invited_by'                      => sanitize_text_field( wp_unslash( $_POST['invited_by'] ?? '' ) ),
 			'incompatibilities'               => sanitize_textarea_field( wp_unslash( $_POST['incompatibilities'] ?? '' ) ),
-			'notes'                           => sanitize_textarea_field( wp_unslash( $_POST['notes'] ?? '' ) ),
-			'internal_notes'                  => sanitize_textarea_field( wp_unslash( $_POST['internal_notes'] ?? '' ) ),
 		);
+
+		// Only process notes if enabled for this retreat
+		if ( ! empty( $retreat->notes_enabled ) ) {
+			$data['notes'] = sanitize_textarea_field( wp_unslash( $_POST['notes'] ?? '' ) );
+		} else {
+			$data['notes'] = '';
+		}
+
+		// Only process internal_notes if enabled for this retreat
+		if ( ! empty( $retreat->internal_notes_enabled ) ) {
+			$data['internal_notes'] = sanitize_textarea_field( wp_unslash( $_POST['internal_notes'] ?? '' ) );
+		} else {
+			$data['internal_notes'] = '';
+		}
 
 		if ( $attendant_id ) {
 			// Update existing attendant
