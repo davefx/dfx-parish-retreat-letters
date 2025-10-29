@@ -624,6 +624,99 @@
                 return false;
             }
         }
+
+        // Handle invitation message button clicks
+        $('.dfx-prl-show-invitation-message').on('click', function(e) {
+            e.preventDefault();
+            
+            var attendantId = $(this).data('attendant-id');
+            var retreatId = $(this).data('retreat-id');
+            var $button = $(this);
+            
+            // Show loading state
+            $button.prop('disabled', true);
+            var originalText = $button.text();
+            $button.text(dfxPRLAdmin.messages.loadingMessage || 'Loading...');
+            
+            // Make AJAX request to get the expanded message
+            $.ajax({
+                url: dfxPRLAdmin.ajaxurl,
+                type: 'POST',
+                data: {
+                    action: 'dfx_prl_get_invitation_message',
+                    nonce: dfxPRLAdmin.nonce,
+                    attendant_id: attendantId,
+                    retreat_id: retreatId
+                },
+                success: function(response) {
+                    $button.prop('disabled', false);
+                    $button.text(originalText);
+                    
+                    if (response.success) {
+                        showInvitationMessageModal(response.data.message);
+                    } else {
+                        alert(response.data.message || dfxPRLAdmin.messages.loadMessageError);
+                    }
+                },
+                error: function() {
+                    $button.prop('disabled', false);
+                    $button.text(originalText);
+                    alert(dfxPRLAdmin.messages.loadMessageError);
+                }
+            });
+        });
+
+        // Show invitation message modal
+        function showInvitationMessageModal(message) {
+            // Create modal if it doesn't exist
+            if (!$('#dfx-prl-invitation-modal').length) {
+                $('body').append(
+                    '<div id="dfx-prl-invitation-modal" class="dfx-prl-modal-overlay">' +
+                        '<div class="dfx-prl-modal-dialog">' +
+                            '<div class="dfx-prl-modal-header">' +
+                                '<h3>' + (dfxPRLAdmin.messages.invitationMessageTitle || 'Invitation Message') + '</h3>' +
+                                '<button class="dfx-prl-modal-close">&times;</button>' +
+                            '</div>' +
+                            '<div class="dfx-prl-modal-body">' +
+                                '<div class="dfx-prl-message-content" style="background: #f9f9f9; border: 1px solid #ddd; border-radius: 4px; padding: 15px; margin-bottom: 15px; white-space: pre-wrap; font-family: monospace; max-height: 400px; overflow-y: auto;"></div>' +
+                            '</div>' +
+                            '<div class="dfx-prl-modal-footer">' +
+                                '<button class="button button-primary dfx-prl-copy-message">' + 'Copy Message' + '</button>' +
+                                '<button class="button dfx-prl-modal-close">' + (dfxPRLAdmin.messages.cancelButton || 'Close') + '</button>' +
+                            '</div>' +
+                        '</div>' +
+                    '</div>'
+                );
+                
+                // Handle close button clicks
+                $('#dfx-prl-invitation-modal').on('click', '.dfx-prl-modal-close', function() {
+                    $('#dfx-prl-invitation-modal').fadeOut(200);
+                });
+                
+                // Handle copy button click
+                $('#dfx-prl-invitation-modal').on('click', '.dfx-prl-copy-message', function() {
+                    var messageText = $('#dfx-prl-invitation-modal .dfx-prl-message-content').text();
+                    
+                    if (copyToClipboard(messageText)) {
+                        alert(dfxPRLAdmin.messages.messageCopied || 'Message copied to clipboard!');
+                        $('#dfx-prl-invitation-modal').fadeOut(200);
+                    } else {
+                        alert(dfxPRLAdmin.messages.messageCopyError || 'Failed to copy message.');
+                    }
+                });
+                
+                // Close on overlay click
+                $('#dfx-prl-invitation-modal').on('click', function(e) {
+                    if ($(e.target).is('#dfx-prl-invitation-modal')) {
+                        $(this).fadeOut(200);
+                    }
+                });
+            }
+            
+            // Set the message content and show the modal
+            $('#dfx-prl-invitation-modal .dfx-prl-message-content').text(message);
+            $('#dfx-prl-invitation-modal').fadeIn(200);
+        }
     });
 
 })(jQuery);

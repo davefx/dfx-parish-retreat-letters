@@ -160,6 +160,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 		add_action( 'wp_ajax_dfx_prl_send_invitation', array( $this, 'ajax_send_invitation' ) );
 		add_action( 'wp_ajax_dfx_prl_cancel_invitation', array( $this, 'ajax_cancel_invitation' ) );
 		add_action( 'wp_ajax_dfx_prl_reset_rate_limits', array( $this, 'ajax_reset_rate_limits' ) );
+		add_action( 'wp_ajax_dfx_prl_get_invitation_message', array( $this, 'ajax_get_invitation_message' ) );
 	}
 
 	/**
@@ -547,6 +548,11 @@ class DFX_Parish_Retreat_Letters_Admin {
 					'urlGenerated' => __( 'Message URL generated successfully!', 'dfx-parish-retreat-letters' ),
 					'urlCopied' => __( 'URL copied to clipboard!', 'dfx-parish-retreat-letters' ),
 					'copyError' => __( 'Failed to copy URL. Please copy it manually.', 'dfx-parish-retreat-letters' ),
+					'invitationMessageTitle' => __( 'Invitation Message', 'dfx-parish-retreat-letters' ),
+					'loadingMessage' => __( 'Loading message...', 'dfx-parish-retreat-letters' ),
+					'loadMessageError' => __( 'Error loading invitation message. Please try again.', 'dfx-parish-retreat-letters' ),
+					'messageCopied' => __( 'Message copied to clipboard!', 'dfx-parish-retreat-letters' ),
+					'messageCopyError' => __( 'Failed to copy message. Please copy it manually.', 'dfx-parish-retreat-letters' ),
 					'printing' => __( 'Preparing for print...', 'dfx-parish-retreat-letters' ),
 					'printError' => __( 'Error preparing message for print. Please try again.', 'dfx-parish-retreat-letters' ),
 					'downloading' => __( 'Downloading...', 'dfx-parish-retreat-letters' ),
@@ -706,6 +712,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 			'custom_css'                 => sanitize_textarea_field( wp_unslash( $_POST['custom_css'] ?? '' ) ),
 			'notes_enabled'              => isset( $_POST['notes_enabled'] ) ? 1 : 0,
 			'internal_notes_enabled'     => isset( $_POST['internal_notes_enabled'] ) ? 1 : 0,
+			'message_request_template'   => sanitize_textarea_field( wp_unslash( $_POST['message_request_template'] ?? '' ) ),
 		);
 
 		if ( $retreat_id ) {
@@ -1002,6 +1009,40 @@ class DFX_Parish_Retreat_Letters_Admin {
 												<?php esc_html_e( 'Enable optional internal notes field for attendants', 'dfx-parish-retreat-letters' ); ?>
 											</label>
 											<p class="description"><?php esc_html_e( 'When enabled, an optional internal notes field will be available for each attendant. This field will NOT be imported or exported via CSV.', 'dfx-parish-retreat-letters' ); ?></p>
+										</td>
+									</tr>
+									<tr>
+										<th scope="row">
+											<label for="message_request_template"><?php esc_html_e( 'Message Request Template', 'dfx-parish-retreat-letters' ); ?></label>
+										</th>
+										<td>
+											<textarea id="message_request_template" name="message_request_template" rows="8" class="large-text" placeholder="<?php esc_attr_e( 'Template for requesting messages from emergency contacts...', 'dfx-parish-retreat-letters' ); ?>"><?php echo esc_textarea( $retreat->message_request_template ?? '' ); ?></textarea>
+											<p class="description">
+												<?php esc_html_e( 'Template message to request letters from emergency contacts. Available placeholders:', 'dfx-parish-retreat-letters' ); ?>
+												<br>
+												<strong><?php esc_html_e( 'Attendant:', 'dfx-parish-retreat-letters' ); ?></strong>
+												<code>[attendant_name]</code> <?php esc_html_e( '(First name)', 'dfx-parish-retreat-letters' ); ?>,
+												<code>[attendant_surnames]</code> <?php esc_html_e( '(Surnames)', 'dfx-parish-retreat-letters' ); ?>,
+												<code>[date_of_birth]</code> <?php esc_html_e( '(Date of birth)', 'dfx-parish-retreat-letters' ); ?>
+												<br>
+												<strong><?php esc_html_e( 'Emergency Contact:', 'dfx-parish-retreat-letters' ); ?></strong>
+												<code>[emergency_contact_name]</code> <?php esc_html_e( '(First name)', 'dfx-parish-retreat-letters' ); ?>,
+												<code>[emergency_contact_surname]</code> <?php esc_html_e( '(Surname)', 'dfx-parish-retreat-letters' ); ?>,
+												<code>[emergency_contact_phone]</code> <?php esc_html_e( '(Phone)', 'dfx-parish-retreat-letters' ); ?>,
+												<code>[emergency_contact_email]</code> <?php esc_html_e( '(Email)', 'dfx-parish-retreat-letters' ); ?>,
+												<code>[emergency_contact_relationship]</code> <?php esc_html_e( '(Relationship)', 'dfx-parish-retreat-letters' ); ?>
+												<br>
+												<strong><?php esc_html_e( 'Other:', 'dfx-parish-retreat-letters' ); ?></strong>
+												<code>[invited_by]</code> <?php esc_html_e( '(Invited by)', 'dfx-parish-retreat-letters' ); ?>,
+												<code>[incompatibilities]</code> <?php esc_html_e( '(Incompatibilities)', 'dfx-parish-retreat-letters' ); ?>,
+												<code>[messages_url]</code> <?php esc_html_e( '(Message submission URL)', 'dfx-parish-retreat-letters' ); ?>
+												<br>
+												<strong><?php esc_html_e( 'Retreat:', 'dfx-parish-retreat-letters' ); ?></strong>
+												<code>[retreat_name]</code> <?php esc_html_e( '(Name)', 'dfx-parish-retreat-letters' ); ?>,
+												<code>[retreat_location]</code> <?php esc_html_e( '(Location)', 'dfx-parish-retreat-letters' ); ?>,
+												<code>[retreat_start_date]</code> <?php esc_html_e( '(Start date)', 'dfx-parish-retreat-letters' ); ?>,
+												<code>[retreat_end_date]</code> <?php esc_html_e( '(End date)', 'dfx-parish-retreat-letters' ); ?>
+											</p>
 										</td>
 									</tr>
 									<?php if ( post_type_exists( 'wp_block' ) ) : ?>
@@ -3603,6 +3644,12 @@ class DFX_Parish_Retreat_Letters_Admin {
 										<?php endif; ?>
 
 										<?php if ( $this->permissions->current_user_can_manage_retreat( $retreat->id ) ) : ?>
+											<?php if ( ! empty( $retreat->message_request_template ) ) : ?>
+												<button type="button" class="button button-small dfx-prl-show-invitation-message" data-attendant-id="<?php echo esc_attr( $attendant->id ); ?>" data-retreat-id="<?php echo esc_attr( $retreat->id ); ?>">
+													<?php esc_html_e( 'Invitation Message', 'dfx-parish-retreat-letters' ); ?>
+												</button>
+											<?php endif; ?>
+
 											<?php if ( empty( $attendant->message_url_token ) ) : ?>
 												<button type="button" class="button button-small dfx-prl-generate-url" data-attendant-id="<?php echo esc_attr( $attendant->id ); ?>">
 													<?php esc_html_e( 'Generate Message URL', 'dfx-parish-retreat-letters' ); ?>
@@ -5124,6 +5171,98 @@ class DFX_Parish_Retreat_Letters_Admin {
 				absint( $count )
 			)
 		) );
+	}
+
+	/**
+	 * AJAX handler for getting expanded invitation message.
+	 *
+	 * @since 1.0.0
+	 */
+	public function ajax_get_invitation_message() {
+		// Verify nonce
+		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ?? '' ) ), 'dfx_prl_retreats_nonce' ) ) {
+			wp_send_json_error( array( 'message' => __( 'Security check failed.', 'dfx-parish-retreat-letters' ) ) );
+		}
+
+		// Get and validate attendant ID and retreat ID
+		$attendant_id = isset( $_POST['attendant_id'] ) ? absint( $_POST['attendant_id'] ) : 0;
+		$retreat_id = isset( $_POST['retreat_id'] ) ? absint( $_POST['retreat_id'] ) : 0;
+
+		if ( ! $attendant_id || ! $retreat_id ) {
+			wp_send_json_error( array( 'message' => __( 'Invalid attendant or retreat ID.', 'dfx-parish-retreat-letters' ) ) );
+		}
+
+		// Check permissions
+		if ( ! $this->permissions->current_user_can_manage_retreat( $retreat_id ) ) {
+			wp_send_json_error( array( 'message' => __( 'You do not have permission to access this retreat.', 'dfx-parish-retreat-letters' ) ) );
+		}
+
+		// Get attendant and retreat data
+		$attendant = $this->attendant_model->get( $attendant_id );
+		$retreat = $this->retreat_model->get( $retreat_id );
+
+		if ( ! $attendant || ! $retreat ) {
+			wp_send_json_error( array( 'message' => __( 'Attendant or retreat not found.', 'dfx-parish-retreat-letters' ) ) );
+		}
+
+		// Verify attendant belongs to the retreat
+		if ( (int) $attendant->retreat_id !== (int) $retreat_id ) {
+			wp_send_json_error( array( 'message' => __( 'Attendant does not belong to this retreat.', 'dfx-parish-retreat-letters' ) ) );
+		}
+
+		// Check if template exists
+		if ( empty( $retreat->message_request_template ) ) {
+			wp_send_json_error( array( 'message' => __( 'No message request template configured for this retreat.', 'dfx-parish-retreat-letters' ) ) );
+		}
+
+		// Expand the template
+		$expanded_message = $this->expand_invitation_template( $retreat, $attendant );
+
+		wp_send_json_success( array(
+			'message' => $expanded_message,
+		) );
+	}
+
+	/**
+	 * Expand invitation template with attendant data.
+	 *
+	 * @since 1.0.0
+	 * @param object $retreat   The retreat object.
+	 * @param object $attendant The attendant object.
+	 * @return string The expanded message.
+	 */
+	private function expand_invitation_template( $retreat, $attendant ) {
+		$template = $retreat->message_request_template;
+
+		// Build the messages URL
+		$messages_url = '';
+		if ( ! empty( $attendant->message_url_token ) ) {
+			$messages_url = home_url( '/messages/' . $attendant->message_url_token );
+		}
+
+		// Define all available placeholders
+		$placeholders = array(
+			'[attendant_name]'                  => $attendant->name ?? '',
+			'[attendant_surnames]'              => $attendant->surnames ?? '',
+			'[date_of_birth]'                   => ! empty( $attendant->date_of_birth ) ? date_i18n( get_option( 'date_format' ), strtotime( $attendant->date_of_birth ) ) : '',
+			'[emergency_contact_name]'          => $attendant->emergency_contact_name ?? '',
+			'[emergency_contact_surname]'       => $attendant->emergency_contact_surname ?? '',
+			'[emergency_contact_phone]'         => $attendant->emergency_contact_phone ?? '',
+			'[emergency_contact_email]'         => $attendant->emergency_contact_email ?? '',
+			'[emergency_contact_relationship]'  => $attendant->emergency_contact_relationship ?? '',
+			'[invited_by]'                      => $attendant->invited_by ?? '',
+			'[incompatibilities]'               => $attendant->incompatibilities ?? '',
+			'[messages_url]'                    => $messages_url,
+			'[retreat_name]'                    => $retreat->name ?? '',
+			'[retreat_location]'                => $retreat->location ?? '',
+			'[retreat_start_date]'              => ! empty( $retreat->start_date ) ? date_i18n( get_option( 'date_format' ), strtotime( $retreat->start_date ) ) : '',
+			'[retreat_end_date]'                => ! empty( $retreat->end_date ) ? date_i18n( get_option( 'date_format' ), strtotime( $retreat->end_date ) ) : '',
+		);
+
+		// Replace all placeholders
+		$expanded = str_replace( array_keys( $placeholders ), array_values( $placeholders ), $template );
+
+		return $expanded;
 	}
 
 	/**

@@ -70,8 +70,9 @@ class DFX_Parish_Retreat_Letters_Retreat {
 				'custom_css'                 => $sanitized_data['custom_css'],
 				'notes_enabled'              => $sanitized_data['notes_enabled'],
 				'internal_notes_enabled'     => $sanitized_data['internal_notes_enabled'],
+				'message_request_template'   => $sanitized_data['message_request_template'],
 			),
-			array( '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%d', '%d' )
+			array( '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%d', '%d', '%s' )
 		);
 
 		return $result ? $wpdb->insert_id : false;
@@ -127,9 +128,10 @@ class DFX_Parish_Retreat_Letters_Retreat {
 				'custom_css'                 => $sanitized_data['custom_css'],
 				'notes_enabled'              => $sanitized_data['notes_enabled'],
 				'internal_notes_enabled'     => $sanitized_data['internal_notes_enabled'],
+				'message_request_template'   => $sanitized_data['message_request_template'],
 			),
 			array( 'id' => $id ),
-			array( '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%d', '%d' ),
+			array( '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%d', '%d', '%s' ),
 			array( '%d' )
 		);
 
@@ -311,6 +313,7 @@ class DFX_Parish_Retreat_Letters_Retreat {
 			'custom_css'                 => $this->sanitize_css( $data['custom_css'] ?? '' ),
 			'notes_enabled'              => isset( $data['notes_enabled'] ) ? (int) (bool) $data['notes_enabled'] : 0,
 			'internal_notes_enabled'     => isset( $data['internal_notes_enabled'] ) ? (int) (bool) $data['internal_notes_enabled'] : 0,
+			'message_request_template'   => sanitize_textarea_field( $data['message_request_template'] ?? '' ),
 		);
 	}
 
