@@ -2632,7 +2632,7 @@ msgstr "Plantilla para solicitar mensajes a los contactos de emergencia..."
 
 #: includes/class-admin.php:1021
 msgid "Template message to request letters from emergency contacts. Available placeholders:"
-msgstr "Mensaje de plantilla para solicitar cartas de los contactos de emergencia. Campos dinámicos disponibles:\""
+msgstr "Mensaje de plantilla para solicitar cartas de los contactos de emergencia. Campos dinámicos disponibles:"
 
 #: includes/class-admin.php:5192
 msgid "Invalid attendant or retreat ID."
