@@ -16,6 +16,7 @@
             <file>./tests/unit/CascadeDeleteTest.php</file>
             <file>./tests/unit/GlobalSettingsTest.php</file>
             <file>./tests/unit/MultiFileUploadTest.php</file>
+            <file>./tests/unit/MessageRequestTemplateTest.php</file>
         </testsuite>
         <testsuite name="basic">
             <file>./tests/unit/BasicInfrastructureTest.php</file>
