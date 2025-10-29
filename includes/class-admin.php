@@ -1023,7 +1023,9 @@ class DFX_Parish_Retreat_Letters_Admin {
 												<strong><?php esc_html_e( 'Attendant:', 'dfx-parish-retreat-letters' ); ?></strong>
 												<code>[attendant_name]</code> <?php esc_html_e( '(First name)', 'dfx-parish-retreat-letters' ); ?>,
 												<code>[attendant_surnames]</code> <?php esc_html_e( '(Surnames)', 'dfx-parish-retreat-letters' ); ?>,
-												<code>[date_of_birth]</code> <?php esc_html_e( '(Date of birth)', 'dfx-parish-retreat-letters' ); ?>
+												<code>[date_of_birth]</code> <?php esc_html_e( '(Date of birth)', 'dfx-parish-retreat-letters' ); ?>,
+												<code>[notes]</code> <?php esc_html_e( '(Notes, if enabled)', 'dfx-parish-retreat-letters' ); ?>,
+												<code>[internal_notes]</code> <?php esc_html_e( '(Internal notes, if enabled)', 'dfx-parish-retreat-letters' ); ?>
 												<br>
 												<strong><?php esc_html_e( 'Emergency Contact:', 'dfx-parish-retreat-letters' ); ?></strong>
 												<code>[emergency_contact_name]</code> <?php esc_html_e( '(First name)', 'dfx-parish-retreat-letters' ); ?>,
@@ -5252,6 +5254,8 @@ class DFX_Parish_Retreat_Letters_Admin {
 			'[emergency_contact_relationship]'  => $attendant->emergency_contact_relationship ?? '',
 			'[invited_by]'                      => $attendant->invited_by ?? '',
 			'[incompatibilities]'               => $attendant->incompatibilities ?? '',
+			'[notes]'                           => ! empty( $retreat->notes_enabled ) ? ( $attendant->notes ?? '' ) : '',
+			'[internal_notes]'                  => ! empty( $retreat->internal_notes_enabled ) ? ( $attendant->internal_notes ?? '' ) : '',
 			'[messages_url]'                    => $messages_url,
 			'[retreat_name]'                    => $retreat->name ?? '',
 			'[retreat_location]'                => $retreat->location ?? '',
