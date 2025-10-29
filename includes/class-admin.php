@@ -2503,6 +2503,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 			'invited_by'                      => sanitize_text_field( wp_unslash( $_POST['invited_by'] ?? '' ) ),
 			'incompatibilities'               => sanitize_textarea_field( wp_unslash( $_POST['incompatibilities'] ?? '' ) ),
 			'notes'                           => sanitize_textarea_field( wp_unslash( $_POST['notes'] ?? '' ) ),
+			'internal_notes'                  => sanitize_textarea_field( wp_unslash( $_POST['internal_notes'] ?? '' ) ),
 		);
 
 		if ( $attendant_id ) {
