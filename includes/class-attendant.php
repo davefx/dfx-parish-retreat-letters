@@ -118,25 +118,45 @@ class DFX_Parish_Retreat_Letters_Attendant {
 			return false;
 		}
 
+		// Build update array - only include fields that are present in input data
+		$update_fields = array(
+			'retreat_id'                      => $sanitized_data['retreat_id'],
+			'name'                            => $sanitized_data['name'],
+			'surnames'                        => $sanitized_data['surnames'],
+			'date_of_birth'                   => $sanitized_data['date_of_birth'],
+			'emergency_contact_name'          => $sanitized_data['emergency_contact_name'],
+			'emergency_contact_surname'       => $sanitized_data['emergency_contact_surname'],
+			'emergency_contact_phone'         => $sanitized_data['emergency_contact_phone'],
+			'emergency_contact_email'         => $sanitized_data['emergency_contact_email'],
+			'emergency_contact_relationship'  => $sanitized_data['emergency_contact_relationship'],
+			'invited_by'                      => $sanitized_data['invited_by'],
+			'incompatibilities'               => $sanitized_data['incompatibilities'],
+		);
+
+		// Only include notes if it was provided in the input data
+		if ( array_key_exists( 'notes', $data ) ) {
+			$update_fields['notes'] = $sanitized_data['notes'];
+		}
+
+		// Only include internal_notes if it was provided in the input data
+		if ( array_key_exists( 'internal_notes', $data ) ) {
+			$update_fields['internal_notes'] = $sanitized_data['internal_notes'];
+		}
+
+		// Build format array based on fields being updated
+		$formats = array( '%d', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s' );
+		if ( array_key_exists( 'notes', $data ) ) {
+			$formats[] = '%s';
+		}
+		if ( array_key_exists( 'internal_notes', $data ) ) {
+			$formats[] = '%s';
+		}
+
 		$result = $wpdb->update(
 			$this->database->get_attendants_table(),
-			array(
-				'retreat_id'                      => $sanitized_data['retreat_id'],
-				'name'                            => $sanitized_data['name'],
-				'surnames'                        => $sanitized_data['surnames'],
-				'date_of_birth'                   => $sanitized_data['date_of_birth'],
-				'emergency_contact_name'          => $sanitized_data['emergency_contact_name'],
-				'emergency_contact_surname'       => $sanitized_data['emergency_contact_surname'],
-				'emergency_contact_phone'         => $sanitized_data['emergency_contact_phone'],
-				'emergency_contact_email'         => $sanitized_data['emergency_contact_email'],
-				'emergency_contact_relationship'  => $sanitized_data['emergency_contact_relationship'],
-				'invited_by'                      => $sanitized_data['invited_by'],
-				'incompatibilities'               => $sanitized_data['incompatibilities'],
-				'notes'                           => $sanitized_data['notes'],
-				'internal_notes'                  => $sanitized_data['internal_notes'],
-			),
+			$update_fields,
 			array( 'id' => $id ),
-			array( '%d', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s' ),
+			$formats,
 			array( '%d' )
 		); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
 

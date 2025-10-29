@@ -2513,15 +2513,11 @@ class DFX_Parish_Retreat_Letters_Admin {
 		// Only process notes if enabled for this retreat
 		if ( ! empty( $retreat->notes_enabled ) ) {
 			$data['notes'] = sanitize_textarea_field( wp_unslash( $_POST['notes'] ?? '' ) );
-		} else {
-			$data['notes'] = '';
 		}
 
 		// Only process internal_notes if enabled for this retreat
 		if ( ! empty( $retreat->internal_notes_enabled ) ) {
 			$data['internal_notes'] = sanitize_textarea_field( wp_unslash( $_POST['internal_notes'] ?? '' ) );
-		} else {
-			$data['internal_notes'] = '';
 		}
 
 		if ( $attendant_id ) {
