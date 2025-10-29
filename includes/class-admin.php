@@ -3242,6 +3242,42 @@ class DFX_Parish_Retreat_Letters_Admin {
 			return add_query_arg( $params, admin_url( 'admin.php' ) );
 		};
 
+		// Helper function to generate Messages column sort URL with 4-state cycle
+		$get_messages_sort_url = function() use ( $retreat, $search, $orderby, $order, $filters ) {
+			// Cycle: non_printed_count DESC -> message_count ASC -> message_count DESC -> non_printed_count ASC -> back to start
+			$next_orderby = 'non_printed_count';
+			$next_order = 'DESC';
+			
+			if ( $orderby === 'non_printed_count' && $order === 'DESC' ) {
+				$next_orderby = 'message_count';
+				$next_order = 'ASC';
+			} elseif ( $orderby === 'message_count' && $order === 'ASC' ) {
+				$next_orderby = 'message_count';
+				$next_order = 'DESC';
+			} elseif ( $orderby === 'message_count' && $order === 'DESC' ) {
+				$next_orderby = 'non_printed_count';
+				$next_order = 'ASC';
+			}
+			
+			$params = array(
+				'page'      => 'dfx-prl-retreats',
+				'action'    => 'attendants',
+				'retreat_id' => $retreat->id,
+				'orderby'   => $next_orderby,
+				'order'     => $next_order,
+			);
+			if ( ! empty( $search ) ) {
+				$params['s'] = $search;
+			}
+			// Add filters to URL
+			foreach ( $filters as $key => $value ) {
+				if ( ! empty( $value ) ) {
+					$params[ $key ] = $value;
+				}
+			}
+			return add_query_arg( $params, admin_url( 'admin.php' ) );
+		};
+
 		// Helper function to generate sort indicator
 		$get_sort_indicator = function( $column ) use ( $orderby, $order ) {
 			if ( $orderby === $column ) {
@@ -3438,17 +3474,17 @@ class DFX_Parish_Retreat_Letters_Admin {
 							<th scope="col" class="manage-column"><?php esc_html_e( 'Internal Notes', 'dfx-parish-retreat-letters' ); ?></th>
 							<?php endif; ?>
 							<th scope="col" class="manage-column sortable <?php echo ( $orderby === 'message_count' || $orderby === 'non_printed_count' ) ? 'sorted' : 'sortable'; ?> <?php echo ( $orderby === 'message_count' || $orderby === 'non_printed_count' ) ? strtolower( $order ) : 'desc'; ?>">
-								<?php if ( $orderby === 'non_printed_count' ) : ?>
-									<a href="<?php echo esc_url( $get_sort_url( 'message_count' ) ); ?>" title="<?php esc_attr_e( 'Click to sort by total messages', 'dfx-parish-retreat-letters' ); ?>">
-										<span><?php esc_html_e( 'Messages (non-printed)', 'dfx-parish-retreat-letters' ); ?></span>
-										<span class="sorting-indicator"><?php echo esc_html( $get_sort_indicator( 'non_printed_count' ) ); ?></span>
-									</a>
-								<?php else : ?>
-									<a href="<?php echo esc_url( $get_sort_url( 'non_printed_count' ) ); ?>" title="<?php esc_attr_e( 'Click to sort by non-printed messages', 'dfx-parish-retreat-letters' ); ?>">
-										<span><?php esc_html_e( 'Messages (total)', 'dfx-parish-retreat-letters' ); ?></span>
-										<span class="sorting-indicator"><?php echo esc_html( $get_sort_indicator( 'message_count' ) ); ?></span>
-									</a>
-								<?php endif; ?>
+								<a href="<?php echo esc_url( $get_messages_sort_url() ); ?>">
+									<?php
+									// Display label based on current sort
+									if ( $orderby === 'non_printed_count' ) {
+										esc_html_e( 'Messages (non-printed)', 'dfx-parish-retreat-letters' );
+									} else {
+										esc_html_e( 'Messages (total)', 'dfx-parish-retreat-letters' );
+									}
+									?>
+									<span class="sorting-indicator"><?php echo esc_html( $get_sort_indicator( $orderby ) ); ?></span>
+								</a>
 							</th>
 							<th scope="col" class="manage-column"><?php esc_html_e( 'Actions', 'dfx-parish-retreat-letters' ); ?></th>
 						</tr>

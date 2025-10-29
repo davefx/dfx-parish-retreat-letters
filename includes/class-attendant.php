@@ -293,7 +293,12 @@ class DFX_Parish_Retreat_Letters_Attendant {
 		// Build ORDER BY clause
 		$order_clause = "";
 		if ( $orderby === 'message_count' || $orderby === 'non_printed_count' ) {
-			$order_clause = "{$orderby} {$order}, a.name ASC";
+			// When sorting by non_printed_count, add message_count as secondary sort
+			if ( $orderby === 'non_printed_count' ) {
+				$order_clause = "non_printed_count {$order}, message_count {$order}, a.name ASC";
+			} else {
+				$order_clause = "message_count {$order}, a.name ASC";
+			}
 		} else {
 			$order_clause = "a.{$orderby} {$order}";
 		}
