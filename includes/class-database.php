@@ -189,6 +189,7 @@ class DFX_Parish_Retreat_Letters_Database {
 			custom_css text NULL DEFAULT NULL,
 			notes_enabled tinyint(1) NOT NULL DEFAULT 0,
 			internal_notes_enabled tinyint(1) NOT NULL DEFAULT 0,
+			message_request_template text NULL DEFAULT NULL,
 			created_at datetime DEFAULT CURRENT_TIMESTAMP,
 			updated_at datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 			PRIMARY KEY (id),
