@@ -837,6 +837,7 @@ class AttendantTest extends TestCase {
         $database_mock = $this->createMock('DFX_Parish_Retreat_Letters_Database');
         $database_mock->method('get_attendants_table')->willReturn('wp_dfx_attendants');
         $database_mock->method('get_messages_table')->willReturn('wp_dfx_messages');
+        $database_mock->method('get_message_print_log_table')->willReturn('wp_dfx_print_log');
 
         // Mock wpdb
         global $wpdb;
@@ -879,6 +880,7 @@ class AttendantTest extends TestCase {
         $database_mock = $this->createMock('DFX_Parish_Retreat_Letters_Database');
         $database_mock->method('get_attendants_table')->willReturn('wp_dfx_attendants');
         $database_mock->method('get_messages_table')->willReturn('wp_dfx_messages');
+        $database_mock->method('get_message_print_log_table')->willReturn('wp_dfx_print_log');
 
         // Mock wpdb
         global $wpdb;
@@ -890,7 +892,8 @@ class AttendantTest extends TestCase {
                  $this->assertStringContainsString('LEFT JOIN', $sql);
                  $this->assertStringContainsString('non_printed_count', $sql);
                  $this->assertStringContainsString('GROUP BY', $sql);
-                 $this->assertStringContainsString('printed_at IS NULL', $sql);
+                 // Update assertion: we check for p.id IS NULL, not printed_at IS NULL
+                 $this->assertStringContainsString('p.id IS NULL', $sql);
                  return $sql;
              });
         $wpdb->expects($this->once())

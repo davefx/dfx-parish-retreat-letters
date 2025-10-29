@@ -265,8 +265,9 @@ class DFX_Parish_Retreat_Letters_Attendant {
 		$group_clause = "";
 		
 		if ( $orderby === 'message_count' || $orderby === 'non_printed_count' ) {
-			$select_clause = "a.*, COUNT(DISTINCT m.id) as message_count, SUM(CASE WHEN m.id IS NOT NULL AND m.printed_at IS NULL THEN 1 ELSE 0 END) as non_printed_count";
-			$join_clause = "LEFT JOIN {$messages_table} m ON a.id = m.attendant_id";
+			$print_log_table = $this->database->get_message_print_log_table();
+			$select_clause = "a.*, COUNT(DISTINCT m.id) as message_count, SUM(CASE WHEN m.id IS NOT NULL AND p.id IS NULL THEN 1 ELSE 0 END) as non_printed_count";
+			$join_clause = "LEFT JOIN {$messages_table} m ON a.id = m.attendant_id LEFT JOIN {$print_log_table} p ON m.id = p.message_id";
 			$group_clause = "GROUP BY a.id";
 		}
 
