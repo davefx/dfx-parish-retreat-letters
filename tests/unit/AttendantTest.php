@@ -742,4 +742,218 @@ class AttendantTest extends TestCase {
         // Verify the row doesn't have more columns than headers (which would happen if internal_notes was added)
         $this->assertCount(count($csv_data['headers']), $first_row, 'Row should have same number of columns as headers');
     }
+
+    /**
+     * Test get_by_retreat with filter_name parameter
+     */
+    public function testGetByRetreatWithNameFilter() {
+        // Mock the database
+        $database_mock = $this->createMock('DFX_Parish_Retreat_Letters_Database');
+        $database_mock->method('get_attendants_table')->willReturn('wp_dfx_attendants');
+        $database_mock->method('get_messages_table')->willReturn('wp_dfx_messages');
+
+        // Mock wpdb
+        global $wpdb;
+        $wpdb = $this->createMock('wpdb');
+        $wpdb->expects($this->once())
+             ->method('prepare')
+             ->willReturnCallback(function($sql, $params) {
+                 // Verify that the filter is included in the query
+                 $this->assertStringContainsString('a.name LIKE', $sql);
+                 return $sql;
+             });
+        $wpdb->expects($this->once())
+             ->method('get_results')
+             ->willReturn([]);
+        $wpdb->method('esc_like')->willReturnArgument(0);
+
+        // Mock WordPress functions
+        Functions\when('wp_parse_args')->alias(function($args, $defaults) {
+            return array_merge($defaults, $args);
+        });
+
+        $attendant = new DFX_Parish_Retreat_Letters_Attendant();
+        
+        $reflection = new ReflectionClass($attendant);
+        $database_property = $reflection->getProperty('database');
+        $database_property->setAccessible(true);
+        $database_property->setValue($attendant, $database_mock);
+
+        // Call get_by_retreat with filter
+        $attendant->get_by_retreat(1, ['filter_name' => 'John']);
+    }
+
+    /**
+     * Test get_by_retreat with multiple filters
+     */
+    public function testGetByRetreatWithMultipleFilters() {
+        // Mock the database
+        $database_mock = $this->createMock('DFX_Parish_Retreat_Letters_Database');
+        $database_mock->method('get_attendants_table')->willReturn('wp_dfx_attendants');
+        $database_mock->method('get_messages_table')->willReturn('wp_dfx_messages');
+
+        // Mock wpdb
+        global $wpdb;
+        $wpdb = $this->createMock('wpdb');
+        $wpdb->expects($this->once())
+             ->method('prepare')
+             ->willReturnCallback(function($sql, $params) {
+                 // Verify that multiple filters are included in the query
+                 $this->assertStringContainsString('a.name LIKE', $sql);
+                 $this->assertStringContainsString('a.surnames LIKE', $sql);
+                 $this->assertStringContainsString('a.invited_by LIKE', $sql);
+                 return $sql;
+             });
+        $wpdb->expects($this->once())
+             ->method('get_results')
+             ->willReturn([]);
+        $wpdb->method('esc_like')->willReturnArgument(0);
+
+        // Mock WordPress functions
+        Functions\when('wp_parse_args')->alias(function($args, $defaults) {
+            return array_merge($defaults, $args);
+        });
+
+        $attendant = new DFX_Parish_Retreat_Letters_Attendant();
+        
+        $reflection = new ReflectionClass($attendant);
+        $database_property = $reflection->getProperty('database');
+        $database_property->setAccessible(true);
+        $database_property->setValue($attendant, $database_mock);
+
+        // Call get_by_retreat with multiple filters
+        $attendant->get_by_retreat(1, [
+            'filter_name' => 'John',
+            'filter_surnames' => 'Doe',
+            'filter_invited_by' => 'Jane'
+        ]);
+    }
+
+    /**
+     * Test get_by_retreat with message_count ordering
+     */
+    public function testGetByRetreatWithMessageCountOrdering() {
+        // Mock the database
+        $database_mock = $this->createMock('DFX_Parish_Retreat_Letters_Database');
+        $database_mock->method('get_attendants_table')->willReturn('wp_dfx_attendants');
+        $database_mock->method('get_messages_table')->willReturn('wp_dfx_messages');
+        $database_mock->method('get_message_print_log_table')->willReturn('wp_dfx_print_log');
+
+        // Mock wpdb
+        global $wpdb;
+        $wpdb = $this->createMock('wpdb');
+        $wpdb->expects($this->once())
+             ->method('prepare')
+             ->willReturnCallback(function($sql, $params) {
+                 // Verify that JOIN is included when ordering by message_count
+                 $this->assertStringContainsString('LEFT JOIN', $sql);
+                 $this->assertStringContainsString('message_count', $sql);
+                 $this->assertStringContainsString('GROUP BY', $sql);
+                 return $sql;
+             });
+        $wpdb->expects($this->once())
+             ->method('get_results')
+             ->willReturn([]);
+        $wpdb->method('esc_like')->willReturnArgument(0);
+
+        // Mock WordPress functions
+        Functions\when('wp_parse_args')->alias(function($args, $defaults) {
+            return array_merge($defaults, $args);
+        });
+
+        $attendant = new DFX_Parish_Retreat_Letters_Attendant();
+        
+        $reflection = new ReflectionClass($attendant);
+        $database_property = $reflection->getProperty('database');
+        $database_property->setAccessible(true);
+        $database_property->setValue($attendant, $database_mock);
+
+        // Call get_by_retreat with message_count ordering
+        $attendant->get_by_retreat(1, ['orderby' => 'message_count', 'order' => 'DESC']);
+    }
+
+    /**
+     * Test get_by_retreat with non_printed_count ordering
+     */
+    public function testGetByRetreatWithNonPrintedCountOrdering() {
+        // Mock the database
+        $database_mock = $this->createMock('DFX_Parish_Retreat_Letters_Database');
+        $database_mock->method('get_attendants_table')->willReturn('wp_dfx_attendants');
+        $database_mock->method('get_messages_table')->willReturn('wp_dfx_messages');
+        $database_mock->method('get_message_print_log_table')->willReturn('wp_dfx_print_log');
+
+        // Mock wpdb
+        global $wpdb;
+        $wpdb = $this->createMock('wpdb');
+        $wpdb->expects($this->once())
+             ->method('prepare')
+             ->willReturnCallback(function($sql, $params) {
+                 // Verify that JOIN is included when ordering by non_printed_count
+                 $this->assertStringContainsString('LEFT JOIN', $sql);
+                 $this->assertStringContainsString('non_printed_count', $sql);
+                 $this->assertStringContainsString('GROUP BY', $sql);
+                 // Update assertion: we check for p.id IS NULL, not printed_at IS NULL
+                 $this->assertStringContainsString('p.id IS NULL', $sql);
+                 return $sql;
+             });
+        $wpdb->expects($this->once())
+             ->method('get_results')
+             ->willReturn([]);
+        $wpdb->method('esc_like')->willReturnArgument(0);
+
+        // Mock WordPress functions
+        Functions\when('wp_parse_args')->alias(function($args, $defaults) {
+            return array_merge($defaults, $args);
+        });
+
+        $attendant = new DFX_Parish_Retreat_Letters_Attendant();
+        
+        $reflection = new ReflectionClass($attendant);
+        $database_property = $reflection->getProperty('database');
+        $database_property->setAccessible(true);
+        $database_property->setValue($attendant, $database_mock);
+
+        // Call get_by_retreat with non_printed_count ordering
+        $attendant->get_by_retreat(1, ['orderby' => 'non_printed_count', 'order' => 'ASC']);
+    }
+
+    /**
+     * Test get_count_by_retreat with filters
+     */
+    public function testGetCountByRetreatWithFilters() {
+        // Mock the database
+        $database_mock = $this->createMock('DFX_Parish_Retreat_Letters_Database');
+        $database_mock->method('get_attendants_table')->willReturn('wp_dfx_attendants');
+
+        // Mock wpdb
+        global $wpdb;
+        $wpdb = $this->createMock('wpdb');
+        $wpdb->expects($this->once())
+             ->method('prepare')
+             ->willReturnCallback(function($sql, $params) {
+                 // Verify that filters are included in the count query
+                 $this->assertStringContainsString('name LIKE', $sql);
+                 $this->assertStringContainsString('invited_by LIKE', $sql);
+                 return $sql;
+             });
+        $wpdb->expects($this->once())
+             ->method('get_var')
+             ->willReturn(5);
+        $wpdb->method('esc_like')->willReturnArgument(0);
+
+        $attendant = new DFX_Parish_Retreat_Letters_Attendant();
+        
+        $reflection = new ReflectionClass($attendant);
+        $database_property = $reflection->getProperty('database');
+        $database_property->setAccessible(true);
+        $database_property->setValue($attendant, $database_mock);
+
+        // Call get_count_by_retreat with filters
+        $count = $attendant->get_count_by_retreat(1, '', [
+            'filter_name' => 'John',
+            'filter_invited_by' => 'Jane'
+        ]);
+
+        $this->assertEquals(5, $count);
+    }
 }

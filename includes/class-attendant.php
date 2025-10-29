@@ -200,21 +200,31 @@ class DFX_Parish_Retreat_Letters_Attendant {
 		global $wpdb;
 
 		$defaults = array(
-			'search'   => '',
-			'orderby'  => 'name',
-			'order'    => 'ASC',
-			'per_page' => 100,
-			'page'     => 1,
+			'search'                       => '',
+			'filter_name'                  => '',
+			'filter_surnames'              => '',
+			'filter_invited_by'            => '',
+			'filter_incompatibilities'     => '',
+			'filter_emergency_contact'     => '',
+			'filter_notes'                 => '',
+			'filter_internal_notes'        => '',
+			'orderby'                      => 'name',
+			'order'                        => 'ASC',
+			'per_page'                     => 100,
+			'page'                         => 1,
 		);
 
 		$args = wp_parse_args( $args, $defaults );
 
-		$where_clause = 'retreat_id = %d';
+		$attendants_table = $this->database->get_attendants_table();
+		$messages_table = $this->database->get_messages_table();
+		
+		$where_clause = "a.retreat_id = %d";
 		$where_values = array( $retreat_id );
 
 		// Add search functionality
 		if ( ! empty( $args['search'] ) ) {
-			$where_clause .= ' AND (name LIKE %s OR surnames LIKE %s OR emergency_contact_name LIKE %s OR emergency_contact_surname LIKE %s OR emergency_contact_email LIKE %s OR invited_by LIKE %s OR incompatibilities LIKE %s)';
+			$where_clause .= ' AND (a.name LIKE %s OR a.surnames LIKE %s OR a.emergency_contact_name LIKE %s OR a.emergency_contact_surname LIKE %s OR a.emergency_contact_email LIKE %s OR a.invited_by LIKE %s OR a.incompatibilities LIKE %s)';
 			$search_term   = '%' . $wpdb->esc_like( $args['search'] ) . '%';
 			$where_values[] = $search_term;
 			$where_values[] = $search_term;
@@ -225,24 +235,91 @@ class DFX_Parish_Retreat_Letters_Attendant {
 			$where_values[] = $search_term;
 		}
 
+		// Add individual field filters
+		if ( ! empty( $args['filter_name'] ) ) {
+			$where_clause .= ' AND a.name LIKE %s';
+			$where_values[] = '%' . $wpdb->esc_like( $args['filter_name'] ) . '%';
+		}
+		if ( ! empty( $args['filter_surnames'] ) ) {
+			$where_clause .= ' AND a.surnames LIKE %s';
+			$where_values[] = '%' . $wpdb->esc_like( $args['filter_surnames'] ) . '%';
+		}
+		if ( ! empty( $args['filter_invited_by'] ) ) {
+			$where_clause .= ' AND a.invited_by LIKE %s';
+			$where_values[] = '%' . $wpdb->esc_like( $args['filter_invited_by'] ) . '%';
+		}
+		if ( ! empty( $args['filter_incompatibilities'] ) ) {
+			$where_clause .= ' AND a.incompatibilities LIKE %s';
+			$where_values[] = '%' . $wpdb->esc_like( $args['filter_incompatibilities'] ) . '%';
+		}
+		if ( ! empty( $args['filter_emergency_contact'] ) ) {
+			$where_clause .= ' AND (a.emergency_contact_name LIKE %s OR a.emergency_contact_surname LIKE %s OR a.emergency_contact_email LIKE %s OR a.emergency_contact_phone LIKE %s)';
+			$search_term = '%' . $wpdb->esc_like( $args['filter_emergency_contact'] ) . '%';
+			$where_values[] = $search_term;
+			$where_values[] = $search_term;
+			$where_values[] = $search_term;
+			$where_values[] = $search_term;
+		}
+		if ( ! empty( $args['filter_notes'] ) ) {
+			$where_clause .= ' AND a.notes LIKE %s';
+			$where_values[] = '%' . $wpdb->esc_like( $args['filter_notes'] ) . '%';
+		}
+		if ( ! empty( $args['filter_internal_notes'] ) ) {
+			$where_clause .= ' AND a.internal_notes LIKE %s';
+			$where_values[] = '%' . $wpdb->esc_like( $args['filter_internal_notes'] ) . '%';
+		}
+
 		// Sanitize orderby and order
-		$allowed_orderby = array( 'id', 'name', 'surnames', 'date_of_birth', 'emergency_contact_name', 'emergency_contact_surname', 'created_at' );
+		$allowed_orderby = array( 
+			'id', 'name', 'surnames', 'date_of_birth', 'emergency_contact_name', 
+			'emergency_contact_surname', 'created_at', 'invited_by', 'incompatibilities',
+			'message_count', 'non_printed_count'
+		);
 		$orderby = in_array( $args['orderby'], $allowed_orderby, true ) ? $args['orderby'] : 'name';
 		$order = in_array( strtoupper( $args['order'] ), array( 'ASC', 'DESC' ), true ) ? strtoupper( $args['order'] ) : 'ASC';
+
+		// Build the SELECT clause - add message counts if sorting by them
+		$select_clause = "a.*";
+		$join_clause = "";
+		$group_clause = "";
+		
+		if ( $orderby === 'message_count' || $orderby === 'non_printed_count' ) {
+			$print_log_table = $this->database->get_message_print_log_table();
+			$select_clause = "a.*, COUNT(DISTINCT m.id) as message_count, SUM(CASE WHEN m.id IS NOT NULL AND p.id IS NULL THEN 1 ELSE 0 END) as non_printed_count";
+			$join_clause = "LEFT JOIN {$messages_table} m ON a.id = m.attendant_id LEFT JOIN {$print_log_table} p ON m.id = p.message_id";
+			$group_clause = "GROUP BY a.id";
+		}
+
+		// Build ORDER BY clause
+		$order_clause = "";
+		if ( $orderby === 'message_count' || $orderby === 'non_printed_count' ) {
+			// When sorting by non_printed_count, add message_count as secondary sort
+			if ( $orderby === 'non_printed_count' ) {
+				$order_clause = "non_printed_count {$order}, message_count {$order}, a.name ASC";
+			} else {
+				$order_clause = "message_count {$order}, a.name ASC";
+			}
+		} else {
+			$order_clause = "a.{$orderby} {$order}";
+		}
 
 		// Handle pagination - check if per_page is -1 (meaning get all records)
 		if ( $args['per_page'] === -1 ) {
 			// No pagination - get all records
-			$sql = "SELECT * FROM {$this->database->get_attendants_table()} 
+			$sql = "SELECT {$select_clause} FROM {$attendants_table} a 
+					{$join_clause}
 					WHERE {$where_clause} 
-					ORDER BY {$orderby} {$order}";
+					{$group_clause}
+					ORDER BY {$order_clause}";
 		} else {
 			// Calculate offset for pagination
 			$offset = ( absint( $args['page'] ) - 1 ) * absint( $args['per_page'] );
 
-			$sql = "SELECT * FROM {$this->database->get_attendants_table()} 
+			$sql = "SELECT {$select_clause} FROM {$attendants_table} a 
+					{$join_clause}
 					WHERE {$where_clause} 
-					ORDER BY {$orderby} {$order} 
+					{$group_clause}
+					ORDER BY {$order_clause} 
 					LIMIT %d OFFSET %d";
 
 			$where_values[] = absint( $args['per_page'] );
@@ -260,11 +337,12 @@ class DFX_Parish_Retreat_Letters_Attendant {
 	 * Get the total count of attendants for a specific retreat.
 	 *
 	 * @since 1.0.0
-	 * @param int    $retreat_id Retreat ID.
+	 * @param int   $retreat_id Retreat ID.
 	 * @param string $search     Optional search term.
+	 * @param array $filters    Optional filters array.
 	 * @return int Total count.
 	 */
-	public function get_count_by_retreat( $retreat_id, $search = '' ) {
+	public function get_count_by_retreat( $retreat_id, $search = '', $filters = array() ) {
 		global $wpdb;
 
 		$where_clause = 'retreat_id = %d';
@@ -280,6 +358,40 @@ class DFX_Parish_Retreat_Letters_Attendant {
 			$where_values[] = $search_term;
 			$where_values[] = $search_term;
 			$where_values[] = $search_term;
+		}
+
+		// Add individual field filters
+		if ( ! empty( $filters['filter_name'] ) ) {
+			$where_clause .= ' AND name LIKE %s';
+			$where_values[] = '%' . $wpdb->esc_like( $filters['filter_name'] ) . '%';
+		}
+		if ( ! empty( $filters['filter_surnames'] ) ) {
+			$where_clause .= ' AND surnames LIKE %s';
+			$where_values[] = '%' . $wpdb->esc_like( $filters['filter_surnames'] ) . '%';
+		}
+		if ( ! empty( $filters['filter_invited_by'] ) ) {
+			$where_clause .= ' AND invited_by LIKE %s';
+			$where_values[] = '%' . $wpdb->esc_like( $filters['filter_invited_by'] ) . '%';
+		}
+		if ( ! empty( $filters['filter_incompatibilities'] ) ) {
+			$where_clause .= ' AND incompatibilities LIKE %s';
+			$where_values[] = '%' . $wpdb->esc_like( $filters['filter_incompatibilities'] ) . '%';
+		}
+		if ( ! empty( $filters['filter_emergency_contact'] ) ) {
+			$where_clause .= ' AND (emergency_contact_name LIKE %s OR emergency_contact_surname LIKE %s OR emergency_contact_email LIKE %s OR emergency_contact_phone LIKE %s)';
+			$search_term = '%' . $wpdb->esc_like( $filters['filter_emergency_contact'] ) . '%';
+			$where_values[] = $search_term;
+			$where_values[] = $search_term;
+			$where_values[] = $search_term;
+			$where_values[] = $search_term;
+		}
+		if ( ! empty( $filters['filter_notes'] ) ) {
+			$where_clause .= ' AND notes LIKE %s';
+			$where_values[] = '%' . $wpdb->esc_like( $filters['filter_notes'] ) . '%';
+		}
+		if ( ! empty( $filters['filter_internal_notes'] ) ) {
+			$where_clause .= ' AND internal_notes LIKE %s';
+			$where_values[] = '%' . $wpdb->esc_like( $filters['filter_internal_notes'] ) . '%';
 		}
 
 		$table_name = $this->database->get_attendants_table();
