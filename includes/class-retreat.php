@@ -69,8 +69,9 @@ class DFX_Parish_Retreat_Letters_Retreat {
 				'custom_footer_block_id'     => $sanitized_data['custom_footer_block_id'],
 				'custom_css'                 => $sanitized_data['custom_css'],
 				'notes_enabled'              => $sanitized_data['notes_enabled'],
+				'internal_notes_enabled'     => $sanitized_data['internal_notes_enabled'],
 			),
-			array( '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%d' )
+			array( '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%d', '%d' )
 		);
 
 		return $result ? $wpdb->insert_id : false;
@@ -125,9 +126,10 @@ class DFX_Parish_Retreat_Letters_Retreat {
 				'custom_footer_block_id'     => $sanitized_data['custom_footer_block_id'],
 				'custom_css'                 => $sanitized_data['custom_css'],
 				'notes_enabled'              => $sanitized_data['notes_enabled'],
+				'internal_notes_enabled'     => $sanitized_data['internal_notes_enabled'],
 			),
 			array( 'id' => $id ),
-			array( '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%d' ),
+			array( '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%d', '%d' ),
 			array( '%d' )
 		);
 
@@ -308,6 +310,7 @@ class DFX_Parish_Retreat_Letters_Retreat {
 			'custom_footer_block_id'     => $this->sanitize_block_selection( $data['custom_footer_block_id'] ?? null ),
 			'custom_css'                 => $this->sanitize_css( $data['custom_css'] ?? '' ),
 			'notes_enabled'              => isset( $data['notes_enabled'] ) ? (int) (bool) $data['notes_enabled'] : 0,
+			'internal_notes_enabled'     => isset( $data['internal_notes_enabled'] ) ? (int) (bool) $data['internal_notes_enabled'] : 0,
 		);
 	}
 

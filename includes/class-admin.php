@@ -705,6 +705,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 			'custom_footer_block_id'     => $this->parse_block_selection( sanitize_text_field( wp_unslash( $_POST['custom_footer_block_id'] ?? '' ) ) ),
 			'custom_css'                 => sanitize_textarea_field( wp_unslash( $_POST['custom_css'] ?? '' ) ),
 			'notes_enabled'              => isset( $_POST['notes_enabled'] ) ? 1 : 0,
+			'internal_notes_enabled'     => isset( $_POST['internal_notes_enabled'] ) ? 1 : 0,
 		);
 
 		if ( $retreat_id ) {
@@ -989,6 +990,18 @@ class DFX_Parish_Retreat_Letters_Admin {
 												<?php esc_html_e( 'Enable optional notes field for attendants', 'dfx-parish-retreat-letters' ); ?>
 											</label>
 											<p class="description"><?php esc_html_e( 'When enabled, an optional notes field will be available for each attendant and displayed in the attendants list.', 'dfx-parish-retreat-letters' ); ?></p>
+										</td>
+									</tr>
+									<tr>
+										<th scope="row">
+											<label for="internal_notes_enabled"><?php esc_html_e( 'Enable Internal Notes Field', 'dfx-parish-retreat-letters' ); ?></label>
+										</th>
+										<td>
+											<label>
+												<input type="checkbox" id="internal_notes_enabled" name="internal_notes_enabled" value="1" <?php checked( ! empty( $retreat->internal_notes_enabled ) ); ?>>
+												<?php esc_html_e( 'Enable optional internal notes field for attendants', 'dfx-parish-retreat-letters' ); ?>
+											</label>
+											<p class="description"><?php esc_html_e( 'When enabled, an optional internal notes field will be available for each attendant. This field will NOT be imported or exported via CSV.', 'dfx-parish-retreat-letters' ); ?></p>
 										</td>
 									</tr>
 									<?php if ( post_type_exists( 'wp_block' ) ) : ?>
@@ -2477,6 +2490,12 @@ class DFX_Parish_Retreat_Letters_Admin {
 			wp_die( esc_html__( 'Security check failed.', 'dfx-parish-retreat-letters' ) );
 		}
 
+		// Get retreat to check which fields are enabled
+		$retreat = $this->retreat_model->get( $retreat_id );
+		if ( ! $retreat ) {
+			wp_die( esc_html__( 'Invalid retreat.', 'dfx-parish-retreat-letters' ) );
+		}
+
 		$data = array(
 			'retreat_id'                      => $retreat_id,
 			'name'                            => sanitize_text_field( wp_unslash( $_POST['name'] ?? '' ) ),
@@ -2489,8 +2508,17 @@ class DFX_Parish_Retreat_Letters_Admin {
 			'emergency_contact_relationship'  => sanitize_text_field( wp_unslash( $_POST['emergency_contact_relationship'] ?? '' ) ),
 			'invited_by'                      => sanitize_text_field( wp_unslash( $_POST['invited_by'] ?? '' ) ),
 			'incompatibilities'               => sanitize_textarea_field( wp_unslash( $_POST['incompatibilities'] ?? '' ) ),
-			'notes'                           => sanitize_textarea_field( wp_unslash( $_POST['notes'] ?? '' ) ),
 		);
+
+		// Only process notes if enabled for this retreat
+		if ( ! empty( $retreat->notes_enabled ) ) {
+			$data['notes'] = sanitize_textarea_field( wp_unslash( $_POST['notes'] ?? '' ) );
+		}
+
+		// Only process internal_notes if enabled for this retreat
+		if ( ! empty( $retreat->internal_notes_enabled ) ) {
+			$data['internal_notes'] = sanitize_textarea_field( wp_unslash( $_POST['internal_notes'] ?? '' ) );
+		}
 
 		if ( $attendant_id ) {
 			// Update existing attendant
@@ -3240,6 +3268,9 @@ class DFX_Parish_Retreat_Letters_Admin {
 							<?php if ( ! empty( $retreat->notes_enabled ) ) : ?>
 							<th scope="col" class="manage-column"><?php esc_html_e( 'Notes', 'dfx-parish-retreat-letters' ); ?></th>
 							<?php endif; ?>
+							<?php if ( ! empty( $retreat->internal_notes_enabled ) ) : ?>
+							<th scope="col" class="manage-column"><?php esc_html_e( 'Internal Notes', 'dfx-parish-retreat-letters' ); ?></th>
+							<?php endif; ?>
 							<th scope="col" class="manage-column"><?php esc_html_e( 'Messages', 'dfx-parish-retreat-letters' ); ?></th>
 							<th scope="col" class="manage-column"><?php esc_html_e( 'Actions', 'dfx-parish-retreat-letters' ); ?></th>
 						</tr>
@@ -3299,6 +3330,17 @@ class DFX_Parish_Retreat_Letters_Admin {
 										<?php
 										if ( ! empty( $attendant->notes ) ) {
 											echo wpautop( esc_html( $attendant->notes ) );
+										} else {
+											echo '<span class="description">' . esc_html__( 'No notes', 'dfx-parish-retreat-letters' ) . '</span>';
+										}
+										?>
+									</td>
+									<?php endif; ?>
+									<?php if ( ! empty( $retreat->internal_notes_enabled ) ) : ?>
+									<td>
+										<?php
+										if ( ! empty( $attendant->internal_notes ) ) {
+											echo wpautop( esc_html( $attendant->internal_notes ) );
 										} else {
 											echo '<span class="description">' . esc_html__( 'No notes', 'dfx-parish-retreat-letters' ) . '</span>';
 										}
@@ -3523,6 +3565,17 @@ class DFX_Parish_Retreat_Letters_Admin {
 							<td>
 								<textarea id="notes" name="notes" rows="4" class="large-text"><?php echo esc_textarea( $attendant->notes ?? '' ); ?></textarea>
 								<p class="description"><?php esc_html_e( 'Optional notes for this attendant.', 'dfx-parish-retreat-letters' ); ?></p>
+							</td>
+						</tr>
+						<?php endif; ?>
+						<?php if ( ! empty( $retreat->internal_notes_enabled ) ) : ?>
+						<tr>
+							<th scope="row">
+								<label for="internal_notes"><?php esc_html_e( 'Internal Notes', 'dfx-parish-retreat-letters' ); ?> <span class="description">(<?php esc_html_e( 'optional', 'dfx-parish-retreat-letters' ); ?>)</span></label>
+							</th>
+							<td>
+								<textarea id="internal_notes" name="internal_notes" rows="4" class="large-text"><?php echo esc_textarea( $attendant->internal_notes ?? '' ); ?></textarea>
+								<p class="description"><?php esc_html_e( 'Optional internal notes for this attendant. This field will NOT be imported or exported via CSV.', 'dfx-parish-retreat-letters' ); ?></p>
 							</td>
 						</tr>
 						<?php endif; ?>
