@@ -214,7 +214,7 @@ class DFX_Parish_Retreat_Letters_Attendant {
 		$args = wp_parse_args( $args, $defaults );
 
 		$attendants_table = $this->database->get_attendants_table();
-		$messages_table = $this->database->get_confidential_messages_table();
+		$messages_table = $this->database->get_messages_table();
 		
 		$where_clause = "a.retreat_id = %d";
 		$where_values = array( $retreat_id );

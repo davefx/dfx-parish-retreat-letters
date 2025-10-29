@@ -750,7 +750,7 @@ class AttendantTest extends TestCase {
         // Mock the database
         $database_mock = $this->createMock('DFX_Parish_Retreat_Letters_Database');
         $database_mock->method('get_attendants_table')->willReturn('wp_dfx_attendants');
-        $database_mock->method('get_confidential_messages_table')->willReturn('wp_dfx_messages');
+        $database_mock->method('get_messages_table')->willReturn('wp_dfx_messages');
 
         // Mock wpdb
         global $wpdb;
@@ -790,7 +790,7 @@ class AttendantTest extends TestCase {
         // Mock the database
         $database_mock = $this->createMock('DFX_Parish_Retreat_Letters_Database');
         $database_mock->method('get_attendants_table')->willReturn('wp_dfx_attendants');
-        $database_mock->method('get_confidential_messages_table')->willReturn('wp_dfx_messages');
+        $database_mock->method('get_messages_table')->willReturn('wp_dfx_messages');
 
         // Mock wpdb
         global $wpdb;
@@ -836,7 +836,7 @@ class AttendantTest extends TestCase {
         // Mock the database
         $database_mock = $this->createMock('DFX_Parish_Retreat_Letters_Database');
         $database_mock->method('get_attendants_table')->willReturn('wp_dfx_attendants');
-        $database_mock->method('get_confidential_messages_table')->willReturn('wp_dfx_messages');
+        $database_mock->method('get_messages_table')->willReturn('wp_dfx_messages');
 
         // Mock wpdb
         global $wpdb;
@@ -878,7 +878,7 @@ class AttendantTest extends TestCase {
         // Mock the database
         $database_mock = $this->createMock('DFX_Parish_Retreat_Letters_Database');
         $database_mock->method('get_attendants_table')->willReturn('wp_dfx_attendants');
-        $database_mock->method('get_confidential_messages_table')->willReturn('wp_dfx_messages');
+        $database_mock->method('get_messages_table')->willReturn('wp_dfx_messages');
 
         // Mock wpdb
         global $wpdb;
