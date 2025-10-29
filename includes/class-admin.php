@@ -2364,10 +2364,13 @@ class DFX_Parish_Retreat_Letters_Admin {
 		$per_page = 100;
 
 		// Get filter parameters
-		$filter_name             = sanitize_text_field( wp_unslash( $_GET['filter_name'] ?? '' ) );
-		$filter_surnames         = sanitize_text_field( wp_unslash( $_GET['filter_surnames'] ?? '' ) );
-		$filter_invited_by       = sanitize_text_field( wp_unslash( $_GET['filter_invited_by'] ?? '' ) );
+		$filter_name              = sanitize_text_field( wp_unslash( $_GET['filter_name'] ?? '' ) );
+		$filter_surnames          = sanitize_text_field( wp_unslash( $_GET['filter_surnames'] ?? '' ) );
+		$filter_invited_by        = sanitize_text_field( wp_unslash( $_GET['filter_invited_by'] ?? '' ) );
 		$filter_incompatibilities = sanitize_text_field( wp_unslash( $_GET['filter_incompatibilities'] ?? '' ) );
+		$filter_emergency_contact = sanitize_text_field( wp_unslash( $_GET['filter_emergency_contact'] ?? '' ) );
+		$filter_notes             = sanitize_text_field( wp_unslash( $_GET['filter_notes'] ?? '' ) );
+		$filter_internal_notes    = sanitize_text_field( wp_unslash( $_GET['filter_internal_notes'] ?? '' ) );
 
 		// Get attendants
 		$attendants = $this->attendant_model->get_by_retreat( $retreat_id, array(
@@ -2376,6 +2379,9 @@ class DFX_Parish_Retreat_Letters_Admin {
 			'filter_surnames'          => $filter_surnames,
 			'filter_invited_by'        => $filter_invited_by,
 			'filter_incompatibilities' => $filter_incompatibilities,
+			'filter_emergency_contact' => $filter_emergency_contact,
+			'filter_notes'             => $filter_notes,
+			'filter_internal_notes'    => $filter_internal_notes,
 			'orderby'                  => $orderby,
 			'order'                    => $order,
 			'per_page'                 => $per_page,
@@ -2387,6 +2393,9 @@ class DFX_Parish_Retreat_Letters_Admin {
 			'filter_surnames'          => $filter_surnames,
 			'filter_invited_by'        => $filter_invited_by,
 			'filter_incompatibilities' => $filter_incompatibilities,
+			'filter_emergency_contact' => $filter_emergency_contact,
+			'filter_notes'             => $filter_notes,
+			'filter_internal_notes'    => $filter_internal_notes,
 		);
 
 		$total_items = $this->attendant_model->get_count_by_retreat( $retreat_id, $search, $filters );
@@ -3322,6 +3331,22 @@ class DFX_Parish_Retreat_Letters_Admin {
 										<th scope="row"><label for="filter_incompatibilities"><?php esc_html_e( 'Incompatibilities', 'dfx-parish-retreat-letters' ); ?></label></th>
 										<td><input type="text" id="filter_incompatibilities" name="filter_incompatibilities" value="<?php echo esc_attr( $filters['filter_incompatibilities'] ); ?>" class="regular-text"></td>
 									</tr>
+									<tr>
+										<th scope="row"><label for="filter_emergency_contact"><?php esc_html_e( 'Emergency Contact', 'dfx-parish-retreat-letters' ); ?></label></th>
+										<td><input type="text" id="filter_emergency_contact" name="filter_emergency_contact" value="<?php echo esc_attr( $filters['filter_emergency_contact'] ); ?>" class="regular-text"></td>
+									</tr>
+									<?php if ( ! empty( $retreat->notes_enabled ) ) : ?>
+									<tr>
+										<th scope="row"><label for="filter_notes"><?php esc_html_e( 'Notes', 'dfx-parish-retreat-letters' ); ?></label></th>
+										<td><input type="text" id="filter_notes" name="filter_notes" value="<?php echo esc_attr( $filters['filter_notes'] ); ?>" class="regular-text"></td>
+									</tr>
+									<?php endif; ?>
+									<?php if ( ! empty( $retreat->internal_notes_enabled ) ) : ?>
+									<tr>
+										<th scope="row"><label for="filter_internal_notes"><?php esc_html_e( 'Internal Notes', 'dfx-parish-retreat-letters' ); ?></label></th>
+										<td><input type="text" id="filter_internal_notes" name="filter_internal_notes" value="<?php echo esc_attr( $filters['filter_internal_notes'] ); ?>" class="regular-text"></td>
+									</tr>
+									<?php endif; ?>
 								</table>
 								
 								<p class="submit" style="margin: 10px 0 0; padding: 0;">

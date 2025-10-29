@@ -200,15 +200,18 @@ class DFX_Parish_Retreat_Letters_Attendant {
 		global $wpdb;
 
 		$defaults = array(
-			'search'               => '',
-			'filter_name'          => '',
-			'filter_surnames'      => '',
-			'filter_invited_by'    => '',
-			'filter_incompatibilities' => '',
-			'orderby'              => 'name',
-			'order'                => 'ASC',
-			'per_page'             => 100,
-			'page'                 => 1,
+			'search'                       => '',
+			'filter_name'                  => '',
+			'filter_surnames'              => '',
+			'filter_invited_by'            => '',
+			'filter_incompatibilities'     => '',
+			'filter_emergency_contact'     => '',
+			'filter_notes'                 => '',
+			'filter_internal_notes'        => '',
+			'orderby'                      => 'name',
+			'order'                        => 'ASC',
+			'per_page'                     => 100,
+			'page'                         => 1,
 		);
 
 		$args = wp_parse_args( $args, $defaults );
@@ -248,6 +251,22 @@ class DFX_Parish_Retreat_Letters_Attendant {
 		if ( ! empty( $args['filter_incompatibilities'] ) ) {
 			$where_clause .= ' AND a.incompatibilities LIKE %s';
 			$where_values[] = '%' . $wpdb->esc_like( $args['filter_incompatibilities'] ) . '%';
+		}
+		if ( ! empty( $args['filter_emergency_contact'] ) ) {
+			$where_clause .= ' AND (a.emergency_contact_name LIKE %s OR a.emergency_contact_surname LIKE %s OR a.emergency_contact_email LIKE %s OR a.emergency_contact_phone LIKE %s)';
+			$search_term = '%' . $wpdb->esc_like( $args['filter_emergency_contact'] ) . '%';
+			$where_values[] = $search_term;
+			$where_values[] = $search_term;
+			$where_values[] = $search_term;
+			$where_values[] = $search_term;
+		}
+		if ( ! empty( $args['filter_notes'] ) ) {
+			$where_clause .= ' AND a.notes LIKE %s';
+			$where_values[] = '%' . $wpdb->esc_like( $args['filter_notes'] ) . '%';
+		}
+		if ( ! empty( $args['filter_internal_notes'] ) ) {
+			$where_clause .= ' AND a.internal_notes LIKE %s';
+			$where_values[] = '%' . $wpdb->esc_like( $args['filter_internal_notes'] ) . '%';
 		}
 
 		// Sanitize orderby and order
@@ -352,6 +371,22 @@ class DFX_Parish_Retreat_Letters_Attendant {
 		if ( ! empty( $filters['filter_incompatibilities'] ) ) {
 			$where_clause .= ' AND incompatibilities LIKE %s';
 			$where_values[] = '%' . $wpdb->esc_like( $filters['filter_incompatibilities'] ) . '%';
+		}
+		if ( ! empty( $filters['filter_emergency_contact'] ) ) {
+			$where_clause .= ' AND (emergency_contact_name LIKE %s OR emergency_contact_surname LIKE %s OR emergency_contact_email LIKE %s OR emergency_contact_phone LIKE %s)';
+			$search_term = '%' . $wpdb->esc_like( $filters['filter_emergency_contact'] ) . '%';
+			$where_values[] = $search_term;
+			$where_values[] = $search_term;
+			$where_values[] = $search_term;
+			$where_values[] = $search_term;
+		}
+		if ( ! empty( $filters['filter_notes'] ) ) {
+			$where_clause .= ' AND notes LIKE %s';
+			$where_values[] = '%' . $wpdb->esc_like( $filters['filter_notes'] ) . '%';
+		}
+		if ( ! empty( $filters['filter_internal_notes'] ) ) {
+			$where_clause .= ' AND internal_notes LIKE %s';
+			$where_values[] = '%' . $wpdb->esc_like( $filters['filter_internal_notes'] ) . '%';
 		}
 
 		$table_name = $this->database->get_attendants_table();
