@@ -3511,10 +3511,20 @@ class DFX_Parish_Retreat_Letters_Admin {
 								</a>
 							</th>
 							<?php if ( ! empty( $retreat->notes_enabled ) ) : ?>
-							<th scope="col" class="manage-column"><?php esc_html_e( 'Notes', 'dfx-parish-retreat-letters' ); ?></th>
+							<th scope="col" class="manage-column sortable <?php echo $orderby === 'notes' ? 'sorted' : 'sortable'; ?> <?php echo $orderby === 'notes' ? strtolower( $order ) : 'desc'; ?>">
+								<a href="<?php echo esc_url( $get_sort_url( 'notes' ) ); ?>">
+									<span><?php esc_html_e( 'Notes', 'dfx-parish-retreat-letters' ); ?></span>
+									<span class="sorting-indicator"><?php echo esc_html( $get_sort_indicator( 'notes' ) ); ?></span>
+								</a>
+							</th>
 							<?php endif; ?>
 							<?php if ( ! empty( $retreat->internal_notes_enabled ) ) : ?>
-							<th scope="col" class="manage-column"><?php esc_html_e( 'Internal Notes', 'dfx-parish-retreat-letters' ); ?></th>
+							<th scope="col" class="manage-column sortable <?php echo $orderby === 'internal_notes' ? 'sorted' : 'sortable'; ?> <?php echo $orderby === 'internal_notes' ? strtolower( $order ) : 'desc'; ?>">
+								<a href="<?php echo esc_url( $get_sort_url( 'internal_notes' ) ); ?>">
+									<span><?php esc_html_e( 'Internal Notes', 'dfx-parish-retreat-letters' ); ?></span>
+									<span class="sorting-indicator"><?php echo esc_html( $get_sort_indicator( 'internal_notes' ) ); ?></span>
+								</a>
+							</th>
 							<?php endif; ?>
 							<th scope="col" class="manage-column sortable <?php echo ( $orderby === 'message_count' || $orderby === 'non_printed_count' ) ? 'sorted' : 'sortable'; ?> <?php echo ( $orderby === 'message_count' || $orderby === 'non_printed_count' ) ? strtolower( $order ) : 'desc'; ?>">
 								<a href="<?php echo esc_url( $get_messages_sort_url() ); ?>">

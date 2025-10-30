@@ -273,6 +273,7 @@ class DFX_Parish_Retreat_Letters_Attendant {
 		$allowed_orderby = array( 
 			'id', 'name', 'surnames', 'date_of_birth', 'emergency_contact_name', 
 			'emergency_contact_surname', 'created_at', 'invited_by', 'incompatibilities',
+			'notes', 'internal_notes',
 			'message_count', 'non_printed_count'
 		);
 		$orderby = in_array( $args['orderby'], $allowed_orderby, true ) ? $args['orderby'] : 'name';
