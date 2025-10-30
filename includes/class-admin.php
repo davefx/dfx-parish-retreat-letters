@@ -3526,7 +3526,12 @@ class DFX_Parish_Retreat_Letters_Admin {
 										esc_html_e( 'Messages (total)', 'dfx-parish-retreat-letters' );
 									}
 									?>
-									<span class="sorting-indicator"><?php echo esc_html( $get_sort_indicator( $orderby ) ); ?></span>
+									<span class="sorting-indicator"><?php
+										// Only show indicator when actually sorting by message-related fields
+										if ( $orderby === 'message_count' || $orderby === 'non_printed_count' ) {
+											echo esc_html( $get_sort_indicator( $orderby ) );
+										}
+									?></span>
 								</a>
 							</th>
 							<th scope="col" class="manage-column"><?php esc_html_e( 'Actions', 'dfx-parish-retreat-letters' ); ?></th>
