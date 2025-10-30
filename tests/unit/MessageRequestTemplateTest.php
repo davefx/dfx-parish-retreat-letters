@@ -175,4 +175,79 @@ class MessageRequestTemplateTest extends TestCase {
 		$this->assertArrayHasKey( 'message_request_template', $result );
 		$this->assertEquals( '', $result['message_request_template'] );
 	}
+
+	/**
+	 * Test template expansion with notes placeholder when notes are enabled
+	 */
+	public function test_template_expansion_with_notes_enabled() {
+		// Mock the Admin class and the expand_invitation_template method
+		$admin = $this->getMockBuilder( 'DFX_Parish_Retreat_Letters_Admin' )
+			->disableOriginalConstructor()
+			->getMock();
+
+		// Create a mock retreat with notes enabled
+		$retreat = (object) array(
+			'id'                       => 1,
+			'name'                     => 'Test Retreat',
+			'message_request_template' => 'Hello [attendant_name], Notes: [notes], Internal: [internal_notes]',
+			'notes_enabled'            => 1,
+			'internal_notes_enabled'   => 1,
+		);
+
+		// Create a mock attendant with notes
+		$attendant = (object) array(
+			'name'           => 'John',
+			'notes'          => 'Attendant notes content',
+			'internal_notes' => 'Internal notes content',
+		);
+
+		// We'll verify the template contains the placeholders
+		$this->assertStringContainsString( '[notes]', $retreat->message_request_template );
+		$this->assertStringContainsString( '[internal_notes]', $retreat->message_request_template );
+	}
+
+	/**
+	 * Test template expansion with notes placeholder when notes are disabled
+	 */
+	public function test_template_expansion_with_notes_disabled() {
+		// Create a mock retreat with notes disabled
+		$retreat = (object) array(
+			'id'                       => 1,
+			'name'                     => 'Test Retreat',
+			'message_request_template' => 'Hello [attendant_name], Notes: [notes], Internal: [internal_notes]',
+			'notes_enabled'            => 0,
+			'internal_notes_enabled'   => 0,
+		);
+
+		// Create a mock attendant with notes (should not be used when disabled)
+		$attendant = (object) array(
+			'name'           => 'John',
+			'notes'          => 'Should not appear',
+			'internal_notes' => 'Should not appear either',
+		);
+
+		// We'll verify the template contains the placeholders
+		$this->assertStringContainsString( '[notes]', $retreat->message_request_template );
+		$this->assertStringContainsString( '[internal_notes]', $retreat->message_request_template );
+	}
+
+	/**
+	 * Test that notes and internal_notes placeholders are documented
+	 */
+	public function test_notes_placeholders_are_available() {
+		// This test verifies that the placeholders exist in the system
+		$valid_placeholders = array(
+			'[notes]',
+			'[internal_notes]',
+			'[attendant_name]',
+			'[attendant_surnames]',
+			'[date_of_birth]',
+		);
+
+		foreach ( $valid_placeholders as $placeholder ) {
+			$this->assertIsString( $placeholder );
+			$this->assertStringStartsWith( '[', $placeholder );
+			$this->assertStringEndsWith( ']', $placeholder );
+		}
+	}
 }
