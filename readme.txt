@@ -3,7 +3,7 @@ Contributors: davefx
 Tags: parish, retreat, letters, confidential, GDPR
 Requires at least: 5.0
 Tested up to: 6.8
-Stable tag: 25.10.29
+Stable tag: 25.10.30
 Requires PHP: 7.4
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
@@ -340,6 +340,11 @@ Contributions are welcome! Please:
 5. Include appropriate tests and documentation
 
 ## Changelog
+
+### 25.10.30
+
+- Fix: sorting indicator in messages count column is now fixed
+- Feature: Allow sorting by the notes and internal_notes fields (if they exist)
 
 ### 25.10.29
 

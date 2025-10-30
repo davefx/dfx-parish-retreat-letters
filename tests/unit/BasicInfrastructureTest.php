@@ -33,11 +33,11 @@ class BasicInfrastructureTest extends TestCase {
     public function testPluginConstantsCanBeDefined() {
         // Test that we can define the constants
         if (!defined('DFX_PARISH_RETREAT_LETTERS_VERSION')) {
-            define('DFX_PARISH_RETREAT_LETTERS_VERSION', '25.10.29');
+            define('DFX_PARISH_RETREAT_LETTERS_VERSION', '25.10.30');
         }
         
         $this->assertTrue(defined('DFX_PARISH_RETREAT_LETTERS_VERSION'));
-        $this->assertEquals('25.10.29', DFX_PARISH_RETREAT_LETTERS_VERSION);
+        $this->assertEquals('25.10.30', DFX_PARISH_RETREAT_LETTERS_VERSION);
     }
 
     /**
