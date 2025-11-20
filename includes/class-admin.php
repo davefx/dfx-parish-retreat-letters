@@ -3458,7 +3458,6 @@ class DFX_Parish_Retreat_Letters_Admin {
 						<p><?php
 						/* translators: %d: number of attendants */
 						printf( esc_html__( 'Total attendants: %d', 'dfx-parish-retreat-letters' ), esc_html( $total_items ) ); ?></p>
-						<?php if ( $total_messages > 0 ) : ?>
 						<p style="margin-top: 5px;">
 							<strong><?php esc_html_e( 'Messages:', 'dfx-parish-retreat-letters' ); ?></strong>
 							<?php
@@ -3470,7 +3469,6 @@ class DFX_Parish_Retreat_Letters_Admin {
 							);
 							?>
 						</p>
-						<?php endif; ?>
 						<button type="submit" name="action" value="export_csv" class="button">
 							<?php esc_html_e( 'Export CSV', 'dfx-parish-retreat-letters' ); ?>
 						</button>
