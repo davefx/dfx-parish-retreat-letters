@@ -1,0 +1,43 @@
+# Distribution Ignore File
+# Files and directories to exclude from distribution package
+
+# Version control
+.git
+.gitignore
+.gitattributes
+.github
+
+# Development and testing files
+/tests
+/vendor
+/node_modules
+phpunit.xml
+phpunit-basic.xml
+phpunit-advanced.xml
+.phpunit.result.cache
+composer.json
+composer.lock
+package.json
+package-lock.json
+TESTING.md
+
+# Build and CI/CD
+/bin/install-wp-tests.sh
+validate-constraint-fixes.php
+.distignore
+
+# IDE and editor files
+.vscode
+.idea
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# Temporary files
+/tmp
+/coverage
+
+# Documentation (optional - keep LICENSE and readme.txt)
+# Uncomment if you don't want to include these in distribution
+# /docs
