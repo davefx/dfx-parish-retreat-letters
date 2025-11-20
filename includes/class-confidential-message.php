@@ -304,6 +304,51 @@ class DFX_Parish_Retreat_Letters_ConfidentialMessage {
 	}
 
 	/**
+	 * Get message count by retreat ID.
+	 *
+	 * @since 1.8.0
+	 * @param int $retreat_id Retreat ID.
+	 * @return int Message count.
+	 */
+	public function get_count_by_retreat( $retreat_id ) {
+		global $wpdb;
+
+		$sql = 'SELECT COUNT(*) 
+				FROM ' . $this->database->get_messages_table() . ' m
+				INNER JOIN ' . $this->database->get_attendants_table() . ' a ON m.attendant_id = a.id
+				WHERE a.retreat_id = %d';
+
+		$sql = $wpdb->prepare( $sql, $retreat_id ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+
+		$count = $wpdb->get_var( $sql ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.PreparedSQL.NotPrepared
+
+		return (int) $count;
+	}
+
+	/**
+	 * Get count of non-printed messages by retreat ID.
+	 *
+	 * @since 1.8.0
+	 * @param int $retreat_id Retreat ID.
+	 * @return int Non-printed message count.
+	 */
+	public function get_non_printed_count_by_retreat( $retreat_id ) {
+		global $wpdb;
+
+		$sql = 'SELECT COUNT(*) 
+				FROM ' . $this->database->get_messages_table() . ' m
+				INNER JOIN ' . $this->database->get_attendants_table() . ' a ON m.attendant_id = a.id
+				LEFT JOIN ' . $this->database->get_message_print_log_table() . ' p ON m.id = p.message_id
+				WHERE a.retreat_id = %d AND p.id IS NULL';
+
+		$sql = $wpdb->prepare( $sql, $retreat_id ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+
+		$count = $wpdb->get_var( $sql ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.PreparedSQL.NotPrepared
+
+		return (int) $count;
+	}
+
+	/**
 	 * Get all messages with metadata for admin interface.
 	 *
 	 * @since 1.2.0
