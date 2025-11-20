@@ -3,7 +3,7 @@ Contributors: davefx
 Tags: parish, retreat, letters, confidential, GDPR
 Requires at least: 5.0
 Tested up to: 6.8
-Stable tag: 25.10.30
+Stable tag: 25.11.20
 Requires PHP: 7.4
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
@@ -340,6 +340,10 @@ Contributions are welcome! Please:
 5. Include appropriate tests and documentation
 
 ## Changelog
+
+### 25.11.20
+
+- Feature: Added global per-retreat message counter.
 
 ### 25.10.30
 

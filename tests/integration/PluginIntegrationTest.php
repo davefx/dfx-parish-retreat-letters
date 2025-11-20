@@ -38,7 +38,7 @@ class PluginIntegrationTest extends PHPUnit\Framework\TestCase {
             
             // Define plugin constants if not defined
             if (!defined('DFX_PARISH_RETREAT_LETTERS_VERSION')) {
-                define('DFX_PARISH_RETREAT_LETTERS_VERSION', '25.10.30');
+                define('DFX_PARISH_RETREAT_LETTERS_VERSION', '25.11.20');
             }
             if (!defined('DFX_PARISH_RETREAT_LETTERS_PLUGIN_DIR')) {
                 define('DFX_PARISH_RETREAT_LETTERS_PLUGIN_DIR', $plugin_dir . '/');
