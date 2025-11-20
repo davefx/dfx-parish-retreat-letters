@@ -58,6 +58,9 @@ package-lock.json
 /coverage/
 .phpunit.result.cache
 
+# Build artifacts
+/build/
+
 # IDE files
 .vscode/
 .idea/

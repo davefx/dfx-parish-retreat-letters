@@ -35,7 +35,8 @@
         "test:basic": "./vendor/bin/phpunit --configuration phpunit-basic.xml --testsuite basic",
         "test:comprehensive": "./vendor/bin/phpunit --configuration phpunit-basic.xml --testsuite comprehensive",
         "test:advanced": "./vendor/bin/phpunit --configuration phpunit-advanced.xml --testsuite advanced",
-        "test:safe": "./vendor/bin/phpunit --configuration phpunit-basic.xml --testsuite comprehensive"
+        "test:safe": "./vendor/bin/phpunit --configuration phpunit-basic.xml --testsuite comprehensive",
+        "build": "./bin/build-dist.sh"
     },
     "config": {
         "sort-packages": true,
