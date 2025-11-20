@@ -22,7 +22,8 @@ package-lock.json
 TESTING.md
 
 # Build and CI/CD
-/bin/install-wp-tests.sh
+/bin
+BUILD.md
 validate-constraint-fixes.php
 .distignore
 

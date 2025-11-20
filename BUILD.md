@@ -64,8 +64,7 @@ build/
 │   ├── LICENSE                          # GPL v3 license
 │   ├── uninstall.php                    # Uninstall handler
 │   ├── includes/                        # Core plugin classes
-│   ├── languages/                       # Translation files
-│   └── bin/build-dist.sh               # Build script (included)
+│   └── languages/                       # Translation files
 └── dfx-parish-retreat-letters-{VERSION}.zip  # Distribution package
 ```
 
@@ -81,7 +80,6 @@ The distribution package includes:
 - LICENSE file
 - readme.txt (WordPress.org format)
 - uninstall.php
-- Build script (for reference)
 
 ❌ **Excluded**:
 - Test files and test configuration
@@ -89,7 +87,8 @@ The distribution package includes:
 - Version control files (.git, .gitignore)
 - CI/CD configuration (.github directory)
 - IDE settings (.vscode, .idea)
-- Documentation for developers (TESTING.md, etc.)
+- Build scripts and tools (/bin directory)
+- Developer documentation (BUILD.md, TESTING.md, etc.)
 - Build artifacts from previous runs
 
 ## Customizing Exclusions
