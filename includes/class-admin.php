@@ -2444,7 +2444,11 @@ class DFX_Parish_Retreat_Letters_Admin {
 		$total_items = $this->attendant_model->get_count_by_retreat( $retreat_id, $search, $filters );
 		$total_pages = ceil( $total_items / $per_page );
 
-		$this->render_attendants_list_page( $retreat, $attendants, $search, $orderby, $order, $filters, $page_num, $total_pages, $total_items );
+		// Get message counts for this retreat
+		$total_messages = $this->message_model->get_count_by_retreat( $retreat_id );
+		$non_printed_messages = $this->message_model->get_non_printed_count_by_retreat( $retreat_id );
+
+		$this->render_attendants_list_page( $retreat, $attendants, $search, $orderby, $order, $filters, $page_num, $total_pages, $total_items, $total_messages, $non_printed_messages );
 	}
 
 	/**
@@ -3255,14 +3259,19 @@ class DFX_Parish_Retreat_Letters_Admin {
 	 * Render the attendants list page.
 	 *
 	 * @since 1.0.0
-	 * @param object $retreat     Retreat object.
-	 * @param array  $attendants  Array of attendant objects.
-	 * @param string $search      Current search term.
-	 * @param int    $page_num    Current page number.
-	 * @param int    $total_pages Total number of pages.
-	 * @param int    $total_items Total number of items.
+	 * @param object $retreat              Retreat object.
+	 * @param array  $attendants           Array of attendant objects.
+	 * @param string $search               Current search term.
+	 * @param string $orderby              Column to order by.
+	 * @param string $order                Order direction (ASC/DESC).
+	 * @param array  $filters              Active filters.
+	 * @param int    $page_num             Current page number.
+	 * @param int    $total_pages          Total number of pages.
+	 * @param int    $total_items          Total number of items.
+	 * @param int    $total_messages       Total messages count for this retreat.
+	 * @param int    $non_printed_messages Non-printed messages count for this retreat.
 	 */
-	private function render_attendants_list_page( $retreat, $attendants, $search, $orderby, $order, $filters, $page_num, $total_pages, $total_items ) {
+	private function render_attendants_list_page( $retreat, $attendants, $search, $orderby, $order, $filters, $page_num, $total_pages, $total_items, $total_messages = 0, $non_printed_messages = 0 ) {
 		// Helper function to generate sortable column header URL
 		$get_sort_url = function( $column ) use ( $retreat, $search, $orderby, $order, $filters ) {
 			$new_order = ( $orderby === $column && $order === 'ASC' ) ? 'DESC' : 'ASC';
@@ -3449,6 +3458,19 @@ class DFX_Parish_Retreat_Letters_Admin {
 						<p><?php
 						/* translators: %d: number of attendants */
 						printf( esc_html__( 'Total attendants: %d', 'dfx-parish-retreat-letters' ), esc_html( $total_items ) ); ?></p>
+						<?php if ( $total_messages > 0 ) : ?>
+						<p style="margin-top: 5px;">
+							<strong><?php esc_html_e( 'Messages:', 'dfx-parish-retreat-letters' ); ?></strong>
+							<?php
+							printf(
+								/* translators: 1: total messages count, 2: non-printed messages count */
+								esc_html__( '%1$d received (%2$d unprinted)', 'dfx-parish-retreat-letters' ),
+								esc_html( $total_messages ),
+								esc_html( $non_printed_messages )
+							);
+							?>
+						</p>
+						<?php endif; ?>
 						<button type="submit" name="action" value="export_csv" class="button">
 							<?php esc_html_e( 'Export CSV', 'dfx-parish-retreat-letters' ); ?>
 						</button>
