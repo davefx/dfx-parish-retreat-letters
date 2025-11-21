@@ -300,8 +300,15 @@
                 },
                 success: function(response) {
                     if (response.success) {
-                        // Replace button with copy URL button
-                        var newButton = '<button type="button" class="button button-small button-primary dfx-prl-copy-url" data-url="' + response.data.url + '">' +
+                        // Get attendant name and surnames from response
+                        var attendantName = response.data.attendant_name || '';
+                        var attendantSurnames = response.data.attendant_surnames || '';
+                        
+                        // Replace button with copy URL button (including attendant data attributes)
+                        var newButton = '<button type="button" class="button button-small button-primary dfx-prl-copy-url" ' +
+                                       'data-url="' + response.data.url + '" ' +
+                                       'data-attendant-name="' + $('<div>').text(attendantName).html() + '" ' +
+                                       'data-attendant-surnames="' + $('<div>').text(attendantSurnames).html() + '">' +
                                        'Copy Message URL</button>';
                         $button.replaceWith(newButton);
 
@@ -309,8 +316,9 @@
                         $('<div class="notice notice-success is-dismissible"><p>' + urlGeneratedText + '</p></div>')
                             .insertAfter('.wp-header-end');
 
-                        // Auto-copy URL to clipboard
-                        copyToClipboard(response.data.url);
+                        // Auto-copy URL to clipboard with anchor
+                        var anchor = createUrlAnchor(attendantName, attendantSurnames);
+                        copyToClipboard(response.data.url + anchor);
                     } else {
                         alert(response.data.message || generateErrorText);
                         // Re-enable button
@@ -331,13 +339,21 @@
 
             var url = $(this).data('url');
             var $button = $(this);
+            
+            // Get attendant name and surnames from data attributes
+            var attendantName = $(this).data('attendant-name') || '';
+            var attendantSurnames = $(this).data('attendant-surnames') || '';
+            
+            // Add anchor with attendant name and surnames
+            var anchor = createUrlAnchor(attendantName, attendantSurnames);
+            var urlWithAnchor = url + anchor;
 
             // Get localized text with fallbacks
             var urlCopiedText = (typeof dfxPRLAdmin !== 'undefined' && dfxPRLAdmin.messages && dfxPRLAdmin.messages.urlCopied)
                 ? dfxPRLAdmin.messages.urlCopied
                 : 'URL copied to clipboard!';
 
-            if (copyToClipboard(url)) {
+            if (copyToClipboard(urlWithAnchor)) {
                 // Temporarily change button text
                 var originalText = $button.text();
                 $button.text(urlCopiedText);
@@ -586,6 +602,27 @@
             $('#dfx-prl-print-log-modal').fadeOut(200, function() {
                 $(this).remove();
             });
+        }
+
+        // Function to create URL-safe anchor from attendant name and surnames
+        function createUrlAnchor(name, surnames) {
+            // Combine name and surnames
+            var fullName = (name + ' ' + surnames).trim();
+            
+            // Return empty string if no name provided
+            if (!fullName) {
+                return '';
+            }
+            
+            // Convert to lowercase, replace spaces with hyphens, remove special characters
+            var anchor = fullName
+                .toLowerCase()
+                .replace(/\s+/g, '-')           // Replace spaces with hyphens
+                .replace(/[^a-z0-9-]/g, '')     // Remove non-alphanumeric characters except hyphens
+                .replace(/-+/g, '-')            // Replace multiple hyphens with single hyphen
+                .replace(/^-|-$/g, '');         // Remove leading/trailing hyphens
+            
+            return anchor ? '#' + anchor : '';
         }
 
         // Function to copy text to clipboard

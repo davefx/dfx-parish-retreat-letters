@@ -3692,7 +3692,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 													<?php esc_html_e( 'Generate Message URL', 'dfx-parish-retreat-letters' ); ?>
 												</button>
 											<?php else : ?>
-												<button type="button" class="button button-small button-primary dfx-prl-copy-url" data-url="<?php echo esc_url( home_url( '/messages/' . $attendant->message_url_token ) ); ?>">
+												<button type="button" class="button button-small button-primary dfx-prl-copy-url" data-url="<?php echo esc_url( home_url( '/messages/' . $attendant->message_url_token ) ); ?>" data-attendant-name="<?php echo esc_attr( $attendant->name ?? '' ); ?>" data-attendant-surnames="<?php echo esc_attr( $attendant->surnames ?? '' ); ?>">
 													<?php esc_html_e( 'Copy Message URL', 'dfx-parish-retreat-letters' ); ?>
 												</button>
 											<?php endif; ?>
@@ -3928,7 +3928,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 										<p class="description"><?php esc_html_e( 'Generate a secure URL that can be shared with this attendant to receive confidential messages.', 'dfx-parish-retreat-letters' ); ?></p>
 									<?php else : ?>
 										<p>
-											<button type="button" class="button button-primary dfx-prl-copy-url" data-url="<?php echo esc_url( home_url( '/messages/' . $attendant->message_url_token ) ); ?>">
+											<button type="button" class="button button-primary dfx-prl-copy-url" data-url="<?php echo esc_url( home_url( '/messages/' . $attendant->message_url_token ) ); ?>" data-attendant-name="<?php echo esc_attr( $attendant->name ?? '' ); ?>" data-attendant-surnames="<?php echo esc_attr( $attendant->surnames ?? '' ); ?>">
 												<?php esc_html_e( 'Copy Message URL', 'dfx-parish-retreat-letters' ); ?>
 											</button>
 										</p>
@@ -4098,7 +4098,9 @@ class DFX_Parish_Retreat_Letters_Admin {
 
 		wp_send_json_success( array(
 			'message' => __( 'Message URL generated successfully.', 'dfx-parish-retreat-letters' ),
-			'url' => $message_url
+			'url' => $message_url,
+			'attendant_name' => $attendant->name ?? '',
+			'attendant_surnames' => $attendant->surnames ?? ''
 		) );
 	}
 
