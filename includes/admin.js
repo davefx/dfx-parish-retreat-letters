@@ -629,7 +629,7 @@
             }
             
             // Split into words and extract first letter of each word
-            var words = normalized.trim().split(/\s+/);
+            var words = normalized.split(/\s+/);
             var initials = words
                 .filter(function(word) {
                     // Filter out empty words
