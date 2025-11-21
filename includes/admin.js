@@ -306,9 +306,9 @@
                         
                         // Replace button with copy URL button (including attendant data attributes)
                         var newButton = '<button type="button" class="button button-small button-primary dfx-prl-copy-url" ' +
-                                       'data-url="' + response.data.url + '" ' +
-                                       'data-attendant-name="' + $('<div>').text(attendantName).html() + '" ' +
-                                       'data-attendant-surnames="' + $('<div>').text(attendantSurnames).html() + '">' +
+                                       'data-url="' + escapeHtmlAttribute(response.data.url) + '" ' +
+                                       'data-attendant-name="' + escapeHtmlAttribute(attendantName) + '" ' +
+                                       'data-attendant-surnames="' + escapeHtmlAttribute(attendantSurnames) + '">' +
                                        'Copy Message URL</button>';
                         $button.replaceWith(newButton);
 
@@ -604,6 +604,13 @@
             });
         }
 
+        // Helper function to escape HTML attributes
+        function escapeHtmlAttribute(text) {
+            var div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
         // Function to create URL-safe anchor from attendant name and surnames
         function createUrlAnchor(name, surnames) {
             // Combine name and surnames
@@ -614,8 +621,15 @@
                 return '';
             }
             
+            // Normalize Unicode characters to decomposed form and remove diacritics
+            // This converts accented characters to their base forms (e.g., é -> e, ñ -> n)
+            var normalized = fullName;
+            if (typeof fullName.normalize === 'function') {
+                normalized = fullName.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+            }
+            
             // Convert to lowercase, replace spaces with hyphens, remove special characters
-            var anchor = fullName
+            var anchor = normalized
                 .toLowerCase()
                 .replace(/\s+/g, '-')           // Replace spaces with hyphens
                 .replace(/[^a-z0-9-]/g, '')     // Remove non-alphanumeric characters except hyphens
