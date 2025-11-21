@@ -611,7 +611,7 @@
             return div.innerHTML;
         }
 
-        // Function to create URL-safe anchor from attendant name and surnames
+        // Function to create URL-safe anchor from attendant name and surnames using initials
         function createUrlAnchor(name, surnames) {
             // Combine name and surnames
             var fullName = (name + ' ' + surnames).trim();
@@ -628,15 +628,19 @@
                 normalized = fullName.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
             }
             
-            // Convert to lowercase, replace spaces with hyphens, remove special characters
-            var anchor = normalized
-                .toLowerCase()
-                .replace(/\s+/g, '-')           // Replace spaces with hyphens
-                .replace(/[^a-z0-9-]/g, '')     // Remove non-alphanumeric characters except hyphens
-                .replace(/-+/g, '-')            // Replace multiple hyphens with single hyphen
-                .replace(/^-|-$/g, '');         // Remove leading/trailing hyphens
+            // Split into words and extract first letter of each word
+            var words = normalized.trim().split(/\s+/);
+            var initials = words
+                .map(function(word) {
+                    return word.charAt(0).toLowerCase();
+                })
+                .filter(function(initial) {
+                    // Only keep alphanumeric initials
+                    return /[a-z0-9]/.test(initial);
+                })
+                .join('');
             
-            return anchor ? '#' + anchor : '';
+            return initials ? '#' + initials : '';
         }
 
         // Function to copy text to clipboard
