@@ -631,12 +631,16 @@
             // Split into words and extract first letter of each word
             var words = normalized.trim().split(/\s+/);
             var initials = words
+                .filter(function(word) {
+                    // Filter out empty words
+                    return word.length > 0;
+                })
                 .map(function(word) {
                     return word.charAt(0).toLowerCase();
                 })
                 .filter(function(initial) {
-                    // Only keep alphanumeric initials
-                    return /[a-z0-9]/.test(initial);
+                    // Only keep single alphanumeric initials
+                    return /^[a-z0-9]$/.test(initial);
                 })
                 .join('');
             
