@@ -653,7 +653,11 @@ class DFX_Parish_Retreat_Letters {
 								<button type="button" data-command="undo" title="<?php esc_attr_e( 'Undo', 'dfx-parish-retreat-letters' ); ?>"><?php esc_html_e( 'Undo', 'dfx-parish-retreat-letters' ); ?></button>
 								<button type="button" data-command="redo" title="<?php esc_attr_e( 'Redo', 'dfx-parish-retreat-letters' ); ?>"><?php esc_html_e( 'Redo', 'dfx-parish-retreat-letters' ); ?></button>
 							</div>
-							<div id="message_content" contenteditable="true" class="dfx-prl-editor" placeholder="<?php esc_attr_e( 'Write your confidential message here...', 'dfx-parish-retreat-letters' ); ?>"></div>
+							<div id="message_content" contenteditable="true" class="dfx-prl-editor" placeholder="<?php
+								/* translators: %s: attendant full name (name and surnames) */
+								$attendant_full_name = trim( esc_html( $attendant->name ) . ' ' . esc_html( $attendant->surnames ) );
+								echo esc_attr( sprintf( __( 'Write your confidential message for %s here...', 'dfx-parish-retreat-letters' ), $attendant_full_name ) );
+							?>"></div>
 							<textarea id="message_content_hidden" name="message_content" style="display: none;"></textarea>
 						</div>
 						<p class="dfx-prl-help-text"><?php esc_html_e( 'You can use the toolbar to format your text, create lists, and paste images. HTML is allowed but will be filtered for security.', 'dfx-parish-retreat-letters' ); ?></p>

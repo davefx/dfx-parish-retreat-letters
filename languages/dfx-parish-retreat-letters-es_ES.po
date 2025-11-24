@@ -621,9 +621,10 @@ msgstr "Para el Asistente del Retiro"
 msgid "Your Message"
 msgstr "Tu Mensaje"
 
-#: includes/class-dfx-parish-retreat-letters.php:656
-msgid "Write your confidential message here..."
-msgstr "Escribe tu mensaje confidencial aquí..."
+#. translators: %s: attendant full name (name and surnames)
+#: includes/class-dfx-parish-retreat-letters.php:658
+msgid "Write your confidential message for %s here..."
+msgstr "Escribe tu mensaje confidencial para %s aquí..."
 
 #: includes/class-dfx-parish-retreat-letters.php:648
 msgid "Bold"

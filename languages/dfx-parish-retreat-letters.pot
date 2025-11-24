@@ -2201,11 +2201,12 @@ msgstr ""
 msgid "Redo"
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:656
-msgid "Write your confidential message here..."
+#. translators: %s: attendant full name (name and surnames)
+#: includes/class-dfx-parish-retreat-letters.php:658
+msgid "Write your confidential message for %s here..."
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:659
+#: includes/class-dfx-parish-retreat-letters.php:662
 msgid "You can use the toolbar to format your text, create lists, and paste images. HTML is allowed but will be filtered for security."
 msgstr ""
 
