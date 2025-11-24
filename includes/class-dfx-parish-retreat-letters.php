@@ -655,7 +655,8 @@ class DFX_Parish_Retreat_Letters {
 							</div>
 							<div id="message_content" contenteditable="true" class="dfx-prl-editor" placeholder="<?php
 								/* translators: %s: attendant full name (name and surnames) */
-								echo esc_attr( sprintf( __( 'Write your confidential message for %s here...', 'dfx-parish-retreat-letters' ), $attendant->name . ' ' . $attendant->surnames ) );
+								$attendant_full_name = trim( esc_html( $attendant->name ) . ' ' . esc_html( $attendant->surnames ) );
+								echo esc_attr( sprintf( __( 'Write your confidential message for %s here...', 'dfx-parish-retreat-letters' ), $attendant_full_name ) );
 							?>"></div>
 							<textarea id="message_content_hidden" name="message_content" style="display: none;"></textarea>
 						</div>
