@@ -5263,6 +5263,97 @@ class DFX_Parish_Retreat_Letters_Admin {
 	}
 
 	/**
+	 * Generate initials suffix from attendant name and surnames.
+	 *
+	 * Creates a URL-safe anchor/hash from the attendant's full name by taking
+	 * the first letter of each word, converting to lowercase, and removing diacritics.
+	 *
+	 * @since 1.5.4
+	 * @param string $name     The attendant's first name.
+	 * @param string $surnames The attendant's surnames.
+	 * @return string The initials suffix (e.g., '#jds' for 'John Doe Smith') or empty string.
+	 */
+	private function generate_initials_suffix( $name, $surnames ) {
+		// Combine name and surnames
+		$full_name = trim( ( $name ?? '' ) . ' ' . ( $surnames ?? '' ) );
+
+		// Return empty string if no name provided
+		if ( empty( $full_name ) ) {
+			return '';
+		}
+
+		// Normalize Unicode characters to decomposed form and remove diacritics
+		// This converts accented characters to their base forms (e.g., é -> e, ñ -> n)
+		if ( class_exists( 'Normalizer' ) ) {
+			$normalized = Normalizer::normalize( $full_name, Normalizer::FORM_D );
+			if ( $normalized !== false ) {
+				$normalized = preg_replace( '/[\x{0300}-\x{036f}]/u', '', $normalized );
+			} else {
+				$normalized = $full_name;
+			}
+		} else {
+			// Fallback: use transliterator if available, otherwise manual conversion
+			if ( function_exists( 'transliterator_transliterate' ) ) {
+				$result = transliterator_transliterate( 'NFD; [:Nonspacing Mark:] Remove; NFC', $full_name );
+				// Fallback to manual conversion if transliterator fails
+				if ( $result === false ) {
+					$normalized = strtr(
+						$full_name,
+						array(
+							'á' => 'a', 'é' => 'e', 'í' => 'i', 'ó' => 'o', 'ú' => 'u',
+							'Á' => 'A', 'É' => 'E', 'Í' => 'I', 'Ó' => 'O', 'Ú' => 'U',
+							'ñ' => 'n', 'Ñ' => 'N', 'ü' => 'u', 'Ü' => 'U',
+							'à' => 'a', 'è' => 'e', 'ì' => 'i', 'ò' => 'o', 'ù' => 'u',
+							'À' => 'A', 'È' => 'E', 'Ì' => 'I', 'Ò' => 'O', 'Ù' => 'U',
+							'â' => 'a', 'ê' => 'e', 'î' => 'i', 'ô' => 'o', 'û' => 'u',
+							'Â' => 'A', 'Ê' => 'E', 'Î' => 'I', 'Ô' => 'O', 'Û' => 'U',
+							'ä' => 'a', 'ë' => 'e', 'ï' => 'i', 'ö' => 'o',
+							'Ä' => 'A', 'Ë' => 'E', 'Ï' => 'I', 'Ö' => 'O',
+							'ç' => 'c', 'Ç' => 'C',
+						)
+					);
+				} else {
+					$normalized = $result;
+				}
+			} else {
+				// Simple fallback for common accented characters
+				$normalized = strtr(
+					$full_name,
+					array(
+						'á' => 'a', 'é' => 'e', 'í' => 'i', 'ó' => 'o', 'ú' => 'u',
+						'Á' => 'A', 'É' => 'E', 'Í' => 'I', 'Ó' => 'O', 'Ú' => 'U',
+						'ñ' => 'n', 'Ñ' => 'N', 'ü' => 'u', 'Ü' => 'U',
+						'à' => 'a', 'è' => 'e', 'ì' => 'i', 'ò' => 'o', 'ù' => 'u',
+						'À' => 'A', 'È' => 'E', 'Ì' => 'I', 'Ò' => 'O', 'Ù' => 'U',
+						'â' => 'a', 'ê' => 'e', 'î' => 'i', 'ô' => 'o', 'û' => 'u',
+						'Â' => 'A', 'Ê' => 'E', 'Î' => 'I', 'Ô' => 'O', 'Û' => 'U',
+						'ä' => 'a', 'ë' => 'e', 'ï' => 'i', 'ö' => 'o',
+						'Ä' => 'A', 'Ë' => 'E', 'Ï' => 'I', 'Ö' => 'O',
+						'ç' => 'c', 'Ç' => 'C',
+					)
+				);
+			}
+		}
+
+		// Split into words and extract first letter of each word
+		$words = preg_split( '/\s+/', $normalized );
+		$initials = '';
+
+		foreach ( $words as $word ) {
+			if ( empty( $word ) ) {
+				continue;
+			}
+			$first_char = mb_strtolower( mb_substr( $word, 0, 1, 'UTF-8' ), 'UTF-8' );
+			// Only keep single alphanumeric initials
+			if ( preg_match( '/^[a-z0-9]$/', $first_char ) ) {
+				$initials .= $first_char;
+			}
+		}
+
+		return ! empty( $initials ) ? '#' . $initials : '';
+	}
+
+	/**
 	 * Expand invitation template with attendant data.
 	 *
 	 * @since 1.0.0
@@ -5273,10 +5364,11 @@ class DFX_Parish_Retreat_Letters_Admin {
 	private function expand_invitation_template( $retreat, $attendant ) {
 		$template = $retreat->message_request_template;
 
-		// Build the messages URL
+		// Build the messages URL with initials suffix
 		$messages_url = '';
 		if ( ! empty( $attendant->message_url_token ) ) {
-			$messages_url = home_url( '/messages/' . $attendant->message_url_token );
+			$initials_suffix = $this->generate_initials_suffix( $attendant->name ?? '', $attendant->surnames ?? '' );
+			$messages_url = home_url( '/messages/' . $attendant->message_url_token ) . $initials_suffix;
 		}
 
 		// Define all available placeholders

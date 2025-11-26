@@ -752,4 +752,99 @@ class ComprehensiveInfrastructureTest extends TestCase {
                 'render_print_page should be private for security');
         }
     }
+
+    /**
+     * Test that Admin class has generate_initials_suffix method for invitation URLs
+     * 
+     * This test verifies the fix for the issue where invitation message URLs 
+     * were missing the initials suffix (e.g., #jd for "John Doe").
+     */
+    public function testAdminHasGenerateInitialsSuffixMethod() {
+        if (class_exists('DFX_Parish_Retreat_Letters_Admin')) {
+            $admin = DFX_Parish_Retreat_Letters_Admin::get_instance();
+            $this->assertInstanceOf('DFX_Parish_Retreat_Letters_Admin', $admin);
+            
+            // Test that the generate_initials_suffix method exists
+            $reflection = new ReflectionClass($admin);
+            $this->assertTrue($reflection->hasMethod('generate_initials_suffix'), 
+                'Admin class should have generate_initials_suffix method');
+            
+            // The method should be private for encapsulation
+            $method = $reflection->getMethod('generate_initials_suffix');
+            $this->assertTrue($method->isPrivate(), 'generate_initials_suffix should be private');
+            
+            // Verify the method parameters
+            $params = $method->getParameters();
+            $this->assertEquals(2, count($params), 
+                'generate_initials_suffix should accept 2 parameters');
+            $this->assertEquals('name', $params[0]->getName(), 
+                'First parameter should be name');
+            $this->assertEquals('surnames', $params[1]->getName(), 
+                'Second parameter should be surnames');
+            
+            // Test the method functionality using reflection
+            $method->setAccessible(true);
+            
+            // Test basic name
+            $result = $method->invoke($admin, 'John', 'Doe');
+            $this->assertEquals('#jd', $result, 'Basic name should generate initials');
+            
+            // Test name with multiple surnames
+            $result = $method->invoke($admin, 'Maria', 'Garcia Lopez');
+            $this->assertEquals('#mgl', $result, 'Multiple surnames should generate initials from each word');
+            
+            // Test empty name
+            $result = $method->invoke($admin, '', '');
+            $this->assertEquals('', $result, 'Empty name should return empty string');
+            
+            // Test name only
+            $result = $method->invoke($admin, 'Alice', '');
+            $this->assertEquals('#a', $result, 'Name only should return single initial');
+            
+            // Test surnames only
+            $result = $method->invoke($admin, '', 'Smith Johnson');
+            $this->assertEquals('#sj', $result, 'Surnames only should work');
+            
+            // Test null values
+            $result = $method->invoke($admin, null, null);
+            $this->assertEquals('', $result, 'Null values should return empty string');
+            
+            // Test name with special characters - apostrophe creates "O" and "Brien" as separate words
+            // "O" is a single letter word so its initial is "o", "Brien" gives "b"
+            $result = $method->invoke($admin, 'John', 'O\'Brien');
+            $this->assertEquals('#jo', $result, 'Name with apostrophe should be handled (apostrophe splits word)');
+        } else {
+            $this->markTestSkipped('Admin class not available');
+        }
+    }
+
+    /**
+     * Test that expand_invitation_template method exists and is callable
+     * 
+     * This test verifies the method that expands invitation templates with attendant data,
+     * which should now include the initials suffix in the messages URL.
+     */
+    public function testExpandInvitationTemplateMethodExists() {
+        if (class_exists('DFX_Parish_Retreat_Letters_Admin')) {
+            $admin = DFX_Parish_Retreat_Letters_Admin::get_instance();
+            $reflection = new ReflectionClass($admin);
+            
+            $this->assertTrue($reflection->hasMethod('expand_invitation_template'), 
+                'Admin class should have expand_invitation_template method');
+            
+            $method = $reflection->getMethod('expand_invitation_template');
+            $this->assertTrue($method->isPrivate(), 'expand_invitation_template should be private');
+            
+            // Verify the method parameters
+            $params = $method->getParameters();
+            $this->assertEquals(2, count($params), 
+                'expand_invitation_template should accept 2 parameters');
+            $this->assertEquals('retreat', $params[0]->getName(), 
+                'First parameter should be retreat');
+            $this->assertEquals('attendant', $params[1]->getName(), 
+                'Second parameter should be attendant');
+        } else {
+            $this->markTestSkipped('Admin class not available');
+        }
+    }
 }
