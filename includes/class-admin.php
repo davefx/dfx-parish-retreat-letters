@@ -5294,7 +5294,27 @@ class DFX_Parish_Retreat_Letters_Admin {
 		} else {
 			// Fallback: use transliterator if available, otherwise manual conversion
 			if ( function_exists( 'transliterator_transliterate' ) ) {
-				$normalized = transliterator_transliterate( 'NFD; [:Nonspacing Mark:] Remove; NFC', $full_name );
+				$result = transliterator_transliterate( 'NFD; [:Nonspacing Mark:] Remove; NFC', $full_name );
+				// Fallback to manual conversion if transliterator fails
+				if ( $result === false ) {
+					$normalized = strtr(
+						$full_name,
+						array(
+							'á' => 'a', 'é' => 'e', 'í' => 'i', 'ó' => 'o', 'ú' => 'u',
+							'Á' => 'A', 'É' => 'E', 'Í' => 'I', 'Ó' => 'O', 'Ú' => 'U',
+							'ñ' => 'n', 'Ñ' => 'N', 'ü' => 'u', 'Ü' => 'U',
+							'à' => 'a', 'è' => 'e', 'ì' => 'i', 'ò' => 'o', 'ù' => 'u',
+							'À' => 'A', 'È' => 'E', 'Ì' => 'I', 'Ò' => 'O', 'Ù' => 'U',
+							'â' => 'a', 'ê' => 'e', 'î' => 'i', 'ô' => 'o', 'û' => 'u',
+							'Â' => 'A', 'Ê' => 'E', 'Î' => 'I', 'Ô' => 'O', 'Û' => 'U',
+							'ä' => 'a', 'ë' => 'e', 'ï' => 'i', 'ö' => 'o',
+							'Ä' => 'A', 'Ë' => 'E', 'Ï' => 'I', 'Ö' => 'O',
+							'ç' => 'c', 'Ç' => 'C',
+						)
+					);
+				} else {
+					$normalized = $result;
+				}
 			} else {
 				// Simple fallback for common accented characters
 				$normalized = strtr(
