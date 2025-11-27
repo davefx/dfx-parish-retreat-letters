@@ -757,7 +757,7 @@ class ComprehensiveInfrastructureTest extends TestCase {
      * Test that Admin class has generate_initials_suffix method for invitation URLs
      * 
      * This test verifies the fix for the issue where invitation message URLs 
-     * were missing the initials suffix (e.g., #jd for "John Doe").
+     * were missing the initials suffix (e.g., /#jd for "John Doe").
      */
     public function testAdminHasGenerateInitialsSuffixMethod() {
         if (class_exists('DFX_Parish_Retreat_Letters_Admin')) {
@@ -787,11 +787,11 @@ class ComprehensiveInfrastructureTest extends TestCase {
             
             // Test basic name
             $result = $method->invoke($admin, 'John', 'Doe');
-            $this->assertEquals('#jd', $result, 'Basic name should generate initials');
+            $this->assertEquals('/#jd', $result, 'Basic name should generate initials');
             
             // Test name with multiple surnames
             $result = $method->invoke($admin, 'Maria', 'Garcia Lopez');
-            $this->assertEquals('#mgl', $result, 'Multiple surnames should generate initials from each word');
+            $this->assertEquals('/#mgl', $result, 'Multiple surnames should generate initials from each word');
             
             // Test empty name
             $result = $method->invoke($admin, '', '');
@@ -799,11 +799,11 @@ class ComprehensiveInfrastructureTest extends TestCase {
             
             // Test name only
             $result = $method->invoke($admin, 'Alice', '');
-            $this->assertEquals('#a', $result, 'Name only should return single initial');
+            $this->assertEquals('/#a', $result, 'Name only should return single initial');
             
             // Test surnames only
             $result = $method->invoke($admin, '', 'Smith Johnson');
-            $this->assertEquals('#sj', $result, 'Surnames only should work');
+            $this->assertEquals('/#sj', $result, 'Surnames only should work');
             
             // Test null values
             $result = $method->invoke($admin, null, null);
@@ -812,7 +812,7 @@ class ComprehensiveInfrastructureTest extends TestCase {
             // Test name with special characters - apostrophe creates "O" and "Brien" as separate words
             // "O" is a single letter word so its initial is "o", "Brien" gives "b"
             $result = $method->invoke($admin, 'John', 'O\'Brien');
-            $this->assertEquals('#jo', $result, 'Name with apostrophe should be handled (apostrophe splits word)');
+            $this->assertEquals('/#jo', $result, 'Name with apostrophe should be handled (apostrophe splits word)');
         } else {
             $this->markTestSkipped('Admin class not available');
         }

@@ -644,7 +644,7 @@
                 })
                 .join('');
             
-            return initials ? '#' + initials : '';
+            return initials ? '/#' + initials : '';
         }
 
         // Function to copy text to clipboard

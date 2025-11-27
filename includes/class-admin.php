@@ -5271,7 +5271,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 	 * @since 1.5.4
 	 * @param string $name     The attendant's first name.
 	 * @param string $surnames The attendant's surnames.
-	 * @return string The initials suffix (e.g., '#jds' for 'John Doe Smith') or empty string.
+	 * @return string The initials suffix (e.g., '/#jds' for 'John Doe Smith') or empty string.
 	 */
 	private function generate_initials_suffix( $name, $surnames ) {
 		// Combine name and surnames
@@ -5350,7 +5350,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 			}
 		}
 
-		return ! empty( $initials ) ? '#' . $initials : '';
+		return ! empty( $initials ) ? '/#' . $initials : '';
 	}
 
 	/**
