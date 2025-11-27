@@ -1787,7 +1787,7 @@ class DFX_Parish_Retreat_Letters {
 		$user_answer = sanitize_text_field( wp_unslash( $_POST['captcha_answer'] ?? '' ) );
 		$captcha_token = sanitize_text_field( wp_unslash( $_POST['captcha_token'] ?? '' ) );
 
-		if ( empty( $user_answer ) || empty( $captcha_token ) ) {
+		if ( '' === $user_answer || empty( $captcha_token ) ) {
 			wp_send_json_error( array( 'message' => __( 'Please complete the security check.', 'dfx-parish-retreat-letters' ) ) );
 		}
 
