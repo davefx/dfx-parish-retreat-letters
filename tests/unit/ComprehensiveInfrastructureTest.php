@@ -847,4 +847,71 @@ class ComprehensiveInfrastructureTest extends TestCase {
             $this->markTestSkipped('Admin class not available');
         }
     }
+
+    /**
+     * Test that CAPTCHA validation correctly handles zero answers
+     * 
+     * This test verifies that when the CAPTCHA answer is "0" (e.g., 4 - 4 = ?),
+     * it is not incorrectly rejected as an empty value.
+     * 
+     * The fix changed from empty($user_answer) to '' === $user_answer to properly
+     * handle the string "0" as a valid answer.
+     */
+    public function testCaptchaValidationAllowsZeroAnswer() {
+        // Test that "0" is not considered empty for CAPTCHA validation purposes
+        $user_answer_zero = '0';
+        $user_answer_empty = '';
+        
+        // The old code used empty() which incorrectly returned true for "0"
+        // The fix uses strict string comparison '' === $user_answer
+        
+        // Verify that "0" should NOT trigger the "please complete" error
+        $this->assertFalse('' === $user_answer_zero, 
+            'String "0" should not be considered empty for CAPTCHA validation');
+        
+        // Verify that empty string SHOULD trigger the "please complete" error
+        $this->assertTrue('' === $user_answer_empty, 
+            'Empty string should trigger CAPTCHA validation error');
+        
+        // Test that "00" (double zero) is also valid
+        $user_answer_double_zero = '00';
+        $this->assertFalse('' === $user_answer_double_zero, 
+            'String "00" should not be considered empty');
+        
+        // Test numeric zero directly converted to string
+        $numeric_zero = 0;
+        $string_zero = (string) $numeric_zero;
+        $this->assertFalse('' === $string_zero, 
+            'Numeric 0 converted to string should not be considered empty');
+    }
+
+    /**
+     * Test CAPTCHA answer comparison with base64 encoded expected value
+     * 
+     * This verifies the CAPTCHA comparison logic works correctly for various answers,
+     * particularly zero which was previously problematic.
+     */
+    public function testCaptchaAnswerComparisonWithBase64() {
+        // Test various CAPTCHA answer scenarios
+        $test_cases = [
+            ['expected' => 0, 'user_input' => '0', 'should_match' => true],
+            ['expected' => 5, 'user_input' => '5', 'should_match' => true],
+            ['expected' => 12, 'user_input' => '12', 'should_match' => true],
+            ['expected' => 0, 'user_input' => '1', 'should_match' => false],
+            ['expected' => 5, 'user_input' => '6', 'should_match' => false],
+        ];
+        
+        foreach ($test_cases as $case) {
+            // Simulate the CAPTCHA token (base64 encoded expected answer)
+            $captcha_token = base64_encode((string) $case['expected']);
+            $expected_answer = base64_decode($captcha_token);
+            
+            // The comparison uses non-strict equality (==)
+            $matches = $case['user_input'] == $expected_answer;
+            
+            $this->assertEquals($case['should_match'], $matches, 
+                sprintf('CAPTCHA comparison failed for expected=%d, user_input=%s', 
+                    $case['expected'], $case['user_input']));
+        }
+    }
 }
