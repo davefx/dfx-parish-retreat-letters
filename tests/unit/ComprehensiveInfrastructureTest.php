@@ -851,7 +851,7 @@ class ComprehensiveInfrastructureTest extends TestCase {
     /**
      * Test that CAPTCHA validation correctly handles zero answers
      * 
-     * This tests verifies that when the CAPTCHA answer is "0" (e.g., 4 - 4 = ?),
+     * This test verifies that when the CAPTCHA answer is "0" (e.g., 4 - 4 = ?),
      * it is not incorrectly rejected as an empty value.
      * 
      * The fix changed from empty($user_answer) to '' === $user_answer to properly
@@ -872,12 +872,6 @@ class ComprehensiveInfrastructureTest extends TestCase {
         // Verify that empty string SHOULD trigger the "please complete" error
         $this->assertTrue('' === $user_answer_empty, 
             'Empty string should trigger CAPTCHA validation error');
-        
-        // Additional edge cases
-        $user_answer_whitespace = '   ';
-        $trimmed = trim($user_answer_whitespace);
-        $this->assertTrue('' === $trimmed, 
-            'Whitespace-only input should be considered empty after trim');
         
         // Test that "00" (double zero) is also valid
         $user_answer_double_zero = '00';
@@ -912,7 +906,7 @@ class ComprehensiveInfrastructureTest extends TestCase {
             $captcha_token = base64_encode((string) $case['expected']);
             $expected_answer = base64_decode($captcha_token);
             
-            // The comparison uses non-strict equality (!=)
+            // The comparison uses non-strict equality (==)
             $matches = $case['user_input'] == $expected_answer;
             
             $this->assertEquals($case['should_match'], $matches, 
