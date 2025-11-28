@@ -670,12 +670,31 @@ class DFX_Parish_Retreat_Letters {
 							<?php
 							$max_per_file = $this->security->get_max_upload_size();
 							$max_combined = $this->security->get_max_combined_upload_size();
-							printf(
-								/* translators: %1$s: maximum size per file, %2$s: maximum combined size */
-								esc_html__( 'Allowed file types: PDF, DOC, DOCX, TXT, JPG, PNG, GIF. Maximum %1$s per file, %2$s total.', 'dfx-parish-retreat-letters' ),
-								esc_html( $max_per_file ),
-								esc_html( $max_combined )
-							);
+
+							// Only display size limits if we can reliably determine them
+							if ( $max_per_file !== null && $max_combined !== null ) {
+								printf(
+									/* translators: %1$s: maximum size per file, %2$s: maximum combined size */
+									esc_html__( 'Allowed file types: PDF, DOC, DOCX, TXT, JPG, PNG, GIF. Maximum %1$s per file, %2$s total.', 'dfx-parish-retreat-letters' ),
+									esc_html( $max_per_file ),
+									esc_html( $max_combined )
+								);
+							} elseif ( $max_per_file !== null ) {
+								printf(
+									/* translators: %s: maximum size per file */
+									esc_html__( 'Allowed file types: PDF, DOC, DOCX, TXT, JPG, PNG, GIF. Maximum %s per file.', 'dfx-parish-retreat-letters' ),
+									esc_html( $max_per_file )
+								);
+							} elseif ( $max_combined !== null ) {
+								printf(
+									/* translators: %s: maximum combined size */
+									esc_html__( 'Allowed file types: PDF, DOC, DOCX, TXT, JPG, PNG, GIF. Maximum %s total.', 'dfx-parish-retreat-letters' ),
+									esc_html( $max_combined )
+								);
+							} else {
+								// Server configuration unknown - just show allowed types
+								esc_html_e( 'Allowed file types: PDF, DOC, DOCX, TXT, JPG, PNG, GIF.', 'dfx-parish-retreat-letters' );
+							}
 							?>
 						</p>
 						<div id="dfx-prl-file-list"></div>

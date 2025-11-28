@@ -201,6 +201,82 @@ class ComprehensiveInfrastructureTest extends TestCase {
     }
 
     /**
+     * Test that upload size methods exist and handle unknown configuration properly
+     *
+     * This test verifies that:
+     * 1. The DEFAULT_MAX_UPLOAD_SIZE constant is defined (8 MB fallback for validation)
+     * 2. get_max_upload_size() method exists and returns null or valid value (never "0 bytes")
+     * 3. get_max_combined_upload_size() method exists and returns null or valid value
+     * 4. get_max_upload_size_for_validation() always returns a positive value for file validation
+     *
+     * @see https://github.com/davefx/dfx-parish-retreat-letters/issues/145
+     */
+    public function testUploadSizeFallbackHandling() {
+        if (!class_exists('DFX_Parish_Retreat_Letters_Security')) {
+            $this->markTestSkipped('Security class not available');
+        }
+
+        // Test DEFAULT_MAX_UPLOAD_SIZE constant exists and is 8 MB
+        $this->assertTrue(
+            defined('DFX_Parish_Retreat_Letters_Security::DEFAULT_MAX_UPLOAD_SIZE'),
+            'DEFAULT_MAX_UPLOAD_SIZE constant should be defined'
+        );
+        $this->assertEquals(
+            8388608,
+            DFX_Parish_Retreat_Letters_Security::DEFAULT_MAX_UPLOAD_SIZE,
+            'DEFAULT_MAX_UPLOAD_SIZE should be 8 MB (8388608 bytes)'
+        );
+
+        // Verify upload size methods exist
+        $this->assertTrue(
+            method_exists('DFX_Parish_Retreat_Letters_Security', 'get_max_upload_size'),
+            'get_max_upload_size method should exist'
+        );
+        $this->assertTrue(
+            method_exists('DFX_Parish_Retreat_Letters_Security', 'get_max_combined_upload_size'),
+            'get_max_combined_upload_size method should exist'
+        );
+        $this->assertTrue(
+            method_exists('DFX_Parish_Retreat_Letters_Security', 'get_max_upload_size_for_validation'),
+            'get_max_upload_size_for_validation method should exist'
+        );
+
+        // Get instance
+        $security = DFX_Parish_Retreat_Letters_Security::get_instance();
+
+        // Test display methods - should return null or valid value, never "0 bytes"
+        $max_size_formatted = $security->get_max_upload_size(true);
+        if ($max_size_formatted !== null) {
+            $this->assertIsString($max_size_formatted, 'Formatted max upload size should be a string when not null');
+            $this->assertStringNotContainsString('0 bytes', $max_size_formatted, 'Max upload size should never be "0 bytes"');
+        }
+
+        $max_size_bytes = $security->get_max_upload_size(false);
+        if ($max_size_bytes !== null) {
+            $this->assertIsInt($max_size_bytes, 'Raw max upload size should be an integer when not null');
+            $this->assertGreaterThan(0, $max_size_bytes, 'Max upload size should be greater than 0 when not null');
+        }
+
+        // Test combined upload size
+        $max_combined_formatted = $security->get_max_combined_upload_size(true);
+        if ($max_combined_formatted !== null) {
+            $this->assertIsString($max_combined_formatted, 'Formatted max combined size should be a string when not null');
+            $this->assertStringNotContainsString('0 bytes', $max_combined_formatted, 'Max combined size should never be "0 bytes"');
+        }
+
+        $max_combined_bytes = $security->get_max_combined_upload_size(false);
+        if ($max_combined_bytes !== null) {
+            $this->assertIsInt($max_combined_bytes, 'Raw max combined size should be an integer when not null');
+            $this->assertGreaterThan(0, $max_combined_bytes, 'Max combined size should be greater than 0 when not null');
+        }
+
+        // Test validation method - should ALWAYS return a positive value
+        $validation_size = $security->get_max_upload_size_for_validation();
+        $this->assertIsInt($validation_size, 'Validation max upload size should always be an integer');
+        $this->assertGreaterThan(0, $validation_size, 'Validation max upload size should always be greater than 0');
+    }
+
+    /**
      * Test database management features
      */
     public function testDatabaseManagementFeatures() {
