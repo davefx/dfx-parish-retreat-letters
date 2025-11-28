@@ -246,10 +246,11 @@ class DFX_Parish_Retreat_Letters_Security {
 	 * Check if there is an encryption key stored in the database.
 	 *
 	 * @since 25.11.28
-	 * @return bool True if a key exists in the database, false otherwise.
+	 * @return bool True if a non-empty key exists in the database, false otherwise.
 	 */
 	public function has_database_encryption_key() {
-		return (bool) get_option( 'dfx_parish_retreat_letters_encryption_key' );
+		$key = get_option( 'dfx_parish_retreat_letters_encryption_key' );
+		return ! empty( $key );
 	}
 
 	/**
