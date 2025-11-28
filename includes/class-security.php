@@ -399,44 +399,114 @@ class DFX_Parish_Retreat_Letters_Security {
 	}
 
 	/**
-	 * Get the maximum upload file size from server configuration.
+	 * Default fallback upload size in bytes (8 MB).
+	 * Used internally for file validation when server configuration cannot be determined.
+	 *
+	 * @since 25.11.28
+	 * @var int
+	 */
+	const DEFAULT_MAX_UPLOAD_SIZE = 8388608;
+
+	/**
+	 * Get the maximum upload file size from server configuration for display purposes.
+	 *
+	 * Returns null when the server configuration cannot be reliably determined,
+	 * so the UI can choose not to display potentially incorrect information.
 	 *
 	 * @since 1.2.0
 	 * @param bool $formatted Whether to return formatted string or bytes.
-	 * @return string|int Formatted string (e.g., "2 MB") or bytes.
+	 * @return string|int|null Formatted string (e.g., "2 MB"), bytes, or null if unknown.
 	 */
 	public function get_max_upload_size( $formatted = true ) {
-		$upload_max_filesize = ini_get( 'upload_max_filesize' );
-		$post_max_size = ini_get( 'post_max_size' );
-		
-		$upload_bytes = $this->parse_size( $upload_max_filesize );
-		$post_bytes = $this->parse_size( $post_max_size );
-		
-		// The effective limit is the minimum of the two
-		$max_bytes = min( $upload_bytes, $post_bytes );
-		
+		$max_bytes = $this->get_max_upload_size_internal();
+
+		// Return null if we couldn't determine the size reliably
+		if ( $max_bytes <= 0 ) {
+			return null;
+		}
+
 		if ( $formatted ) {
 			return $this->format_bytes( $max_bytes );
 		}
-		
+
 		return $max_bytes;
 	}
 
 	/**
-	 * Get the maximum combined upload size (post_max_size).
+	 * Get the maximum upload file size for internal validation purposes.
+	 *
+	 * This method always returns a usable value (falls back to 8 MB default)
+	 * to ensure file uploads are not incorrectly blocked when server is misconfigured.
+	 *
+	 * @since 25.11.28
+	 * @return int Size in bytes (always > 0).
+	 */
+	public function get_max_upload_size_for_validation() {
+		$max_bytes = $this->get_max_upload_size_internal();
+
+		// If the server reports 0 or empty, use WordPress's wp_max_upload_size() as fallback
+		if ( $max_bytes <= 0 ) {
+			if ( function_exists( 'wp_max_upload_size' ) ) {
+				$max_bytes = wp_max_upload_size();
+			}
+
+			// If still 0 or invalid, use a reasonable default (8 MB)
+			if ( $max_bytes <= 0 ) {
+				$max_bytes = self::DEFAULT_MAX_UPLOAD_SIZE;
+			}
+		}
+
+		return $max_bytes;
+	}
+
+	/**
+	 * Get the maximum upload file size from server configuration (internal helper).
+	 *
+	 * @since 25.11.28
+	 * @return int Size in bytes (may be 0 if server is misconfigured).
+	 */
+	private function get_max_upload_size_internal() {
+		$upload_max_filesize = ini_get( 'upload_max_filesize' );
+		$post_max_size = ini_get( 'post_max_size' );
+
+		$upload_bytes = $this->parse_size( $upload_max_filesize );
+		$post_bytes = $this->parse_size( $post_max_size );
+
+		// The effective limit is the minimum of the two (only if both are > 0)
+		if ( $upload_bytes > 0 && $post_bytes > 0 ) {
+			return min( $upload_bytes, $post_bytes );
+		} elseif ( $upload_bytes > 0 ) {
+			return $upload_bytes;
+		} elseif ( $post_bytes > 0 ) {
+			return $post_bytes;
+		}
+
+		return 0;
+	}
+
+	/**
+	 * Get the maximum combined upload size (post_max_size) for display purposes.
+	 *
+	 * Returns null when the server configuration cannot be reliably determined,
+	 * so the UI can choose not to display potentially incorrect information.
 	 *
 	 * @since 1.2.0
 	 * @param bool $formatted Whether to return formatted string or bytes.
-	 * @return string|int Formatted string (e.g., "8 MB") or bytes.
+	 * @return string|int|null Formatted string (e.g., "8 MB"), bytes, or null if unknown.
 	 */
 	public function get_max_combined_upload_size( $formatted = true ) {
 		$post_max_size = ini_get( 'post_max_size' );
 		$post_bytes = $this->parse_size( $post_max_size );
-		
+
+		// Return null if we couldn't determine the size reliably
+		if ( $post_bytes <= 0 ) {
+			return null;
+		}
+
 		if ( $formatted ) {
 			return $this->format_bytes( $post_bytes );
 		}
-		
+
 		return $post_bytes;
 	}
 
@@ -472,8 +542,8 @@ class DFX_Parish_Retreat_Letters_Security {
 			return false;
 		}
 
-		// Check file size against server limit
-		$max_size = $this->get_max_upload_size( false );
+		// Check file size against server limit (uses fallback when server is misconfigured)
+		$max_size = $this->get_max_upload_size_for_validation();
 		if ( $file['size'] > $max_size ) {
 			return false;
 		}
