@@ -3,7 +3,7 @@ Contributors: davefx
 Tags: parish, retreat, letters, confidential, GDPR
 Requires at least: 5.0
 Tested up to: 6.8
-Stable tag: 25.11.27
+Stable tag: 25.11.28
 Requires PHP: 7.4
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
@@ -340,6 +340,10 @@ Contributions are welcome! Please:
 5. Include appropriate tests and documentation
 
 ## Changelog
+
+### 25.11.28
+
+- Fix: if the server wrongly determined that the maximum file size was 0, all file uploads were disallowed.
 
 ### 25.11.27
 
