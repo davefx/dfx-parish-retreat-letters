@@ -112,14 +112,8 @@ class DFX_Parish_Retreat_Letters_Security {
 			if ( $defined_in_option ) {
 				if ( $defined_in_option !== DFX_PARISH_RETREAT_LETTERS_ENCRYPTION_KEY ) {
 					// If the option value does not match the defined constant, show a critical error
-					// message in the backend
-					add_action( 'admin_notices', function() {
-						echo '<div class="notice notice-error"><p>';
-						esc_html_e( 'DFX Parish Retreat Letters: The encryption key defined in wp-config.php does not match the one stored in the database. Please update the key in wp-config.php or remove it from the database.', 'dfx-parish-retreat-letters' );
-						echo '<br>';
-						esc_html_e( 'Please note only the key defined in the wp-config.php file will be used. If any messages were already cyphered using the encryption key defined in the database, they will be unreadable.', 'dfx-parish-retreat-letters' );
-						echo '</p></div>';
-					} );
+					// message in the backend with an option to remove the database key
+					add_action( 'admin_notices', array( $this, 'display_encryption_key_mismatch_notice' ) );
 				} else {
 					// If they match, we can safely delete the option
 					delete_option( 'dfx_parish_retreat_letters_encryption_key' );
@@ -152,6 +146,110 @@ class DFX_Parish_Retreat_Letters_Security {
 		}
 
 		return $key;
+	}
+
+	/**
+	 * Display admin notice for encryption key mismatch with option to remove database key.
+	 *
+	 * @since 25.11.28
+	 */
+	public function display_encryption_key_mismatch_notice() {
+		// Only show to users who can manage the plugin
+		if ( ! current_user_can( 'manage_options' ) ) {
+			return;
+		}
+
+		$nonce = wp_create_nonce( 'dfx_prl_remove_db_encryption_key' );
+		?>
+		<div class="notice notice-error" id="dfx-prl-encryption-key-mismatch-notice">
+			<p>
+				<strong><?php esc_html_e( 'DFX Parish Retreat Letters: Encryption Key Mismatch', 'dfx-parish-retreat-letters' ); ?></strong>
+			</p>
+			<p>
+				<?php esc_html_e( 'The encryption key defined in wp-config.php does not match the one stored in the database.', 'dfx-parish-retreat-letters' ); ?>
+			</p>
+			<p>
+				<strong><?php esc_html_e( 'Warning:', 'dfx-parish-retreat-letters' ); ?></strong>
+				<?php esc_html_e( 'Only the key defined in wp-config.php will be used. If any messages were already encrypted using the database key, they will become unreadable.', 'dfx-parish-retreat-letters' ); ?>
+			</p>
+			<p>
+				<?php esc_html_e( 'You can either:', 'dfx-parish-retreat-letters' ); ?>
+			</p>
+			<ul style="list-style: disc; margin-left: 20px;">
+				<li><?php esc_html_e( 'Update the key in wp-config.php to match the database key, or', 'dfx-parish-retreat-letters' ); ?></li>
+				<li><?php esc_html_e( 'Remove the key from the database to use the wp-config.php key (click the button below)', 'dfx-parish-retreat-letters' ); ?></li>
+			</ul>
+			<p>
+				<button type="button" id="dfx-prl-remove-db-key-btn" class="button button-primary" data-nonce="<?php echo esc_attr( $nonce ); ?>">
+					<?php esc_html_e( 'Remove Database Key and Use wp-config.php Key', 'dfx-parish-retreat-letters' ); ?>
+				</button>
+				<span id="dfx-prl-remove-db-key-status" style="margin-left: 10px;"></span>
+			</p>
+		</div>
+		<script type="text/javascript">
+		jQuery(document).ready(function($) {
+			$('#dfx-prl-remove-db-key-btn').on('click', function() {
+				var $button = $(this);
+				var $status = $('#dfx-prl-remove-db-key-status');
+				var nonce = $button.data('nonce');
+
+				if (!confirm('<?php echo esc_js( __( 'Are you sure you want to remove the encryption key from the database? Any messages encrypted with the old key will become unreadable. This action cannot be undone.', 'dfx-parish-retreat-letters' ) ); ?>')) {
+					return;
+				}
+
+				$button.prop('disabled', true);
+				$status.text('<?php echo esc_js( __( 'Removing...', 'dfx-parish-retreat-letters' ) ); ?>');
+
+				$.ajax({
+					url: ajaxurl,
+					type: 'POST',
+					data: {
+						action: 'dfx_prl_remove_db_encryption_key',
+						nonce: nonce
+					},
+					success: function(response) {
+						if (response.success) {
+							$status.html('<span style="color: green;">' + response.data.message + '</span>');
+							$('#dfx-prl-encryption-key-mismatch-notice').fadeOut(2000, function() {
+								$(this).remove();
+							});
+						} else {
+							$status.html('<span style="color: red;">' + response.data.message + '</span>');
+							$button.prop('disabled', false);
+						}
+					},
+					error: function() {
+						$status.html('<span style="color: red;"><?php echo esc_js( __( 'An error occurred. Please try again.', 'dfx-parish-retreat-letters' ) ); ?></span>');
+						$button.prop('disabled', false);
+					}
+				});
+			});
+		});
+		</script>
+		<?php
+	}
+
+	/**
+	 * Remove the encryption key from the database.
+	 *
+	 * This method should only be called when the key in wp-config.php should take precedence
+	 * over the database key, typically when there's a mismatch.
+	 *
+	 * @since 25.11.28
+	 * @return bool True if the key was successfully removed, false otherwise.
+	 */
+	public function remove_encryption_key_from_database() {
+		return delete_option( 'dfx_parish_retreat_letters_encryption_key' );
+	}
+
+	/**
+	 * Check if there is an encryption key stored in the database.
+	 *
+	 * @since 25.11.28
+	 * @return bool True if a key exists in the database, false otherwise.
+	 */
+	public function has_database_encryption_key() {
+		return (bool) get_option( 'dfx_parish_retreat_letters_encryption_key' );
 	}
 
 	/**

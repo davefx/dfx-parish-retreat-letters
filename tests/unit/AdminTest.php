@@ -529,4 +529,20 @@ class AdminTest extends TestCase {
             $this->markTestSkipped('validate_form_data method not found');
         }
     }
+
+    /**
+     * Test AJAX handler for removing database encryption key exists
+     */
+    public function testAjaxRemoveDbEncryptionKeyMethodExists() {
+        $admin = DFX_Parish_Retreat_Letters_Admin::get_instance();
+        
+        $this->assertTrue(
+            method_exists($admin, 'ajax_remove_db_encryption_key'),
+            'ajax_remove_db_encryption_key method should exist'
+        );
+        $this->assertTrue(
+            is_callable([$admin, 'ajax_remove_db_encryption_key']),
+            'ajax_remove_db_encryption_key method should be callable'
+        );
+    }
 }

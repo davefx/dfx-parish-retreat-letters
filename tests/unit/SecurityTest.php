@@ -300,4 +300,52 @@ class SecurityTest extends TestCase {
             $this->markTestSkipped('set_security_headers method not found');
         }
     }
+
+    /**
+     * Test remove_encryption_key_from_database method exists and is callable
+     */
+    public function testRemoveEncryptionKeyFromDatabaseMethodExists() {
+        $security = DFX_Parish_Retreat_Letters_Security::get_instance();
+        
+        $this->assertTrue(
+            method_exists($security, 'remove_encryption_key_from_database'),
+            'remove_encryption_key_from_database method should exist'
+        );
+        $this->assertTrue(
+            is_callable([$security, 'remove_encryption_key_from_database']),
+            'remove_encryption_key_from_database method should be callable'
+        );
+    }
+
+    /**
+     * Test has_database_encryption_key method exists and is callable
+     */
+    public function testHasDatabaseEncryptionKeyMethodExists() {
+        $security = DFX_Parish_Retreat_Letters_Security::get_instance();
+        
+        $this->assertTrue(
+            method_exists($security, 'has_database_encryption_key'),
+            'has_database_encryption_key method should exist'
+        );
+        $this->assertTrue(
+            is_callable([$security, 'has_database_encryption_key']),
+            'has_database_encryption_key method should be callable'
+        );
+    }
+
+    /**
+     * Test display_encryption_key_mismatch_notice method exists and is callable
+     */
+    public function testDisplayEncryptionKeyMismatchNoticeMethodExists() {
+        $security = DFX_Parish_Retreat_Letters_Security::get_instance();
+        
+        $this->assertTrue(
+            method_exists($security, 'display_encryption_key_mismatch_notice'),
+            'display_encryption_key_mismatch_notice method should exist'
+        );
+        $this->assertTrue(
+            is_callable([$security, 'display_encryption_key_mismatch_notice']),
+            'display_encryption_key_mismatch_notice method should be callable'
+        );
+    }
 }
