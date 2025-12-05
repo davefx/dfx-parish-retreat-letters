@@ -161,6 +161,9 @@ class DFX_Parish_Retreat_Letters_Admin {
 		add_action( 'wp_ajax_dfx_prl_cancel_invitation', array( $this, 'ajax_cancel_invitation' ) );
 		add_action( 'wp_ajax_dfx_prl_reset_rate_limits', array( $this, 'ajax_reset_rate_limits' ) );
 		add_action( 'wp_ajax_dfx_prl_get_invitation_message', array( $this, 'ajax_get_invitation_message' ) );
+
+		// AJAX handler for removing encryption key from database
+		add_action( 'wp_ajax_dfx_prl_remove_db_encryption_key', array( $this, 'ajax_remove_db_encryption_key' ) );
 	}
 
 	/**
@@ -5210,6 +5213,40 @@ class DFX_Parish_Retreat_Letters_Admin {
 				absint( $count )
 			)
 		) );
+	}
+
+	/**
+	 * AJAX handler for removing the encryption key from the database.
+	 *
+	 * This allows administrators to resolve encryption key mismatches by removing
+	 * the database key and using only the wp-config.php key.
+	 *
+	 * @since 25.11.28
+	 */
+	public function ajax_remove_db_encryption_key() {
+		// Verify nonce
+		if ( ! isset( $_POST['nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ) ), 'dfx_prl_remove_db_encryption_key' ) ) {
+			wp_send_json_error( array( 'message' => __( 'Security check failed.', 'dfx-parish-retreat-letters' ) ) );
+		}
+
+		// Only administrators can perform this action
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_send_json_error( array( 'message' => __( 'You do not have permission to perform this action.', 'dfx-parish-retreat-letters' ) ) );
+		}
+
+		// Verify that a wp-config.php key is defined (otherwise we shouldn't remove the database key)
+		if ( ! defined( 'DFX_PARISH_RETREAT_LETTERS_ENCRYPTION_KEY' ) ) {
+			wp_send_json_error( array( 'message' => __( 'Cannot remove database key: no encryption key is defined in wp-config.php.', 'dfx-parish-retreat-letters' ) ) );
+		}
+
+		// Remove the encryption key from the database
+		if ( $this->security->remove_encryption_key_from_database() ) {
+			wp_send_json_success( array(
+				'message' => __( 'Database encryption key removed successfully. The plugin will now use the key from wp-config.php.', 'dfx-parish-retreat-letters' )
+			) );
+		} else {
+			wp_send_json_error( array( 'message' => __( 'Failed to remove the database encryption key. It may have already been removed.', 'dfx-parish-retreat-letters' ) ) );
+		}
 	}
 
 	/**
