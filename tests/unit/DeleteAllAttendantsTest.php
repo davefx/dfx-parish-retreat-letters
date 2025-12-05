@@ -18,7 +18,7 @@ class DeleteAllAttendantsTest extends \PHPUnit\Framework\TestCase {
 		parent::setUp();
 		// Create the directory for MessageFile class if needed
 		if (!file_exists('/tmp/uploads/dfx-prl-confidential-files')) {
-			mkdir('/tmp/uploads/dfx-prl-confidential-files', 0777, true);
+			mkdir('/tmp/uploads/dfx-prl-confidential-files', 0755, true);
 		}
 	}
 
