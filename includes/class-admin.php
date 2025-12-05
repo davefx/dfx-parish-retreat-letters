@@ -146,6 +146,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_scripts' ) );
 		add_action( 'wp_ajax_dfx_prl_delete_retreat', array( $this, 'ajax_delete_retreat' ) );
 		add_action( 'wp_ajax_dfx_prl_delete_attendant', array( $this, 'ajax_delete_attendant' ) );
+		add_action( 'wp_ajax_dfx_prl_delete_all_attendants', array( $this, 'ajax_delete_all_attendants' ) );
 		add_action( 'wp_ajax_dfx_prl_export_attendants_csv', array( $this, 'ajax_export_attendants_csv' ) );
 		add_action( 'wp_ajax_dfx_prl_generate_message_url', array( $this, 'ajax_generate_message_url' ) );
 		add_action( 'wp_ajax_dfx_prl_print_message', array( $this, 'ajax_print_message' ) );
@@ -542,6 +543,14 @@ class DFX_Parish_Retreat_Letters_Admin {
 					'deleteWarningPermanent' => __( 'This action is irreversible and cannot be restored', 'dfx-parish-retreat-letters' ),
 					'typeRetreatName' => __( 'To confirm deletion, please type the exact retreat name below:', 'dfx-parish-retreat-letters' ),
 					'retreatNamePlaceholder' => __( 'Type retreat name here...', 'dfx-parish-retreat-letters' ),
+					'deleteAllAttendantsTitle' => __( 'Delete All Attendants - Confirmation Required', 'dfx-parish-retreat-letters' ),
+					'deleteAllAttendantsWarning' => __( 'You are about to delete ALL attendants and their messages from this retreat!', 'dfx-parish-retreat-letters' ),
+					'deleteAllAttendantsWarningCount' => __( 'This will permanently delete:', 'dfx-parish-retreat-letters' ),
+					'deleteAllAttendantsWarningAttendants' => __( '%d attendants', 'dfx-parish-retreat-letters' ),
+					'deleteAllAttendantsWarningMessages' => __( '%d messages', 'dfx-parish-retreat-letters' ),
+					'typeConfirmation' => __( 'To confirm, type exactly: DELETE ALL ATTENDANTS', 'dfx-parish-retreat-letters' ),
+					'confirmationPlaceholder' => __( 'Type confirmation here...', 'dfx-parish-retreat-letters' ),
+					'deleteAllButton' => __( 'Delete All Attendants Forever', 'dfx-parish-retreat-letters' ),
 					'deleteButton' => __( 'Delete Forever', 'dfx-parish-retreat-letters' ),
 					'cancelButton' => __( 'Cancel', 'dfx-parish-retreat-letters' ),
 					'deleting' => __( 'Deleting...', 'dfx-parish-retreat-letters' ),
@@ -3201,6 +3210,54 @@ class DFX_Parish_Retreat_Letters_Admin {
 	}
 
 	/**
+	 * AJAX handler to delete all attendants from a retreat.
+	 * Includes security verification and confirmation name check.
+	 *
+	 * @since 1.9.0
+	 */
+	public function ajax_delete_all_attendants() {
+		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ?? '' ) ), 'dfx_prl_retreats_nonce' ) ) {
+			wp_die( esc_html__( 'Security check failed.', 'dfx-parish-retreat-letters' ) );
+		}
+
+		$retreat_id = absint( $_POST['retreat_id'] ?? 0 );
+		$confirmation_text = sanitize_text_field( wp_unslash( $_POST['confirmation_text'] ?? '' ) );
+
+		// Get the retreat to verify it exists
+		$retreat = $this->retreat_model->get( $retreat_id );
+		if ( ! $retreat ) {
+			wp_send_json_error( array( 'message' => __( 'Retreat not found.', 'dfx-parish-retreat-letters' ) ) );
+		}
+
+		// Verify the confirmation text matches exactly
+		$expected_confirmation = 'DELETE ALL ATTENDANTS';
+		if ( $confirmation_text !== $expected_confirmation ) {
+			wp_send_json_error( array( 'message' => __( 'Confirmation text verification failed. Deletion cancelled for security.', 'dfx-parish-retreat-letters' ) ) );
+		}
+
+		// Check if user has permission to manage this retreat
+		if ( ! $this->permissions->current_user_can_manage_retreat( $retreat_id ) ) {
+			wp_send_json_error( array( 'message' => __( 'You do not have permission to perform this action.', 'dfx-parish-retreat-letters' ) ) );
+		}
+
+		// Get count of attendants before deletion for the success message
+		$attendant_count = $this->attendant_model->get_count_by_retreat( $retreat_id );
+
+		// Perform the deletion
+		if ( $this->attendant_model->delete_by_retreat( $retreat_id ) ) {
+			wp_send_json_success( array(
+				'message' => sprintf(
+					/* translators: %d: Number of attendants deleted */
+					__( 'Successfully deleted all %d attendants and their messages from this retreat.', 'dfx-parish-retreat-letters' ),
+					$attendant_count
+				),
+			) );
+		} else {
+			wp_send_json_error( array( 'message' => __( 'Error deleting attendants. Please try again.', 'dfx-parish-retreat-letters' ) ) );
+		}
+	}
+
+	/**
 	 * Export attendants CSV.
 	 *
 	 * @since 1.0.0
@@ -3478,6 +3535,16 @@ class DFX_Parish_Retreat_Letters_Admin {
 						<a href="<?php echo esc_url( admin_url( 'admin.php?page=dfx-prl-retreats&action=import_attendants&retreat_id=' . $retreat->id ) ); ?>" class="button">
 							<?php esc_html_e( 'Import CSV', 'dfx-parish-retreat-letters' ); ?>
 						</a>
+						<?php if ( $total_items > 0 && $this->permissions->current_user_can_manage_retreat( $retreat->id ) ) : ?>
+							<button type="button" class="button button-link-delete dfx-prl-delete-all-attendants" 
+								data-retreat-id="<?php echo esc_attr( $retreat->id ); ?>"
+								data-retreat-name="<?php echo esc_attr( $retreat->name ); ?>"
+								data-attendant-count="<?php echo esc_attr( $total_items ); ?>"
+								data-message-count="<?php echo esc_attr( $total_messages ); ?>"
+								style="margin-left: 10px; color: #d63638;">
+								<?php esc_html_e( 'Delete All Attendants', 'dfx-parish-retreat-letters' ); ?>
+							</button>
+						<?php endif; ?>
 					</div>
 					<?php if ( $total_pages > 1 ) : ?>
 						<div class="tablenav-pages">
