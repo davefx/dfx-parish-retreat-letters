@@ -246,6 +246,126 @@
             });
         });
 
+        // Handle delete all attendants button clicks
+        $('.dfx-prl-delete-all-attendants').on('click', function(e) {
+            e.preventDefault();
+
+            var retreatId = $(this).data('retreat-id');
+            var retreatName = $(this).data('retreat-name');
+            var attendantCount = $(this).data('attendant-count');
+            var messageCount = $(this).data('message-count');
+            var $button = $(this);
+
+            // Show custom delete confirmation modal
+            showDeleteAllAttendantsModal(retreatId, retreatName, attendantCount, messageCount, $button);
+        });
+
+        // Function to show delete all attendants confirmation modal
+        function showDeleteAllAttendantsModal(retreatId, retreatName, attendantCount, messageCount, $button) {
+            // Create modal HTML
+            var modalHtml =
+                '<div id="dfx-prl-delete-all-attendants-modal" class="dfx-prl-modal-overlay">' +
+                    '<div class="dfx-prl-modal-dialog">' +
+                        '<div class="dfx-prl-modal-header">' +
+                            '<h3>' + dfxPRLAdmin.messages.deleteAllAttendantsTitle + '</h3>' +
+                        '</div>' +
+                        '<div class="dfx-prl-modal-body">' +
+                            '<div class="dfx-prl-warning-message">' +
+                                '<p><strong>' + dfxPRLAdmin.messages.deleteWarning + '</strong></p>' +
+                                '<p>' + dfxPRLAdmin.messages.deleteAllAttendantsWarning + '</p>' +
+                                '<p><strong>' + dfxPRLAdmin.messages.deleteAllAttendantsWarningCount + '</strong></p>' +
+                                '<ul>' +
+                                    '<li>' + dfxPRLAdmin.messages.deleteAllAttendantsWarningAttendants.replace('%d', attendantCount) + '</li>' +
+                                    '<li>' + dfxPRLAdmin.messages.deleteAllAttendantsWarningMessages.replace('%d', messageCount) + '</li>' +
+                                    '<li>' + dfxPRLAdmin.messages.deleteWarningPermanent + '</li>' +
+                                '</ul>' +
+                            '</div>' +
+                            '<div class="dfx-prl-confirmation-section">' +
+                                '<p><code style="background: #f0f0f1; padding: 5px 10px; display: inline-block;">' + dfxPRLAdmin.messages.confirmationText + '</code></p>' +
+                                '<p>' + dfxPRLAdmin.messages.typeConfirmation + '</p>' +
+                                '<input type="text" id="dfx-prl-confirmation-text" placeholder="' + dfxPRLAdmin.messages.confirmationPlaceholder + '" />' +
+                            '</div>' +
+                        '</div>' +
+                        '<div class="dfx-prl-modal-footer">' +
+                            '<button type="button" id="dfx-prl-confirm-delete-all" class="button button-primary" disabled>' + dfxPRLAdmin.messages.deleteAllButton + '</button>' +
+                            '<button type="button" id="dfx-prl-cancel-delete-all" class="button">' + dfxPRLAdmin.messages.cancelButton + '</button>' +
+                        '</div>' +
+                    '</div>' +
+                '</div>';
+
+            // Add modal to body
+            $('body').append(modalHtml);
+
+            var $modal = $('#dfx-prl-delete-all-attendants-modal');
+            var $confirmInput = $('#dfx-prl-confirmation-text');
+            var $confirmButton = $('#dfx-prl-confirm-delete-all');
+
+            // Show modal
+            $modal.fadeIn();
+            $confirmInput.focus();
+
+            // Check input as user types
+            $confirmInput.on('input', function() {
+                var enteredText = $(this).val().trim();
+                if (enteredText === dfxPRLAdmin.messages.confirmationText) {
+                    $confirmButton.prop('disabled', false);
+                } else {
+                    $confirmButton.prop('disabled', true);
+                }
+            });
+
+            // Handle cancel
+            $('#dfx-prl-cancel-delete-all, .dfx-prl-modal-overlay').on('click', function(e) {
+                if (e.target === this) {
+                    $modal.fadeOut(function() {
+                        $modal.remove();
+                    });
+                }
+            });
+
+            // Handle confirm delete
+            $confirmButton.on('click', function() {
+                $modal.fadeOut(function() {
+                    $modal.remove();
+                });
+
+                // Disable button and show loading state
+                $button.prop('disabled', true).text(dfxPRLAdmin.messages.deleting);
+
+                $.ajax({
+                    url: dfxPRLAdmin.ajaxurl,
+                    type: 'POST',
+                    data: {
+                        action: 'dfx_prl_delete_all_attendants',
+                        retreat_id: retreatId,
+                        confirmation_text: dfxPRLAdmin.messages.confirmationText,
+                        nonce: dfxPRLAdmin.nonce
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            // Show success message and reload the page to reflect changes
+                            $('<div class="notice notice-success is-dismissible"><p>' + response.data.message + '</p></div>')
+                                .insertAfter('.wp-header-end');
+                            
+                            // Reload page after a short delay to show the message
+                            setTimeout(function() {
+                                location.reload();
+                            }, 1500);
+                        } else {
+                            alert(response.data.message || dfxPRLAdmin.messages.deleteError);
+                            // Re-enable button
+                            $button.prop('disabled', false).text(dfxPRLAdmin.messages.deleteAllButton);
+                        }
+                    },
+                    error: function() {
+                        alert(dfxPRLAdmin.messages.deleteError);
+                        // Re-enable button
+                        $button.prop('disabled', false).text(dfxPRLAdmin.messages.deleteAllButton);
+                    }
+                });
+            });
+        }
+
         // Form validation for add/edit retreat
         $('form').on('submit', function(e) {
             var startDate = $('#start_date').val();
