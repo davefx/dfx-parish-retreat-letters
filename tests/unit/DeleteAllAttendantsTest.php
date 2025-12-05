@@ -81,6 +81,7 @@ class DeleteAllAttendantsTest extends \PHPUnit\Framework\TestCase {
 			'deleteAllAttendantsWarningCount',
 			'deleteAllAttendantsWarningAttendants',
 			'deleteAllAttendantsWarningMessages',
+			'confirmationText',
 			'typeConfirmation',
 			'confirmationPlaceholder',
 			'deleteAllButton',
@@ -125,11 +126,11 @@ class DeleteAllAttendantsTest extends \PHPUnit\Framework\TestCase {
 			'JavaScript should call dfx_prl_delete_all_attendants AJAX action'
 		);
 
-		// Check for confirmation text verification
+		// Check for confirmation text verification using localized string
 		$this->assertStringContainsString(
-			'DELETE ALL ATTENDANTS',
+			'dfxPRLAdmin.messages.confirmationText',
 			$js_content,
-			'JavaScript should verify "DELETE ALL ATTENDANTS" confirmation text'
+			'JavaScript should use localized confirmationText for verification'
 		);
 	}
 

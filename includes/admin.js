@@ -281,8 +281,8 @@
                                 '</ul>' +
                             '</div>' +
                             '<div class="dfx-prl-confirmation-section">' +
+                                '<p><code style="background: #f0f0f1; padding: 5px 10px; display: inline-block;">' + dfxPRLAdmin.messages.confirmationText + '</code></p>' +
                                 '<p>' + dfxPRLAdmin.messages.typeConfirmation + '</p>' +
-                                '<p><code style="background: #f0f0f1; padding: 5px 10px; display: inline-block;">DELETE ALL ATTENDANTS</code></p>' +
                                 '<input type="text" id="dfx-prl-confirmation-text" placeholder="' + dfxPRLAdmin.messages.confirmationPlaceholder + '" />' +
                             '</div>' +
                         '</div>' +
@@ -307,7 +307,7 @@
             // Check input as user types
             $confirmInput.on('input', function() {
                 var enteredText = $(this).val().trim();
-                if (enteredText === 'DELETE ALL ATTENDANTS') {
+                if (enteredText === dfxPRLAdmin.messages.confirmationText) {
                     $confirmButton.prop('disabled', false);
                 } else {
                     $confirmButton.prop('disabled', true);
@@ -338,7 +338,7 @@
                     data: {
                         action: 'dfx_prl_delete_all_attendants',
                         retreat_id: retreatId,
-                        confirmation_text: 'DELETE ALL ATTENDANTS',
+                        confirmation_text: dfxPRLAdmin.messages.confirmationText,
                         nonce: dfxPRLAdmin.nonce
                     },
                     success: function(response) {

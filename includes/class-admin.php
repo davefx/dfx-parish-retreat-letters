@@ -548,7 +548,8 @@ class DFX_Parish_Retreat_Letters_Admin {
 					'deleteAllAttendantsWarningCount' => __( 'This will permanently delete:', 'dfx-parish-retreat-letters' ),
 					'deleteAllAttendantsWarningAttendants' => __( '%d attendants', 'dfx-parish-retreat-letters' ),
 					'deleteAllAttendantsWarningMessages' => __( '%d messages', 'dfx-parish-retreat-letters' ),
-					'typeConfirmation' => __( 'To confirm, type exactly: DELETE ALL ATTENDANTS', 'dfx-parish-retreat-letters' ),
+					'confirmationText' => __( 'DELETE ALL ATTENDANTS', 'dfx-parish-retreat-letters' ),
+					'typeConfirmation' => __( 'To confirm, type the text shown above exactly', 'dfx-parish-retreat-letters' ),
 					'confirmationPlaceholder' => __( 'Type confirmation here...', 'dfx-parish-retreat-letters' ),
 					'deleteAllButton' => __( 'Delete All Attendants Forever', 'dfx-parish-retreat-letters' ),
 					'deleteButton' => __( 'Delete Forever', 'dfx-parish-retreat-letters' ),
@@ -3229,8 +3230,8 @@ class DFX_Parish_Retreat_Letters_Admin {
 			wp_send_json_error( array( 'message' => __( 'Retreat not found.', 'dfx-parish-retreat-letters' ) ) );
 		}
 
-		// Verify the confirmation text matches exactly
-		$expected_confirmation = 'DELETE ALL ATTENDANTS';
+		// Verify the confirmation text matches exactly (using translatable string)
+		$expected_confirmation = __( 'DELETE ALL ATTENDANTS', 'dfx-parish-retreat-letters' );
 		if ( $confirmation_text !== $expected_confirmation ) {
 			wp_send_json_error( array( 'message' => __( 'Confirmation text verification failed. Deletion cancelled for security.', 'dfx-parish-retreat-letters' ) ) );
 		}
@@ -3535,17 +3536,19 @@ class DFX_Parish_Retreat_Letters_Admin {
 						<a href="<?php echo esc_url( admin_url( 'admin.php?page=dfx-prl-retreats&action=import_attendants&retreat_id=' . $retreat->id ) ); ?>" class="button">
 							<?php esc_html_e( 'Import CSV', 'dfx-parish-retreat-letters' ); ?>
 						</a>
-						<?php if ( $total_items > 0 && $this->permissions->current_user_can_manage_retreat( $retreat->id ) ) : ?>
+					</div>
+					<?php if ( $total_items > 0 && $this->permissions->current_user_can_manage_retreat( $retreat->id ) ) : ?>
+						<div class="alignright actions">
 							<button type="button" class="button button-link-delete dfx-prl-delete-all-attendants" 
 								data-retreat-id="<?php echo esc_attr( $retreat->id ); ?>"
 								data-retreat-name="<?php echo esc_attr( $retreat->name ); ?>"
 								data-attendant-count="<?php echo esc_attr( $total_items ); ?>"
 								data-message-count="<?php echo esc_attr( $total_messages ); ?>"
-								style="margin-left: 10px; color: #d63638;">
+								style="color: #d63638;">
 								<?php esc_html_e( 'Delete All Attendants', 'dfx-parish-retreat-letters' ); ?>
 							</button>
-						<?php endif; ?>
-					</div>
+						</div>
+					<?php endif; ?>
 					<?php if ( $total_pages > 1 ) : ?>
 						<div class="tablenav-pages">
 							<?php
