@@ -522,6 +522,7 @@ class DFX_Parish_Retreat_Letters {
 				<body <?php body_class(); ?>>
 				<?php
 				wp_body_open();
+				// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Contains WordPress-generated HTML from custom blocks
 				echo $generated_head;
 			}
 		}
@@ -2176,7 +2177,8 @@ class DFX_Parish_Retreat_Letters {
 		header( 'Expires: 0' );
 
 		// Output file content
-		echo $decrypted_file['content']; // PHPCS: ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Binary file content for download
+		echo $decrypted_file['content'];
 		exit;
 	}
 
@@ -2773,7 +2775,8 @@ class DFX_Parish_Retreat_Letters {
 			return false;
 		}
 
-		echo '<!-- DFX Debug: Template part content length: ' . strlen( $template_content ) . ' characters -->'; // PHPCS: ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Debug comment with integer value
+		echo '<!-- DFX Debug: Template part content length: ' . absint( strlen( $template_content ) ) . ' characters -->';
 
 		// Template parts in block themes often use more complex block structures
 		// We need to ensure WordPress's block rendering context is available
@@ -2790,7 +2793,8 @@ class DFX_Parish_Retreat_Letters {
 			if ( function_exists( 'do_blocks' ) ) {
 				// Use do_blocks if available (WordPress 5.0+)
 				echo '<!-- DFX Debug: Using do_blocks function -->';
-				echo do_blocks( $template_content ); // PHPCS: ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+				// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- WordPress core function renders blocks
+				echo do_blocks( $template_content );
 			} else {
 				// Fallback to manual block parsing
 				echo '<!-- DFX Debug: Using manual block parsing -->';
@@ -2801,7 +2805,8 @@ class DFX_Parish_Retreat_Letters {
 					foreach ( $blocks as $index => $block ) {
 						echo '<!-- DFX Debug: Rendering block ' . absint( $index ) . ' -->';
 						if ( function_exists( 'render_block' ) ) {
-							echo render_block( $block );  // PHPCS: ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+							// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- WordPress core function renders blocks
+							echo render_block( $block );
 						}
 					}
 				} else {
@@ -2866,7 +2871,8 @@ class DFX_Parish_Retreat_Letters {
 			// Parse blocks and render them
 			$blocks = parse_blocks( $pattern_content );
 			foreach ( $blocks as $block ) {
-				echo render_block( $block ); // PHPCS: ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+				// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- WordPress core function renders blocks
+				echo render_block( $block );
 			}
 			return true;
 		}
@@ -2902,7 +2908,8 @@ class DFX_Parish_Retreat_Letters {
 			// Parse blocks and render them
 			$blocks = parse_blocks( $pattern_content );
 			foreach ( $blocks as $block ) {
-				echo render_block( $block ); // PHPCS: ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+				// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- WordPress core function renders blocks
+				echo render_block( $block );
 			}
 			return true;
 		}

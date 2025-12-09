@@ -536,7 +536,7 @@ class DFX_Parish_Retreat_Letters_Invitations {
 			
 			if ( $result['success'] ) {
 				// Redirect to success page or login
-				wp_redirect( wp_login_url() . '?invitation=accepted' );
+				wp_safe_redirect( wp_login_url() . '?invitation=accepted' );
 				exit;
 			} else {
 				$error_message = $result['message'];
