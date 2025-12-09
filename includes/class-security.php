@@ -722,6 +722,7 @@ class DFX_Parish_Retreat_Letters_Security {
 			}
 
 			if ( ! $is_valid ) {
+				/* translators: 1: file name, 2: file extension, 3: detected MIME type, 4: expected MIME type */
 				trigger_error( sprintf(
 					'DFX File Upload Error: File "%s" (extension: %s) detected MIME type: %s, expected: %s',
 					$file['name'],

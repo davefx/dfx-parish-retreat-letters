@@ -546,7 +546,9 @@ class DFX_Parish_Retreat_Letters_Admin {
 					'deleteAllAttendantsTitle' => __( 'Delete All Attendants - Confirmation Required', 'dfx-parish-retreat-letters' ),
 					'deleteAllAttendantsWarning' => __( 'You are about to delete ALL attendants and their messages from this retreat!', 'dfx-parish-retreat-letters' ),
 					'deleteAllAttendantsWarningCount' => __( 'This will permanently delete:', 'dfx-parish-retreat-letters' ),
+					/* translators: %d: number of attendants */
 					'deleteAllAttendantsWarningAttendants' => __( '%d attendants', 'dfx-parish-retreat-letters' ),
+					/* translators: %d: number of messages */
 					'deleteAllAttendantsWarningMessages' => __( '%d messages', 'dfx-parish-retreat-letters' ),
 					'confirmationText' => __( 'DELETE ALL ATTENDANTS', 'dfx-parish-retreat-letters' ),
 					'typeConfirmation' => __( 'To confirm, type the text shown above exactly', 'dfx-parish-retreat-letters' ),
