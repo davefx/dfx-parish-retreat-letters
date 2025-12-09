@@ -179,15 +179,15 @@ class DFX_Parish_Retreat_Letters_Admin {
 		}
 
 		// Check for our plugin pages
-		$page = sanitize_text_field( wp_unslash( $_GET['page'] ?? '' ) );
+		$page = sanitize_text_field( wp_unslash( $_GET['page'] ?? '' ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- URL parameter for page routing
 		$allowed_pages = array( 'dfx-prl-retreats', 'dfx-prl-retreats-add', 'dfx-prl-messages', 'dfx-prl-privacy', 'dfx-prl-global-settings' );
 
 		if ( ! in_array( $page, $allowed_pages, true ) ) {
 			return;
 		}
 
-		$action = sanitize_text_field( wp_unslash( $_GET['action'] ?? '' ) );
-		$retreat_id = absint( $_GET['retreat_id'] ?? 0 );
+		$action = sanitize_text_field( wp_unslash( $_GET['action'] ?? '' ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- URL parameter for action routing
+		$retreat_id = absint( $_GET['retreat_id'] ?? 0 ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- URL parameter for ID
 
 		// Handle different form submissions based on page and action
 		switch ( $page ) {

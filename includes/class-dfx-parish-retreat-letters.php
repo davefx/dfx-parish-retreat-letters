@@ -1894,11 +1894,11 @@ class DFX_Parish_Retreat_Letters {
 
 		// Handle file uploads only if in file mode
 		$upload_result = array( 'uploaded_count' => 0, 'errors' => array() );
-		if ( $message_mode === 'file' && ! empty( $_FILES['message_files']['name'][0] ) ) {
+		if ( $message_mode === 'file' && ! empty( $_FILES['message_files']['name'][0] ) ) { // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- File array validated in handle_file_uploads()
 			// Check if expected file count matches received file count
 			// This detects when post_max_size is exceeded and PHP truncates the upload
 			$expected_file_count = isset( $_POST['expected_file_count'] ) ? absint( $_POST['expected_file_count'] ) : 0;
-			$received_file_count = count( array_filter( $_FILES['message_files']['name'] ) ); // Count non-empty filenames
+			$received_file_count = count( array_filter( $_FILES['message_files']['name'] ) ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- File array validated in handle_file_uploads() // Count non-empty filenames
 
 			if ( $expected_file_count > 0 && $received_file_count < $expected_file_count ) {
 				// Delete the message since the upload was incomplete
@@ -1916,7 +1916,7 @@ class DFX_Parish_Retreat_Letters {
 				wp_send_json_error( array( 'message' => $error_message ) );
 			}
 
-			$upload_result = $this->handle_file_uploads( $message_id, $_FILES['message_files'] );
+			$upload_result = $this->handle_file_uploads( $message_id, $_FILES['message_files'] ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- File array validated in handle_file_uploads()
 
 			// If no files were uploaded successfully, return an error
 			if ( $upload_result['uploaded_count'] === 0 ) {
@@ -2206,7 +2206,7 @@ class DFX_Parish_Retreat_Letters {
 		$result = $zip->open( $temp_zip_path, ZipArchive::CREATE | ZipArchive::OVERWRITE );
 
 		if ( $result !== TRUE ) {
-			unlink( $temp_zip_path );
+			wp_delete_file( $temp_zip_path );
 			wp_die( esc_html__( 'Unable to create ZIP file.', 'dfx-parish-retreat-letters' ) );
 		}
 
@@ -2225,7 +2225,7 @@ class DFX_Parish_Retreat_Letters {
 		// Check if ZIP file was created successfully
 		if ( ! file_exists( $temp_zip_path ) || filesize( $temp_zip_path ) === 0 ) {
 			if ( file_exists( $temp_zip_path ) ) {
-				unlink( $temp_zip_path );
+				wp_delete_file( $temp_zip_path );
 			}
 			wp_die( esc_html__( 'Failed to generate ZIP file.', 'dfx-parish-retreat-letters' ) );
 		}
@@ -2246,11 +2246,22 @@ class DFX_Parish_Retreat_Letters {
 		header( 'Pragma: no-cache' );
 		header( 'Expires: 0' );
 
-		// Output the ZIP file
-		readfile( $temp_zip_path );
+		// Output the ZIP file using WP_Filesystem
+		if ( ! function_exists( 'WP_Filesystem' ) ) {
+			require_once ABSPATH . 'wp-admin/includes/file.php';
+		}
+		WP_Filesystem();
+		global $wp_filesystem;
+		
+		if ( $wp_filesystem ) {
+			echo $wp_filesystem->get_contents( $temp_zip_path ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Binary ZIP file content
+		} else {
+			// Fallback to readfile if WP_Filesystem is not available
+			readfile( $temp_zip_path ); // phpcs:ignore WordPressVIPMinimum.Performance.FetchingRemoteData.FileGetContentsUnknown -- Local temp file
+		}
 
 		// Clean up temporary file
-		unlink( $temp_zip_path );
+		wp_delete_file( $temp_zip_path );
 		exit;
 	}
 
@@ -2678,14 +2689,14 @@ class DFX_Parish_Retreat_Letters {
 		} else {
 			// Debug log unrecognized format
 			if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
-				error_log( 'DFX Parish Retreat Letters: Unrecognized block selection format: ' . $block_selection );
+				error_log( 'DFX Parish Retreat Letters: Unrecognized block selection format: ' . $block_selection ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log -- Conditional debug logging only when WP_DEBUG is enabled
 			}
 			return false;
 		}
 
 		// Debug log what we're trying to render
 		if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
-			error_log( 'DFX Parish Retreat Letters: Attempting to render ' . $type . ' with ID: ' . $id );
+			error_log( 'DFX Parish Retreat Letters: Attempting to render ' . $type . ' with ID: ' . $id ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log -- Conditional debug logging only when WP_DEBUG is enabled
 		}
 
 		// Render based on type
@@ -2708,7 +2719,7 @@ class DFX_Parish_Retreat_Letters {
 
 		// Debug log result
 		if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
-			error_log( 'DFX Parish Retreat Letters: Render result for ' . $type . ' ID ' . $id . ': ' . ( $result ? 'success' : 'failed' ) );
+			error_log( 'DFX Parish Retreat Letters: Render result for ' . $type . ' ID ' . $id . ': ' . ( $result ? 'success' : 'failed' ) ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log -- Conditional debug logging only when WP_DEBUG is enabled
 		}
 
 		return $result;
