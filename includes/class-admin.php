@@ -265,7 +265,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 	 * @since 1.0.0
 	 */
 	private function handle_retreat_add_edit_submissions() {
-		$retreat_id = absint( $_GET['edit'] ?? 0 );
+		$retreat_id = absint( $_GET['edit'] ?? 0 ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- URL parameter for edit mode
 		$this->handle_add_edit_submission( $retreat_id );
 	}
 
@@ -427,8 +427,8 @@ class DFX_Parish_Retreat_Letters_Admin {
 		}
 
 		// Also check for query parameters that indicate our pages
-		if ( ! $is_our_page && isset( $_GET['page'] ) ) {
-			$page_param = sanitize_text_field( wp_unslash( $_GET['page'] ) );
+		if ( ! $is_our_page && isset( $_GET['page'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- URL parameter check
+			$page_param = sanitize_text_field( wp_unslash( $_GET['page'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- URL parameter for page check
 			// Ensure page_param is a string
 			$page_param = (string) ( $page_param ?? '' );
 			foreach ( $our_pages as $page ) {
@@ -513,7 +513,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 		wp_add_inline_style( 'dfx-prl-admin-styles', $base_styles );
 
 		// Enqueue Select2 for user management on global settings page
-		if ( isset( $_GET['page'] ) && sanitize_text_field( wp_unslash( $_GET['page'] ) ) === 'dfx-prl-global-settings' ) {      
+		if ( isset( $_GET['page'] ) && sanitize_text_field( wp_unslash( $_GET['page'] ) ) === 'dfx-prl-global-settings' ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- URL parameter check for asset loading      
 			wp_enqueue_script( 'select2' );
 			wp_enqueue_style( 'select2' );
 		}
@@ -2415,6 +2415,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 		}
 
 		// Get query parameters for search, sorting, and filtering
+		// phpcs:disable WordPress.Security.NonceVerification.Recommended -- URL parameters for list filtering and sorting
 		$search   = sanitize_text_field( wp_unslash( $_GET['s'] ?? '' ) );
 		$orderby  = sanitize_text_field( wp_unslash( $_GET['orderby'] ?? 'name' ) );
 		$order    = sanitize_text_field( wp_unslash( $_GET['order'] ?? 'ASC' ) );
@@ -2429,6 +2430,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 		$filter_emergency_contact = sanitize_text_field( wp_unslash( $_GET['filter_emergency_contact'] ?? '' ) );
 		$filter_notes             = sanitize_text_field( wp_unslash( $_GET['filter_notes'] ?? '' ) );
 		$filter_internal_notes    = sanitize_text_field( wp_unslash( $_GET['filter_internal_notes'] ?? '' ) );
+		// phpcs:enable WordPress.Security.NonceVerification.Recommended
 
 		// Get attendants
 		$attendants = $this->attendant_model->get_by_retreat( $retreat_id, array(
@@ -4186,11 +4188,13 @@ class DFX_Parish_Retreat_Letters_Admin {
 	 */
 	public function messages_list_page() {
 		// Get query parameters
+		// phpcs:disable WordPress.Security.NonceVerification.Recommended -- URL parameters for list filtering and sorting
 		$search = sanitize_text_field( wp_unslash( $_GET['s'] ?? '' ) );
 		$retreat_id = absint( $_GET['retreat_id'] ?? 0 );
 		$attendant_id = absint( $_GET['attendant_id'] ?? 0 );
 		$message_type = sanitize_text_field( wp_unslash( $_GET['message_type'] ?? '' ) );
 		$page_num = max( 1, absint( $_GET['paged'] ?? 1 ) );
+		// phpcs:enable WordPress.Security.NonceVerification.Recommended
 		$per_page = 100;
 
 		// Messages can only be accessed through attendants - redirect if no attendant_id
