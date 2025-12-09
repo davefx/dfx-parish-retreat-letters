@@ -179,15 +179,15 @@ class DFX_Parish_Retreat_Letters_Admin {
 		}
 
 		// Check for our plugin pages
-		$page = sanitize_text_field( wp_unslash( $_GET['page'] ?? '' ) );
+		$page = sanitize_text_field( wp_unslash( $_GET['page'] ?? '' ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- URL parameter for page routing
 		$allowed_pages = array( 'dfx-prl-retreats', 'dfx-prl-retreats-add', 'dfx-prl-messages', 'dfx-prl-privacy', 'dfx-prl-global-settings' );
 
 		if ( ! in_array( $page, $allowed_pages, true ) ) {
 			return;
 		}
 
-		$action = sanitize_text_field( wp_unslash( $_GET['action'] ?? '' ) );
-		$retreat_id = absint( $_GET['retreat_id'] ?? 0 );
+		$action = sanitize_text_field( wp_unslash( $_GET['action'] ?? '' ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- URL parameter for action routing
+		$retreat_id = absint( $_GET['retreat_id'] ?? 0 ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- URL parameter for ID
 
 		// Handle different form submissions based on page and action
 		switch ( $page ) {
@@ -265,7 +265,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 	 * @since 1.0.0
 	 */
 	private function handle_retreat_add_edit_submissions() {
-		$retreat_id = absint( $_GET['edit'] ?? 0 );
+		$retreat_id = absint( $_GET['edit'] ?? 0 ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- URL parameter for edit mode
 		$this->handle_add_edit_submission( $retreat_id );
 	}
 
@@ -427,8 +427,8 @@ class DFX_Parish_Retreat_Letters_Admin {
 		}
 
 		// Also check for query parameters that indicate our pages
-		if ( ! $is_our_page && isset( $_GET['page'] ) ) {
-			$page_param = sanitize_text_field( wp_unslash( $_GET['page'] ) );
+		if ( ! $is_our_page && isset( $_GET['page'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- URL parameter check
+			$page_param = sanitize_text_field( wp_unslash( $_GET['page'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- URL parameter for page check
 			// Ensure page_param is a string
 			$page_param = (string) ( $page_param ?? '' );
 			foreach ( $our_pages as $page ) {
@@ -513,7 +513,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 		wp_add_inline_style( 'dfx-prl-admin-styles', $base_styles );
 
 		// Enqueue Select2 for user management on global settings page
-		if ( isset( $_GET['page'] ) && sanitize_text_field( wp_unslash( $_GET['page'] ) ) === 'dfx-prl-global-settings' ) {      
+		if ( isset( $_GET['page'] ) && sanitize_text_field( wp_unslash( $_GET['page'] ) ) === 'dfx-prl-global-settings' ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- URL parameter check for asset loading      
 			wp_enqueue_script( 'select2' );
 			wp_enqueue_style( 'select2' );
 		}
@@ -546,7 +546,9 @@ class DFX_Parish_Retreat_Letters_Admin {
 					'deleteAllAttendantsTitle' => __( 'Delete All Attendants - Confirmation Required', 'dfx-parish-retreat-letters' ),
 					'deleteAllAttendantsWarning' => __( 'You are about to delete ALL attendants and their messages from this retreat!', 'dfx-parish-retreat-letters' ),
 					'deleteAllAttendantsWarningCount' => __( 'This will permanently delete:', 'dfx-parish-retreat-letters' ),
+					/* translators: %d: number of attendants */
 					'deleteAllAttendantsWarningAttendants' => __( '%d attendants', 'dfx-parish-retreat-letters' ),
+					/* translators: %d: number of messages */
 					'deleteAllAttendantsWarningMessages' => __( '%d messages', 'dfx-parish-retreat-letters' ),
 					'confirmationText' => __( 'DELETE ALL ATTENDANTS', 'dfx-parish-retreat-letters' ),
 					'typeConfirmation' => __( 'To confirm, type the text shown above exactly', 'dfx-parish-retreat-letters' ),
@@ -732,7 +734,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 			// Update existing retreat
 			if ( $this->retreat_model->update( $retreat_id, $data ) ) {
 				$this->add_admin_notice( __( 'Retreat updated successfully.', 'dfx-parish-retreat-letters' ), 'success' );
-				wp_redirect( admin_url( 'admin.php?page=dfx-prl-retreats' ) );
+				wp_safe_redirect( admin_url( 'admin.php?page=dfx-prl-retreats' ) );
 				exit;
 			} else {
 				$this->add_admin_notice( __( 'Error updating retreat. Please check your data.', 'dfx-parish-retreat-letters' ), 'error' );
@@ -742,7 +744,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 			$new_id = $this->retreat_model->create( $data );
 			if ( $new_id ) {
 				$this->add_admin_notice( __( 'Retreat created successfully.', 'dfx-parish-retreat-letters' ), 'success' );
-				wp_redirect( admin_url( 'admin.php?page=dfx-prl-retreats' ) );
+				wp_safe_redirect( admin_url( 'admin.php?page=dfx-prl-retreats' ) );
 				exit;
 			} else {
 				$this->add_admin_notice( __( 'Error creating retreat. Please check your data.', 'dfx-parish-retreat-letters' ), 'error' );
@@ -2413,6 +2415,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 		}
 
 		// Get query parameters for search, sorting, and filtering
+		// phpcs:disable WordPress.Security.NonceVerification.Recommended -- URL parameters for list filtering and sorting
 		$search   = sanitize_text_field( wp_unslash( $_GET['s'] ?? '' ) );
 		$orderby  = sanitize_text_field( wp_unslash( $_GET['orderby'] ?? 'name' ) );
 		$order    = sanitize_text_field( wp_unslash( $_GET['order'] ?? 'ASC' ) );
@@ -2427,6 +2430,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 		$filter_emergency_contact = sanitize_text_field( wp_unslash( $_GET['filter_emergency_contact'] ?? '' ) );
 		$filter_notes             = sanitize_text_field( wp_unslash( $_GET['filter_notes'] ?? '' ) );
 		$filter_internal_notes    = sanitize_text_field( wp_unslash( $_GET['filter_internal_notes'] ?? '' ) );
+		// phpcs:enable WordPress.Security.NonceVerification.Recommended
 
 		// Get attendants
 		$attendants = $this->attendant_model->get_by_retreat( $retreat_id, array(
@@ -2614,7 +2618,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 			// Update existing attendant
 			if ( $this->attendant_model->update( $attendant_id, $data ) ) {
 				$this->add_admin_notice( __( 'Attendant updated successfully.', 'dfx-parish-retreat-letters' ), 'success' );
-				wp_redirect( admin_url( 'admin.php?page=dfx-prl-retreats&action=attendants&retreat_id=' . $retreat_id ) );
+				wp_safe_redirect( admin_url( 'admin.php?page=dfx-prl-retreats&action=attendants&retreat_id=' . $retreat_id ) );
 				exit;
 			} else {
 				$this->add_admin_notice( __( 'Error updating attendant. Please check your data.', 'dfx-parish-retreat-letters' ), 'error' );
@@ -2624,7 +2628,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 			$new_id = $this->attendant_model->create( $data );
 			if ( $new_id ) {
 				$this->add_admin_notice( __( 'Attendant created successfully.', 'dfx-parish-retreat-letters' ), 'success' );
-				wp_redirect( admin_url( 'admin.php?page=dfx-prl-retreats&action=attendants&retreat_id=' . $retreat_id ) );
+				wp_safe_redirect( admin_url( 'admin.php?page=dfx-prl-retreats&action=attendants&retreat_id=' . $retreat_id ) );
 				exit;
 			} else {
 				$this->add_admin_notice( __( 'Error creating attendant. Please check your data.', 'dfx-parish-retreat-letters' ), 'error' );
@@ -2853,7 +2857,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 			$this->add_admin_notice( $ambiguous_message, 'info' );
 		}
 
-		wp_redirect( admin_url( 'admin.php?page=dfx-prl-retreats&action=attendants&retreat_id=' . $retreat_id ) );
+		wp_safe_redirect( admin_url( 'admin.php?page=dfx-prl-retreats&action=attendants&retreat_id=' . $retreat_id ) );
 		exit;
 	}
 
@@ -3567,44 +3571,44 @@ class DFX_Parish_Retreat_Letters_Admin {
 				<table class="wp-list-table widefat fixed striped">
 					<thead>
 						<tr>
-							<th scope="col" class="manage-column sortable <?php echo $orderby === 'name' ? 'sorted' : 'sortable'; ?> <?php echo $orderby === 'name' ? strtolower( $order ) : 'desc'; ?>">
+							<th scope="col" class="manage-column sortable <?php echo $orderby === 'name' ? 'sorted' : 'sortable'; ?> <?php echo $orderby === 'name' ? esc_attr( strtolower( $order ) ) : 'desc'; ?>">
 								<a href="<?php echo esc_url( $get_sort_url( 'name' ) ); ?>">
 									<span><?php esc_html_e( 'Name', 'dfx-parish-retreat-letters' ); ?></span>
 									<span class="sorting-indicator"><?php echo esc_html( $get_sort_indicator( 'name' ) ); ?></span>
 								</a>
 							</th>
-							<th scope="col" class="manage-column sortable <?php echo $orderby === 'surnames' ? 'sorted' : 'sortable'; ?> <?php echo $orderby === 'surnames' ? strtolower( $order ) : 'desc'; ?>">
+							<th scope="col" class="manage-column sortable <?php echo $orderby === 'surnames' ? 'sorted' : 'sortable'; ?> <?php echo $orderby === 'surnames' ? esc_attr( strtolower( $order ) ) : 'desc'; ?>">
 								<a href="<?php echo esc_url( $get_sort_url( 'surnames' ) ); ?>">
 									<span><?php esc_html_e( 'Surnames', 'dfx-parish-retreat-letters' ); ?></span>
 									<span class="sorting-indicator"><?php echo esc_html( $get_sort_indicator( 'surnames' ) ); ?></span>
 								</a>
 							</th>
-							<th scope="col" class="manage-column sortable <?php echo $orderby === 'date_of_birth' ? 'sorted' : 'sortable'; ?> <?php echo $orderby === 'date_of_birth' ? strtolower( $order ) : 'desc'; ?>">
+							<th scope="col" class="manage-column sortable <?php echo $orderby === 'date_of_birth' ? 'sorted' : 'sortable'; ?> <?php echo $orderby === 'date_of_birth' ? esc_attr( strtolower( $order ) ) : 'desc'; ?>">
 								<a href="<?php echo esc_url( $get_sort_url( 'date_of_birth' ) ); ?>">
 									<span><?php esc_html_e( 'Date of Birth', 'dfx-parish-retreat-letters' ); ?></span>
 									<span class="sorting-indicator"><?php echo esc_html( $get_sort_indicator( 'date_of_birth' ) ); ?></span>
 								</a>
 							</th>
-							<th scope="col" class="manage-column sortable <?php echo $orderby === 'emergency_contact_name' ? 'sorted' : 'sortable'; ?> <?php echo $orderby === 'emergency_contact_name' ? strtolower( $order ) : 'desc'; ?>">
+							<th scope="col" class="manage-column sortable <?php echo $orderby === 'emergency_contact_name' ? 'sorted' : 'sortable'; ?> <?php echo $orderby === 'emergency_contact_name' ? esc_attr( strtolower( $order ) ) : 'desc'; ?>">
 								<a href="<?php echo esc_url( $get_sort_url( 'emergency_contact_name' ) ); ?>">
 									<span><?php esc_html_e( 'Emergency Contact', 'dfx-parish-retreat-letters' ); ?></span>
 									<span class="sorting-indicator"><?php echo esc_html( $get_sort_indicator( 'emergency_contact_name' ) ); ?></span>
 								</a>
 							</th>
-							<th scope="col" class="manage-column sortable <?php echo $orderby === 'invited_by' ? 'sorted' : 'sortable'; ?> <?php echo $orderby === 'invited_by' ? strtolower( $order ) : 'desc'; ?>">
+							<th scope="col" class="manage-column sortable <?php echo $orderby === 'invited_by' ? 'sorted' : 'sortable'; ?> <?php echo $orderby === 'invited_by' ? esc_attr( strtolower( $order ) ) : 'desc'; ?>">
 								<a href="<?php echo esc_url( $get_sort_url( 'invited_by' ) ); ?>">
 									<span><?php esc_html_e( 'Invited By', 'dfx-parish-retreat-letters' ); ?></span>
 									<span class="sorting-indicator"><?php echo esc_html( $get_sort_indicator( 'invited_by' ) ); ?></span>
 								</a>
 							</th>
-							<th scope="col" class="manage-column sortable <?php echo $orderby === 'incompatibilities' ? 'sorted' : 'sortable'; ?> <?php echo $orderby === 'incompatibilities' ? strtolower( $order ) : 'desc'; ?>">
+							<th scope="col" class="manage-column sortable <?php echo $orderby === 'incompatibilities' ? 'sorted' : 'sortable'; ?> <?php echo $orderby === 'incompatibilities' ? esc_attr( strtolower( $order ) ) : 'desc'; ?>">
 								<a href="<?php echo esc_url( $get_sort_url( 'incompatibilities' ) ); ?>">
 									<span><?php esc_html_e( 'Incompatibilities', 'dfx-parish-retreat-letters' ); ?></span>
 									<span class="sorting-indicator"><?php echo esc_html( $get_sort_indicator( 'incompatibilities' ) ); ?></span>
 								</a>
 							</th>
 							<?php if ( ! empty( $retreat->notes_enabled ) ) : ?>
-							<th scope="col" class="manage-column sortable <?php echo $orderby === 'notes' ? 'sorted' : 'sortable'; ?> <?php echo $orderby === 'notes' ? strtolower( $order ) : 'desc'; ?>">
+							<th scope="col" class="manage-column sortable <?php echo $orderby === 'notes' ? 'sorted' : 'sortable'; ?> <?php echo $orderby === 'notes' ? esc_attr( strtolower( $order ) ) : 'desc'; ?>">
 								<a href="<?php echo esc_url( $get_sort_url( 'notes' ) ); ?>">
 									<span><?php esc_html_e( 'Notes', 'dfx-parish-retreat-letters' ); ?></span>
 									<span class="sorting-indicator"><?php echo esc_html( $get_sort_indicator( 'notes' ) ); ?></span>
@@ -3612,14 +3616,14 @@ class DFX_Parish_Retreat_Letters_Admin {
 							</th>
 							<?php endif; ?>
 							<?php if ( ! empty( $retreat->internal_notes_enabled ) ) : ?>
-							<th scope="col" class="manage-column sortable <?php echo $orderby === 'internal_notes' ? 'sorted' : 'sortable'; ?> <?php echo $orderby === 'internal_notes' ? strtolower( $order ) : 'desc'; ?>">
+							<th scope="col" class="manage-column sortable <?php echo $orderby === 'internal_notes' ? 'sorted' : 'sortable'; ?> <?php echo $orderby === 'internal_notes' ? esc_attr( strtolower( $order ) ) : 'desc'; ?>">
 								<a href="<?php echo esc_url( $get_sort_url( 'internal_notes' ) ); ?>">
 									<span><?php esc_html_e( 'Internal Notes', 'dfx-parish-retreat-letters' ); ?></span>
 									<span class="sorting-indicator"><?php echo esc_html( $get_sort_indicator( 'internal_notes' ) ); ?></span>
 								</a>
 							</th>
 							<?php endif; ?>
-							<th scope="col" class="manage-column sortable <?php echo ( $orderby === 'message_count' || $orderby === 'non_printed_count' ) ? 'sorted' : 'sortable'; ?> <?php echo ( $orderby === 'message_count' || $orderby === 'non_printed_count' ) ? strtolower( $order ) : 'desc'; ?>">
+							<th scope="col" class="manage-column sortable <?php echo ( $orderby === 'message_count' || $orderby === 'non_printed_count' ) ? 'sorted' : 'sortable'; ?> <?php echo ( $orderby === 'message_count' || $orderby === 'non_printed_count' ) ? esc_attr( strtolower( $order ) ) : 'desc'; ?>">
 								<a href="<?php echo esc_url( $get_messages_sort_url() ); ?>">
 									<?php
 									// Display label based on current sort
@@ -3699,7 +3703,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 									<td>
 										<?php
 										if ( ! empty( $attendant->notes ) ) {
-											echo wpautop( esc_html( $attendant->notes ) );
+											echo wp_kses_post( wpautop( $attendant->notes ) );
 										} else {
 											echo '<span class="description">' . esc_html__( 'No notes', 'dfx-parish-retreat-letters' ) . '</span>';
 										}
@@ -3710,7 +3714,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 									<td>
 										<?php
 										if ( ! empty( $attendant->internal_notes ) ) {
-											echo wpautop( esc_html( $attendant->internal_notes ) );
+											echo wp_kses_post( wpautop( $attendant->internal_notes ) );
 										} else {
 											echo '<span class="description">' . esc_html__( 'No notes', 'dfx-parish-retreat-letters' ) . '</span>';
 										}
@@ -4184,23 +4188,25 @@ class DFX_Parish_Retreat_Letters_Admin {
 	 */
 	public function messages_list_page() {
 		// Get query parameters
+		// phpcs:disable WordPress.Security.NonceVerification.Recommended -- URL parameters for list filtering and sorting
 		$search = sanitize_text_field( wp_unslash( $_GET['s'] ?? '' ) );
 		$retreat_id = absint( $_GET['retreat_id'] ?? 0 );
 		$attendant_id = absint( $_GET['attendant_id'] ?? 0 );
 		$message_type = sanitize_text_field( wp_unslash( $_GET['message_type'] ?? '' ) );
 		$page_num = max( 1, absint( $_GET['paged'] ?? 1 ) );
+		// phpcs:enable WordPress.Security.NonceVerification.Recommended
 		$per_page = 100;
 
 		// Messages can only be accessed through attendants - redirect if no attendant_id
 		if ( ! $attendant_id ) {
-			wp_redirect( admin_url( 'admin.php?page=dfx-prl-retreats' ) );
+			wp_safe_redirect( admin_url( 'admin.php?page=dfx-prl-retreats' ) );
 			exit;
 		}
 
 		// Get attendant info for breadcrumb and validation
 		$attendant = $this->attendant_model->get( $attendant_id );
 		if ( ! $attendant ) {
-			wp_redirect( admin_url( 'admin.php?page=dfx-prl-retreats' ) );
+			wp_safe_redirect( admin_url( 'admin.php?page=dfx-prl-retreats' ) );
 			exit;
 		}
 

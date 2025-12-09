@@ -388,7 +388,7 @@ class DFX_Parish_Retreat_Letters_Invitations {
 
 		$invitations_table = $this->database->get_invitations_table();
 		$invitation = $wpdb->get_row( $wpdb->prepare(
-			"SELECT * FROM {$invitations_table} WHERE id = %d",
+			"SELECT * FROM {$invitations_table} WHERE id = %d", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Table name from get_invitations_table()
 			$invitation_id
 		) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
 
@@ -517,7 +517,7 @@ class DFX_Parish_Retreat_Letters_Invitations {
 		global $wpdb;
 		$retreats_table = $this->database->get_retreats_table();
 		$retreat = $wpdb->get_row( $wpdb->prepare(
-			"SELECT * FROM {$retreats_table} WHERE id = %d",
+			"SELECT * FROM {$retreats_table} WHERE id = %d", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Table name from get_retreats_table()
 			$invitation->retreat_id
 		) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
 
@@ -536,7 +536,7 @@ class DFX_Parish_Retreat_Letters_Invitations {
 			
 			if ( $result['success'] ) {
 				// Redirect to success page or login
-				wp_redirect( wp_login_url() . '?invitation=accepted' );
+				wp_safe_redirect( wp_login_url() . '?invitation=accepted' );
 				exit;
 			} else {
 				$error_message = $result['message'];
@@ -592,12 +592,12 @@ class DFX_Parish_Retreat_Letters_Invitations {
 					
 					<div class="dfx-prl-form-group">
 						<label for="first_name"><?php esc_html_e( 'First Name', 'dfx-parish-retreat-letters' ); ?></label>
-						<input type="text" id="first_name" name="first_name" value="<?php echo esc_attr( isset( $_POST['first_name'] ) ? sanitize_text_field( wp_unslash( $_POST['first_name'] ) ) : '' ); ?>" required>
+						<input type="text" id="first_name" name="first_name" value="<?php echo esc_attr( isset( $_POST['first_name'] ) ? sanitize_text_field( wp_unslash( $_POST['first_name'] ) ) : '' ); // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce verified on line 529 before processing ?>" required>
 					</div>
 
 					<div class="dfx-prl-form-group">
 						<label for="last_name"><?php esc_html_e( 'Last Name', 'dfx-parish-retreat-letters' ); ?></label>
-						<input type="text" id="last_name" name="last_name" value="<?php echo esc_attr( isset( $_POST['last_name'] ) ? sanitize_text_field( wp_unslash( $_POST['last_name'] ) ) : '' ); ?>" required>
+						<input type="text" id="last_name" name="last_name" value="<?php echo esc_attr( isset( $_POST['last_name'] ) ? sanitize_text_field( wp_unslash( $_POST['last_name'] ) ) : '' ); // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce verified on line 529 before processing ?>" required>
 					</div>
 
 					<div class="dfx-prl-form-group">
@@ -731,7 +731,7 @@ class DFX_Parish_Retreat_Letters_Invitations {
 		global $wpdb;
 		$retreats_table = $this->database->get_retreats_table();
 		$retreat = $wpdb->get_row( $wpdb->prepare(
-			"SELECT name, location, start_date, end_date FROM {$retreats_table} WHERE id = %d",
+			"SELECT name, location, start_date, end_date FROM {$retreats_table} WHERE id = %d", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Table name from get_retreats_table()
 			$retreat_id
 		) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
 
@@ -863,7 +863,7 @@ class DFX_Parish_Retreat_Letters_Invitations {
 			$token = $this->security->generate_secure_token();
 			$invitations_table = $this->database->get_invitations_table();
 			$exists = $wpdb->get_var( $wpdb->prepare(
-				"SELECT COUNT(*) FROM {$invitations_table} WHERE token = %s",
+				"SELECT COUNT(*) FROM {$invitations_table} WHERE token = %s", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Table name from get_invitations_table()
 				$token
 			) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
 		} while ( $exists > 0 );
@@ -903,7 +903,7 @@ class DFX_Parish_Retreat_Letters_Invitations {
 
 		$invitations_table = $this->database->get_invitations_table();
 		return $wpdb->get_row( $wpdb->prepare(
-			"SELECT * FROM {$invitations_table} WHERE token = %s",
+			"SELECT * FROM {$invitations_table} WHERE token = %s", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Table name from get_invitations_table()
 			$token
 		) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
 	}
@@ -922,7 +922,7 @@ class DFX_Parish_Retreat_Letters_Invitations {
 
 		$invitations_table = $this->database->get_invitations_table();
 		return $wpdb->get_row( $wpdb->prepare(
-			"SELECT * FROM {$invitations_table}
+			"SELECT * FROM {$invitations_table} // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Table name from get_invitations_table()
 			 WHERE retreat_id = %d AND email = %s AND permission_level = %s AND status = %s",
 			$retreat_id,
 			$email,
@@ -962,16 +962,16 @@ class DFX_Parish_Retreat_Letters_Invitations {
 		
 		// Mark expired invitations
 		$wpdb->query(
-			"UPDATE {$invitations_table}
+			"UPDATE {$invitations_table} // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Table name from get_invitations_table()
 			 SET status = 'expired'
 			 WHERE status = 'pending' AND expires_at < NOW()"
-		); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
+		); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
 
 		// Delete old invitations (older than 1 year)
 		$deleted = $wpdb->query(
-			"DELETE FROM {$invitations_table}
+			"DELETE FROM {$invitations_table} // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Table name from get_invitations_table()
 			 WHERE status IN ('expired', 'cancelled') AND invited_at < DATE_SUB(NOW(), INTERVAL 1 YEAR)"
-		); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
+		); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
 
 		return $deleted ? $deleted : 0;
 	}
