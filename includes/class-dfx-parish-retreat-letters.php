@@ -655,8 +655,8 @@ class DFX_Parish_Retreat_Letters {
 								<button type="button" data-command="redo" title="<?php esc_attr_e( 'Redo', 'dfx-parish-retreat-letters' ); ?>"><?php esc_html_e( 'Redo', 'dfx-parish-retreat-letters' ); ?></button>
 							</div>
 							<div id="message_content" contenteditable="true" class="dfx-prl-editor" placeholder="<?php
-								/* translators: %s: attendant full name (name and surnames) */
 								$attendant_full_name = trim( esc_html( $attendant->name ) . ' ' . esc_html( $attendant->surnames ) );
+								/* translators: %s: attendant full name (name and surnames) */
 								echo esc_attr( sprintf( __( 'Write your confidential message for %s here...', 'dfx-parish-retreat-letters' ), $attendant_full_name ) );
 							?>"></div>
 							<textarea id="message_content_hidden" name="message_content" style="display: none;"></textarea>
@@ -2253,11 +2253,11 @@ class DFX_Parish_Retreat_Letters {
 		WP_Filesystem();
 		global $wp_filesystem;
 		
-		if ( $wp_filesystem ) {
+		if ( $wp_filesystem && $wp_filesystem->exists( $temp_zip_path ) ) {
 			echo $wp_filesystem->get_contents( $temp_zip_path ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Binary ZIP file content
 		} else {
-			// Fallback to readfile if WP_Filesystem is not available
-			readfile( $temp_zip_path ); // phpcs:ignore WordPressVIPMinimum.Performance.FetchingRemoteData.FileGetContentsUnknown -- Local temp file
+			wp_delete_file( $temp_zip_path );
+			wp_die( esc_html__( 'Unable to read ZIP file for download.', 'dfx-parish-retreat-letters' ) );
 		}
 
 		// Clean up temporary file
