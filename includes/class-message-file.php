@@ -72,17 +72,20 @@ class DFX_Parish_Retreat_Letters_MessageFile {
 			wp_mkdir_p( $this->upload_dir );
 		}
 
-		// Create .htaccess to deny direct access
-		$htaccess_file = $this->upload_dir . '/.htaccess';
-		if ( ! file_exists( $htaccess_file ) ) {
-			$htaccess_content = "Order Deny,Allow\nDeny from all\n";
-			file_put_contents( $htaccess_file, $htaccess_content );
-		}
+		// Only create protection files if directory exists
+		if ( file_exists( $this->upload_dir ) && is_dir( $this->upload_dir ) ) {
+			// Create .htaccess to deny direct access
+			$htaccess_file = $this->upload_dir . '/.htaccess';
+			if ( ! file_exists( $htaccess_file ) ) {
+				$htaccess_content = "Order Deny,Allow\nDeny from all\n";
+				file_put_contents( $htaccess_file, $htaccess_content );
+			}
 
-		// Create index.php to prevent directory listing
-		$index_file = $this->upload_dir . '/index.php';
-		if ( ! file_exists( $index_file ) ) {
-			file_put_contents( $index_file, '<?php // Silence is golden' );
+			// Create index.php to prevent directory listing
+			$index_file = $this->upload_dir . '/index.php';
+			if ( ! file_exists( $index_file ) ) {
+				file_put_contents( $index_file, '<?php // Silence is golden' );
+			}
 		}
 	}
 
