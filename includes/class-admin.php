@@ -531,9 +531,9 @@ class DFXPRL_Admin {
 		if ( $retreat_id > 0 && isset( $_GET['page'] ) && sanitize_text_field( wp_unslash( $_GET['page'] ) ) === 'dfx-prl-retreats' ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- URL parameter check for asset loading
 			wp_enqueue_script(
 				'dfx-prl-retreat-edit',
-				DFX_PARISH_RETREAT_LETTERS_PLUGIN_URL . 'assets/js/admin-retreat-edit.js',
+				DFXPRL_PLUGIN_URL . 'assets/js/admin-retreat-edit.js',
 				array( 'jquery' ),
-				DFX_PARISH_RETREAT_LETTERS_VERSION,
+				DFXPRL_VERSION,
 				true
 			);
 
@@ -564,9 +564,9 @@ class DFXPRL_Admin {
 		if ( isset( $_GET['page'] ) && sanitize_text_field( wp_unslash( $_GET['page'] ) ) === 'dfx-prl-privacy' ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- URL parameter check for asset loading
 			wp_enqueue_script(
 				'dfx-prl-admin-gdpr',
-				DFX_PARISH_RETREAT_LETTERS_PLUGIN_URL . 'assets/js/admin-gdpr.js',
+				DFXPRL_PLUGIN_URL . 'assets/js/admin-gdpr.js',
 				array( 'jquery' ),
-				DFX_PARISH_RETREAT_LETTERS_VERSION,
+				DFXPRL_VERSION,
 				true
 			);
 
@@ -644,9 +644,9 @@ class DFXPRL_Admin {
 		// Enqueue admin footer positioning script
 		wp_enqueue_script(
 			'dfx-prl-admin-footer',
-			DFX_PARISH_RETREAT_LETTERS_PLUGIN_URL . 'assets/js/admin-footer.js',
+			DFXPRL_PLUGIN_URL . 'assets/js/admin-footer.js',
 			array( 'jquery' ),
-			DFX_PARISH_RETREAT_LETTERS_VERSION,
+			DFXPRL_VERSION,
 			true
 		);
 	}

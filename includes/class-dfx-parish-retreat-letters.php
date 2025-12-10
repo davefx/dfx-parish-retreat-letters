@@ -805,9 +805,9 @@ class DFXPRL {
 			// Enqueue styles for message form from external CSS file
 			wp_enqueue_style(
 				'dfx-prl-message-form',
-				DFX_PARISH_RETREAT_LETTERS_PLUGIN_URL . 'assets/css/message-form.css',
+				DFXPRL_PLUGIN_URL . 'assets/css/message-form.css',
 				array(),
-				DFX_PARISH_RETREAT_LETTERS_VERSION
+				DFXPRL_VERSION
 			);
 
 			// Add custom CSS (from settings) as inline styles
@@ -816,9 +816,9 @@ class DFXPRL {
 			// Enqueue message form JavaScript
 			wp_enqueue_script(
 				'dfx-prl-message-form',
-				DFX_PARISH_RETREAT_LETTERS_PLUGIN_URL . 'assets/js/message-form.js',
+				DFXPRL_PLUGIN_URL . 'assets/js/message-form.js',
 				array( 'jquery' ),
-				DFX_PARISH_RETREAT_LETTERS_VERSION,
+				DFXPRL_VERSION,
 				true // Load in footer
 			);
 
@@ -1585,17 +1585,17 @@ class DFXPRL {
 		// Enqueue print page styles
 		wp_enqueue_style(
 			'dfx-prl-print-page',
-			DFX_PARISH_RETREAT_LETTERS_PLUGIN_URL . 'assets/css/print-page.css',
+			DFXPRL_PLUGIN_URL . 'assets/css/print-page.css',
 			array(),
-			DFX_PARISH_RETREAT_LETTERS_VERSION
+			DFXPRL_VERSION
 		);
 
 		// Enqueue print page script
 		wp_enqueue_script(
 			'dfx-prl-print-page',
-			DFX_PARISH_RETREAT_LETTERS_PLUGIN_URL . 'assets/js/print-page.js',
+			DFXPRL_PLUGIN_URL . 'assets/js/print-page.js',
 			array(),
-			DFX_PARISH_RETREAT_LETTERS_VERSION,
+			DFXPRL_VERSION,
 			true
 		);
 	}
