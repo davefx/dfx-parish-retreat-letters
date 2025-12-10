@@ -789,15 +789,6 @@ class DFXPRL_Admin {
 			wp_die( esc_html__( 'Security check failed.', 'dfx-parish-retreat-letters' ) );
 		}
 
-		// Get existing custom_css value if editing
-		$existing_custom_css = '';
-		if ( $retreat_id ) {
-			$existing_retreat = $this->retreat_model->get( $retreat_id );
-			if ( $existing_retreat && ! empty( $existing_retreat->custom_css ) ) {
-				$existing_custom_css = $existing_retreat->custom_css;
-			}
-		}
-
 		$data = array(
 			'name'                       => sanitize_text_field( wp_unslash( $_POST['name'] ?? '' ) ),
 			'location'                   => sanitize_text_field( wp_unslash( $_POST['location'] ?? '' ) ),
@@ -808,7 +799,6 @@ class DFXPRL_Admin {
 			'disclaimer_acceptance_text' => sanitize_text_field( wp_unslash( $_POST['disclaimer_acceptance_text'] ?? '' ) ),
 			'custom_header_block_id'     => $this->parse_block_selection( sanitize_text_field( wp_unslash( $_POST['custom_header_block_id'] ?? '' ) ) ),
 			'custom_footer_block_id'     => $this->parse_block_selection( sanitize_text_field( wp_unslash( $_POST['custom_footer_block_id'] ?? '' ) ) ),
-			'custom_css'                 => $existing_custom_css,
 			'notes_enabled'              => isset( $_POST['notes_enabled'] ) ? 1 : 0,
 			'internal_notes_enabled'     => isset( $_POST['internal_notes_enabled'] ) ? 1 : 0,
 			'message_request_template'   => sanitize_textarea_field( wp_unslash( $_POST['message_request_template'] ?? '' ) ),
@@ -4947,14 +4937,11 @@ class DFXPRL_Admin {
 			return;
 		}
 
-		// Process form submission - preserve existing default_css if it exists
-		$existing_default_css = $this->global_settings->get_default_css();
-		
+		// Process form submission
 		$settings_data = array(
 			'enable_per_retreat_customization' => isset( $_POST['enable_per_retreat_customization'] ) ? 1 : 0,
 			'default_header_block_id'          => $this->parse_block_selection( sanitize_text_field( wp_unslash( $_POST['default_header_block_id'] ?? '' ) ) ),
 			'default_footer_block_id'          => $this->parse_block_selection( sanitize_text_field( wp_unslash( $_POST['default_footer_block_id'] ?? '' ) ) ),
-			'default_css'                      => $existing_default_css,
 		);
 
 		/**
@@ -4973,7 +4960,11 @@ class DFXPRL_Admin {
 		$success = $this->global_settings->set_per_retreat_customization_enabled( $settings_data['enable_per_retreat_customization'] ) && $success;
 		$success = $this->global_settings->set_default_header( $settings_data['default_header_block_id'] ) && $success;
 		$success = $this->global_settings->set_default_footer( $settings_data['default_footer_block_id'] ) && $success;
-		$success = $this->global_settings->set_default_css( $settings_data['default_css'] ) && $success;
+		
+		// Only save default_css if it's been provided by a filter
+		if ( isset( $settings_data['default_css'] ) ) {
+			$success = $this->global_settings->set_default_css( $settings_data['default_css'] ) && $success;
+		}
 
 		if ( $success ) {
 			$this->add_admin_notice( __( 'Global settings saved successfully.', 'dfx-parish-retreat-letters' ), 'success' );

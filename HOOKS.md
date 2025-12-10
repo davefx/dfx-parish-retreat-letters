@@ -10,6 +10,8 @@ This document describes the WordPress hooks available for extending the plugin f
 
 Filters the entire retreat data array before saving.
 
+**Note:** The base plugin does not include `custom_css` in the data array by default. If your plugin needs to manage this field, you must handle it in this filter. If not provided, the Retreat model will default it to an empty string.
+
 **Parameters:**
 - `$data` (array) - The retreat data array containing all fields
 - `$retreat_id` (int|null) - The retreat ID being edited, or null for new retreats
@@ -18,9 +20,19 @@ Filters the entire retreat data array before saving.
 **Example:**
 ```php
 add_filter( 'dfxprl_save_retreat_data', function( $data, $retreat_id, $post_data ) {
-    // Add custom_css field if user has premium features
-    if ( has_premium_features() && isset( $post_data['custom_css'] ) ) {
-        $data['custom_css'] = sanitize_textarea_field( $post_data['custom_css'] );
+    // Preserve existing custom_css or use new value if provided
+    if ( has_premium_features() ) {
+        if ( isset( $post_data['custom_css'] ) ) {
+            // Use the value from POST
+            $data['custom_css'] = sanitize_textarea_field( $post_data['custom_css'] );
+        } elseif ( $retreat_id ) {
+            // Preserve existing value when editing
+            $retreat_model = new DFXPRL_Retreat();
+            $existing_retreat = $retreat_model->get( $retreat_id );
+            if ( $existing_retreat && ! empty( $existing_retreat->custom_css ) ) {
+                $data['custom_css'] = $existing_retreat->custom_css;
+            }
+        }
     }
     
     // Add any other custom fields
@@ -36,6 +48,8 @@ add_filter( 'dfxprl_save_retreat_data', function( $data, $retreat_id, $post_data
 
 Filters the entire global settings data array before saving.
 
+**Note:** The base plugin does not include `default_css` in the settings array by default. If your plugin needs to manage this field, you must handle it in this filter. The field will only be saved if provided in the filtered array.
+
 **Parameters:**
 - `$settings_data` (array) - The global settings data array containing all fields
 - `$post_data` (array) - The raw POST data
@@ -43,9 +57,19 @@ Filters the entire global settings data array before saving.
 **Example:**
 ```php
 add_filter( 'dfxprl_save_global_settings_data', function( $settings_data, $post_data ) {
-    // Add default_css field if user has premium features
-    if ( has_premium_features() && isset( $post_data['default_css'] ) ) {
-        $settings_data['default_css'] = sanitize_textarea_field( $post_data['default_css'] );
+    // Preserve existing default_css or use new value if provided
+    if ( has_premium_features() ) {
+        if ( isset( $post_data['default_css'] ) ) {
+            // Use the value from POST
+            $settings_data['default_css'] = sanitize_textarea_field( $post_data['default_css'] );
+        } else {
+            // Preserve existing value
+            $global_settings = DFXPRL_GlobalSettings::get_instance();
+            $existing_css = $global_settings->get_default_css();
+            if ( ! empty( $existing_css ) ) {
+                $settings_data['default_css'] = $existing_css;
+            }
+        }
     }
     
     // Add any other custom settings
@@ -144,29 +168,45 @@ function dfxprl_premium_has_valid_license() {
     return true; // Replace with actual validation
 }
 
-// Filter retreat data to add custom fields
+// Filter retreat data to preserve and update custom_css
 add_filter( 'dfxprl_save_retreat_data', function( $data, $retreat_id, $post_data ) {
     if ( ! dfxprl_premium_has_valid_license() ) {
         return $data;
     }
     
-    // Add custom_css field if provided
+    // Handle custom_css field
     if ( isset( $post_data['custom_css'] ) ) {
+        // Use the value from POST
         $data['custom_css'] = sanitize_textarea_field( $post_data['custom_css'] );
+    } elseif ( $retreat_id ) {
+        // Preserve existing value when editing
+        $retreat_model = new DFXPRL_Retreat();
+        $existing_retreat = $retreat_model->get( $retreat_id );
+        if ( $existing_retreat && ! empty( $existing_retreat->custom_css ) ) {
+            $data['custom_css'] = $existing_retreat->custom_css;
+        }
     }
     
     return $data;
 }, 10, 3 );
 
-// Filter global settings data to add custom fields
+// Filter global settings data to preserve and update default_css
 add_filter( 'dfxprl_save_global_settings_data', function( $settings_data, $post_data ) {
     if ( ! dfxprl_premium_has_valid_license() ) {
         return $settings_data;
     }
     
-    // Add default_css field if provided
+    // Handle default_css field
     if ( isset( $post_data['default_css'] ) ) {
+        // Use the value from POST
         $settings_data['default_css'] = sanitize_textarea_field( $post_data['default_css'] );
+    } else {
+        // Preserve existing value
+        $global_settings = DFXPRL_GlobalSettings::get_instance();
+        $existing_css = $global_settings->get_default_css();
+        if ( ! empty( $existing_css ) ) {
+            $settings_data['default_css'] = $existing_css;
+        }
     }
     
     return $settings_data;
