@@ -1214,7 +1214,7 @@ class DFX_Parish_Retreat_Letters {
 			// Enqueue message form JavaScript
 			wp_enqueue_script(
 				'dfx-prl-message-form',
-				DFX_PARISH_RETREAT_LETTERS_PLUGIN_URL . 'includes/message-form.js',
+				DFX_PARISH_RETREAT_LETTERS_PLUGIN_URL . 'assets/js/message-form.js',
 				array( 'jquery' ),
 				DFX_PARISH_RETREAT_LETTERS_VERSION,
 				true // Load in footer
@@ -1254,13 +1254,13 @@ class DFX_Parish_Retreat_Letters {
 	 * Output JavaScript for the message form.
 	 *
 	 * @since 1.2.0
-	 * @deprecated 25.12.10 JavaScript now loaded from includes/message-form.js via wp_enqueue_script()
+	 * @deprecated 25.12.10 JavaScript now loaded from assets/js/message-form.js via wp_enqueue_script()
 	 */
 	public function output_message_form_script() {
 		// JavaScript is now properly enqueued via enqueue_public_scripts()
-		// and loaded from includes/message-form.js
+		// and loaded from assets/js/message-form.js
 		// This method is kept for backwards compatibility but does nothing
-		/* OLD INLINE SCRIPT - NOW IN message-form.js
+		/* OLD INLINE SCRIPT - NOW IN assets/js/message-form.js
 		?>
 		<script>
 		jQuery(document).ready(function($) {
