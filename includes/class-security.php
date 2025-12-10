@@ -160,6 +160,10 @@ class DFX_Parish_Retreat_Letters_Security {
 		}
 
 		$nonce = wp_create_nonce( 'dfx_prl_remove_db_encryption_key' );
+		
+		// Enqueue jQuery and add inline script for the button handler
+		wp_enqueue_script( 'jquery' );
+		add_action( 'admin_print_footer_scripts', array( $this, 'output_encryption_key_mismatch_script' ) );
 		?>
 		<div class="notice notice-error" id="dfx-prl-encryption-key-mismatch-notice">
 			<p>
@@ -186,6 +190,16 @@ class DFX_Parish_Retreat_Letters_Security {
 				<span id="dfx-prl-remove-db-key-status" style="margin-left: 10px;"></span>
 			</p>
 		</div>
+		<?php
+	}
+
+	/**
+	 * Output inline script for encryption key mismatch notice.
+	 *
+	 * @since 25.12.10
+	 */
+	public function output_encryption_key_mismatch_script() {
+		?>
 		<script type="text/javascript">
 		jQuery(document).ready(function($) {
 			$('#dfx-prl-remove-db-key-btn').on('click', function() {

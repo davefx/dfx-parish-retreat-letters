@@ -1172,7 +1172,7 @@ class DFX_Parish_Retreat_Letters {
 	}
 
 	/**
-	 * Enqueue scripts for the public message form.
+	 * Enqueue scripts and styles for the public message form.
 	 *
 	 * @since 1.2.0
 	 */
@@ -1210,9 +1210,30 @@ class DFX_Parish_Retreat_Letters {
 		if ( $is_message_url ) {
 			wp_enqueue_script( 'jquery' );
 
+			// Register and enqueue message form styles
+			// Using a dummy handle since we'll use wp_add_inline_style
+			wp_register_style( 'dfx-prl-message-form', false ); // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion
+			wp_enqueue_style( 'dfx-prl-message-form' );
+			
+			// Add inline styles hook
+			add_action( 'wp_head', array( $this, 'output_message_form_styles' ), 100 );
+
 			// Inline script for message form functionality
 			add_action( 'wp_footer', array( $this, 'output_message_form_script' ) );
 		}
+	}
+
+	/**
+	 * Output inline styles for message form.
+	 * Note: Styles are kept inline in render_message_form() for now.
+	 * This method serves as a placeholder for future refactoring.
+	 *
+	 * @since 25.12.10
+	 */
+	public function output_message_form_styles() {
+		// Styles are currently output inline in render_message_form()
+		// This is acceptable for message form as it's a special frontend page
+		// Future enhancement: Extract styles to this method
 	}
 
 	/**
