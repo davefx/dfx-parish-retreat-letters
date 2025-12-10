@@ -44,7 +44,7 @@ define( 'DFXPRL_PLUGIN_BASENAME', plugin_basename( __FILE__ ) );
 /**
  * The code that runs during plugin activation.
  */
-function activate_dfxprl() {
+function dfxprl_activate() {
 	require_once plugin_dir_path( __FILE__ ) . 'includes/class-database.php';
 	$database = DFXPRL_Database::get_instance();
 	$database->setup_tables();
@@ -53,12 +53,12 @@ function activate_dfxprl() {
 /**
  * The code that runs during plugin deactivation.
  */
-function deactivate_dfxprl() {
+function dfxprl_deactivate() {
 	// Keep data on deactivation - only remove on uninstall
 }
 
-register_activation_hook( __FILE__, 'activate_dfxprl' );
-register_deactivation_hook( __FILE__, 'deactivate_dfxprl' );
+register_activation_hook( __FILE__, 'dfxprl_activate' );
+register_deactivation_hook( __FILE__, 'dfxprl_deactivate' );
 
 /**
  * The core plugin class that is used to define internationalization,
@@ -75,10 +75,10 @@ require plugin_dir_path( __FILE__ ) . 'includes/class-dfx-parish-retreat-letters
  *
  * @since    1.0.0
  */
-function run_dfxprl() {
+function dfxprl_run() {
 	$plugin = DFXPRL::get_instance();
 	$plugin->run();
 }
 
 // Initialize the plugin
-run_dfxprl();
+dfxprl_run();
