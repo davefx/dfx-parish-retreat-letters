@@ -67,6 +67,14 @@ package-lock.json
 *.swp
 *.swo
 
+# Git conflict and temporary files
+*.orig
+*.rej
+*~
+*.bak
+*.tmp
+*.swn
+
 # OS files
 .DS_Store
 Thumbs.db
