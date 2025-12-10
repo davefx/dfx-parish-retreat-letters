@@ -516,6 +516,22 @@ class DFXPRL_Admin {
 		if ( isset( $_GET['page'] ) && sanitize_text_field( wp_unslash( $_GET['page'] ) ) === 'dfxprl-global-settings' ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- URL parameter check for asset loading      
 			wp_enqueue_script( 'select2' );
 			wp_enqueue_style( 'select2' );
+
+			// Initialize Select2 for user selection
+			$placeholder_text = esc_js( __( 'Choose a user...', 'dfx-parish-retreat-letters' ) );
+			$select2_init = <<<JAVASCRIPT
+jQuery(document).ready(function($) {
+	// Initialize Select2 for user selection
+	if ($.fn.select2) {
+		$('.dfxprl-user-select').select2({
+			placeholder: '{$placeholder_text}',
+			allowClear: true,
+			width: '100%'
+		});
+	}
+});
+JAVASCRIPT;
+			wp_add_inline_script( 'select2', $select2_init );
 		}
 
 		wp_enqueue_script(
@@ -4878,19 +4894,6 @@ class DFXPRL_Admin {
 
 			<h3><?php esc_html_e( 'Per-Retreat Permissions', 'dfx-parish-retreat-letters' ); ?></h3>
 			<p class="description"><?php esc_html_e( 'For retreat-specific permissions (individual retreat management), use the corresponding retreat edition page', 'dfx-parish-retreat-letters' ); ?></p>
-
-			<script type="text/javascript">
-			jQuery(document).ready(function($) {
-				// Initialize Select2 for user selection
-				if ($.fn.select2) {
-					$('.dfxprl-user-select').select2({
-						placeholder: '<?php esc_html_e( 'Choose a user...', 'dfx-parish-retreat-letters' ); ?>',
-						allowClear: true,
-						width: '100%'
-					});
-				}
-			});
-			</script>
 
 			<?php $this->render_plugin_footer(); ?>
 		</div>
