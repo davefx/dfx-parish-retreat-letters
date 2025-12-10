@@ -2,7 +2,7 @@
 /**
  * Basic infrastructure test to verify PHPUnit works
  *
- * @package DFX_Parish_Retreat_Letters
+ * @package DFXPRL
  */
 
 use PHPUnit\Framework\TestCase;
@@ -32,12 +32,12 @@ class BasicInfrastructureTest extends TestCase {
      */
     public function testPluginConstantsCanBeDefined() {
         // Test that we can define the constants
-        if (!defined('DFX_PARISH_RETREAT_LETTERS_VERSION')) {
-            define('DFX_PARISH_RETREAT_LETTERS_VERSION', '25.12.09');
+        if (!defined('DFXPRL_VERSION')) {
+            define('DFXPRL_VERSION', '25.12.09');
         }
         
-        $this->assertTrue(defined('DFX_PARISH_RETREAT_LETTERS_VERSION'));
-        $this->assertEquals('25.12.09', DFX_PARISH_RETREAT_LETTERS_VERSION);
+        $this->assertTrue(defined('DFXPRL_VERSION'));
+        $this->assertEquals('25.12.09', DFXPRL_VERSION);
     }
 
     /**

@@ -2,9 +2,9 @@
  * Message Form JavaScript
  * 
  * Handles the confidential message submission form functionality.
- * Requires jQuery and expects dfxPRLMessageForm object to be localized.
+ * Requires jQuery and expects dfxprlMessageForm object to be localized.
  * 
- * @package DFX_Parish_Retreat_Letters
+ * @package DFXPRL
  * @since 25.12.10
  */
 
@@ -42,13 +42,13 @@
 		$('input[name="message_mode"]').on('change', function() {
 			var mode = $(this).val();
 			if (mode === 'text') {
-				$('#dfx-prl-text-group').show();
-				$('#dfx-prl-file-group').hide();
+				$('#dfxprl-text-group').show();
+				$('#dfxprl-file-group').hide();
 				hiddenInput.prop('required', true);
 				$('#message_files').prop('required', false);
 			} else {
-				$('#dfx-prl-text-group').hide();
-				$('#dfx-prl-file-group').show();
+				$('#dfxprl-text-group').hide();
+				$('#dfxprl-file-group').show();
 				hiddenInput.prop('required', false);
 				$('#message_files').prop('required', true);
 			}
@@ -91,7 +91,7 @@
 		});
 
 		// Form submission
-		$('#dfx-prl-message-form').on('submit', function(e) {
+		$('#dfxprl-message-form').on('submit', function(e) {
 			e.preventDefault();
 			e.stopPropagation();
 
@@ -107,7 +107,7 @@
 		});
 
 		// Editor toolbar
-		$('.dfx-prl-editor-toolbar button').on('click', function(e) {
+		$('.dfxprl-editor-toolbar button').on('click', function(e) {
 			e.preventDefault();
 			e.stopPropagation();
 
@@ -219,7 +219,7 @@
 
 		// Update toolbar button states based on current selection
 		function updateToolbarStates() {
-			$('.dfx-prl-editor-toolbar button').each(function() {
+			$('.dfxprl-editor-toolbar button').each(function() {
 				var command = $(this).data('command');
 				var isActive = false;
 
@@ -335,9 +335,9 @@
 			}
 
 			// Set question text with proper string
-			var questionElement = $('#dfx-prl-captcha-question');
+			var questionElement = $('#dfxprl-captcha-question');
 			if (questionElement.length) {
-				questionElement.html(dfxPRLMessageForm.i18n.captchaPrefix + '<strong>' + question + '</strong>');
+				questionElement.html(dfxprlMessageForm.i18n.captchaPrefix + '<strong>' + question + '</strong>');
 			}
 
 			// Set token and clear answer
@@ -358,13 +358,13 @@
 		}
 
 		function displaySelectedFiles(files) {
-			var container = $('#dfx-prl-file-list');
+			var container = $('#dfxprl-file-list');
 			container.empty();
 
 			Array.from(files).forEach(function(file, index) {
-				var fileItem = $('<div class="dfx-prl-file-item">' +
+				var fileItem = $('<div class="dfxprl-file-item">' +
 					'<span>' + file.name + ' (' + formatFileSize(file.size) + ')</span>' +
-					'<button type="button" class="dfx-prl-file-remove" data-index="' + index + '">' + dfxPRLMessageForm.i18n.remove + '</button>' +
+					'<button type="button" class="dfxprl-file-remove" data-index="' + index + '">' + dfxprlMessageForm.i18n.remove + '</button>' +
 					'</div>');
 
 				container.append(fileItem);
@@ -381,7 +381,7 @@
 
 		function updateSubmitButtonState() {
 			var disclaimerCheckbox = $('#disclaimer_accepted');
-			var submitButton = $('#dfx-prl-submit-btn');
+			var submitButton = $('#dfxprl-submit-btn');
 
 			// If disclaimer exists, button is enabled only if checked
 			if (disclaimerCheckbox.length > 0) {
@@ -393,11 +393,11 @@
 		}
 
 		function submitMessage() {
-			var form = $('#dfx-prl-message-form')[0];
+			var form = $('#dfxprl-message-form')[0];
 			var formData = new FormData(form);
-			var submitButton = $('#dfx-prl-submit-btn');
-			var submitText = submitButton.find('.dfx-prl-submit-text');
-			var loadingSpinner = submitButton.find('.dfx-prl-loading-spinner');
+			var submitButton = $('#dfxprl-submit-btn');
+			var submitText = submitButton.find('.dfxprl-submit-text');
+			var loadingSpinner = submitButton.find('.dfxprl-loading-spinner');
 
 			// Validate based on mode
 			var mode = $('input[name="message_mode"]:checked').val();
@@ -405,13 +405,13 @@
 			if (mode === 'text') {
 				var messageContent = $('#message_content_hidden').val();
 				if (!messageContent || messageContent.trim() === '') {
-					alert(dfxPRLMessageForm.i18n.pleaseEnterMessage);
+					alert(dfxprlMessageForm.i18n.pleaseEnterMessage);
 					return;
 				}
 			} else {
 				var files = $('#message_files')[0].files;
 				if (!files || files.length === 0) {
-					alert(dfxPRLMessageForm.i18n.pleaseSelectFile);
+					alert(dfxprlMessageForm.i18n.pleaseSelectFile);
 					return;
 				}
 			}
@@ -421,19 +421,19 @@
 			var captchaToken = $('#captcha_token').val();
 
 			if (!captchaAnswer || !captchaToken) {
-				alert(dfxPRLMessageForm.i18n.pleaseCompleteSecurityCheck);
+				alert(dfxprlMessageForm.i18n.pleaseCompleteSecurityCheck);
 				return;
 			}
 
 			// Validate disclaimer if present
 			var disclaimerCheckbox = $('#disclaimer_accepted');
 			if (disclaimerCheckbox.length > 0 && !disclaimerCheckbox.prop('checked')) {
-				alert(dfxPRLMessageForm.i18n.pleaseAcceptDisclaimer);
+				alert(dfxprlMessageForm.i18n.pleaseAcceptDisclaimer);
 				return;
 			}
 
 			// Add action for WordPress AJAX
-			formData.append('action', 'dfx_prl_submit_message');
+			formData.append('action', 'dfxprl_submit_message');
 
 			// Disable submit button and show loading
 			submitButton.prop('disabled', true);
@@ -441,7 +441,7 @@
 			loadingSpinner.show();
 
 			$.ajax({
-				url: dfxPRLMessageForm.ajaxurl,
+				url: dfxprlMessageForm.ajaxurl,
 				type: 'POST',
 				data: formData,
 				processData: false,
@@ -450,15 +450,15 @@
 				success: function(response) {
 					if (response.success) {
 						// Show success message
-						var successHtml = '<div class="dfx-prl-success-message">' + 
-							dfxPRLMessageForm.i18n.successMessage + '</div>';
+						var successHtml = '<div class="dfxprl-success-message">' + 
+							dfxprlMessageForm.i18n.successMessage + '</div>';
 						
 						// Replace form with success message
-						$('#dfx-prl-message-form').replaceWith(successHtml);
+						$('#dfxprl-message-form').replaceWith(successHtml);
 					} else {
 						// Show error message
 						var errorMessage = response.data && response.data.message ? 
-							response.data.message : dfxPRLMessageForm.i18n.errorSendingMessage;
+							response.data.message : dfxprlMessageForm.i18n.errorSendingMessage;
 						alert(errorMessage);
 
 						// Re-enable submit button
@@ -475,23 +475,23 @@
 
 					var errorMessage;
 					if (status === 'timeout') {
-						errorMessage = dfxPRLMessageForm.i18n.requestTimeout;
+						errorMessage = dfxprlMessageForm.i18n.requestTimeout;
 					} else if (status === 'abort') {
-						errorMessage = dfxPRLMessageForm.i18n.requestCancelled;
+						errorMessage = dfxprlMessageForm.i18n.requestCancelled;
 					} else if (xhr.status === 0) {
-						errorMessage = dfxPRLMessageForm.i18n.cannotConnectToServer;
+						errorMessage = dfxprlMessageForm.i18n.cannotConnectToServer;
 					} else if (xhr.status === 400) {
-						errorMessage = dfxPRLMessageForm.i18n.problemWithRequest;
+						errorMessage = dfxprlMessageForm.i18n.problemWithRequest;
 					} else if (xhr.status === 403) {
-						errorMessage = dfxPRLMessageForm.i18n.accessDenied;
+						errorMessage = dfxprlMessageForm.i18n.accessDenied;
 					} else if (xhr.status === 413) {
-						errorMessage = dfxPRLMessageForm.i18n.uploadedFilesTooLarge;
+						errorMessage = dfxprlMessageForm.i18n.uploadedFilesTooLarge;
 					} else if (xhr.status >= 500) {
-						errorMessage = dfxPRLMessageForm.i18n.serverError;
+						errorMessage = dfxprlMessageForm.i18n.serverError;
 					} else if (status === 'parsererror') {
-						errorMessage = dfxPRLMessageForm.i18n.problemProcessingResponse;
+						errorMessage = dfxprlMessageForm.i18n.problemProcessingResponse;
 					} else {
-						errorMessage = dfxPRLMessageForm.i18n.networkError;
+						errorMessage = dfxprlMessageForm.i18n.networkError;
 					}
 
 					alert(errorMessage);

@@ -199,19 +199,19 @@ The plugin creates and manages several custom database tables:
 
 ```php
 // Main plugin singleton
-DFX_Parish_Retreat_Letters::get_instance()
+DFXPRL::get_instance()
 
 // Security and encryption utilities
-DFX_Parish_Retreat_Letters_Security::get_instance()
+DFXPRL_Security::get_instance()
 
 // GDPR compliance management
-DFX_Parish_Retreat_Letters_GDPR::get_instance()
+DFXPRL_GDPR::get_instance()
 
 // Three-tier permission system
-DFX_Parish_Retreat_Letters_Permissions::get_instance()
+DFXPRL_Permissions::get_instance()
 
 // Database operations
-DFX_Parish_Retreat_Letters_Database::get_instance()
+DFXPRL_Database::get_instance()
 ```
 
 #### Security Implementation Details

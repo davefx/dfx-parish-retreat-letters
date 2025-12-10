@@ -2,7 +2,7 @@
 /**
  * Tests for the Delete All Attendants feature
  *
- * @package DFX_Parish_Retreat_Letters
+ * @package DFXPRL
  * @subpackage Tests
  */
 
@@ -17,8 +17,8 @@ class DeleteAllAttendantsTest extends \PHPUnit\Framework\TestCase {
 	public function setUp(): void {
 		parent::setUp();
 		// Create the directory for MessageFile class if needed
-		if (!file_exists('/tmp/uploads/dfx-prl-confidential-files')) {
-			mkdir('/tmp/uploads/dfx-prl-confidential-files', 0755, true);
+		if (!file_exists('/tmp/uploads/dfxprl-confidential-files')) {
+			mkdir('/tmp/uploads/dfxprl-confidential-files', 0755, true);
 		}
 	}
 
@@ -107,7 +107,7 @@ class DeleteAllAttendantsTest extends \PHPUnit\Framework\TestCase {
 
 		// Check for the delete all attendants button handler
 		$this->assertStringContainsString(
-			'dfx-prl-delete-all-attendants',
+			'dfxprl-delete-all-attendants',
 			$js_content,
 			'JavaScript should have handler for delete-all-attendants button'
 		);
@@ -121,14 +121,14 @@ class DeleteAllAttendantsTest extends \PHPUnit\Framework\TestCase {
 
 		// Check for AJAX action
 		$this->assertStringContainsString(
-			'dfx_prl_delete_all_attendants',
+			'dfxprl_delete_all_attendants',
 			$js_content,
-			'JavaScript should call dfx_prl_delete_all_attendants AJAX action'
+			'JavaScript should call dfxprl_delete_all_attendants AJAX action'
 		);
 
 		// Check for confirmation text verification using localized string
 		$this->assertStringContainsString(
-			'dfxPRLAdmin.messages.confirmationText',
+			'dfxprlAdmin.messages.confirmationText',
 			$js_content,
 			'JavaScript should use localized confirmationText for verification'
 		);
@@ -145,7 +145,7 @@ class DeleteAllAttendantsTest extends \PHPUnit\Framework\TestCase {
 
 		// Check that button is only shown when there are attendants and user has permission
 		$this->assertStringContainsString(
-			'dfx-prl-delete-all-attendants',
+			'dfxprl-delete-all-attendants',
 			$admin_content,
 			'Admin should have delete-all-attendants button'
 		);
@@ -171,7 +171,7 @@ class DeleteAllAttendantsTest extends \PHPUnit\Framework\TestCase {
 		$admin_content = file_get_contents($admin_file);
 
 		// Find the button in the content
-		$button_pattern = '/class="[^"]*dfx-prl-delete-all-attendants[^"]*"[^>]*>/';
+		$button_pattern = '/class="[^"]*dfxprl-delete-all-attendants[^"]*"[^>]*>/';
 		$this->assertMatchesRegularExpression(
 			$button_pattern,
 			$admin_content,
@@ -204,7 +204,7 @@ class DeleteAllAttendantsTest extends \PHPUnit\Framework\TestCase {
 
 		// Check that the AJAX action is registered
 		$this->assertStringContainsString(
-			'wp_ajax_dfx_prl_delete_all_attendants',
+			'wp_ajax_dfxprl_delete_all_attendants',
 			$admin_content,
 			'AJAX action hook should be registered'
 		);

@@ -7,8 +7,8 @@
  * @link       https://github.com/davefx/dfx-parish-retreat-letters
  * @since      1.2.0
  *
- * @package    DFX_Parish_Retreat_Letters
- * @subpackage DFX_Parish_Retreat_Letters/includes
+ * @package    DFXPRL
+ * @subpackage DFXPRL/includes
  */
 
 /**
@@ -17,17 +17,17 @@
  * This class handles all CRUD operations for encrypted message file attachments.
  *
  * @since      1.2.0
- * @package    DFX_Parish_Retreat_Letters
- * @subpackage DFX_Parish_Retreat_Letters/includes
+ * @package    DFXPRL
+ * @subpackage DFXPRL/includes
  * @author     DaveFX
  */
-class DFX_Parish_Retreat_Letters_MessageFile {
+class DFXPRL_MessageFile {
 
 	/**
 	 * The database instance.
 	 *
 	 * @since 1.2.0
-	 * @var DFX_Parish_Retreat_Letters_Database
+	 * @var DFXPRL_Database
 	 */
 	private $database;
 
@@ -35,7 +35,7 @@ class DFX_Parish_Retreat_Letters_MessageFile {
 	 * The security instance.
 	 *
 	 * @since 1.2.0
-	 * @var DFX_Parish_Retreat_Letters_Security
+	 * @var DFXPRL_Security
 	 */
 	private $security;
 
@@ -53,8 +53,8 @@ class DFX_Parish_Retreat_Letters_MessageFile {
 	 * @since 1.2.0
 	 */
 	public function __construct() {
-		$this->database = DFX_Parish_Retreat_Letters_Database::get_instance();
-		$this->security = DFX_Parish_Retreat_Letters_Security::get_instance();
+		$this->database = DFXPRL_Database::get_instance();
+		$this->security = DFXPRL_Security::get_instance();
 		$this->init_upload_directory();
 	}
 
@@ -65,7 +65,7 @@ class DFX_Parish_Retreat_Letters_MessageFile {
 	 */
 	private function init_upload_directory() {
 		$wp_upload_dir = wp_upload_dir();
-		$this->upload_dir = $wp_upload_dir['basedir'] . '/dfx-prl-confidential-files';
+		$this->upload_dir = $wp_upload_dir['basedir'] . '/dfxprl-confidential-files';
 
 		// Create directory if it doesn't exist
 		if ( ! file_exists( $this->upload_dir ) ) {
@@ -319,7 +319,7 @@ class DFX_Parish_Retreat_Letters_MessageFile {
 	 * @param int $user_id User ID.
 	 */
 	private function log_file_access( $file_id, $user_id ) {
-		$access_log = get_option( 'dfx_prl_file_access_log', array() );
+		$access_log = get_option( 'dfxprl_file_access_log', array() );
 		
 		$access_log[] = array(
 			'file_id'    => $file_id,
@@ -334,7 +334,7 @@ class DFX_Parish_Retreat_Letters_MessageFile {
 			$access_log = array_slice( $access_log, -1000 );
 		}
 
-		update_option( 'dfx_prl_file_access_log', $access_log );
+		update_option( 'dfxprl_file_access_log', $access_log );
 	}
 
 	/**

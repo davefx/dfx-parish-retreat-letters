@@ -7,8 +7,8 @@
  * @link       https://github.com/davefx/dfx-parish-retreat-letters
  * @since      1.2.0
  *
- * @package    DFX_Parish_Retreat_Letters
- * @subpackage DFX_Parish_Retreat_Letters/includes
+ * @package    DFXPRL
+ * @subpackage DFXPRL/includes
  */
 
 /**
@@ -18,17 +18,17 @@
  * are printed by administrators for audit and compliance purposes.
  *
  * @since      1.2.0
- * @package    DFX_Parish_Retreat_Letters
- * @subpackage DFX_Parish_Retreat_Letters/includes
+ * @package    DFXPRL
+ * @subpackage DFXPRL/includes
  * @author     DaveFX
  */
-class DFX_Parish_Retreat_Letters_PrintLog {
+class DFXPRL_PrintLog {
 
 	/**
 	 * The database instance.
 	 *
 	 * @since 1.2.0
-	 * @var DFX_Parish_Retreat_Letters_Database
+	 * @var DFXPRL_Database
 	 */
 	private $database;
 
@@ -36,7 +36,7 @@ class DFX_Parish_Retreat_Letters_PrintLog {
 	 * The security instance.
 	 *
 	 * @since 1.2.0
-	 * @var DFX_Parish_Retreat_Letters_Security
+	 * @var DFXPRL_Security
 	 */
 	private $security;
 
@@ -46,8 +46,8 @@ class DFX_Parish_Retreat_Letters_PrintLog {
 	 * @since 1.2.0
 	 */
 	public function __construct() {
-		$this->database = DFX_Parish_Retreat_Letters_Database::get_instance();
-		$this->security = DFX_Parish_Retreat_Letters_Security::get_instance();
+		$this->database = DFXPRL_Database::get_instance();
+		$this->security = DFXPRL_Security::get_instance();
 	}
 
 	/**

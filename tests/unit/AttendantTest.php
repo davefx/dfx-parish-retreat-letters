@@ -1,8 +1,8 @@
 <?php
 /**
- * Unit tests for DFX_Parish_Retreat_Letters_Attendant class
+ * Unit tests for DFXPRL_Attendant class
  *
- * @package DFX_Parish_Retreat_Letters
+ * @package DFXPRL
  */
 
 use PHPUnit\Framework\TestCase;
@@ -10,7 +10,7 @@ use Brain\Monkey;
 use Brain\Monkey\Functions;
 
 /**
- * Test class for DFX_Parish_Retreat_Letters_Attendant
+ * Test class for DFXPRL_Attendant
  */
 class AttendantTest extends TestCase {
 
@@ -46,11 +46,11 @@ class AttendantTest extends TestCase {
      */
     public function testCreateAttendantWithValidData() {
         // Mock the database instance
-        $database_mock = $this->createMock('DFX_Parish_Retreat_Letters_Database');
+        $database_mock = $this->createMock('DFXPRL_Database');
         $database_mock->method('get_attendants_table')->willReturn('wp_dfx_attendants');
         
         // Mock the security instance
-        $security_mock = $this->createMock('DFX_Parish_Retreat_Letters_Security');
+        $security_mock = $this->createMock('DFXPRL_Security');
         $security_mock->method('generate_unique_message_token')->willReturn('test_token_123456789');
         
         // Mock global wpdb
@@ -62,7 +62,7 @@ class AttendantTest extends TestCase {
              ->willReturn(true);
         
         // Create attendant instance
-        $attendant = new DFX_Parish_Retreat_Letters_Attendant();
+        $attendant = new DFXPRL_Attendant();
         
         // Use reflection to set the private properties
         $reflection = new ReflectionClass($attendant);
@@ -88,7 +88,7 @@ class AttendantTest extends TestCase {
      * Test attendant creation with invalid data
      */
     public function testCreateAttendantWithInvalidData() {
-        $attendant = new DFX_Parish_Retreat_Letters_Attendant();
+        $attendant = new DFXPRL_Attendant();
         
         $invalid_data = [
             'retreat_id' => '', // Missing required field
@@ -105,7 +105,7 @@ class AttendantTest extends TestCase {
      */
     public function testGetAttendantById() {
         // Mock the database instance
-        $database_mock = $this->createMock('DFX_Parish_Retreat_Letters_Database');
+        $database_mock = $this->createMock('DFXPRL_Database');
         $database_mock->method('get_attendants_table')->willReturn('wp_dfx_attendants');
         
         // Mock global wpdb
@@ -130,7 +130,7 @@ class AttendantTest extends TestCase {
              ->willReturn("SELECT * FROM wp_dfx_attendants WHERE id = 1");
         
         // Create attendant instance and inject mocked database
-        $attendant = new DFX_Parish_Retreat_Letters_Attendant();
+        $attendant = new DFXPRL_Attendant();
         
         $reflection = new ReflectionClass($attendant);
         $database_property = $reflection->getProperty('database');
@@ -146,7 +146,7 @@ class AttendantTest extends TestCase {
      */
     public function testGetNonExistentAttendant() {
         // Mock the database instance
-        $database_mock = $this->createMock('DFX_Parish_Retreat_Letters_Database');
+        $database_mock = $this->createMock('DFXPRL_Database');
         $database_mock->method('get_attendants_table')->willReturn('wp_dfx_attendants');
         
         // Mock global wpdb
@@ -162,7 +162,7 @@ class AttendantTest extends TestCase {
              ->willReturn("SELECT * FROM wp_dfx_attendants WHERE id = 999");
         
         // Create attendant instance and inject mocked database
-        $attendant = new DFX_Parish_Retreat_Letters_Attendant();
+        $attendant = new DFXPRL_Attendant();
         
         $reflection = new ReflectionClass($attendant);
         $database_property = $reflection->getProperty('database');
@@ -178,7 +178,7 @@ class AttendantTest extends TestCase {
      */
     public function testUpdateAttendant() {
         // Mock the database instance
-        $database_mock = $this->createMock('DFX_Parish_Retreat_Letters_Database');
+        $database_mock = $this->createMock('DFXPRL_Database');
         $database_mock->method('get_attendants_table')->willReturn('wp_dfx_attendants');
         
         // Mock global wpdb
@@ -189,7 +189,7 @@ class AttendantTest extends TestCase {
              ->willReturn(1);
         
         // Create attendant instance and inject mocked database
-        $attendant = new DFX_Parish_Retreat_Letters_Attendant();
+        $attendant = new DFXPRL_Attendant();
         
         $reflection = new ReflectionClass($attendant);
         $database_property = $reflection->getProperty('database');
@@ -211,7 +211,7 @@ class AttendantTest extends TestCase {
      */
     public function testDeleteAttendant() {
         // Mock the database instance
-        $database_mock = $this->createMock('DFX_Parish_Retreat_Letters_Database');
+        $database_mock = $this->createMock('DFXPRL_Database');
         $database_mock->method('get_attendants_table')->willReturn('wp_dfx_attendants');
         
         // Mock global wpdb
@@ -222,7 +222,7 @@ class AttendantTest extends TestCase {
              ->willReturn(1);
         
         // Create attendant instance and inject mocked database
-        $attendant = new DFX_Parish_Retreat_Letters_Attendant();
+        $attendant = new DFXPRL_Attendant();
         
         $reflection = new ReflectionClass($attendant);
         $database_property = $reflection->getProperty('database');
@@ -238,7 +238,7 @@ class AttendantTest extends TestCase {
      */
     public function testGetAttendantsByRetreatId() {
         // Mock the database instance
-        $database_mock = $this->createMock('DFX_Parish_Retreat_Letters_Database');
+        $database_mock = $this->createMock('DFXPRL_Database');
         $database_mock->method('get_attendants_table')->willReturn('wp_dfx_attendants');
         
         // Mock global wpdb
@@ -269,7 +269,7 @@ class AttendantTest extends TestCase {
              ->willReturn("SELECT * FROM wp_dfx_attendants WHERE retreat_id = 1");
         
         // Create attendant instance and inject mocked database
-        $attendant = new DFX_Parish_Retreat_Letters_Attendant();
+        $attendant = new DFXPRL_Attendant();
         
         $reflection = new ReflectionClass($attendant);
         $database_property = $reflection->getProperty('database');
@@ -289,7 +289,7 @@ class AttendantTest extends TestCase {
      * Test attendant data validation
      */
     public function testAttendantDataValidation() {
-        $attendant = new DFX_Parish_Retreat_Letters_Attendant();
+        $attendant = new DFXPRL_Attendant();
         
         $reflection = new ReflectionClass($attendant);
         
@@ -339,7 +339,7 @@ class AttendantTest extends TestCase {
      * Test attendant data sanitization
      */
     public function testAttendantDataSanitization() {
-        $attendant = new DFX_Parish_Retreat_Letters_Attendant();
+        $attendant = new DFXPRL_Attendant();
         
         $reflection = new ReflectionClass($attendant);
         
@@ -373,7 +373,7 @@ class AttendantTest extends TestCase {
      */
     public function testGetAttendantByMessageToken() {
         // Mock the database instance
-        $database_mock = $this->createMock('DFX_Parish_Retreat_Letters_Database');
+        $database_mock = $this->createMock('DFXPRL_Database');
         $database_mock->method('get_attendants_table')->willReturn('wp_dfx_attendants');
         
         // Mock global wpdb
@@ -396,7 +396,7 @@ class AttendantTest extends TestCase {
              ->willReturn("SELECT * FROM wp_dfx_attendants WHERE message_url_token = 'test_token_123'");
         
         // Create attendant instance and inject mocked database
-        $attendant = new DFX_Parish_Retreat_Letters_Attendant();
+        $attendant = new DFXPRL_Attendant();
         
         $reflection = new ReflectionClass($attendant);
         $database_property = $reflection->getProperty('database');
@@ -415,7 +415,7 @@ class AttendantTest extends TestCase {
      * Test attendant constructor initializes dependencies
      */
     public function testConstructorInitializesDependencies() {
-        $attendant = new DFX_Parish_Retreat_Letters_Attendant();
+        $attendant = new DFXPRL_Attendant();
         
         $reflection = new ReflectionClass($attendant);
         $database_property = $reflection->getProperty('database');
@@ -429,7 +429,7 @@ class AttendantTest extends TestCase {
      * Test age calculation functionality
      */
     public function testAgeCalculation() {
-        $attendant = new DFX_Parish_Retreat_Letters_Attendant();
+        $attendant = new DFXPRL_Attendant();
         
         if (method_exists($attendant, 'calculate_age')) {
             $birth_date = '1990-01-01';
@@ -453,7 +453,7 @@ class AttendantTest extends TestCase {
      */
     public function testSearchAttendants() {
         // Mock the database instance
-        $database_mock = $this->createMock('DFX_Parish_Retreat_Letters_Database');
+        $database_mock = $this->createMock('DFXPRL_Database');
         $database_mock->method('get_attendants_table')->willReturn('wp_dfx_attendants');
         
         // Mock global wpdb
@@ -473,7 +473,7 @@ class AttendantTest extends TestCase {
              ->willReturn($expected_results);
         
         // Create attendant instance and inject mocked database
-        $attendant = new DFX_Parish_Retreat_Letters_Attendant();
+        $attendant = new DFXPRL_Attendant();
         
         $reflection = new ReflectionClass($attendant);
         $database_property = $reflection->getProperty('database');
@@ -497,11 +497,11 @@ class AttendantTest extends TestCase {
      */
     public function testExportCsvDataIncludesMessageUrl() {
         // Mock the database instance
-        $database_mock = $this->createMock('DFX_Parish_Retreat_Letters_Database');
+        $database_mock = $this->createMock('DFXPRL_Database');
         $database_mock->method('get_attendants_table')->willReturn('wp_dfx_attendants');
         
         // Mock the retreat model
-        $retreat_mock = $this->createMock('DFX_Parish_Retreat_Letters_Retreat');
+        $retreat_mock = $this->createMock('DFXPRL_Retreat');
         
         // Create a mock retreat object with notes_enabled
         $retreat_obj = (object) [
@@ -560,7 +560,7 @@ class AttendantTest extends TestCase {
         });
         
         // Create attendant instance and inject mocked database
-        $attendant = new DFX_Parish_Retreat_Letters_Attendant();
+        $attendant = new DFXPRL_Attendant();
         
         $reflection = new ReflectionClass($attendant);
         $database_property = $reflection->getProperty('database');
@@ -596,7 +596,7 @@ class AttendantTest extends TestCase {
      * Test that new optional fields are properly sanitized
      */
     public function testSanitizeNewOptionalFields() {
-        $attendant = new DFX_Parish_Retreat_Letters_Attendant();
+        $attendant = new DFXPRL_Attendant();
         
         // Use reflection to access private method
         $reflection = new ReflectionClass($attendant);
@@ -660,7 +660,7 @@ class AttendantTest extends TestCase {
         });
         
         // Mock database
-        $database_mock = $this->createMock('DFX_Parish_Retreat_Letters_Database');
+        $database_mock = $this->createMock('DFXPRL_Database');
         $database_mock->method('get_attendants_table')->willReturn('wp_dfx_attendants');
         
         // Mock wpdb
@@ -707,7 +707,7 @@ class AttendantTest extends TestCase {
         });
         
         // Create attendant instance
-        $attendant = new DFX_Parish_Retreat_Letters_Attendant();
+        $attendant = new DFXPRL_Attendant();
         
         $reflection = new ReflectionClass($attendant);
         $database_property = $reflection->getProperty('database');
@@ -715,7 +715,7 @@ class AttendantTest extends TestCase {
         $database_property->setValue($attendant, $database_mock);
         
         // Mock the retreat model to return our mock retreat
-        $retreat_model_mock = $this->getMockBuilder('DFX_Parish_Retreat_Letters_Retreat')
+        $retreat_model_mock = $this->getMockBuilder('DFXPRL_Retreat')
             ->disableOriginalConstructor()
             ->getMock();
         $retreat_model_mock->method('get')->willReturn($mock_retreat);
@@ -748,7 +748,7 @@ class AttendantTest extends TestCase {
      */
     public function testGetByRetreatWithNameFilter() {
         // Mock the database
-        $database_mock = $this->createMock('DFX_Parish_Retreat_Letters_Database');
+        $database_mock = $this->createMock('DFXPRL_Database');
         $database_mock->method('get_attendants_table')->willReturn('wp_dfx_attendants');
         $database_mock->method('get_messages_table')->willReturn('wp_dfx_messages');
 
@@ -772,7 +772,7 @@ class AttendantTest extends TestCase {
             return array_merge($defaults, $args);
         });
 
-        $attendant = new DFX_Parish_Retreat_Letters_Attendant();
+        $attendant = new DFXPRL_Attendant();
         
         $reflection = new ReflectionClass($attendant);
         $database_property = $reflection->getProperty('database');
@@ -788,7 +788,7 @@ class AttendantTest extends TestCase {
      */
     public function testGetByRetreatWithMultipleFilters() {
         // Mock the database
-        $database_mock = $this->createMock('DFX_Parish_Retreat_Letters_Database');
+        $database_mock = $this->createMock('DFXPRL_Database');
         $database_mock->method('get_attendants_table')->willReturn('wp_dfx_attendants');
         $database_mock->method('get_messages_table')->willReturn('wp_dfx_messages');
 
@@ -814,7 +814,7 @@ class AttendantTest extends TestCase {
             return array_merge($defaults, $args);
         });
 
-        $attendant = new DFX_Parish_Retreat_Letters_Attendant();
+        $attendant = new DFXPRL_Attendant();
         
         $reflection = new ReflectionClass($attendant);
         $database_property = $reflection->getProperty('database');
@@ -834,7 +834,7 @@ class AttendantTest extends TestCase {
      */
     public function testGetByRetreatWithMessageCountOrdering() {
         // Mock the database
-        $database_mock = $this->createMock('DFX_Parish_Retreat_Letters_Database');
+        $database_mock = $this->createMock('DFXPRL_Database');
         $database_mock->method('get_attendants_table')->willReturn('wp_dfx_attendants');
         $database_mock->method('get_messages_table')->willReturn('wp_dfx_messages');
         $database_mock->method('get_message_print_log_table')->willReturn('wp_dfx_print_log');
@@ -861,7 +861,7 @@ class AttendantTest extends TestCase {
             return array_merge($defaults, $args);
         });
 
-        $attendant = new DFX_Parish_Retreat_Letters_Attendant();
+        $attendant = new DFXPRL_Attendant();
         
         $reflection = new ReflectionClass($attendant);
         $database_property = $reflection->getProperty('database');
@@ -877,7 +877,7 @@ class AttendantTest extends TestCase {
      */
     public function testGetByRetreatWithNonPrintedCountOrdering() {
         // Mock the database
-        $database_mock = $this->createMock('DFX_Parish_Retreat_Letters_Database');
+        $database_mock = $this->createMock('DFXPRL_Database');
         $database_mock->method('get_attendants_table')->willReturn('wp_dfx_attendants');
         $database_mock->method('get_messages_table')->willReturn('wp_dfx_messages');
         $database_mock->method('get_message_print_log_table')->willReturn('wp_dfx_print_log');
@@ -906,7 +906,7 @@ class AttendantTest extends TestCase {
             return array_merge($defaults, $args);
         });
 
-        $attendant = new DFX_Parish_Retreat_Letters_Attendant();
+        $attendant = new DFXPRL_Attendant();
         
         $reflection = new ReflectionClass($attendant);
         $database_property = $reflection->getProperty('database');
@@ -922,7 +922,7 @@ class AttendantTest extends TestCase {
      */
     public function testGetCountByRetreatWithFilters() {
         // Mock the database
-        $database_mock = $this->createMock('DFX_Parish_Retreat_Letters_Database');
+        $database_mock = $this->createMock('DFXPRL_Database');
         $database_mock->method('get_attendants_table')->willReturn('wp_dfx_attendants');
 
         // Mock wpdb
@@ -941,7 +941,7 @@ class AttendantTest extends TestCase {
              ->willReturn(5);
         $wpdb->method('esc_like')->willReturnArgument(0);
 
-        $attendant = new DFX_Parish_Retreat_Letters_Attendant();
+        $attendant = new DFXPRL_Attendant();
         
         $reflection = new ReflectionClass($attendant);
         $database_property = $reflection->getProperty('database');

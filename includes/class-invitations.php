@@ -7,8 +7,8 @@
  * @link       https://github.com/davefx/dfx-parish-retreat-letters
  * @since      1.3.0
  *
- * @package    DFX_Parish_Retreat_Letters
- * @subpackage DFX_Parish_Retreat_Letters/includes
+ * @package    DFXPRL
+ * @subpackage DFXPRL/includes
  */
 
 /**
@@ -18,17 +18,17 @@
  * to new and existing users via secure email invitations.
  *
  * @since      1.3.0
- * @package    DFX_Parish_Retreat_Letters
- * @subpackage DFX_Parish_Retreat_Letters/includes
+ * @package    DFXPRL
+ * @subpackage DFXPRL/includes
  * @author     DaveFX
  */
-class DFX_Parish_Retreat_Letters_Invitations {
+class DFXPRL_Invitations {
 
 	/**
 	 * The single instance of the class.
 	 *
 	 * @since 1.3.0
-	 * @var DFX_Parish_Retreat_Letters_Invitations|null
+	 * @var DFXPRL_Invitations|null
 	 */
 	private static $instance = null;
 
@@ -36,7 +36,7 @@ class DFX_Parish_Retreat_Letters_Invitations {
 	 * The database instance.
 	 *
 	 * @since 1.3.0
-	 * @var DFX_Parish_Retreat_Letters_Database
+	 * @var DFXPRL_Database
 	 */
 	private $database;
 
@@ -44,7 +44,7 @@ class DFX_Parish_Retreat_Letters_Invitations {
 	 * The security instance.
 	 *
 	 * @since 1.3.0
-	 * @var DFX_Parish_Retreat_Letters_Security
+	 * @var DFXPRL_Security
 	 */
 	private $security;
 
@@ -52,7 +52,7 @@ class DFX_Parish_Retreat_Letters_Invitations {
 	 * The permissions instance.
 	 *
 	 * @since 1.3.0
-	 * @var DFX_Parish_Retreat_Letters_Permissions
+	 * @var DFXPRL_Permissions
 	 */
 	private $permissions;
 
@@ -68,7 +68,7 @@ class DFX_Parish_Retreat_Letters_Invitations {
 	 * Get the single instance of the class.
 	 *
 	 * @since 1.3.0
-	 * @return DFX_Parish_Retreat_Letters_Invitations
+	 * @return DFXPRL_Invitations
 	 */
 	public static function get_instance() {
 		if ( is_null( self::$instance ) ) {
@@ -83,9 +83,9 @@ class DFX_Parish_Retreat_Letters_Invitations {
 	 * @since 1.3.0
 	 */
 	private function __construct() {
-		$this->database = DFX_Parish_Retreat_Letters_Database::get_instance();
-		$this->security = DFX_Parish_Retreat_Letters_Security::get_instance();
-		$this->permissions = DFX_Parish_Retreat_Letters_Permissions::get_instance();
+		$this->database = DFXPRL_Database::get_instance();
+		$this->security = DFXPRL_Security::get_instance();
+		$this->permissions = DFXPRL_Permissions::get_instance();
 		
 		// Initialize hooks for invitation handling
 		add_action( 'init', array( $this, 'handle_invitation_routes' ) );
@@ -565,19 +565,19 @@ class DFX_Parish_Retreat_Letters_Invitations {
 
 		$this->render_theme_header();
 		?>
-		<div class="dfx-prl-invitation-container">
-			<div class="dfx-prl-invitation-content">
+		<div class="dfxprl-invitation-container">
+			<div class="dfxprl-invitation-content">
 				<h1><?php esc_html_e( 'Retreat Invitation', 'dfx-parish-retreat-letters' ); ?></h1>
 				
 				<?php if ( $error_message ) : ?>
-					<div class="dfx-prl-error-notice">
+					<div class="dfxprl-error-notice">
 						<?php echo esc_html( $error_message ); ?>
 					</div>
 				<?php endif; ?>
 
-				<div class="dfx-prl-invitation-details">
+				<div class="dfxprl-invitation-details">
 					<h2><?php esc_html_e( 'You have been invited to:', 'dfx-parish-retreat-letters' ); ?></h2>
-					<div class="dfx-prl-retreat-info">
+					<div class="dfxprl-retreat-info">
 						<h3><?php echo esc_html( $retreat->name ); ?></h3>
 						<p><strong><?php esc_html_e( 'Location:', 'dfx-parish-retreat-letters' ); ?></strong> <?php echo esc_html( $retreat->location ); ?></p>
 						<p><strong><?php esc_html_e( 'Dates:', 'dfx-parish-retreat-letters' ); ?></strong> 
@@ -588,29 +588,29 @@ class DFX_Parish_Retreat_Letters_Invitations {
 					</div>
 				</div>
 
-				<form method="post" class="dfx-prl-invitation-form">
+				<form method="post" class="dfxprl-invitation-form">
 					<?php wp_nonce_field( 'accept_invitation_' . $invitation->token, 'invitation_nonce' ); ?>
 					
 					<h3><?php esc_html_e( 'Complete Your Profile', 'dfx-parish-retreat-letters' ); ?></h3>
 					
-					<div class="dfx-prl-form-group">
+					<div class="dfxprl-form-group">
 						<label for="first_name"><?php esc_html_e( 'First Name', 'dfx-parish-retreat-letters' ); ?></label>
 						<input type="text" id="first_name" name="first_name" value="<?php echo esc_attr( isset( $_POST['first_name'] ) ? sanitize_text_field( wp_unslash( $_POST['first_name'] ) ) : '' ); // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce verified on line 529 before processing ?>" required>
 					</div>
 
-					<div class="dfx-prl-form-group">
+					<div class="dfxprl-form-group">
 						<label for="last_name"><?php esc_html_e( 'Last Name', 'dfx-parish-retreat-letters' ); ?></label>
 						<input type="text" id="last_name" name="last_name" value="<?php echo esc_attr( isset( $_POST['last_name'] ) ? sanitize_text_field( wp_unslash( $_POST['last_name'] ) ) : '' ); // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce verified on line 529 before processing ?>" required>
 					</div>
 
-					<div class="dfx-prl-form-group">
-						<button type="submit" class="dfx-prl-accept-button">
+					<div class="dfxprl-form-group">
+						<button type="submit" class="dfxprl-accept-button">
 							<?php esc_html_e( 'Accept Invitation', 'dfx-parish-retreat-letters' ); ?>
 						</button>
 					</div>
 				</form>
 
-				<div class="dfx-prl-invitation-info">
+				<div class="dfxprl-invitation-info">
 					<h3><?php esc_html_e( 'What happens next?', 'dfx-parish-retreat-letters' ); ?></h3>
 					<ul>
 						<li><?php esc_html_e( 'A user account will be created for you automatically', 'dfx-parish-retreat-letters' ); ?></li>
@@ -642,13 +642,13 @@ class DFX_Parish_Retreat_Letters_Invitations {
 			border-radius: 8px;
 		}
 
-		.dfx-prl-invitation-content h1 {
+		.dfxprl-invitation-content h1 {
 			text-align: center;
 			color: #333;
 			margin-bottom: 2rem;
 		}
 
-		.dfx-prl-error-notice {
+		.dfxprl-error-notice {
 			background: #f8d7da;
 			color: #721c24;
 			padding: 1rem;
@@ -657,7 +657,7 @@ class DFX_Parish_Retreat_Letters_Invitations {
 			margin-bottom: 1.5rem;
 		}
 
-		.dfx-prl-retreat-info {
+		.dfxprl-retreat-info {
 			background: #f8f9fa;
 			padding: 1.5rem;
 			border-radius: 4px;
@@ -665,16 +665,16 @@ class DFX_Parish_Retreat_Letters_Invitations {
 			margin: 1rem 0;
 		}
 
-		.dfx-prl-retreat-info h3 {
+		.dfxprl-retreat-info h3 {
 			margin-top: 0;
 			color: #007cba;
 		}
 
-		.dfx-prl-form-group {
+		.dfxprl-form-group {
 			margin-bottom: 1.5rem;
 		}
 
-		.dfx-prl-form-group label {
+		.dfxprl-form-group label {
 			display: block;
 			margin-bottom: 0.5rem;
 			font-weight: 600;
@@ -723,7 +723,7 @@ class DFX_Parish_Retreat_Letters_Invitations {
 			border-left: 4px solid #0073aa;
 		}
 
-		.dfx-prl-invitation-info h3 {
+		.dfxprl-invitation-info h3 {
 			margin-top: 0;
 			color: #0073aa;
 		}
@@ -733,7 +733,7 @@ class DFX_Parish_Retreat_Letters_Invitations {
 			padding-left: 1.5rem;
 		}
 
-		.dfx-prl-invitation-info li {
+		.dfxprl-invitation-info li {
 			margin-bottom: 0.5rem;
 		}
 		';

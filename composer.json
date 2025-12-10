@@ -19,12 +19,12 @@
     },
     "autoload": {
         "psr-4": {
-            "DFX_Parish_Retreat_Letters\\": "includes/"
+            "DFXPRL\\": "includes/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "DFX_Parish_Retreat_Letters\\Tests\\": "tests/"
+            "DFXPRL\\Tests\\": "tests/"
         }
     },
     "scripts": {

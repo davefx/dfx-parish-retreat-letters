@@ -1,8 +1,8 @@
 <?php
 /**
- * Unit tests for DFX_Parish_Retreat_Letters_PrintLog class
+ * Unit tests for DFXPRL_PrintLog class
  *
- * @package DFX_Parish_Retreat_Letters
+ * @package DFXPRL
  */
 
 use PHPUnit\Framework\TestCase;
@@ -10,7 +10,7 @@ use Brain\Monkey;
 use Brain\Monkey\Functions;
 
 /**
- * Test class for DFX_Parish_Retreat_Letters_PrintLog
+ * Test class for DFXPRL_PrintLog
  */
 class PrintLogTest extends TestCase {
 
@@ -44,7 +44,7 @@ class PrintLogTest extends TestCase {
      * Test print action logging
      */
     public function testPrintActionLogging() {
-        $print_log = new DFX_Parish_Retreat_Letters_PrintLog();
+        $print_log = new DFXPRL_PrintLog();
         
         if (method_exists($print_log, 'log_print_action')) {
             $log_data = [
@@ -66,7 +66,7 @@ class PrintLogTest extends TestCase {
      * Test get print logs by attendant
      */
     public function testGetPrintLogsByAttendant() {
-        $print_log = new DFX_Parish_Retreat_Letters_PrintLog();
+        $print_log = new DFXPRL_PrintLog();
         
         if (method_exists($print_log, 'get_logs_by_attendant')) {
             $attendant_id = 1;
@@ -81,7 +81,7 @@ class PrintLogTest extends TestCase {
      * Test get print logs by date range
      */
     public function testGetPrintLogsByDateRange() {
-        $print_log = new DFX_Parish_Retreat_Letters_PrintLog();
+        $print_log = new DFXPRL_PrintLog();
         
         if (method_exists($print_log, 'get_logs_by_date_range')) {
             $start_date = '2024-01-01';
@@ -97,7 +97,7 @@ class PrintLogTest extends TestCase {
      * Test print statistics generation
      */
     public function testPrintStatisticsGeneration() {
-        $print_log = new DFX_Parish_Retreat_Letters_PrintLog();
+        $print_log = new DFXPRL_PrintLog();
         
         if (method_exists($print_log, 'generate_statistics')) {
             $result = $print_log->generate_statistics();
@@ -111,7 +111,7 @@ class PrintLogTest extends TestCase {
      * Test audit trail functionality
      */
     public function testAuditTrail() {
-        $print_log = new DFX_Parish_Retreat_Letters_PrintLog();
+        $print_log = new DFXPRL_PrintLog();
         
         if (method_exists($print_log, 'get_audit_trail')) {
             $filter_options = [
@@ -132,7 +132,7 @@ class PrintLogTest extends TestCase {
      * Test log data cleanup
      */
     public function testLogDataCleanup() {
-        $print_log = new DFX_Parish_Retreat_Letters_PrintLog();
+        $print_log = new DFXPRL_PrintLog();
         
         if (method_exists($print_log, 'cleanup_old_logs')) {
             $days_to_keep = 90;

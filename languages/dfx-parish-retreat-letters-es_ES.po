@@ -1815,8 +1815,8 @@ msgid "Welcome to %s - Your account details"
 msgstr "Bienvenido a %s - Detalles de tu cuenta"
 
 #: includes/class-security.php:139
-msgid "DFX Parish Retreat Letters: The encryption key is stored in the database. For better security, please define DFX_PARISH_RETREAT_LETTERS_ENCRYPTION_KEY in wp-config.php."
-msgstr "DFX Cartas de Retiro Parroquial: La clave de cifrado está almacenada en la base de datos. Para una mejor seguridad, por favor defina DFX_PARISH_RETREAT_LETTERS_ENCRYPTION_KEY en wp-config.php."
+msgid "DFX Parish Retreat Letters: The encryption key is stored in the database. For better security, please define DFXPRL_ENCRYPTION_KEY in wp-config.php."
+msgstr "DFX Cartas de Retiro Parroquial: La clave de cifrado está almacenada en la base de datos. Para una mejor seguridad, por favor defina DFXPRL_ENCRYPTION_KEY en wp-config.php."
 
 #: includes/class-security.php:141
 msgid "You can generate a secure key using the following code:"

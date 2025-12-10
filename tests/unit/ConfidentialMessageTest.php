@@ -1,8 +1,8 @@
 <?php
 /**
- * Unit tests for DFX_Parish_Retreat_Letters_ConfidentialMessage class
+ * Unit tests for DFXPRL_ConfidentialMessage class
  *
- * @package DFX_Parish_Retreat_Letters
+ * @package DFXPRL
  */
 
 use PHPUnit\Framework\TestCase;
@@ -10,7 +10,7 @@ use Brain\Monkey;
 use Brain\Monkey\Functions;
 
 /**
- * Test class for DFX_Parish_Retreat_Letters_ConfidentialMessage
+ * Test class for DFXPRL_ConfidentialMessage
  */
 class ConfidentialMessageTest extends TestCase {
 
@@ -48,11 +48,11 @@ class ConfidentialMessageTest extends TestCase {
      */
     public function testCreateMessageWithEncryption() {
         // Mock the database instance
-        $database_mock = $this->createMock('DFX_Parish_Retreat_Letters_Database');
+        $database_mock = $this->createMock('DFXPRL_Database');
         $database_mock->method('get_messages_table')->willReturn('wp_dfx_messages');
         
         // Mock the security instance
-        $security_mock = $this->createMock('DFX_Parish_Retreat_Letters_Security');
+        $security_mock = $this->createMock('DFXPRL_Security');
         $security_mock->method('encrypt_data')
                      ->willReturn([
                          'encrypted' => 'encrypted_content_here',
@@ -69,7 +69,7 @@ class ConfidentialMessageTest extends TestCase {
              ->willReturn(true);
         
         // Create message instance
-        $message = new DFX_Parish_Retreat_Letters_ConfidentialMessage();
+        $message = new DFXPRL_ConfidentialMessage();
         
         // Use reflection to set the private properties
         $reflection = new ReflectionClass($message);
@@ -96,7 +96,7 @@ class ConfidentialMessageTest extends TestCase {
      * Test message creation with invalid data
      */
     public function testCreateMessageWithInvalidData() {
-        $message = new DFX_Parish_Retreat_Letters_ConfidentialMessage();
+        $message = new DFXPRL_ConfidentialMessage();
         
         $invalid_data = [
             'attendant_id' => '', // Missing required field
@@ -112,10 +112,10 @@ class ConfidentialMessageTest extends TestCase {
      */
     public function testCreateMessageWithEncryptionFailure() {
         // Mock the security instance to return false (encryption failure)
-        $security_mock = $this->createMock('DFX_Parish_Retreat_Letters_Security');
+        $security_mock = $this->createMock('DFXPRL_Security');
         $security_mock->method('encrypt_data')->willReturn(false);
         
-        $message = new DFX_Parish_Retreat_Letters_ConfidentialMessage();
+        $message = new DFXPRL_ConfidentialMessage();
         
         // Use reflection to set the security property
         $reflection = new ReflectionClass($message);
@@ -139,11 +139,11 @@ class ConfidentialMessageTest extends TestCase {
      */
     public function testGetMessageByIdWithDecryption() {
         // Mock the database instance
-        $database_mock = $this->createMock('DFX_Parish_Retreat_Letters_Database');
+        $database_mock = $this->createMock('DFXPRL_Database');
         $database_mock->method('get_messages_table')->willReturn('wp_dfx_messages');
         
         // Mock the security instance
-        $security_mock = $this->createMock('DFX_Parish_Retreat_Letters_Security');
+        $security_mock = $this->createMock('DFXPRL_Security');
         $security_mock->method('decrypt_data')
                      ->willReturn('Decrypted message content');
         
@@ -170,7 +170,7 @@ class ConfidentialMessageTest extends TestCase {
              ->willReturn("SELECT * FROM wp_dfx_messages WHERE id = 1");
         
         // Create message instance and inject mocked dependencies
-        $message = new DFX_Parish_Retreat_Letters_ConfidentialMessage();
+        $message = new DFXPRL_ConfidentialMessage();
         
         $reflection = new ReflectionClass($message);
         $database_property = $reflection->getProperty('database');
@@ -193,11 +193,11 @@ class ConfidentialMessageTest extends TestCase {
      */
     public function testGetMessagesByAttendantId() {
         // Mock the database instance
-        $database_mock = $this->createMock('DFX_Parish_Retreat_Letters_Database');
+        $database_mock = $this->createMock('DFXPRL_Database');
         $database_mock->method('get_messages_table')->willReturn('wp_dfx_messages');
         
         // Mock the security instance
-        $security_mock = $this->createMock('DFX_Parish_Retreat_Letters_Security');
+        $security_mock = $this->createMock('DFXPRL_Security');
         $security_mock->method('decrypt_data')
                      ->willReturn('Decrypted message content');
         
@@ -233,7 +233,7 @@ class ConfidentialMessageTest extends TestCase {
              ->willReturn("SELECT * FROM wp_dfx_messages WHERE attendant_id = 1 ORDER BY created_at DESC");
         
         // Create message instance and inject mocked dependencies
-        $message = new DFX_Parish_Retreat_Letters_ConfidentialMessage();
+        $message = new DFXPRL_ConfidentialMessage();
         
         $reflection = new ReflectionClass($message);
         $database_property = $reflection->getProperty('database');
@@ -261,11 +261,11 @@ class ConfidentialMessageTest extends TestCase {
      */
     public function testUpdateMessage() {
         // Mock the database instance
-        $database_mock = $this->createMock('DFX_Parish_Retreat_Letters_Database');
+        $database_mock = $this->createMock('DFXPRL_Database');
         $database_mock->method('get_messages_table')->willReturn('wp_dfx_messages');
         
         // Mock the security instance
-        $security_mock = $this->createMock('DFX_Parish_Retreat_Letters_Security');
+        $security_mock = $this->createMock('DFXPRL_Security');
         $security_mock->method('encrypt_data')
                      ->willReturn([
                          'encrypted' => 'new_encrypted_content',
@@ -280,7 +280,7 @@ class ConfidentialMessageTest extends TestCase {
              ->willReturn(1);
         
         // Create message instance and inject mocked dependencies
-        $message = new DFX_Parish_Retreat_Letters_ConfidentialMessage();
+        $message = new DFXPRL_ConfidentialMessage();
         
         $reflection = new ReflectionClass($message);
         $database_property = $reflection->getProperty('database');
@@ -306,7 +306,7 @@ class ConfidentialMessageTest extends TestCase {
      */
     public function testDeleteMessage() {
         // Mock the database instance
-        $database_mock = $this->createMock('DFX_Parish_Retreat_Letters_Database');
+        $database_mock = $this->createMock('DFXPRL_Database');
         $database_mock->method('get_messages_table')->willReturn('wp_dfx_messages');
         
         // Mock global wpdb
@@ -317,7 +317,7 @@ class ConfidentialMessageTest extends TestCase {
              ->willReturn(1);
         
         // Create message instance and inject mocked database
-        $message = new DFX_Parish_Retreat_Letters_ConfidentialMessage();
+        $message = new DFXPRL_ConfidentialMessage();
         
         $reflection = new ReflectionClass($message);
         $database_property = $reflection->getProperty('database');
@@ -332,7 +332,7 @@ class ConfidentialMessageTest extends TestCase {
      * Test message data validation
      */
     public function testMessageDataValidation() {
-        $message = new DFX_Parish_Retreat_Letters_ConfidentialMessage();
+        $message = new DFXPRL_ConfidentialMessage();
         
         $reflection = new ReflectionClass($message);
         
@@ -376,7 +376,7 @@ class ConfidentialMessageTest extends TestCase {
      * Test message data sanitization
      */
     public function testMessageDataSanitization() {
-        $message = new DFX_Parish_Retreat_Letters_ConfidentialMessage();
+        $message = new DFXPRL_ConfidentialMessage();
         
         $reflection = new ReflectionClass($message);
         
@@ -425,11 +425,11 @@ class ConfidentialMessageTest extends TestCase {
      */
     public function testSearchMessages() {
         // Mock the database instance
-        $database_mock = $this->createMock('DFX_Parish_Retreat_Letters_Database');
+        $database_mock = $this->createMock('DFXPRL_Database');
         $database_mock->method('get_messages_table')->willReturn('wp_dfx_messages');
         
         // Mock the security instance
-        $security_mock = $this->createMock('DFX_Parish_Retreat_Letters_Security');
+        $security_mock = $this->createMock('DFXPRL_Security');
         $security_mock->method('decrypt_data')
                      ->willReturn('Search result message');
         
@@ -451,7 +451,7 @@ class ConfidentialMessageTest extends TestCase {
              ->willReturn($search_results);
         
         // Create message instance and inject mocked dependencies
-        $message = new DFX_Parish_Retreat_Letters_ConfidentialMessage();
+        $message = new DFXPRL_ConfidentialMessage();
         
         $reflection = new ReflectionClass($message);
         $database_property = $reflection->getProperty('database');
@@ -479,7 +479,7 @@ class ConfidentialMessageTest extends TestCase {
      */
     public function testMarkMessageAsRead() {
         // Mock the database instance
-        $database_mock = $this->createMock('DFX_Parish_Retreat_Letters_Database');
+        $database_mock = $this->createMock('DFXPRL_Database');
         $database_mock->method('get_messages_table')->willReturn('wp_dfx_messages');
         
         // Mock global wpdb
@@ -495,7 +495,7 @@ class ConfidentialMessageTest extends TestCase {
              ->willReturn(1);
         
         // Create message instance and inject mocked database
-        $message = new DFX_Parish_Retreat_Letters_ConfidentialMessage();
+        $message = new DFXPRL_ConfidentialMessage();
         
         $reflection = new ReflectionClass($message);
         $database_property = $reflection->getProperty('database');
@@ -515,7 +515,7 @@ class ConfidentialMessageTest extends TestCase {
      */
     public function testGetUnreadMessageCount() {
         // Mock the database instance
-        $database_mock = $this->createMock('DFX_Parish_Retreat_Letters_Database');
+        $database_mock = $this->createMock('DFXPRL_Database');
         $database_mock->method('get_messages_table')->willReturn('wp_dfx_messages');
         
         // Mock global wpdb
@@ -530,7 +530,7 @@ class ConfidentialMessageTest extends TestCase {
              ->willReturn("SELECT COUNT(*) FROM wp_dfx_messages WHERE attendant_id = 1 AND read_at IS NULL");
         
         // Create message instance and inject mocked database
-        $message = new DFX_Parish_Retreat_Letters_ConfidentialMessage();
+        $message = new DFXPRL_ConfidentialMessage();
         
         $reflection = new ReflectionClass($message);
         $database_property = $reflection->getProperty('database');
@@ -549,7 +549,7 @@ class ConfidentialMessageTest extends TestCase {
      * Test constructor initializes dependencies
      */
     public function testConstructorInitializesDependencies() {
-        $message = new DFX_Parish_Retreat_Letters_ConfidentialMessage();
+        $message = new DFXPRL_ConfidentialMessage();
         
         $reflection = new ReflectionClass($message);
         
@@ -569,7 +569,7 @@ class ConfidentialMessageTest extends TestCase {
      */
     public function testGetIncludesAttendantInformation() {
         // Mock the database instance
-        $database_mock = $this->createMock('DFX_Parish_Retreat_Letters_Database');
+        $database_mock = $this->createMock('DFXPRL_Database');
         $database_mock->method('get_messages_table')->willReturn('wp_dfx_messages');
         $database_mock->method('get_attendants_table')->willReturn('wp_dfx_attendants');
         
@@ -599,7 +599,7 @@ class ConfidentialMessageTest extends TestCase {
              ->willReturn("SELECT m.*, a.retreat_id, a.name as attendant_name, a.surnames as attendant_surnames FROM wp_dfx_messages m INNER JOIN wp_dfx_attendants a ON m.attendant_id = a.id WHERE m.id = 1");
         
         // Create message instance and inject mocked dependencies
-        $message = new DFX_Parish_Retreat_Letters_ConfidentialMessage();
+        $message = new DFXPRL_ConfidentialMessage();
         
         $reflection = new ReflectionClass($message);
         $database_property = $reflection->getProperty('database');
@@ -620,7 +620,7 @@ class ConfidentialMessageTest extends TestCase {
      */
     public function testGetCountByAttendant() {
         // Mock the database instance
-        $database_mock = $this->createMock('DFX_Parish_Retreat_Letters_Database');
+        $database_mock = $this->createMock('DFXPRL_Database');
         $database_mock->method('get_messages_table')->willReturn('wp_dfx_messages');
         $database_mock->method('get_attendants_table')->willReturn('wp_dfx_attendants');
         
@@ -638,7 +638,7 @@ class ConfidentialMessageTest extends TestCase {
              ->willReturn("SELECT COUNT(*) FROM wp_dfx_messages m INNER JOIN wp_dfx_attendants a ON m.attendant_id = a.id WHERE m.attendant_id = 1");
         
         // Create message instance and inject mocked database
-        $message = new DFX_Parish_Retreat_Letters_ConfidentialMessage();
+        $message = new DFXPRL_ConfidentialMessage();
         
         $reflection = new ReflectionClass($message);
         $database_property = $reflection->getProperty('database');
@@ -654,7 +654,7 @@ class ConfidentialMessageTest extends TestCase {
      */
     public function testGetNonPrintedCountByAttendant() {
         // Mock the database instance
-        $database_mock = $this->createMock('DFX_Parish_Retreat_Letters_Database');
+        $database_mock = $this->createMock('DFXPRL_Database');
         $database_mock->method('get_messages_table')->willReturn('wp_dfx_messages');
         $database_mock->method('get_attendants_table')->willReturn('wp_dfx_attendants');
         $database_mock->method('get_message_print_log_table')->willReturn('wp_dfx_message_print_log');
@@ -673,7 +673,7 @@ class ConfidentialMessageTest extends TestCase {
              ->willReturn("SELECT COUNT(*) FROM wp_dfx_messages m INNER JOIN wp_dfx_attendants a ON m.attendant_id = a.id LEFT JOIN wp_dfx_message_print_log p ON m.id = p.message_id WHERE m.attendant_id = 1 AND p.id IS NULL");
         
         // Create message instance and inject mocked database
-        $message = new DFX_Parish_Retreat_Letters_ConfidentialMessage();
+        $message = new DFXPRL_ConfidentialMessage();
         
         $reflection = new ReflectionClass($message);
         $database_property = $reflection->getProperty('database');
@@ -689,7 +689,7 @@ class ConfidentialMessageTest extends TestCase {
      */
     public function testGetNonPrintedCountWithMessageTypeFilter() {
         // Mock the database instance
-        $database_mock = $this->createMock('DFX_Parish_Retreat_Letters_Database');
+        $database_mock = $this->createMock('DFXPRL_Database');
         $database_mock->method('get_messages_table')->willReturn('wp_dfx_messages');
         $database_mock->method('get_attendants_table')->willReturn('wp_dfx_attendants');
         $database_mock->method('get_message_print_log_table')->willReturn('wp_dfx_message_print_log');
@@ -708,7 +708,7 @@ class ConfidentialMessageTest extends TestCase {
              ->willReturn("SELECT COUNT(*) FROM wp_dfx_messages m INNER JOIN wp_dfx_attendants a ON m.attendant_id = a.id LEFT JOIN wp_dfx_message_print_log p ON m.id = p.message_id WHERE m.attendant_id = 1 AND m.message_type = 'personal' AND p.id IS NULL");
         
         // Create message instance and inject mocked database
-        $message = new DFX_Parish_Retreat_Letters_ConfidentialMessage();
+        $message = new DFXPRL_ConfidentialMessage();
         
         $reflection = new ReflectionClass($message);
         $database_property = $reflection->getProperty('database');
@@ -724,7 +724,7 @@ class ConfidentialMessageTest extends TestCase {
      */
     public function testGetNonPrintedCountWithSearchFilter() {
         // Mock the database instance
-        $database_mock = $this->createMock('DFX_Parish_Retreat_Letters_Database');
+        $database_mock = $this->createMock('DFXPRL_Database');
         $database_mock->method('get_messages_table')->willReturn('wp_dfx_messages');
         $database_mock->method('get_attendants_table')->willReturn('wp_dfx_attendants');
         $database_mock->method('get_message_print_log_table')->willReturn('wp_dfx_message_print_log');
@@ -743,7 +743,7 @@ class ConfidentialMessageTest extends TestCase {
              ->willReturn("SELECT COUNT(*) FROM wp_dfx_messages m INNER JOIN wp_dfx_attendants a ON m.attendant_id = a.id LEFT JOIN wp_dfx_message_print_log p ON m.id = p.message_id WHERE m.attendant_id = 1 AND (a.name LIKE '%John%' OR a.surnames LIKE '%John%' OR m.sender_name LIKE '%John%') AND p.id IS NULL");
         
         // Create message instance and inject mocked database
-        $message = new DFX_Parish_Retreat_Letters_ConfidentialMessage();
+        $message = new DFXPRL_ConfidentialMessage();
         
         $reflection = new ReflectionClass($message);
         $database_property = $reflection->getProperty('database');
@@ -759,7 +759,7 @@ class ConfidentialMessageTest extends TestCase {
      */
     public function testGetNonPrintedCountReturnsZeroWhenAllPrinted() {
         // Mock the database instance
-        $database_mock = $this->createMock('DFX_Parish_Retreat_Letters_Database');
+        $database_mock = $this->createMock('DFXPRL_Database');
         $database_mock->method('get_messages_table')->willReturn('wp_dfx_messages');
         $database_mock->method('get_attendants_table')->willReturn('wp_dfx_attendants');
         $database_mock->method('get_message_print_log_table')->willReturn('wp_dfx_message_print_log');
@@ -778,7 +778,7 @@ class ConfidentialMessageTest extends TestCase {
              ->willReturn("SELECT COUNT(*) FROM wp_dfx_messages m INNER JOIN wp_dfx_attendants a ON m.attendant_id = a.id LEFT JOIN wp_dfx_message_print_log p ON m.id = p.message_id WHERE m.attendant_id = 1 AND p.id IS NULL");
         
         // Create message instance and inject mocked database
-        $message = new DFX_Parish_Retreat_Letters_ConfidentialMessage();
+        $message = new DFXPRL_ConfidentialMessage();
         
         $reflection = new ReflectionClass($message);
         $database_property = $reflection->getProperty('database');
@@ -794,7 +794,7 @@ class ConfidentialMessageTest extends TestCase {
      */
     public function testGetNonPrintedCountReturnsInteger() {
         // Mock the database instance
-        $database_mock = $this->createMock('DFX_Parish_Retreat_Letters_Database');
+        $database_mock = $this->createMock('DFXPRL_Database');
         $database_mock->method('get_messages_table')->willReturn('wp_dfx_messages');
         $database_mock->method('get_attendants_table')->willReturn('wp_dfx_attendants');
         $database_mock->method('get_message_print_log_table')->willReturn('wp_dfx_message_print_log');
@@ -813,7 +813,7 @@ class ConfidentialMessageTest extends TestCase {
              ->willReturn("SELECT COUNT(*) FROM wp_dfx_messages m INNER JOIN wp_dfx_attendants a ON m.attendant_id = a.id LEFT JOIN wp_dfx_message_print_log p ON m.id = p.message_id WHERE m.attendant_id = 1 AND p.id IS NULL");
         
         // Create message instance and inject mocked database
-        $message = new DFX_Parish_Retreat_Letters_ConfidentialMessage();
+        $message = new DFXPRL_ConfidentialMessage();
         
         $reflection = new ReflectionClass($message);
         $database_property = $reflection->getProperty('database');

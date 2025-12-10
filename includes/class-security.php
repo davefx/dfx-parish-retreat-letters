@@ -7,8 +7,8 @@
  * @link       https://github.com/davefx/dfx-parish-retreat-letters
  * @since      1.2.0
  *
- * @package    DFX_Parish_Retreat_Letters
- * @subpackage DFX_Parish_Retreat_Letters/includes
+ * @package    DFXPRL
+ * @subpackage DFXPRL/includes
  */
 
 /**
@@ -18,17 +18,17 @@
  * AES-256 encryption, token generation, and IP anonymization.
  *
  * @since      1.2.0
- * @package    DFX_Parish_Retreat_Letters
- * @subpackage DFX_Parish_Retreat_Letters/includes
+ * @package    DFXPRL
+ * @subpackage DFXPRL/includes
  * @author     DaveFX
  */
-class DFX_Parish_Retreat_Letters_Security {
+class DFXPRL_Security {
 
 	/**
 	 * The single instance of the class.
 	 *
 	 * @since 1.2.0
-	 * @var DFX_Parish_Retreat_Letters_Security|null
+	 * @var DFXPRL_Security|null
 	 */
 	private static $instance = null;
 
@@ -60,7 +60,7 @@ class DFX_Parish_Retreat_Letters_Security {
 	 * Get the single instance of the class.
 	 *
 	 * @since 1.2.0
-	 * @return DFX_Parish_Retreat_Letters_Security
+	 * @return DFXPRL_Security
 	 */
 	public static function get_instance() {
 		if ( is_null( self::$instance ) ) {
@@ -105,41 +105,53 @@ class DFX_Parish_Retreat_Letters_Security {
 	 */
 	private function get_encryption_key($show_message = false) {
 		// Check if key is defined in wp-config.php (recommended for production)
-		if ( defined( 'DFX_PARISH_RETREAT_LETTERS_ENCRYPTION_KEY' ) ) {
-
+		// Support both new and old constant names for backward compatibility
+		$constant_key = null;
+		$constant_name = null;
+		
+		if ( defined( 'DFXPRL_ENCRYPTION_KEY' ) ) {
+			$constant_key = DFXPRL_ENCRYPTION_KEY;
+			$constant_name = 'DFXPRL_ENCRYPTION_KEY';
+		} elseif ( defined( 'DFX_PARISH_RETREAT_LETTERS_ENCRYPTION_KEY' ) ) {
+			// Backward compatibility: support old constant name
+			$constant_key = DFX_PARISH_RETREAT_LETTERS_ENCRYPTION_KEY;
+			$constant_name = 'DFX_PARISH_RETREAT_LETTERS_ENCRYPTION_KEY';
+		}
+		
+		if ( $constant_key !== null ) {
 			// Check if we also have it in options, and if so, remove it to avoid duplication
-			$defined_in_option = get_option( 'dfx_parish_retreat_letters_encryption_key' );
+			$defined_in_option = get_option( 'dfxprl_encryption_key' );
 			if ( $defined_in_option ) {
-				if ( $defined_in_option !== DFX_PARISH_RETREAT_LETTERS_ENCRYPTION_KEY ) {
+				if ( $defined_in_option !== $constant_key ) {
 					// If the option value does not match the defined constant, show a critical error
 					// message in the backend with an option to remove the database key
 					add_action( 'admin_notices', array( $this, 'display_encryption_key_mismatch_notice' ) );
 				} else {
 					// If they match, we can safely delete the option
-					delete_option( 'dfx_parish_retreat_letters_encryption_key' );
+					delete_option( 'dfxprl_encryption_key' );
 				}
 			}
 
-			return DFX_PARISH_RETREAT_LETTERS_ENCRYPTION_KEY;
+			return $constant_key;
 		}
 
 		// Generate and store key in options as fallback
-		$key = get_option( 'dfx_parish_retreat_letters_encryption_key' );
+		$key = get_option( 'dfxprl_encryption_key' );
 		if ( ! $key ) {
 			$key = $this->generate_secure_key();
 			// Store the key in options for easy access
-			update_option( 'dfx_parish_retreat_letters_encryption_key', $key );
+			update_option( 'dfxprl_encryption_key', $key );
 		}
 
 		// Generate a warning message in the backend, so the admin knows the key is stored in the database
 		// and with instructions to move it to wp-config.php
-		if ( $show_message && is_admin() && ! defined( 'DFX_PARISH_RETREAT_LETTERS_ENCRYPTION_KEY' ) ) {
+		if ( $show_message && is_admin() && ! defined( 'DFXPRL_ENCRYPTION_KEY' ) && ! defined( 'DFX_PARISH_RETREAT_LETTERS_ENCRYPTION_KEY' ) ) {
 			add_action( 'admin_notices', function() use ( $key ) {
 				echo '<div class="notice notice-warning"><p>';
-				esc_html_e( 'DFX Parish Retreat Letters: The encryption key is stored in the database. For better security, please define DFX_PARISH_RETREAT_LETTERS_ENCRYPTION_KEY in wp-config.php.', 'dfx-parish-retreat-letters' );
+				esc_html_e( 'DFX Parish Retreat Letters: The encryption key is stored in the database. For better security, please define DFXPRL_ENCRYPTION_KEY in wp-config.php.', 'dfx-parish-retreat-letters' );
 				echo '<br>';
 				esc_html_e( 'You can generate a secure key using the following code:', 'dfx-parish-retreat-letters' );
-				echo '<br/><code>define(\'DFX_PARISH_RETREAT_LETTERS_ENCRYPTION_KEY\', \'' . esc_html( $key ) . '\');</code><br/>';
+				echo '<br/><code>define(\'DFXPRL_ENCRYPTION_KEY\', \'' . esc_html( $key ) . '\');</code><br/>';
 				esc_html_e( 'Place this line in your wp-config.php file to secure the key.', 'dfx-parish-retreat-letters' );
 				echo '</p></div>';
 			} );
@@ -165,7 +177,7 @@ class DFX_Parish_Retreat_Letters_Security {
 		wp_enqueue_script( 'jquery' );
 		add_action( 'admin_print_footer_scripts', array( $this, 'output_encryption_key_mismatch_script' ) );
 		?>
-		<div class="notice notice-error" id="dfx-prl-encryption-key-mismatch-notice">
+		<div class="notice notice-error" id="dfxprl-encryption-key-mismatch-notice">
 			<p>
 				<strong><?php esc_html_e( 'DFX Parish Retreat Letters: Encryption Key Mismatch', 'dfx-parish-retreat-letters' ); ?></strong>
 			</p>
@@ -184,10 +196,10 @@ class DFX_Parish_Retreat_Letters_Security {
 				<li><?php esc_html_e( 'Remove the key from the database to use the wp-config.php key (click the button below)', 'dfx-parish-retreat-letters' ); ?></li>
 			</ul>
 			<p>
-				<button type="button" id="dfx-prl-remove-db-key-btn" class="button button-primary" data-nonce="<?php echo esc_attr( $nonce ); ?>">
+				<button type="button" id="dfxprl-remove-db-key-btn" class="button button-primary" data-nonce="<?php echo esc_attr( $nonce ); ?>">
 					<?php esc_html_e( 'Remove Database Key and Use wp-config.php Key', 'dfx-parish-retreat-letters' ); ?>
 				</button>
-				<span id="dfx-prl-remove-db-key-status" style="margin-left: 10px;"></span>
+				<span id="dfxprl-remove-db-key-status" style="margin-left: 10px;"></span>
 			</p>
 		</div>
 		<?php
@@ -202,9 +214,9 @@ class DFX_Parish_Retreat_Letters_Security {
 		?>
 		<script type="text/javascript">
 		jQuery(document).ready(function($) {
-			$('#dfx-prl-remove-db-key-btn').on('click', function() {
+			$('#dfxprl-remove-db-key-btn').on('click', function() {
 				var $button = $(this);
-				var $status = $('#dfx-prl-remove-db-key-status');
+				var $status = $('#dfxprl-remove-db-key-status');
 				var nonce = $button.data('nonce');
 
 				if (!confirm('<?php echo esc_js( __( 'Are you sure you want to remove the encryption key from the database? Any messages encrypted with the old key will become unreadable. This action cannot be undone.', 'dfx-parish-retreat-letters' ) ); ?>')) {
@@ -218,13 +230,13 @@ class DFX_Parish_Retreat_Letters_Security {
 					url: ajaxurl,
 					type: 'POST',
 					data: {
-						action: 'dfx_prl_remove_db_encryption_key',
+						action: 'dfxprl_remove_db_encryption_key',
 						nonce: nonce
 					},
 					success: function(response) {
 						if (response.success) {
 							$status.html('<span style="color: green;">' + response.data.message + '</span>');
-							$('#dfx-prl-encryption-key-mismatch-notice').fadeOut(2000, function() {
+							$('#dfxprl-encryption-key-mismatch-notice').fadeOut(2000, function() {
 								$(this).remove();
 							});
 						} else {
@@ -253,7 +265,7 @@ class DFX_Parish_Retreat_Letters_Security {
 	 * @return bool True if the key was successfully removed, false otherwise.
 	 */
 	public function remove_encryption_key_from_database() {
-		return delete_option( 'dfx_parish_retreat_letters_encryption_key' );
+		return delete_option( 'dfxprl_encryption_key' );
 	}
 
 	/**
@@ -263,7 +275,7 @@ class DFX_Parish_Retreat_Letters_Security {
 	 * @return bool True if a non-empty key exists in the database, false otherwise.
 	 */
 	public function has_database_encryption_key() {
-		$key = get_option( 'dfx_parish_retreat_letters_encryption_key' );
+		$key = get_option( 'dfxprl_encryption_key' );
 		return ! empty( $key );
 	}
 
@@ -304,7 +316,7 @@ class DFX_Parish_Retreat_Letters_Security {
 	 */
 	public function generate_unique_message_token() {
 		global $wpdb;
-		$database = DFX_Parish_Retreat_Letters_Database::get_instance();
+		$database = DFXPRL_Database::get_instance();
 
 		do {
 			$token = $this->generate_secure_token();
@@ -453,7 +465,7 @@ class DFX_Parish_Retreat_Letters_Security {
 	 */
 	public function anonymize_old_ip_addresses( $days_old = 30 ) {
 		global $wpdb;
-		$database = DFX_Parish_Retreat_Letters_Database::get_instance();
+		$database = DFXPRL_Database::get_instance();
 
 		$cutoff_date = gmdate( 'Y-m-d H:i:s', strtotime( "-{$days_old} days" ) );
 
@@ -781,7 +793,7 @@ class DFX_Parish_Retreat_Letters_Security {
 	 * @return bool True if within rate limit, false if exceeded.
 	 */
 	public function is_within_rate_limit( $ip_address, $max_attempts = 5, $time_window = 60 ) {
-		$transient_key = 'dfx_prl_message_rate_limit_' . md5( $ip_address );
+		$transient_key = 'dfxprl_message_rate_limit_' . md5( $ip_address );
 		$attempts = get_transient( $transient_key );
 
 		if ( $attempts === false ) {
@@ -801,7 +813,7 @@ class DFX_Parish_Retreat_Letters_Security {
 	 * @return int New attempt count.
 	 */
 	public function increment_rate_limit( $ip_address, $time_window = 60 ) {
-		$transient_key = 'dfx_prl_message_rate_limit_' . md5( $ip_address );
+		$transient_key = 'dfxprl_message_rate_limit_' . md5( $ip_address );
 		$attempts = get_transient( $transient_key );
 
 		if ( $attempts === false ) {
@@ -843,7 +855,7 @@ class DFX_Parish_Retreat_Letters_Security {
 	 * @return bool True on success, false on failure.
 	 */
 	public function reset_rate_limit( $ip_address ) {
-		$transient_key = 'dfx_prl_message_rate_limit_' . md5( $ip_address );
+		$transient_key = 'dfxprl_message_rate_limit_' . md5( $ip_address );
 		return delete_transient( $transient_key );
 	}
 
@@ -857,9 +869,9 @@ class DFX_Parish_Retreat_Letters_Security {
 		global $wpdb;
 
 		// Delete all rate limit transients
-		$count = $wpdb->query( "DELETE FROM {$wpdb->options} WHERE option_name LIKE '_transient_dfx_prl_message_rate_limit_%'" ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
+		$count = $wpdb->query( "DELETE FROM {$wpdb->options} WHERE option_name LIKE '_transient_dfxprl_message_rate_limit_%'" ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
 		// Also delete timeout transients
-		$wpdb->query( "DELETE FROM {$wpdb->options} WHERE option_name LIKE '_transient_timeout_dfx_prl_message_rate_limit_%'" ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
+		$wpdb->query( "DELETE FROM {$wpdb->options} WHERE option_name LIKE '_transient_timeout_dfxprl_message_rate_limit_%'" ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
 		
 		return $count ? $count : 0;
 	}
@@ -872,7 +884,7 @@ class DFX_Parish_Retreat_Letters_Security {
 	 * @return array Array with 'attempts' and 'time_remaining' keys.
 	 */
 	public function get_rate_limit_status( $ip_address ) {
-		$transient_key = 'dfx_prl_message_rate_limit_' . md5( $ip_address );
+		$transient_key = 'dfxprl_message_rate_limit_' . md5( $ip_address );
 		$attempts = get_transient( $transient_key );
 
 		if ( $attempts === false ) {
@@ -909,7 +921,7 @@ class DFX_Parish_Retreat_Letters_Security {
 		);
 
 		// Store in transient for admin review
-		$violations = get_transient( 'dfx_prl_message_rate_limit_violations' ) ?: array();
+		$violations = get_transient( 'dfxprl_message_rate_limit_violations' ) ?: array();
 		$violations[] = $log_entry;
 
 		// Keep only last 100 violations
@@ -917,6 +929,6 @@ class DFX_Parish_Retreat_Letters_Security {
 			$violations = array_slice( $violations, -100 );
 		}
 
-		set_transient( 'dfx_prl_message_rate_limit_violations', $violations, 24 * 60 * 60 ); // 24 hours
+		set_transient( 'dfxprl_message_rate_limit_violations', $violations, 24 * 60 * 60 ); // 24 hours
 	}
 }

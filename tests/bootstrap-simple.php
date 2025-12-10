@@ -4,7 +4,7 @@
  *
  * This bootstrap is for testing that doesn't require WordPress
  *
- * @package DFX_Parish_Retreat_Letters
+ * @package DFXPRL
  */
 
 // Set error reporting
@@ -152,20 +152,20 @@ if (!function_exists('wp_mkdir_p')) {
 }
 
 // Define plugin activation/deactivation functions for testing
-if (!function_exists('activate_dfx_parish_retreat_letters')) {
-    function activate_dfx_parish_retreat_letters() {
+if (!function_exists('activate_dfxprl')) {
+    function activate_dfxprl() {
         // Mock activation function
     }
 }
 
-if (!function_exists('deactivate_dfx_parish_retreat_letters')) {
-    function deactivate_dfx_parish_retreat_letters() {
+if (!function_exists('deactivate_dfxprl')) {
+    function deactivate_dfxprl() {
         // Mock deactivation function
     }
 }
 
-if (!function_exists('run_dfx_parish_retreat_letters')) {
-    function run_dfx_parish_retreat_letters() {
+if (!function_exists('run_dfxprl')) {
+    function run_dfxprl() {
         // Mock run function
     }
 }

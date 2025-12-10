@@ -7,8 +7,8 @@
  * @link       https://github.com/davefx/dfx-parish-retreat-letters
  * @since      1.0.0
  *
- * @package    DFX_Parish_Retreat_Letters
- * @subpackage DFX_Parish_Retreat_Letters/includes
+ * @package    DFXPRL
+ * @subpackage DFXPRL/includes
  */
 
 /**
@@ -18,17 +18,17 @@
  * pages, and AJAX handlers.
  *
  * @since      1.0.0
- * @package    DFX_Parish_Retreat_Letters
- * @subpackage DFX_Parish_Retreat_Letters/includes
+ * @package    DFXPRL
+ * @subpackage DFXPRL/includes
  * @author     DaveFX
  */
-class DFX_Parish_Retreat_Letters_Admin {
+class DFXPRL_Admin {
 
 	/**
 	 * The single instance of the class.
 	 *
 	 * @since 1.0.0
-	 * @var DFX_Parish_Retreat_Letters_Admin|null
+	 * @var DFXPRL_Admin|null
 	 */
 	private static $instance = null;
 
@@ -36,7 +36,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 	 * The retreat model instance.
 	 *
 	 * @since 1.0.0
-	 * @var DFX_Parish_Retreat_Letters_Retreat
+	 * @var DFXPRL_Retreat
 	 */
 	private $retreat_model;
 
@@ -44,7 +44,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 	 * The attendant model instance.
 	 *
 	 * @since 1.0.0
-	 * @var DFX_Parish_Retreat_Letters_Attendant
+	 * @var DFXPRL_Attendant
 	 */
 	private $attendant_model;
 
@@ -52,7 +52,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 	 * The confidential message model instance.
 	 *
 	 * @since 1.2.0
-	 * @var DFX_Parish_Retreat_Letters_ConfidentialMessage
+	 * @var DFXPRL_ConfidentialMessage
 	 */
 	private $message_model;
 
@@ -60,7 +60,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 	 * The message file model instance.
 	 *
 	 * @since 1.2.0
-	 * @var DFX_Parish_Retreat_Letters_MessageFile
+	 * @var DFXPRL_MessageFile
 	 */
 	private $file_model;
 
@@ -68,7 +68,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 	 * The print log model instance.
 	 *
 	 * @since 1.2.0
-	 * @var DFX_Parish_Retreat_Letters_PrintLog
+	 * @var DFXPRL_PrintLog
 	 */
 	private $print_log_model;
 
@@ -76,7 +76,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 	 * The security instance.
 	 *
 	 * @since 1.2.0
-	 * @var DFX_Parish_Retreat_Letters_Security
+	 * @var DFXPRL_Security
 	 */
 	private $security;
 
@@ -84,7 +84,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 	 * The GDPR compliance instance.
 	 *
 	 * @since 1.2.0
-	 * @var DFX_Parish_Retreat_Letters_GDPR
+	 * @var DFXPRL_GDPR
 	 */
 	private $gdpr;
 
@@ -92,7 +92,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 	 * The permissions management instance.
 	 *
 	 * @since 1.3.0
-	 * @var DFX_Parish_Retreat_Letters_Permissions
+	 * @var DFXPRL_Permissions
 	 */
 	private $permissions;
 
@@ -100,7 +100,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 	 * The global settings instance.
 	 *
 	 * @since 1.6.0
-	 * @var DFX_Parish_Retreat_Letters_GlobalSettings
+	 * @var DFXPRL_GlobalSettings
 	 */
 	private $global_settings;
 
@@ -108,7 +108,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 	 * Get the single instance of the class.
 	 *
 	 * @since 1.0.0
-	 * @return DFX_Parish_Retreat_Letters_Admin
+	 * @return DFXPRL_Admin
 	 */
 	public static function get_instance() {
 		if ( is_null( self::$instance ) ) {
@@ -123,15 +123,15 @@ class DFX_Parish_Retreat_Letters_Admin {
 	 * @since 1.0.0
 	 */
 	private function __construct() {
-		$this->retreat_model = new DFX_Parish_Retreat_Letters_Retreat();
-		$this->attendant_model = new DFX_Parish_Retreat_Letters_Attendant();
-		$this->message_model = new DFX_Parish_Retreat_Letters_ConfidentialMessage();
-		$this->file_model = new DFX_Parish_Retreat_Letters_MessageFile();
-		$this->print_log_model = new DFX_Parish_Retreat_Letters_PrintLog();
-		$this->security = DFX_Parish_Retreat_Letters_Security::get_instance();
-		$this->gdpr = DFX_Parish_Retreat_Letters_GDPR::get_instance();
-		$this->permissions = DFX_Parish_Retreat_Letters_Permissions::get_instance();
-		$this->global_settings = DFX_Parish_Retreat_Letters_GlobalSettings::get_instance();
+		$this->retreat_model = new DFXPRL_Retreat();
+		$this->attendant_model = new DFXPRL_Attendant();
+		$this->message_model = new DFXPRL_ConfidentialMessage();
+		$this->file_model = new DFXPRL_MessageFile();
+		$this->print_log_model = new DFXPRL_PrintLog();
+		$this->security = DFXPRL_Security::get_instance();
+		$this->gdpr = DFXPRL_GDPR::get_instance();
+		$this->permissions = DFXPRL_Permissions::get_instance();
+		$this->global_settings = DFXPRL_GlobalSettings::get_instance();
 		$this->init_hooks();
 	}
 
@@ -144,27 +144,27 @@ class DFX_Parish_Retreat_Letters_Admin {
 		add_action( 'admin_menu', array( $this, 'add_admin_menu' ) );
 		add_action( 'admin_init', array( $this, 'handle_admin_form_submissions' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_scripts' ) );
-		add_action( 'wp_ajax_dfx_prl_delete_retreat', array( $this, 'ajax_delete_retreat' ) );
-		add_action( 'wp_ajax_dfx_prl_delete_attendant', array( $this, 'ajax_delete_attendant' ) );
-		add_action( 'wp_ajax_dfx_prl_delete_all_attendants', array( $this, 'ajax_delete_all_attendants' ) );
-		add_action( 'wp_ajax_dfx_prl_export_attendants_csv', array( $this, 'ajax_export_attendants_csv' ) );
-		add_action( 'wp_ajax_dfx_prl_generate_message_url', array( $this, 'ajax_generate_message_url' ) );
-		add_action( 'wp_ajax_dfx_prl_print_message', array( $this, 'ajax_print_message' ) );
-		add_action( 'wp_ajax_dfx_prl_download_file', array( $this, 'ajax_download_file' ) );
-		add_action( 'wp_ajax_dfx_prl_delete_message', array( $this, 'ajax_delete_message' ) );
-		add_action( 'wp_ajax_dfx_prl_get_print_log', array( $this, 'ajax_get_print_log' ) );
+		add_action( 'wp_ajax_dfxprl_delete_retreat', array( $this, 'ajax_delete_retreat' ) );
+		add_action( 'wp_ajax_dfxprl_delete_attendant', array( $this, 'ajax_delete_attendant' ) );
+		add_action( 'wp_ajax_dfxprl_delete_all_attendants', array( $this, 'ajax_delete_all_attendants' ) );
+		add_action( 'wp_ajax_dfxprl_export_attendants_csv', array( $this, 'ajax_export_attendants_csv' ) );
+		add_action( 'wp_ajax_dfxprl_generate_message_url', array( $this, 'ajax_generate_message_url' ) );
+		add_action( 'wp_ajax_dfxprl_print_message', array( $this, 'ajax_print_message' ) );
+		add_action( 'wp_ajax_dfxprl_download_file', array( $this, 'ajax_download_file' ) );
+		add_action( 'wp_ajax_dfxprl_delete_message', array( $this, 'ajax_delete_message' ) );
+		add_action( 'wp_ajax_dfxprl_get_print_log', array( $this, 'ajax_get_print_log' ) );
 
 		// Add new AJAX handlers for permission system
-		add_action( 'wp_ajax_dfx_prl_search_users', array( $this, 'ajax_search_users' ) );
-		add_action( 'wp_ajax_dfx_prl_grant_permission', array( $this, 'ajax_grant_permission' ) );
-		add_action( 'wp_ajax_dfx_prl_revoke_permission', array( $this, 'ajax_revoke_permission' ) );
-		add_action( 'wp_ajax_dfx_prl_send_invitation', array( $this, 'ajax_send_invitation' ) );
-		add_action( 'wp_ajax_dfx_prl_cancel_invitation', array( $this, 'ajax_cancel_invitation' ) );
-		add_action( 'wp_ajax_dfx_prl_reset_rate_limits', array( $this, 'ajax_reset_rate_limits' ) );
-		add_action( 'wp_ajax_dfx_prl_get_invitation_message', array( $this, 'ajax_get_invitation_message' ) );
+		add_action( 'wp_ajax_dfxprl_search_users', array( $this, 'ajax_search_users' ) );
+		add_action( 'wp_ajax_dfxprl_grant_permission', array( $this, 'ajax_grant_permission' ) );
+		add_action( 'wp_ajax_dfxprl_revoke_permission', array( $this, 'ajax_revoke_permission' ) );
+		add_action( 'wp_ajax_dfxprl_send_invitation', array( $this, 'ajax_send_invitation' ) );
+		add_action( 'wp_ajax_dfxprl_cancel_invitation', array( $this, 'ajax_cancel_invitation' ) );
+		add_action( 'wp_ajax_dfxprl_reset_rate_limits', array( $this, 'ajax_reset_rate_limits' ) );
+		add_action( 'wp_ajax_dfxprl_get_invitation_message', array( $this, 'ajax_get_invitation_message' ) );
 
 		// AJAX handler for removing encryption key from database
-		add_action( 'wp_ajax_dfx_prl_remove_db_encryption_key', array( $this, 'ajax_remove_db_encryption_key' ) );
+		add_action( 'wp_ajax_dfxprl_remove_db_encryption_key', array( $this, 'ajax_remove_db_encryption_key' ) );
 	}
 
 	/**
@@ -180,7 +180,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 
 		// Check for our plugin pages
 		$page = sanitize_text_field( wp_unslash( $_GET['page'] ?? '' ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- URL parameter for page routing
-		$allowed_pages = array( 'dfx-prl-retreats', 'dfx-prl-retreats-add', 'dfx-prl-messages', 'dfx-prl-privacy', 'dfx-prl-global-settings' );
+		$allowed_pages = array( 'dfxprl-retreats', 'dfxprl-retreats-add', 'dfxprl-messages', 'dfxprl-privacy', 'dfxprl-global-settings' );
 
 		if ( ! in_array( $page, $allowed_pages, true ) ) {
 			return;
@@ -191,23 +191,23 @@ class DFX_Parish_Retreat_Letters_Admin {
 
 		// Handle different form submissions based on page and action
 		switch ( $page ) {
-			case 'dfx-prl-retreats':
+			case 'dfxprl-retreats':
 				$this->handle_retreats_page_submissions( $action, $retreat_id );
 				break;
 
-			case 'dfx-prl-retreats-add':
+			case 'dfxprl-retreats-add':
 				$this->handle_retreat_add_edit_submissions();
 				break;
 
-			case 'dfx-prl-messages':
+			case 'dfxprl-messages':
 				$this->handle_messages_page_submissions();
 				break;
 
-			case 'dfx-prl-privacy':
+			case 'dfxprl-privacy':
 				$this->handle_privacy_page_submissions();
 				break;
 
-			case 'dfx-prl-global-settings':
+			case 'dfxprl-global-settings':
 				$this->handle_global_settings_page_submissions();
 				break;
 		}
@@ -235,7 +235,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 				// Handle CSV export early (it calls exit)
 				$form_action = sanitize_text_field( wp_unslash( $_POST['action'] ?? '' ) );
 				if ( $form_action === 'export_csv' ) {
-					if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['_wpnonce'] ?? '' ) ), 'dfx_prl_attendants_action' ) ) {
+					if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['_wpnonce'] ?? '' ) ), 'dfxprl_attendants_action' ) ) {
 						wp_die( esc_html__( 'Security check failed.', 'dfx-parish-retreat-letters' ) );
 					}
 					if ( ! $this->permissions->current_user_can_manage_retreat( $retreat_id ) ) {
@@ -302,28 +302,28 @@ class DFX_Parish_Retreat_Letters_Admin {
 			__( 'Retreats', 'dfx-parish-retreat-letters' ),
 			__( 'Retreats', 'dfx-parish-retreat-letters' ),
 			'read', // Basic capability - we'll do specific checks in pages
-			'dfx-prl-retreats',
+			'dfxprl-retreats',
 			array( $this, 'retreats_list_page' ),
 			'dashicons-groups',
 			30
 		);
 
 		add_submenu_page(
-			'dfx-prl-retreats',
+			'dfxprl-retreats',
 			__( 'All Retreats', 'dfx-parish-retreat-letters' ),
 			__( 'All Retreats', 'dfx-parish-retreat-letters' ),
 			'read',
-			'dfx-prl-retreats',
+			'dfxprl-retreats',
 			array( $this, 'retreats_list_page' )
 		);
 
 		// Register the add/edit page for all users with retreat access (needed for retreat managers to edit their retreats)
 		add_submenu_page(
-			'dfx-prl-retreats',
+			'dfxprl-retreats',
 			__( 'Add New Retreat', 'dfx-parish-retreat-letters' ),
 			'', // Empty menu title to hide from menu display initially
 			'read', // Use basic capability since we check specific permissions in the page method
-			'dfx-prl-retreats-add',
+			'dfxprl-retreats-add',
 			array( $this, 'retreat_add_page' )
 		);
 
@@ -331,41 +331,41 @@ class DFX_Parish_Retreat_Letters_Admin {
 		if ( $this->permissions->current_user_can_manage_plugin() ) {
 			// Show the "Add New" menu item for plugin administrators by updating the submenu
 			global $submenu;
-			if ( isset( $submenu['dfx-prl-retreats'] ) ) {
-				foreach ( $submenu['dfx-prl-retreats'] as $index => $menu_item ) {
-					if ( $menu_item[2] === 'dfx-prl-retreats-add' ) {
-						$submenu['dfx-prl-retreats'][$index][0] = __( 'Add New', 'dfx-parish-retreat-letters' );
+			if ( isset( $submenu['dfxprl-retreats'] ) ) {
+				foreach ( $submenu['dfxprl-retreats'] as $index => $menu_item ) {
+					if ( $menu_item[2] === 'dfxprl-retreats-add' ) {
+						$submenu['dfxprl-retreats'][$index][0] = __( 'Add New', 'dfx-parish-retreat-letters' );
 						break;
 					}
 				}
 			}
 
 			add_submenu_page(
-				'dfx-prl-retreats',
+				'dfxprl-retreats',
 				__( 'Privacy & Compliance', 'dfx-parish-retreat-letters' ),
 				__( 'Privacy & Compliance', 'dfx-parish-retreat-letters' ),
 				'read', // Use basic capability since we already check permissions above
-				'dfx-prl-privacy',
+				'dfxprl-privacy',
 				array( $this, 'privacy_compliance_page' )
 			);
 
 			add_submenu_page(
-				'dfx-prl-retreats',
+				'dfxprl-retreats',
 				__( 'Global Settings', 'dfx-parish-retreat-letters' ),
 				__( 'Global Settings', 'dfx-parish-retreat-letters' ),
 				'read', // Use basic capability since we already check permissions above
-				'dfx-prl-global-settings',
+				'dfxprl-global-settings',
 				array( $this, 'global_settings_page' )
 			);
 		}
 
 		// Hidden submenu page for messages (accessed only through attendant links)
 		add_submenu_page(
-			'dfx-prl-retreats',
+			'dfxprl-retreats',
 			__( 'Confidential Messages', 'dfx-parish-retreat-letters' ),
 			'',  // Empty menu title to hide from menu display
 			'read',
-			'dfx-prl-messages',
+			'dfxprl-messages',
 			array( $this, 'messages_list_page' )
 		);
 
@@ -396,11 +396,11 @@ class DFX_Parish_Retreat_Letters_Admin {
 	 * @since 1.2.1
 	 */
 	public function hide_messages_submenu() {
-		$style = '#toplevel_page_dfx-prl-retreats .wp-submenu li[class*="dfx-prl-messages"] {
+		$style = '#toplevel_page_dfxprl-retreats .wp-submenu li[class*="dfxprl-messages"] {
 			display: none !important;
 		}';
 
-		wp_add_inline_style( 'dfx-prl-admin-styles', $style );
+		wp_add_inline_style( 'dfxprl-admin-styles', $style );
 	}
 
 	/**
@@ -411,7 +411,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 	 */
 	public function enqueue_admin_scripts( $hook_suffix ) {
 		// Check for our admin pages - be more flexible with the hook detection
-		$our_pages = array( 'dfx-prl-retreats', 'dfx-prl-messages', 'dfx-prl-privacy', 'dfx-prl-global-settings' );
+		$our_pages = array( 'dfxprl-retreats', 'dfxprl-messages', 'dfxprl-privacy', 'dfxprl-global-settings' );
 		$is_our_page = false;
 
 		// Ensure hook_suffix is a string
@@ -449,10 +449,10 @@ class DFX_Parish_Retreat_Letters_Admin {
 
 		// Enqueue admin styles
 		wp_enqueue_style(
-			'dfx-prl-admin-styles',
+			'dfxprl-admin-styles',
 			'', // No external file
 			array(),
-			DFX_PARISH_RETREAT_LETTERS_VERSION
+			DFXPRL_VERSION
 		);
 
 		// Add base admin styles
@@ -477,52 +477,52 @@ class DFX_Parish_Retreat_Letters_Admin {
 			background: #fff3cd;
 			color: #856404;
 		}
-		.dfx-prl-permissions-list, .dfx-prl-invitations-list {
+		.dfxprl-permissions-list, .dfxprl-invitations-list {
 			margin-bottom: 15px;
 		}
-		.dfx-prl-permission-item, .dfx-prl-invitation-item {
+		.dfxprl-permission-item, .dfxprl-invitation-item {
 			padding: 10px;
 			border: 1px solid #ddd;
 			border-radius: 4px;
 			margin-bottom: 8px;
 			background: #fff;
 		}
-		.dfx-prl-status-grid {
+		.dfxprl-status-grid {
 			display: grid;
 			grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
 			gap: 20px;
 			margin-bottom: 30px;
 		}
-		.dfx-prl-status-item {
+		.dfxprl-status-item {
 			padding: 20px;
 			border: 1px solid #ddd;
 			border-radius: 8px;
 			background: #fff;
 			text-align: center;
 		}
-		.dfx-prl-status-item.status-good {
+		.dfxprl-status-item.status-good {
 			border-color: #46b450;
 			background: #f7fcf7;
 		}
-		.dfx-prl-status-item.status-warning {
+		.dfxprl-status-item.status-warning {
 			border-color: #ffb900;
 			background: #fffbf0;
 		}
 		';
 
-		wp_add_inline_style( 'dfx-prl-admin-styles', $base_styles );
+		wp_add_inline_style( 'dfxprl-admin-styles', $base_styles );
 
 		// Enqueue Select2 for user management on global settings page
-		if ( isset( $_GET['page'] ) && sanitize_text_field( wp_unslash( $_GET['page'] ) ) === 'dfx-prl-global-settings' ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- URL parameter check for asset loading      
+		if ( isset( $_GET['page'] ) && sanitize_text_field( wp_unslash( $_GET['page'] ) ) === 'dfxprl-global-settings' ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- URL parameter check for asset loading      
 			wp_enqueue_script( 'select2' );
 			wp_enqueue_style( 'select2' );
 		}
 
 		wp_enqueue_script(
-			'dfx-prl-retreats-admin',
-			DFX_PARISH_RETREAT_LETTERS_PLUGIN_URL . 'includes/admin.js',
+			'dfxprl-retreats-admin',
+			DFXPRL_PLUGIN_URL . 'includes/admin.js',
 			array( 'jquery' ),
-			DFX_PARISH_RETREAT_LETTERS_VERSION,
+			DFXPRL_VERSION,
 			true
 		);
 
@@ -531,9 +531,9 @@ class DFX_Parish_Retreat_Letters_Admin {
 		if ( $retreat_id > 0 && isset( $_GET['page'] ) && sanitize_text_field( wp_unslash( $_GET['page'] ) ) === 'dfx-prl-retreats' ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- URL parameter check for asset loading
 			wp_enqueue_script(
 				'dfx-prl-retreat-edit',
-				DFX_PARISH_RETREAT_LETTERS_PLUGIN_URL . 'assets/js/admin-retreat-edit.js',
+				DFXPRL_PLUGIN_URL . 'assets/js/admin-retreat-edit.js',
 				array( 'jquery' ),
-				DFX_PARISH_RETREAT_LETTERS_VERSION,
+				DFXPRL_VERSION,
 				true
 			);
 
@@ -564,9 +564,9 @@ class DFX_Parish_Retreat_Letters_Admin {
 		if ( isset( $_GET['page'] ) && sanitize_text_field( wp_unslash( $_GET['page'] ) ) === 'dfx-prl-privacy' ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- URL parameter check for asset loading
 			wp_enqueue_script(
 				'dfx-prl-admin-gdpr',
-				DFX_PARISH_RETREAT_LETTERS_PLUGIN_URL . 'assets/js/admin-gdpr.js',
+				DFXPRL_PLUGIN_URL . 'assets/js/admin-gdpr.js',
 				array( 'jquery' ),
-				DFX_PARISH_RETREAT_LETTERS_VERSION,
+				DFXPRL_VERSION,
 				true
 			);
 
@@ -591,11 +591,11 @@ class DFX_Parish_Retreat_Letters_Admin {
 		}
 
 		wp_localize_script(
-			'dfx-prl-retreats-admin',
-			'dfxPRLAdmin',
+			'dfxprl-retreats-admin',
+			'dfxprlAdmin',
 			array(
 				'ajaxurl' => admin_url( 'admin-ajax.php' ),
-				'nonce'   => wp_create_nonce( 'dfx_prl_retreats_nonce' ),
+				'nonce'   => wp_create_nonce( 'dfxprl_retreats_nonce' ),
 				'messages' => array(
 					'confirmDelete' => __( 'Are you sure you want to delete this retreat?', 'dfx-parish-retreat-letters' ),
 					'confirmDeleteAttendant' => __( 'Are you sure you want to delete this attendant?', 'dfx-parish-retreat-letters' ),
@@ -644,9 +644,9 @@ class DFX_Parish_Retreat_Letters_Admin {
 		// Enqueue admin footer positioning script
 		wp_enqueue_script(
 			'dfx-prl-admin-footer',
-			DFX_PARISH_RETREAT_LETTERS_PLUGIN_URL . 'assets/js/admin-footer.js',
+			DFXPRL_PLUGIN_URL . 'assets/js/admin-footer.js',
 			array( 'jquery' ),
-			DFX_PARISH_RETREAT_LETTERS_VERSION,
+			DFXPRL_VERSION,
 			true
 		);
 	}
@@ -760,7 +760,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 	 * @since 1.0.0
 	 */
 	private function handle_list_page_actions() {
-		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['_wpnonce'] ?? '' ) ), 'dfx_prl_retreats_action' ) ) {
+		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['_wpnonce'] ?? '' ) ), 'dfxprl_retreats_action' ) ) {
 			wp_die( esc_html__( 'Security check failed.', 'dfx-parish-retreat-letters' ) );
 		}
 
@@ -783,7 +783,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 	 * @param int $retreat_id Retreat ID for editing, 0 for adding.
 	 */
 	private function handle_add_edit_submission( $retreat_id = 0 ) {
-		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['_wpnonce'] ?? '' ) ), 'dfx_prl_retreats_add_edit' ) ) {
+		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['_wpnonce'] ?? '' ) ), 'dfxprl_retreats_add_edit' ) ) {
 			wp_die( esc_html__( 'Security check failed.', 'dfx-parish-retreat-letters' ) );
 		}
 
@@ -807,7 +807,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 			// Update existing retreat
 			if ( $this->retreat_model->update( $retreat_id, $data ) ) {
 				$this->add_admin_notice( __( 'Retreat updated successfully.', 'dfx-parish-retreat-letters' ), 'success' );
-				wp_safe_redirect( admin_url( 'admin.php?page=dfx-prl-retreats' ) );
+				wp_safe_redirect( admin_url( 'admin.php?page=dfxprl-retreats' ) );
 				exit;
 			} else {
 				$this->add_admin_notice( __( 'Error updating retreat. Please check your data.', 'dfx-parish-retreat-letters' ), 'error' );
@@ -817,7 +817,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 			$new_id = $this->retreat_model->create( $data );
 			if ( $new_id ) {
 				$this->add_admin_notice( __( 'Retreat created successfully.', 'dfx-parish-retreat-letters' ), 'success' );
-				wp_safe_redirect( admin_url( 'admin.php?page=dfx-prl-retreats' ) );
+				wp_safe_redirect( admin_url( 'admin.php?page=dfxprl-retreats' ) );
 				exit;
 			} else {
 				$this->add_admin_notice( __( 'Error creating retreat. Please check your data.', 'dfx-parish-retreat-letters' ), 'error' );
@@ -831,7 +831,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 	 * @since 1.0.0
 	 */
 	public function ajax_delete_retreat() {
-		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ?? '' ) ), 'dfx_prl_retreats_nonce' ) ) {
+		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ?? '' ) ), 'dfxprl_retreats_nonce' ) ) {
 			wp_die( esc_html__( 'Security check failed.', 'dfx-parish-retreat-letters' ) );
 		}
 
@@ -871,7 +871,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 		<div class="wrap">
 			<h1 class="wp-heading-inline"><?php esc_html_e( 'Retreats', 'dfx-parish-retreat-letters' ); ?></h1>
 			<?php if ( $this->permissions->current_user_can_manage_plugin() ) : ?>
-				<a href="<?php echo esc_url( admin_url( 'admin.php?page=dfx-prl-retreats-add' ) ); ?>" class="page-title-action">
+				<a href="<?php echo esc_url( admin_url( 'admin.php?page=dfxprl-retreats-add' ) ); ?>" class="page-title-action">
 					<?php esc_html_e( 'Add New', 'dfx-parish-retreat-letters' ); ?>
 				</a>
 			<?php endif; ?>
@@ -880,7 +880,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 			<?php $this->display_admin_notices(); ?>
 
 			<form method="get" action="">
-				<input type="hidden" name="page" value="dfx-prl-retreats">
+				<input type="hidden" name="page" value="dfxprl-retreats">
 				<p class="search-box">
 					<label class="screen-reader-text" for="retreat-search-input"><?php esc_html_e( 'Search Retreats:', 'dfx-parish-retreat-letters' ); ?></label>
 					<input type="search" id="retreat-search-input" name="s" value="<?php echo esc_attr( $search ); ?>">
@@ -889,7 +889,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 			</form>
 
 			<form method="post" action="">
-				<?php wp_nonce_field( 'dfx_prl_retreats_action' ); ?>
+				<?php wp_nonce_field( 'dfxprl_retreats_action' ); ?>
 				<div class="tablenav top">
 					<div class="alignleft actions">
 						<p><?php
@@ -927,7 +927,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 								<tr>
 									<td>
 										<strong>
-											<a href="<?php echo esc_url( admin_url( 'admin.php?page=dfx-prl-retreats-add&edit=' . $retreat->id ) ); ?>">
+											<a href="<?php echo esc_url( admin_url( 'admin.php?page=dfxprl-retreats-add&edit=' . $retreat->id ) ); ?>">
 												<?php echo esc_html( $retreat->name ); ?>
 											</a>
 										</strong>
@@ -936,7 +936,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 									<td><?php echo esc_html( date_i18n( get_option( 'date_format' ), strtotime( $retreat->start_date ) ) ); ?></td>
 									<td><?php echo esc_html( date_i18n( get_option( 'date_format' ), strtotime( $retreat->end_date ) ) ); ?></td>
 									<td>
-										<a href="<?php echo esc_url( admin_url( 'admin.php?page=dfx-prl-retreats&action=attendants&retreat_id=' . $retreat->id ) ); ?>">
+										<a href="<?php echo esc_url( admin_url( 'admin.php?page=dfxprl-retreats&action=attendants&retreat_id=' . $retreat->id ) ); ?>">
 											<?php
 											$count = $retreat->attendant_count ?? 0;
 											printf(
@@ -949,19 +949,19 @@ class DFX_Parish_Retreat_Letters_Admin {
 									</td>
 									<td>
 										<?php if ( $this->permissions->current_user_can_manage_retreat( $retreat->id ) ) : ?>
-											<a href="<?php echo esc_url( admin_url( 'admin.php?page=dfx-prl-retreats-add&edit=' . $retreat->id ) ); ?>" class="button button-small">
+											<a href="<?php echo esc_url( admin_url( 'admin.php?page=dfxprl-retreats-add&edit=' . $retreat->id ) ); ?>" class="button button-small">
 												<?php esc_html_e( 'Edit', 'dfx-parish-retreat-letters' ); ?>
 											</a>
 										<?php endif; ?>
 
 										<?php if ( $this->permissions->current_user_can_view_retreat( $retreat->id ) ) : ?>
-											<a href="<?php echo esc_url( admin_url( 'admin.php?page=dfx-prl-retreats&action=attendants&retreat_id=' . $retreat->id ) ); ?>" class="button button-small">
+											<a href="<?php echo esc_url( admin_url( 'admin.php?page=dfxprl-retreats&action=attendants&retreat_id=' . $retreat->id ) ); ?>" class="button button-small">
 												<?php esc_html_e( 'Attendants', 'dfx-parish-retreat-letters' ); ?>
 											</a>
 										<?php endif; ?>
 
 										<?php if ( $this->permissions->current_user_can_manage_plugin() ) : ?>
-											<button type="button" class="button button-small button-link-delete dfx-prl-delete-retreat" data-retreat-id="<?php echo esc_attr( $retreat->id ); ?>" data-retreat-name="<?php echo esc_attr( $retreat->name ); ?>">
+											<button type="button" class="button button-small button-link-delete dfxprl-delete-retreat" data-retreat-id="<?php echo esc_attr( $retreat->id ); ?>" data-retreat-name="<?php echo esc_attr( $retreat->name ); ?>">
 												<?php esc_html_e( 'Delete', 'dfx-parish-retreat-letters' ); ?>
 											</button>
 										<?php endif; ?>
@@ -976,7 +976,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 									<?php else : ?>
 										<?php esc_html_e( 'No retreats found.', 'dfx-parish-retreat-letters' ); ?>
 										<?php if ( $this->permissions->current_user_can_manage_plugin() ) : ?>
-											<a href="<?php echo esc_url( admin_url( 'admin.php?page=dfx-prl-retreats-add' ) ); ?>">
+											<a href="<?php echo esc_url( admin_url( 'admin.php?page=dfxprl-retreats-add' ) ); ?>">
 												<?php esc_html_e( 'Add the first retreat', 'dfx-parish-retreat-letters' ); ?>
 											</a>
 										<?php endif; ?>
@@ -1013,7 +1013,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 				<div id="post-body" class="metabox-holder columns-2">
 					<div id="post-body-content">
 						<form method="post" action="">
-							<?php wp_nonce_field( 'dfx_prl_retreats_add_edit' ); ?>
+							<?php wp_nonce_field( 'dfxprl_retreats_add_edit' ); ?>
 							<table class="form-table">
 								<tbody>
 									<tr>
@@ -1182,11 +1182,11 @@ class DFX_Parish_Retreat_Letters_Admin {
 							<p class="submit">
 								<input type="submit" name="submit" id="submit" class="button button-primary" value="<?php echo esc_attr( $is_edit ? __( 'Update Retreat', 'dfx-parish-retreat-letters' ) : __( 'Add Retreat', 'dfx-parish-retreat-letters' ) ); ?>">
 								<?php if ( $is_edit ) : ?>
-									<a href="<?php echo esc_url( admin_url( 'admin.php?page=dfx-prl-retreats&action=attendants&retreat_id=' . $retreat->id ) ); ?>" class="button">
+									<a href="<?php echo esc_url( admin_url( 'admin.php?page=dfxprl-retreats&action=attendants&retreat_id=' . $retreat->id ) ); ?>" class="button">
 										<?php esc_html_e( 'Manage Attendants', 'dfx-parish-retreat-letters' ); ?>
 									</a>
 								<?php endif; ?>
-								<a href="<?php echo esc_url( admin_url( 'admin.php?page=dfx-prl-retreats' ) ); ?>" class="button">
+								<a href="<?php echo esc_url( admin_url( 'admin.php?page=dfxprl-retreats' ) ); ?>" class="button">
 									<?php esc_html_e( 'Cancel', 'dfx-parish-retreat-letters' ); ?>
 								</a>
 							</p>
@@ -1216,7 +1216,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 	 */
 	private function render_permission_management_section( $retreat ) {
 		$permissions = $this->permissions->get_retreat_permissions( $retreat->id );
-		$invitations = DFX_Parish_Retreat_Letters_Invitations::get_instance();
+		$invitations = DFXPRL_Invitations::get_instance();
 		$pending_invitations = $invitations->get_retreat_invitations( $retreat->id, 'pending' );
 		?>
 		<div id="permission-management-section" class="card">
@@ -1225,7 +1225,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 			<div id="permission-notices"></div>
 
 			<!-- Current Permissions -->
-			<div class="dfx-prl-permissions-current">
+			<div class="dfxprl-permissions-current">
 				<h3><?php esc_html_e( 'Current Permissions', 'dfx-parish-retreat-letters' ); ?></h3>
 				<?php if ( ! empty( $permissions ) ) : ?>
 					<table class="wp-list-table widefat fixed striped">
@@ -1279,7 +1279,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 
 			<!-- Pending Invitations -->
 			<?php if ( ! empty( $pending_invitations ) ) : ?>
-				<div class="dfx-prl-permissions-invitations">
+				<div class="dfxprl-permissions-invitations">
 					<h3><?php esc_html_e( 'Pending Invitations', 'dfx-parish-retreat-letters' ); ?></h3>
 					<table class="wp-list-table widefat fixed striped">
 						<thead>
@@ -1323,7 +1323,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 			<?php endif; ?>
 
 			<!-- Add Permissions -->
-			<div class="dfx-prl-permissions-add">
+			<div class="dfxprl-permissions-add">
 				<h3><?php esc_html_e( 'Grant Access', 'dfx-parish-retreat-letters' ); ?></h3>
 
 				<!-- Tab Navigation -->
@@ -1338,7 +1338,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 
 				<!-- Existing Users Tab -->
 				<div id="existing-users" class="tab-content active">
-					<div class="dfx-prl-user-search">
+					<div class="dfxprl-user-search">
 						<h4><?php esc_html_e( 'Search and Grant Permission to Existing Users', 'dfx-parish-retreat-letters' ); ?></h4>
 						<div class="search-form">
 							<input type="text" id="user-search" placeholder="<?php esc_attr_e( 'Search by username, email, or name...', 'dfx-parish-retreat-letters' ); ?>" autocomplete="off">
@@ -1349,7 +1349,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 
 				<!-- Invite Users Tab -->
 				<div id="invite-users" class="tab-content">
-					<div class="dfx-prl-invite-form">
+					<div class="dfxprl-invite-form">
 						<h4><?php esc_html_e( 'Send Invitation to New User', 'dfx-parish-retreat-letters' ); ?></h4>
 						<form id="invitation-form">
 							<div class="form-row">
@@ -1398,7 +1398,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 	 */
 	private function render_permission_management_sidebar( $retreat ) {
 		$permissions = $this->permissions->get_retreat_permissions( $retreat->id );
-		$invitations = DFX_Parish_Retreat_Letters_Invitations::get_instance();
+		$invitations = DFXPRL_Invitations::get_instance();
 		$pending_invitations = $invitations->get_retreat_invitations( $retreat->id, 'pending' );
 		?>
 		<div class="postbox">
@@ -1409,17 +1409,17 @@ class DFX_Parish_Retreat_Letters_Admin {
 				<div id="permission-notices"></div>
 
 				<!-- Current Permissions -->
-				<div class="dfx-prl-permissions-current">
+				<div class="dfxprl-permissions-current">
 					<h3><?php esc_html_e( 'Current Permissions', 'dfx-parish-retreat-letters' ); ?></h3>
 					<?php if ( ! empty( $permissions ) ) : ?>
-						<div class="dfx-prl-permissions-list">
+						<div class="dfxprl-permissions-list">
 							<?php foreach ( $permissions as $permission ) : ?>
-								<div class="dfx-prl-permission-item" data-user-id="<?php echo esc_attr( $permission->user_id ); ?>" data-permission="<?php echo esc_attr( $permission->permission_level ); ?>">
-									<div class="dfx-prl-permission-user">
+								<div class="dfxprl-permission-item" data-user-id="<?php echo esc_attr( $permission->user_id ); ?>" data-permission="<?php echo esc_attr( $permission->permission_level ); ?>">
+									<div class="dfxprl-permission-user">
 										<strong><?php echo esc_html( $permission->display_name ); ?></strong>
-										<small class="dfx-prl-user-email"><?php echo esc_html( $permission->user_email ); ?></small>
+										<small class="dfxprl-user-email"><?php echo esc_html( $permission->user_email ); ?></small>
 									</div>
-									<div class="dfx-prl-permission-role">
+									<div class="dfxprl-permission-role">
 										<span class="permission-badge permission-<?php echo esc_attr( $permission->permission_level ); ?>">
 											<?php
 											echo esc_html( $permission->permission_level === 'manager'
@@ -1429,14 +1429,14 @@ class DFX_Parish_Retreat_Letters_Admin {
 											?>
 										</span>
 									</div>
-									<div class="dfx-prl-permission-meta">
+									<div class="dfxprl-permission-meta">
 										<small><?php
 										/* translators: %s: name of the person who granted the permission */
 										printf( esc_html__( 'By %s', 'dfx-parish-retreat-letters' ), esc_html( $permission->granted_by_name ) ); ?></small>
 										<small><?php echo esc_html( date_i18n( get_option( 'date_format' ), strtotime( $permission->granted_at ) ) ); ?></small>
 									</div>
 									<?php if ( $permission->user_id !== get_current_user_id() ) : ?>
-										<div class="dfx-prl-permission-actions">
+										<div class="dfxprl-permission-actions">
 											<button type="button" class="button button-small revoke-permission"
 													data-user-id="<?php echo esc_attr( $permission->user_id ); ?>"
 													data-permission="<?php echo esc_attr( $permission->permission_level ); ?>">
@@ -1454,16 +1454,16 @@ class DFX_Parish_Retreat_Letters_Admin {
 
 				<!-- Pending Invitations -->
 				<?php if ( ! empty( $pending_invitations ) ) : ?>
-					<div class="dfx-prl-permissions-invitations">
+					<div class="dfxprl-permissions-invitations">
 						<h3><?php esc_html_e( 'Pending Invitations', 'dfx-parish-retreat-letters' ); ?></h3>
-						<div class="dfx-prl-invitations-list">
+						<div class="dfxprl-invitations-list">
 							<?php foreach ( $pending_invitations as $invitation ) : ?>
-								<div class="dfx-prl-invitation-item" data-invitation-id="<?php echo esc_attr( $invitation->id ); ?>">
-									<div class="dfx-prl-invitation-user">
+								<div class="dfxprl-invitation-item" data-invitation-id="<?php echo esc_attr( $invitation->id ); ?>">
+									<div class="dfxprl-invitation-user">
 										<strong><?php echo esc_html( $invitation->name ); ?></strong>
-										<small class="dfx-prl-user-email"><?php echo esc_html( $invitation->email ); ?></small>
+										<small class="dfxprl-user-email"><?php echo esc_html( $invitation->email ); ?></small>
 									</div>
-									<div class="dfx-prl-invitation-role">
+									<div class="dfxprl-invitation-role">
 										<span class="permission-badge permission-<?php echo esc_attr( $invitation->permission_level ); ?>">
 											<?php
 											echo esc_html( $invitation->permission_level === 'manager'
@@ -1473,12 +1473,12 @@ class DFX_Parish_Retreat_Letters_Admin {
 											?>
 										</span>
 									</div>
-									<div class="dfx-prl-invitation-meta">
+									<div class="dfxprl-invitation-meta">
 										<small><?php
 										/* translators: %s: formatted expiration date */
 										printf( esc_html__( 'Expires %s', 'dfx-parish-retreat-letters' ), esc_html( date_i18n( get_option( 'date_format' ), strtotime( $invitation->expires_at ) ) ) ); ?></small>
 									</div>
-									<div class="dfx-prl-invitation-actions">
+									<div class="dfxprl-invitation-actions">
 										<button type="button" class="button button-small cancel-invitation"
 												data-invitation-id="<?php echo esc_attr( $invitation->id ); ?>">
 											<?php esc_html_e( 'Cancel', 'dfx-parish-retreat-letters' ); ?>
@@ -1491,22 +1491,22 @@ class DFX_Parish_Retreat_Letters_Admin {
 				<?php endif; ?>
 
 				<!-- Add Permissions -->
-				<div class="dfx-prl-permissions-add">
+				<div class="dfxprl-permissions-add">
 					<h3><?php esc_html_e( 'Grant Access', 'dfx-parish-retreat-letters' ); ?></h3>
 
 					<!-- Tab Navigation -->
-					<div class="dfx-prl-tab-wrapper">
-						<button type="button" class="dfx-prl-tab-button active" data-tab="existing-users">
+					<div class="dfxprl-tab-wrapper">
+						<button type="button" class="dfxprl-tab-button active" data-tab="existing-users">
 							<?php esc_html_e( 'Existing Users', 'dfx-parish-retreat-letters' ); ?>
 						</button>
-						<button type="button" class="dfx-prl-tab-button" data-tab="invite-users">
+						<button type="button" class="dfxprl-tab-button" data-tab="invite-users">
 							<?php esc_html_e( 'Invite New Users', 'dfx-parish-retreat-letters' ); ?>
 						</button>
 					</div>
 
 					<!-- Existing Users Tab -->
-					<div id="existing-users" class="dfx-prl-tab-content active">
-						<div class="dfx-prl-user-search">
+					<div id="existing-users" class="dfxprl-tab-content active">
+						<div class="dfxprl-user-search">
 							<h4><?php esc_html_e( 'Search and Grant Permission to Existing Users', 'dfx-parish-retreat-letters' ); ?></h4>
 							<div class="search-form">
 								<input type="text" id="user-search" placeholder="<?php esc_attr_e( 'Search by username, email, or name...', 'dfx-parish-retreat-letters' ); ?>" autocomplete="off">
@@ -1516,8 +1516,8 @@ class DFX_Parish_Retreat_Letters_Admin {
 					</div>
 
 					<!-- Invite Users Tab -->
-					<div id="invite-users" class="dfx-prl-tab-content">
-						<div class="dfx-prl-invite-form">
+					<div id="invite-users" class="dfxprl-tab-content">
+						<div class="dfxprl-invite-form">
 							<h4><?php esc_html_e( 'Send Invitation to New User', 'dfx-parish-retreat-letters' ); ?></h4>
 							<form id="invitation-form">
 								<div class="form-field">
@@ -1563,13 +1563,13 @@ class DFX_Parish_Retreat_Letters_Admin {
 	 * @param string $type    Notice type (success, error, warning, info).
 	 */
 	public function add_admin_notice( $message, $type = 'info', $is_dismissible = true ) {
-		$notices = get_transient( 'dfx_prl_admin_notices' ) ?: array();
+		$notices = get_transient( 'dfxprl_admin_notices' ) ?: array();
 		$notices[] = array(
 			'message' => $message,
 			'type'    => $type,
 			'dismissible' => $is_dismissible,
 		);
-		set_transient( 'dfx_prl_admin_notices', $notices, 30 );
+		set_transient( 'dfxprl_admin_notices', $notices, 30 );
 	}
 
 	/**
@@ -1578,7 +1578,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 	 * @since 1.0.0
 	 */
 	private function display_admin_notices($is_dismissible = true) {
-		$notices = get_transient( 'dfx_prl_admin_notices' );
+		$notices = get_transient( 'dfxprl_admin_notices' );
 		if ( ! $notices ) {
 			return;
 		}
@@ -1592,7 +1592,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 			);
 		}
 
-		delete_transient( 'dfx_prl_admin_notices' );
+		delete_transient( 'dfxprl_admin_notices' );
 	}
 
 	/**
@@ -1758,7 +1758,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 	 * @param int $retreat_id Retreat ID.
 	 */
 	private function handle_attendant_list_actions( $retreat_id ) {
-		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['_wpnonce'] ?? '' ) ), 'dfx_prl_attendants_action' ) ) {
+		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['_wpnonce'] ?? '' ) ), 'dfxprl_attendants_action' ) ) {
 			wp_die( esc_html__( 'Security check failed.', 'dfx-parish-retreat-letters' ) );
 		}
 
@@ -1782,7 +1782,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 	 * @param int $attendant_id Attendant ID for editing, 0 for adding.
 	 */
 	private function handle_attendant_add_edit_submission( $retreat_id, $attendant_id = 0 ) {
-		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['_wpnonce'] ?? '' ) ), 'dfx_prl_attendants_add_edit' ) ) {
+		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['_wpnonce'] ?? '' ) ), 'dfxprl_attendants_add_edit' ) ) {
 			wp_die( esc_html__( 'Security check failed.', 'dfx-parish-retreat-letters' ) );
 		}
 
@@ -1820,7 +1820,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 			// Update existing attendant
 			if ( $this->attendant_model->update( $attendant_id, $data ) ) {
 				$this->add_admin_notice( __( 'Attendant updated successfully.', 'dfx-parish-retreat-letters' ), 'success' );
-				wp_safe_redirect( admin_url( 'admin.php?page=dfx-prl-retreats&action=attendants&retreat_id=' . $retreat_id ) );
+				wp_safe_redirect( admin_url( 'admin.php?page=dfxprl-retreats&action=attendants&retreat_id=' . $retreat_id ) );
 				exit;
 			} else {
 				$this->add_admin_notice( __( 'Error updating attendant. Please check your data.', 'dfx-parish-retreat-letters' ), 'error' );
@@ -1830,7 +1830,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 			$new_id = $this->attendant_model->create( $data );
 			if ( $new_id ) {
 				$this->add_admin_notice( __( 'Attendant created successfully.', 'dfx-parish-retreat-letters' ), 'success' );
-				wp_safe_redirect( admin_url( 'admin.php?page=dfx-prl-retreats&action=attendants&retreat_id=' . $retreat_id ) );
+				wp_safe_redirect( admin_url( 'admin.php?page=dfxprl-retreats&action=attendants&retreat_id=' . $retreat_id ) );
 				exit;
 			} else {
 				$this->add_admin_notice( __( 'Error creating attendant. Please check your data.', 'dfx-parish-retreat-letters' ), 'error' );
@@ -1845,14 +1845,14 @@ class DFX_Parish_Retreat_Letters_Admin {
 	 * @param int $retreat_id Retreat ID.
 	 */
 	private function handle_csv_import( $retreat_id ) {
-		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['_wpnonce'] ?? '' ) ), 'dfx_prl_attendants_import' ) ) {
+		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['_wpnonce'] ?? '' ) ), 'dfxprl_attendants_import' ) ) {
 			wp_die( esc_html__( 'Security check failed.', 'dfx-parish-retreat-letters' ) );
 		}
 
 		// Save the date format preference
 		$date_format_preference = sanitize_text_field( wp_unslash( $_POST['date_format_preference'] ?? 'dmy' ) );
 		if ( in_array( $date_format_preference, array( 'dmy', 'mdy' ), true ) ) {
-			update_option( 'dfx_prl_retreat_letters_date_format', $date_format_preference );
+			update_option( 'dfxprl_retreat_letters_date_format', $date_format_preference );
 		}
 
 		if ( ! isset( $_FILES['csv_file'] ) || ! isset( $_FILES['csv_file']['error'] ) || $_FILES['csv_file']['error'] !== UPLOAD_ERR_OK ) {
@@ -2028,7 +2028,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 		// Warn about ambiguous dates if any were found
 		if ( ! empty( $ambiguous_dates ) ) {
 			$unique_ambiguous = array_unique( $ambiguous_dates );
-			$current_preference = get_option( 'dfx_prl_retreat_letters_date_format', 'dmy' );
+			$current_preference = get_option( 'dfxprl_retreat_letters_date_format', 'dmy' );
 
 			$preference_text = '';
 			switch ( $current_preference ) {
@@ -2059,7 +2059,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 			$this->add_admin_notice( $ambiguous_message, 'info' );
 		}
 
-		wp_safe_redirect( admin_url( 'admin.php?page=dfx-prl-retreats&action=attendants&retreat_id=' . $retreat_id ) );
+		wp_safe_redirect( admin_url( 'admin.php?page=dfxprl-retreats&action=attendants&retreat_id=' . $retreat_id ) );
 		exit;
 	}
 
@@ -2253,7 +2253,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 
 		// Get user's preferred date format from settings (only for ambiguous dates)
 		if ( empty( $preferred_format ) ) {
-			$preferred_format = get_option( 'dfx_prl_retreat_letters_date_format', 'dmy' );
+			$preferred_format = get_option( 'dfxprl_retreat_letters_date_format', 'dmy' );
 		}
 
 		// Try to auto-detect format based on unambiguous dates first
@@ -2403,7 +2403,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 	 * @since 1.0.0
 	 */
 	public function ajax_delete_attendant() {
-		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ?? '' ) ), 'dfx_prl_retreats_nonce' ) ) {
+		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ?? '' ) ), 'dfxprl_retreats_nonce' ) ) {
 			wp_die( esc_html__( 'Security check failed.', 'dfx-parish-retreat-letters' ) );
 		}
 
@@ -2423,7 +2423,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 	 * @since 1.9.0
 	 */
 	public function ajax_delete_all_attendants() {
-		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ?? '' ) ), 'dfx_prl_retreats_nonce' ) ) {
+		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ?? '' ) ), 'dfxprl_retreats_nonce' ) ) {
 			wp_die( esc_html__( 'Security check failed.', 'dfx-parish-retreat-letters' ) );
 		}
 
@@ -2514,7 +2514,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 	 * @since 1.0.0
 	 */
 	public function ajax_export_attendants_csv() {
-		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ?? '' ) ), 'dfx_prl_retreats_nonce' ) ) {
+		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ?? '' ) ), 'dfxprl_retreats_nonce' ) ) {
 			wp_die( esc_html__( 'Security check failed.', 'dfx-parish-retreat-letters' ) );
 		}
 
@@ -2543,7 +2543,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 		$get_sort_url = function( $column ) use ( $retreat, $search, $orderby, $order, $filters ) {
 			$new_order = ( $orderby === $column && $order === 'ASC' ) ? 'DESC' : 'ASC';
 			$params = array(
-				'page'      => 'dfx-prl-retreats',
+				'page'      => 'dfxprl-retreats',
 				'action'    => 'attendants',
 				'retreat_id' => $retreat->id,
 				'orderby'   => $column,
@@ -2579,7 +2579,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 			}
 			
 			$params = array(
-				'page'      => 'dfx-prl-retreats',
+				'page'      => 'dfxprl-retreats',
 				'action'    => 'attendants',
 				'retreat_id' => $retreat->id,
 				'orderby'   => $next_orderby,
@@ -2617,7 +2617,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 				?>
 			</h1>
 			<?php if ( $this->permissions->current_user_can_manage_retreat( $retreat->id ) ) : ?>
-				<a href="<?php echo esc_url( admin_url( 'admin.php?page=dfx-prl-retreats&action=add_attendant&retreat_id=' . $retreat->id ) ); ?>" class="page-title-action">
+				<a href="<?php echo esc_url( admin_url( 'admin.php?page=dfxprl-retreats&action=add_attendant&retreat_id=' . $retreat->id ) ); ?>" class="page-title-action">
 					<?php esc_html_e( 'Add New Attendant', 'dfx-parish-retreat-letters' ); ?>
 				</a>
 			<?php endif; ?>
@@ -2625,7 +2625,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 
 			<!-- Breadcrumb -->
 			<p class="description">
-				<a href="<?php echo esc_url( admin_url( 'admin.php?page=dfx-prl-retreats' ) ); ?>"><?php esc_html_e( 'Retreats', 'dfx-parish-retreat-letters' ); ?></a>
+				<a href="<?php echo esc_url( admin_url( 'admin.php?page=dfxprl-retreats' ) ); ?>"><?php esc_html_e( 'Retreats', 'dfx-parish-retreat-letters' ); ?></a>
 				&gt; <?php echo esc_html( $retreat->name ); ?>
 				&gt; <?php esc_html_e( 'Attendants', 'dfx-parish-retreat-letters' ); ?>
 			</p>
@@ -2633,7 +2633,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 			<?php $this->display_admin_notices(); ?>
 
 			<form method="get" action="">
-				<input type="hidden" name="page" value="dfx-prl-retreats">
+				<input type="hidden" name="page" value="dfxprl-retreats">
 				<input type="hidden" name="action" value="attendants">
 				<input type="hidden" name="retreat_id" value="<?php echo esc_attr( $retreat->id ); ?>">
 				<p class="search-box">
@@ -2656,7 +2656,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 						</summary>
 						<div style="padding: 10px; background: #fff; border: 1px solid #c3c4c7; border-top: none; margin-top: -1px;">
 							<form method="get" action="">
-								<input type="hidden" name="page" value="dfx-prl-retreats">
+								<input type="hidden" name="page" value="dfxprl-retreats">
 								<input type="hidden" name="action" value="attendants">
 								<input type="hidden" name="retreat_id" value="<?php echo esc_attr( $retreat->id ); ?>">
 								<?php if ( ! empty( $search ) ) : ?>
@@ -2707,7 +2707,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 								<p class="submit" style="margin: 10px 0 0; padding: 0;">
 									<input type="submit" class="button button-primary" value="<?php esc_attr_e( 'Apply Filters', 'dfx-parish-retreat-letters' ); ?>">
 									<?php if ( ! empty( array_filter( $filters ) ) ) : ?>
-										<a href="<?php echo esc_url( admin_url( 'admin.php?page=dfx-prl-retreats&action=attendants&retreat_id=' . $retreat->id ) ); ?>" class="button">
+										<a href="<?php echo esc_url( admin_url( 'admin.php?page=dfxprl-retreats&action=attendants&retreat_id=' . $retreat->id ) ); ?>" class="button">
 											<?php esc_html_e( 'Clear Filters', 'dfx-parish-retreat-letters' ); ?>
 										</a>
 									<?php endif; ?>
@@ -2719,7 +2719,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 			</div>
 
 			<form method="post" action="">
-				<?php wp_nonce_field( 'dfx_prl_attendants_action' ); ?>
+				<?php wp_nonce_field( 'dfxprl_attendants_action' ); ?>
 				<div class="tablenav top">
 					<div class="alignleft actions">
 						<p><?php
@@ -2739,13 +2739,13 @@ class DFX_Parish_Retreat_Letters_Admin {
 						<button type="submit" name="action" value="export_csv" class="button">
 							<?php esc_html_e( 'Export CSV', 'dfx-parish-retreat-letters' ); ?>
 						</button>
-						<a href="<?php echo esc_url( admin_url( 'admin.php?page=dfx-prl-retreats&action=import_attendants&retreat_id=' . $retreat->id ) ); ?>" class="button">
+						<a href="<?php echo esc_url( admin_url( 'admin.php?page=dfxprl-retreats&action=import_attendants&retreat_id=' . $retreat->id ) ); ?>" class="button">
 							<?php esc_html_e( 'Import CSV', 'dfx-parish-retreat-letters' ); ?>
 						</a>
 					</div>
 					<?php if ( $total_items > 0 && $this->permissions->current_user_can_manage_retreat( $retreat->id ) ) : ?>
 						<div class="alignright actions">
-							<button type="button" class="button button-link-delete dfx-prl-delete-all-attendants" 
+							<button type="button" class="button button-link-delete dfxprl-delete-all-attendants" 
 								data-retreat-id="<?php echo esc_attr( $retreat->id ); ?>"
 								data-retreat-name="<?php echo esc_attr( $retreat->name ); ?>"
 								data-attendant-count="<?php echo esc_attr( $total_items ); ?>"
@@ -2863,7 +2863,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 								<tr>
 									<td>
 										<strong>
-											<a href="<?php echo esc_url( admin_url( 'admin.php?page=dfx-prl-retreats&action=edit_attendant&retreat_id=' . $retreat->id . '&attendant_id=' . $attendant->id ) ); ?>">
+											<a href="<?php echo esc_url( admin_url( 'admin.php?page=dfxprl-retreats&action=edit_attendant&retreat_id=' . $retreat->id . '&attendant_id=' . $attendant->id ) ); ?>">
 												<?php echo esc_html( $attendant->name ); ?>
 											</a>
 										</strong>
@@ -2925,7 +2925,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 									<?php endif; ?>
 									<td>
 										<?php if ( $message_count > 0 ) : ?>
-											<a href="<?php echo esc_url( admin_url( 'admin.php?page=dfx-prl-messages&attendant_id=' . $attendant->id ) ); ?>">
+											<a href="<?php echo esc_url( admin_url( 'admin.php?page=dfxprl-messages&attendant_id=' . $attendant->id ) ); ?>">
 												<?php
 												printf(
 													/* translators: %d: Number of messages */
@@ -2948,37 +2948,37 @@ class DFX_Parish_Retreat_Letters_Admin {
 									</td>
 									<td>
 										<?php if ( $this->permissions->current_user_can_manage_retreat( $retreat->id ) ) : ?>
-											<a href="<?php echo esc_url( admin_url( 'admin.php?page=dfx-prl-retreats&action=edit_attendant&retreat_id=' . $retreat->id . '&attendant_id=' . $attendant->id ) ); ?>" class="button button-small">
+											<a href="<?php echo esc_url( admin_url( 'admin.php?page=dfxprl-retreats&action=edit_attendant&retreat_id=' . $retreat->id . '&attendant_id=' . $attendant->id ) ); ?>" class="button button-small">
 												<?php esc_html_e( 'Edit', 'dfx-parish-retreat-letters' ); ?>
 											</a>
 										<?php endif; ?>
 
 										<?php if ( $this->permissions->current_user_can_manage_messages( $retreat->id ) ) : ?>
-											<a href="<?php echo esc_url( admin_url( 'admin.php?page=dfx-prl-messages&attendant_id=' . $attendant->id ) ); ?>" class="button button-small">
+											<a href="<?php echo esc_url( admin_url( 'admin.php?page=dfxprl-messages&attendant_id=' . $attendant->id ) ); ?>" class="button button-small">
 												<?php esc_html_e( 'Messages', 'dfx-parish-retreat-letters' ); ?>
 											</a>
 										<?php endif; ?>
 
 										<?php if ( $this->permissions->current_user_can_manage_retreat( $retreat->id ) ) : ?>
 											<?php if ( ! empty( $retreat->message_request_template ) ) : ?>
-												<button type="button" class="button button-small dfx-prl-show-invitation-message" data-attendant-id="<?php echo esc_attr( $attendant->id ); ?>" data-retreat-id="<?php echo esc_attr( $retreat->id ); ?>">
+												<button type="button" class="button button-small dfxprl-show-invitation-message" data-attendant-id="<?php echo esc_attr( $attendant->id ); ?>" data-retreat-id="<?php echo esc_attr( $retreat->id ); ?>">
 													<?php esc_html_e( 'Invitation Message', 'dfx-parish-retreat-letters' ); ?>
 												</button>
 											<?php endif; ?>
 
 											<?php if ( empty( $attendant->message_url_token ) ) : ?>
-												<button type="button" class="button button-small dfx-prl-generate-url" data-attendant-id="<?php echo esc_attr( $attendant->id ); ?>">
+												<button type="button" class="button button-small dfxprl-generate-url" data-attendant-id="<?php echo esc_attr( $attendant->id ); ?>">
 													<?php esc_html_e( 'Generate Message URL', 'dfx-parish-retreat-letters' ); ?>
 												</button>
 											<?php else : ?>
-												<button type="button" class="button button-small button-primary dfx-prl-copy-url" data-url="<?php echo esc_url( home_url( '/messages/' . $attendant->message_url_token ) ); ?>" data-attendant-name="<?php echo esc_attr( $attendant->name ?? '' ); ?>" data-attendant-surnames="<?php echo esc_attr( $attendant->surnames ?? '' ); ?>">
+												<button type="button" class="button button-small button-primary dfxprl-copy-url" data-url="<?php echo esc_url( home_url( '/messages/' . $attendant->message_url_token ) ); ?>" data-attendant-name="<?php echo esc_attr( $attendant->name ?? '' ); ?>" data-attendant-surnames="<?php echo esc_attr( $attendant->surnames ?? '' ); ?>">
 													<?php esc_html_e( 'Copy Message URL', 'dfx-parish-retreat-letters' ); ?>
 												</button>
 											<?php endif; ?>
 										<?php endif; ?>
 
 										<?php if ( $this->permissions->current_user_can_manage_retreat( $retreat->id ) ) : ?>
-											<button type="button" class="button button-small button-link-delete dfx-prl-delete-attendant" data-attendant-id="<?php echo esc_attr( $attendant->id ); ?>">
+											<button type="button" class="button button-small button-link-delete dfxprl-delete-attendant" data-attendant-id="<?php echo esc_attr( $attendant->id ); ?>">
 												<?php esc_html_e( 'Delete', 'dfx-parish-retreat-letters' ); ?>
 											</button>
 										<?php endif; ?>
@@ -2993,7 +2993,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 									<?php else : ?>
 										<?php esc_html_e( 'No attendants found for this retreat.', 'dfx-parish-retreat-letters' ); ?>
 										<?php if ( $this->permissions->current_user_can_manage_retreat( $retreat->id ) ) : ?>
-											<a href="<?php echo esc_url( admin_url( 'admin.php?page=dfx-prl-retreats&action=add_attendant&retreat_id=' . $retreat->id ) ); ?>">
+											<a href="<?php echo esc_url( admin_url( 'admin.php?page=dfxprl-retreats&action=add_attendant&retreat_id=' . $retreat->id ) ); ?>">
 												<?php esc_html_e( 'Add the first attendant', 'dfx-parish-retreat-letters' ); ?>
 											</a>
 										<?php endif; ?>
@@ -3044,8 +3044,8 @@ class DFX_Parish_Retreat_Letters_Admin {
 
 			<!-- Breadcrumb -->
 			<p class="description">
-				<a href="<?php echo esc_url( admin_url( 'admin.php?page=dfx-prl-retreats' ) ); ?>"><?php esc_html_e( 'Retreats', 'dfx-parish-retreat-letters' ); ?></a>
-				&gt; <a href="<?php echo esc_url( admin_url( 'admin.php?page=dfx-prl-retreats&action=attendants&retreat_id=' . $retreat->id ) ); ?>"><?php echo esc_html( $retreat->name ); ?></a>
+				<a href="<?php echo esc_url( admin_url( 'admin.php?page=dfxprl-retreats' ) ); ?>"><?php esc_html_e( 'Retreats', 'dfx-parish-retreat-letters' ); ?></a>
+				&gt; <a href="<?php echo esc_url( admin_url( 'admin.php?page=dfxprl-retreats&action=attendants&retreat_id=' . $retreat->id ) ); ?>"><?php echo esc_html( $retreat->name ); ?></a>
 				&gt; <?php esc_html_e( 'Attendants', 'dfx-parish-retreat-letters' ); ?>
 				&gt; <?php echo esc_html( $is_edit ? __( 'Edit', 'dfx-parish-retreat-letters' ) : __( 'Add New', 'dfx-parish-retreat-letters' ) ); ?>
 			</p>
@@ -3053,7 +3053,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 			<?php $this->display_admin_notices(); ?>
 
 			<form method="post" action="">
-				<?php wp_nonce_field( 'dfx_prl_attendants_add_edit' ); ?>
+				<?php wp_nonce_field( 'dfxprl_attendants_add_edit' ); ?>
 				<table class="form-table">
 					<tbody>
 						<tr>
@@ -3180,7 +3180,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 								<td>
 									<?php if ( $message_count > 0 ) : ?>
 										<p>
-											<a href="<?php echo esc_url( admin_url( 'admin.php?page=dfx-prl-messages&attendant_id=' . $attendant->id ) ); ?>" class="button">
+											<a href="<?php echo esc_url( admin_url( 'admin.php?page=dfxprl-messages&attendant_id=' . $attendant->id ) ); ?>" class="button">
 												<?php
 												printf(
 													/* translators: %d: Number of messages */
@@ -3200,14 +3200,14 @@ class DFX_Parish_Retreat_Letters_Admin {
 								<td>
 									<?php if ( empty( $attendant->message_url_token ) ) : ?>
 										<p>
-											<button type="button" class="button dfx-prl-generate-url" data-attendant-id="<?php echo esc_attr( $attendant->id ); ?>">
+											<button type="button" class="button dfxprl-generate-url" data-attendant-id="<?php echo esc_attr( $attendant->id ); ?>">
 												<?php esc_html_e( 'Generate Message URL', 'dfx-parish-retreat-letters' ); ?>
 											</button>
 										</p>
 										<p class="description"><?php esc_html_e( 'Generate a secure URL that can be shared with this attendant to receive confidential messages.', 'dfx-parish-retreat-letters' ); ?></p>
 									<?php else : ?>
 										<p>
-											<button type="button" class="button button-primary dfx-prl-copy-url" data-url="<?php echo esc_url( home_url( '/messages/' . $attendant->message_url_token ) ); ?>" data-attendant-name="<?php echo esc_attr( $attendant->name ?? '' ); ?>" data-attendant-surnames="<?php echo esc_attr( $attendant->surnames ?? '' ); ?>">
+											<button type="button" class="button button-primary dfxprl-copy-url" data-url="<?php echo esc_url( home_url( '/messages/' . $attendant->message_url_token ) ); ?>" data-attendant-name="<?php echo esc_attr( $attendant->name ?? '' ); ?>" data-attendant-surnames="<?php echo esc_attr( $attendant->surnames ?? '' ); ?>">
 												<?php esc_html_e( 'Copy Message URL', 'dfx-parish-retreat-letters' ); ?>
 											</button>
 										</p>
@@ -3221,7 +3221,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 
 				<p class="submit">
 					<input type="submit" name="submit" id="submit" class="button button-primary" value="<?php echo esc_attr( $is_edit ? __( 'Update Attendant', 'dfx-parish-retreat-letters' ) : __( 'Add Attendant', 'dfx-parish-retreat-letters' ) ); ?>">
-					<a href="<?php echo esc_url( admin_url( 'admin.php?page=dfx-prl-retreats&action=attendants&retreat_id=' . $retreat->id ) ); ?>" class="button">
+					<a href="<?php echo esc_url( admin_url( 'admin.php?page=dfxprl-retreats&action=attendants&retreat_id=' . $retreat->id ) ); ?>" class="button">
 						<?php esc_html_e( 'Cancel', 'dfx-parish-retreat-letters' ); ?>
 					</a>
 				</p>
@@ -3246,8 +3246,8 @@ class DFX_Parish_Retreat_Letters_Admin {
 
 			<!-- Breadcrumb -->
 			<p class="description">
-				<a href="<?php echo esc_url( admin_url( 'admin.php?page=dfx-prl-retreats' ) ); ?>"><?php esc_html_e( 'Retreats', 'dfx-parish-retreat-letters' ); ?></a>
-				&gt; <a href="<?php echo esc_url( admin_url( 'admin.php?page=dfx-prl-retreats&action=attendants&retreat_id=' . $retreat->id ) ); ?>"><?php echo esc_html( $retreat->name ); ?></a>
+				<a href="<?php echo esc_url( admin_url( 'admin.php?page=dfxprl-retreats' ) ); ?>"><?php esc_html_e( 'Retreats', 'dfx-parish-retreat-letters' ); ?></a>
+				&gt; <a href="<?php echo esc_url( admin_url( 'admin.php?page=dfxprl-retreats&action=attendants&retreat_id=' . $retreat->id ) ); ?>"><?php echo esc_html( $retreat->name ); ?></a>
 				&gt; <?php esc_html_e( 'Attendants', 'dfx-parish-retreat-letters' ); ?>
 				&gt; <?php esc_html_e( 'Import CSV', 'dfx-parish-retreat-letters' ); ?>
 			</p>
@@ -3288,7 +3288,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 			</div>
 
 			<form method="post" enctype="multipart/form-data">
-				<?php wp_nonce_field( 'dfx_prl_attendants_import' ); ?>
+				<?php wp_nonce_field( 'dfxprl_attendants_import' ); ?>
 				<table class="form-table">
 					<tbody>
 						<tr>
@@ -3296,7 +3296,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 								<label for="date_format_preference"><?php esc_html_e( 'Date Format Preference', 'dfx-parish-retreat-letters' ); ?></label>
 							</th>
 							<td>
-								<?php $current_preference = get_option( 'dfx_prl_retreat_letters_date_format', 'dmy' ); ?>
+								<?php $current_preference = get_option( 'dfxprl_retreat_letters_date_format', 'dmy' ); ?>
 								<select id="date_format_preference" name="date_format_preference">
 									<option value="dmy" <?php selected( $current_preference, 'dmy' ); ?>><?php esc_html_e( 'DD/MM/YYYY (Day/Month/Year)', 'dfx-parish-retreat-letters' ); ?></option>
 									<option value="mdy" <?php selected( $current_preference, 'mdy' ); ?>><?php esc_html_e( 'MM/DD/YYYY (Month/Day/Year)', 'dfx-parish-retreat-letters' ); ?></option>
@@ -3320,7 +3320,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 
 				<p class="submit">
 					<input type="submit" name="submit" id="submit" class="button button-primary" value="<?php esc_attr_e( 'Import Attendants', 'dfx-parish-retreat-letters' ); ?>">
-					<a href="<?php echo esc_url( admin_url( 'admin.php?page=dfx-prl-retreats&action=attendants&retreat_id=' . $retreat->id ) ); ?>" class="button">
+					<a href="<?php echo esc_url( admin_url( 'admin.php?page=dfxprl-retreats&action=attendants&retreat_id=' . $retreat->id ) ); ?>" class="button">
 						<?php esc_html_e( 'Cancel', 'dfx-parish-retreat-letters' ); ?>
 					</a>
 				</p>
@@ -3337,7 +3337,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 	 * @since 1.2.0
 	 */
 	public function ajax_generate_message_url() {
-		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ?? '' ) ), 'dfx_prl_retreats_nonce' ) ) {
+		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ?? '' ) ), 'dfxprl_retreats_nonce' ) ) {
 			wp_die( esc_html__( 'Security check failed.', 'dfx-parish-retreat-letters' ) );
 		}
 
@@ -3357,7 +3357,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 
 		// Update attendant with token
 		global $wpdb;
-		$database = DFX_Parish_Retreat_Letters_Database::get_instance();
+		$database = DFXPRL_Database::get_instance();
 		
 		// Direct database query needed for atomic token update with custom table
 		// Cache isn't applicable for this security-sensitive operation
@@ -3401,14 +3401,14 @@ class DFX_Parish_Retreat_Letters_Admin {
 
 		// Messages can only be accessed through attendants - redirect if no attendant_id
 		if ( ! $attendant_id ) {
-			wp_safe_redirect( admin_url( 'admin.php?page=dfx-prl-retreats' ) );
+			wp_safe_redirect( admin_url( 'admin.php?page=dfxprl-retreats' ) );
 			exit;
 		}
 
 		// Get attendant info for breadcrumb and validation
 		$attendant = $this->attendant_model->get( $attendant_id );
 		if ( ! $attendant ) {
-			wp_safe_redirect( admin_url( 'admin.php?page=dfx-prl-retreats' ) );
+			wp_safe_redirect( admin_url( 'admin.php?page=dfxprl-retreats' ) );
 			exit;
 		}
 
@@ -3467,9 +3467,9 @@ class DFX_Parish_Retreat_Letters_Admin {
 				?>
 				<!-- Breadcrumb -->
 				<p class="description">
-					<a href="<?php echo esc_url( admin_url( 'admin.php?page=dfx-prl-retreats' ) ); ?>"><?php esc_html_e( 'Retreats', 'dfx-parish-retreat-letters' ); ?></a>
+					<a href="<?php echo esc_url( admin_url( 'admin.php?page=dfxprl-retreats' ) ); ?>"><?php esc_html_e( 'Retreats', 'dfx-parish-retreat-letters' ); ?></a>
 					<?php if ( $retreat ) : ?>
-						&gt; <a href="<?php echo esc_url( admin_url( 'admin.php?page=dfx-prl-retreats&action=attendants&retreat_id=' . $retreat->id ) ); ?>"><?php echo esc_html( $retreat->name ); ?></a>
+						&gt; <a href="<?php echo esc_url( admin_url( 'admin.php?page=dfxprl-retreats&action=attendants&retreat_id=' . $retreat->id ) ); ?>"><?php echo esc_html( $retreat->name ); ?></a>
 					<?php endif; ?>
 					&gt; <?php echo esc_html( $attendant->name . ' ' . $attendant->surnames ); ?>
 				</p>
@@ -3484,7 +3484,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 
 			<!-- Filters -->
 			<form method="get" action="">
-				<input type="hidden" name="page" value="dfx-prl-messages">
+				<input type="hidden" name="page" value="dfxprl-messages">
 				<input type="hidden" name="attendant_id" value="<?php echo esc_attr( $attendant_id ); ?>">
 
 				<div class="tablenav top">
@@ -3507,7 +3507,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 			</form>
 
 			<form method="post" action="">
-				<?php wp_nonce_field( 'dfx_prl_messages_action' ); ?>
+				<?php wp_nonce_field( 'dfxprl_messages_action' ); ?>
 				<div class="tablenav top">
 					<div class="alignleft actions">
 						<p><?php
@@ -3561,7 +3561,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 									<td>
 										<?php if ( $message->print_count > 0 ) : ?>
 											<span class="dashicons dashicons-yes-alt" style="color: #46b450;" title="<?php esc_attr_e( 'Printed', 'dfx-parish-retreat-letters' ); ?>"></span>
-											<a href="#" class="dfx-prl-view-print-log" data-message-id="<?php echo esc_attr( $message->id ); ?>" style="text-decoration: none;">
+											<a href="#" class="dfxprl-view-print-log" data-message-id="<?php echo esc_attr( $message->id ); ?>" style="text-decoration: none;">
 												<?php
 												printf(
 													/* translators: %1$d: Print count, %2$s: First print date */
@@ -3588,7 +3588,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 										<?php endif; ?>
 									</td>
 									<td>
-										<button type="button" class="button button-small button-primary dfx-prl-print-message" data-message-id="<?php echo esc_attr( $message->id ); ?>">
+										<button type="button" class="button button-small button-primary dfxprl-print-message" data-message-id="<?php echo esc_attr( $message->id ); ?>">
 											<?php esc_html_e( 'Print', 'dfx-parish-retreat-letters' ); ?>
 										</button>
 
@@ -3606,7 +3606,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 										?>
 
 										<?php if ( $can_delete ) : ?>
-											<button type="button" class="button button-small button-link-delete dfx-prl-delete-message" data-message-id="<?php echo esc_attr( $message->id ); ?>">
+											<button type="button" class="button button-small button-link-delete dfxprl-delete-message" data-message-id="<?php echo esc_attr( $message->id ); ?>">
 												<?php esc_html_e( 'Delete', 'dfx-parish-retreat-letters' ); ?>
 											</button>
 										<?php endif; ?>
@@ -3656,7 +3656,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 	 * @since 1.2.0
 	 */
 	private function handle_message_list_actions() {
-		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['_wpnonce'] ?? '' ) ), 'dfx_prl_messages_action' ) ) {
+		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['_wpnonce'] ?? '' ) ), 'dfxprl_messages_action' ) ) {
 			wp_die( esc_html__( 'Security check failed.', 'dfx-parish-retreat-letters' ) );
 		}
 
@@ -3678,7 +3678,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 	 * @since 1.2.0
 	 */
 	public function ajax_print_message() {
-		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ?? '' ) ), 'dfx_prl_retreats_nonce' ) ) {
+		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ?? '' ) ), 'dfxprl_retreats_nonce' ) ) {
 			wp_die( esc_html__( 'Security check failed.', 'dfx-parish-retreat-letters' ) );
 		}
 
@@ -3691,7 +3691,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 		$print_token = wp_generate_password( 32, false );
 
 		// Store the print token temporarily (valid for 5 minutes)
-		set_transient( 'dfx_prl_print_token_' . $print_token, $message_id, 5 * MINUTE_IN_SECONDS );
+		set_transient( 'dfxprl_print_token_' . $print_token, $message_id, 5 * MINUTE_IN_SECONDS );
 
 		// Log the print operation
 		$this->print_log_model->log_print( $message_id, get_current_user_id() );
@@ -3707,7 +3707,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 	 * @since 1.2.0
 	 */
 	public function ajax_download_file() {
-		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ?? '' ) ), 'dfx_prl_retreats_nonce' ) ) {
+		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ?? '' ) ), 'dfxprl_retreats_nonce' ) ) {
 			wp_die( esc_html__( 'Security check failed.', 'dfx-parish-retreat-letters' ) );
 		}
 
@@ -3729,7 +3729,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 	 * @since 1.2.0
 	 */
 	public function ajax_delete_message() {
-		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ?? '' ) ), 'dfx_prl_retreats_nonce' ) ) {
+		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ?? '' ) ), 'dfxprl_retreats_nonce' ) ) {
 			wp_die( esc_html__( 'Security check failed.', 'dfx-parish-retreat-letters' ) );
 		}
 
@@ -3762,7 +3762,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 	 * @since 1.2.1
 	 */
 	public function ajax_get_print_log() {
-		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ?? '' ) ), 'dfx_prl_retreats_nonce' ) ) {
+		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ?? '' ) ), 'dfxprl_retreats_nonce' ) ) {
 			wp_die( esc_html__( 'Security check failed.', 'dfx-parish-retreat-letters' ) );
 		}
 
@@ -3772,7 +3772,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 		}
 
 		// Get print logs for this message
-		$print_log_model = new DFX_Parish_Retreat_Letters_PrintLog();
+		$print_log_model = new DFXPRL_PrintLog();
 		$print_logs = $print_log_model->get_by_message( $message_id, array( 'per_page' => 100 ) );
 
 		// Format the data for display
@@ -3800,7 +3800,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 	 * @since 1.3.0
 	 */
 	public function ajax_search_users() {
-		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ?? '' ) ), 'dfx_prl_retreats_nonce' ) ) {
+		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ?? '' ) ), 'dfxprl_retreats_nonce' ) ) {
 			wp_die( esc_html__( 'Security check failed.', 'dfx-parish-retreat-letters' ) );
 		}
 
@@ -3847,7 +3847,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 	 * @since 1.3.0
 	 */
 	public function ajax_grant_permission() {
-		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ?? '' ) ), 'dfx_prl_retreats_nonce' ) ) {
+		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ?? '' ) ), 'dfxprl_retreats_nonce' ) ) {
 			wp_die( esc_html__( 'Security check failed.', 'dfx-parish-retreat-letters' ) );
 		}
 
@@ -3896,7 +3896,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 	 * @since 1.3.0
 	 */
 	public function ajax_revoke_permission() {
-		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ?? '' ) ), 'dfx_prl_retreats_nonce' ) ) {
+		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ?? '' ) ), 'dfxprl_retreats_nonce' ) ) {
 			wp_die( esc_html__( 'Security check failed.', 'dfx-parish-retreat-letters' ) );
 		}
 
@@ -3939,7 +3939,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 	 * @since 1.3.0
 	 */
 	public function ajax_send_invitation() {
-		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ?? '' ) ), 'dfx_prl_retreats_nonce' ) ) {
+		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ?? '' ) ), 'dfxprl_retreats_nonce' ) ) {
 			wp_die( esc_html__( 'Security check failed.', 'dfx-parish-retreat-letters' ) );
 		}
 
@@ -3956,7 +3956,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 			wp_send_json_error( array( 'message' => __( 'Permission denied.', 'dfx-parish-retreat-letters' ) ) );
 		}
 
-		$invitations = DFX_Parish_Retreat_Letters_Invitations::get_instance();
+		$invitations = DFXPRL_Invitations::get_instance();
 		$result = $invitations->send_invitation( $retreat_id, $email, $name, $permission_level, get_current_user_id() );
 
 		if ( $result['success'] ) {
@@ -3972,7 +3972,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 	 * @since 1.3.0
 	 */
 	public function ajax_cancel_invitation() {
-		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ?? '' ) ), 'dfx_prl_retreats_nonce' ) ) {
+		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ?? '' ) ), 'dfxprl_retreats_nonce' ) ) {
 			wp_die( esc_html__( 'Security check failed.', 'dfx-parish-retreat-letters' ) );
 		}
 
@@ -3987,7 +3987,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 			wp_send_json_error( array( 'message' => __( 'Permission denied.', 'dfx-parish-retreat-letters' ) ) );
 		}
 
-		$invitations = DFX_Parish_Retreat_Letters_Invitations::get_instance();
+		$invitations = DFXPRL_Invitations::get_instance();
 		$result = $invitations->cancel_invitation( $invitation_id, get_current_user_id() );
 
 		if ( $result ) {
@@ -4022,7 +4022,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 	 * @since 1.2.0
 	 */
 	private function handle_privacy_compliance_actions() {
-		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['_wpnonce'] ?? '' ) ), 'dfx_prl_privacy_action' ) ) {
+		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['_wpnonce'] ?? '' ) ), 'dfxprl_privacy_action' ) ) {
 			wp_die( esc_html__( 'Security check failed.', 'dfx-parish-retreat-letters' ) );
 		}
 
@@ -4066,28 +4066,28 @@ class DFX_Parish_Retreat_Letters_Admin {
 			<?php $this->display_admin_notices(); ?>
 
 			<!-- Compliance Status Overview -->
-			<div class="dfx-prl-compliance-overview">
+			<div class="dfxprl-compliance-overview">
 				<h2><?php esc_html_e( 'Compliance Status Overview', 'dfx-parish-retreat-letters' ); ?></h2>
-				<div class="dfx-prl-status-grid">
-					<div class="dfx-prl-status-item <?php echo $compliance_status['encryption_enabled'] ? 'status-good' : 'status-warning'; ?>">
+				<div class="dfxprl-status-grid">
+					<div class="dfxprl-status-item <?php echo $compliance_status['encryption_enabled'] ? 'status-good' : 'status-warning'; ?>">
 						<span class="dashicons <?php echo $compliance_status['encryption_enabled'] ? 'dashicons-yes-alt' : 'dashicons-warning'; ?>"></span>
 						<strong><?php esc_html_e( 'Encryption', 'dfx-parish-retreat-letters' ); ?></strong>
 						<p><?php echo $compliance_status['encryption_enabled'] ? esc_html__( 'AES-256 encryption active', 'dfx-parish-retreat-letters' ) : esc_html__( 'Encryption requirements not met', 'dfx-parish-retreat-letters' ); ?></p>
 					</div>
 
-					<div class="dfx-prl-status-item <?php echo $compliance_status['ip_anonymization_active'] ? 'status-good' : 'status-warning'; ?>">
+					<div class="dfxprl-status-item <?php echo $compliance_status['ip_anonymization_active'] ? 'status-good' : 'status-warning'; ?>">
 						<span class="dashicons <?php echo $compliance_status['ip_anonymization_active'] ? 'dashicons-yes-alt' : 'dashicons-warning'; ?>"></span>
 						<strong><?php esc_html_e( 'IP Anonymization', 'dfx-parish-retreat-letters' ); ?></strong>
 						<p><?php esc_html_e( 'IPs anonymized after 30 days', 'dfx-parish-retreat-letters' ); ?></p>
 					</div>
 
-					<div class="dfx-prl-status-item <?php echo $compliance_status['retention_policy_configured'] ? 'status-good' : 'status-warning'; ?>">
+					<div class="dfxprl-status-item <?php echo $compliance_status['retention_policy_configured'] ? 'status-good' : 'status-warning'; ?>">
 						<span class="dashicons <?php echo $compliance_status['retention_policy_configured'] ? 'dashicons-yes-alt' : 'dashicons-warning'; ?>"></span>
 						<strong><?php esc_html_e( 'Data Retention', 'dfx-parish-retreat-letters' ); ?></strong>
 						<p><?php echo $compliance_status['retention_policy_configured'] ? esc_html__( 'Policy configured', 'dfx-parish-retreat-letters' ) : esc_html__( 'Policy needs configuration', 'dfx-parish-retreat-letters' ); ?></p>
 					</div>
 
-					<div class="dfx-prl-status-item <?php echo $compliance_status['audit_logging_active'] ? 'status-good' : 'status-warning'; ?>">
+					<div class="dfxprl-status-item <?php echo $compliance_status['audit_logging_active'] ? 'status-good' : 'status-warning'; ?>">
 						<span class="dashicons <?php echo $compliance_status['audit_logging_active'] ? 'dashicons-yes-alt' : 'dashicons-warning'; ?>"></span>
 						<strong><?php esc_html_e( 'Audit Logging', 'dfx-parish-retreat-letters' ); ?></strong>
 						<p><?php esc_html_e( 'All actions are logged', 'dfx-parish-retreat-letters' ); ?></p>
@@ -4096,31 +4096,31 @@ class DFX_Parish_Retreat_Letters_Admin {
 			</div>
 
 			<!-- Data Statistics -->
-			<div class="dfx-prl-data-stats">
+			<div class="dfxprl-data-stats">
 				<h2><?php esc_html_e( 'Data Statistics', 'dfx-parish-retreat-letters' ); ?></h2>
-				<div class="dfx-prl-stats-grid">
-					<div class="dfx-prl-stat-item">
-						<span class="dfx-prl-stat-number"><?php echo esc_html( $compliance_status['messages_count'] ); ?></span>
-						<span class="dfx-prl-stat-label"><?php esc_html_e( 'Confidential Messages', 'dfx-parish-retreat-letters' ); ?></span>
+				<div class="dfxprl-stats-grid">
+					<div class="dfxprl-stat-item">
+						<span class="dfxprl-stat-number"><?php echo esc_html( $compliance_status['messages_count'] ); ?></span>
+						<span class="dfxprl-stat-label"><?php esc_html_e( 'Confidential Messages', 'dfx-parish-retreat-letters' ); ?></span>
 					</div>
-					<div class="dfx-prl-stat-item">
-						<span class="dfx-prl-stat-number"><?php echo esc_html( $compliance_status['files_count'] ); ?></span>
-						<span class="dfx-prl-stat-label"><?php esc_html_e( 'Encrypted Files', 'dfx-parish-retreat-letters' ); ?></span>
+					<div class="dfxprl-stat-item">
+						<span class="dfxprl-stat-number"><?php echo esc_html( $compliance_status['files_count'] ); ?></span>
+						<span class="dfxprl-stat-label"><?php esc_html_e( 'Encrypted Files', 'dfx-parish-retreat-letters' ); ?></span>
 					</div>
-					<div class="dfx-prl-stat-item">
-						<span class="dfx-prl-stat-number"><?php echo esc_html( $compliance_status['audit_logs_count'] ); ?></span>
-						<span class="dfx-prl-stat-label"><?php esc_html_e( 'Audit Log Entries', 'dfx-parish-retreat-letters' ); ?></span>
+					<div class="dfxprl-stat-item">
+						<span class="dfxprl-stat-number"><?php echo esc_html( $compliance_status['audit_logs_count'] ); ?></span>
+						<span class="dfxprl-stat-label"><?php esc_html_e( 'Audit Log Entries', 'dfx-parish-retreat-letters' ); ?></span>
 					</div>
-					<div class="dfx-prl-stat-item">
-						<span class="dfx-prl-stat-number"><?php echo $compliance_status['last_cleanup'] ? esc_html( human_time_diff( $compliance_status['last_cleanup'] ) . ' ago' ) : esc_html__( 'Never', 'dfx-parish-retreat-letters' ); ?></span>
-						<span class="dfx-prl-stat-label"><?php esc_html_e( 'Last Cleanup', 'dfx-parish-retreat-letters' ); ?></span>
+					<div class="dfxprl-stat-item">
+						<span class="dfxprl-stat-number"><?php echo $compliance_status['last_cleanup'] ? esc_html( human_time_diff( $compliance_status['last_cleanup'] ) . ' ago' ) : esc_html__( 'Never', 'dfx-parish-retreat-letters' ); ?></span>
+						<span class="dfxprl-stat-label"><?php esc_html_e( 'Last Cleanup', 'dfx-parish-retreat-letters' ); ?></span>
 					</div>
 				</div>
 			</div>
 
 			<!-- Data Retention Settings -->
 			<form method="post" action="">
-				<?php wp_nonce_field( 'dfx_prl_privacy_action' ); ?>
+				<?php wp_nonce_field( 'dfxprl_privacy_action' ); ?>
 				<input type="hidden" name="action" value="update_retention">
 
 				<h2><?php esc_html_e( 'Data Retention Policy', 'dfx-parish-retreat-letters' ); ?></h2>
@@ -4163,35 +4163,35 @@ class DFX_Parish_Retreat_Letters_Admin {
 
 			<!-- Privacy Tools -->
 			<h2><?php esc_html_e( 'Privacy Tools', 'dfx-parish-retreat-letters' ); ?></h2>
-			<div class="dfx-prl-privacy-tools">
-				<div class="dfx-prl-tool-section">
+			<div class="dfxprl-privacy-tools">
+				<div class="dfxprl-tool-section">
 					<h3><?php esc_html_e( 'Manual Cleanup', 'dfx-parish-retreat-letters' ); ?></h3>
 					<p><?php esc_html_e( 'Run manual privacy cleanup to anonymize old IP addresses and clean up expired data.', 'dfx-parish-retreat-letters' ); ?></p>
 					<form method="post" action="" style="display: inline;">
-						<?php wp_nonce_field( 'dfx_prl_privacy_action' ); ?>
+						<?php wp_nonce_field( 'dfxprl_privacy_action' ); ?>
 						<input type="hidden" name="action" value="run_cleanup">
 						<input type="submit" class="button" value="<?php esc_attr_e( 'Run Cleanup Now', 'dfx-parish-retreat-letters' ); ?>" onclick="return confirm('<?php esc_attr_e( 'Are you sure you want to run the privacy cleanup?', 'dfx-parish-retreat-letters' ); ?>');">
 					</form>
 				</div>
 
-				<div class="dfx-prl-tool-section">
+				<div class="dfxprl-tool-section">
 					<h3><?php esc_html_e( 'Rate Limit Management', 'dfx-parish-retreat-letters' ); ?></h3>
 					<p><?php esc_html_e( 'Reset message submission rate limits to allow users to submit messages again after encountering errors.', 'dfx-parish-retreat-letters' ); ?></p>
 					<button type="button" id="reset-rate-limits-btn" class="button"><?php esc_html_e( 'Reset All Rate Limits', 'dfx-parish-retreat-letters' ); ?></button>
 				</div>
 
-				<div class="dfx-prl-tool-section">
+				<div class="dfxprl-tool-section">
 					<h3><?php esc_html_e( 'Personal Data Export/Erasure', 'dfx-parish-retreat-letters' ); ?></h3>
 					<p><?php esc_html_e( 'Export or erase personal data by sender name for GDPR compliance.', 'dfx-parish-retreat-letters' ); ?></p>
 
-					<div class="dfx-prl-gdpr-tools">
-						<div class="dfx-prl-gdpr-export">
+					<div class="dfxprl-gdpr-tools">
+						<div class="dfxprl-gdpr-export">
 							<h4><?php esc_html_e( 'Export Personal Data', 'dfx-parish-retreat-letters' ); ?></h4>
 							<input type="text" id="export-identifier" placeholder="<?php esc_attr_e( 'Enter sender name or email', 'dfx-parish-retreat-letters' ); ?>">
 							<button type="button" id="export-data-btn" class="button"><?php esc_html_e( 'Export Data', 'dfx-parish-retreat-letters' ); ?></button>
 						</div>
 
-						<div class="dfx-prl-gdpr-erase">
+						<div class="dfxprl-gdpr-erase">
 							<h4><?php esc_html_e( 'Erase Personal Data', 'dfx-parish-retreat-letters' ); ?></h4>
 							<input type="text" id="erase-identifier" placeholder="<?php esc_attr_e( 'Enter sender name or email', 'dfx-parish-retreat-letters' ); ?>">
 							<input type="text" id="erase-confirm" placeholder="<?php esc_attr_e( 'Type ERASE to confirm', 'dfx-parish-retreat-letters' ); ?>">
@@ -4265,7 +4265,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 	 * @since 1.2.0
 	 */
 	public function ajax_reset_rate_limits() {
-		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ?? '' ) ), 'dfx_prl_retreats_nonce' ) ) {
+		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ?? '' ) ), 'dfxprl_retreats_nonce' ) ) {
 			wp_die( esc_html__( 'Security check failed.', 'dfx-parish-retreat-letters' ) );
 		}
 
@@ -4295,7 +4295,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 	 */
 	public function ajax_remove_db_encryption_key() {
 		// Verify nonce
-		if ( ! isset( $_POST['nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ) ), 'dfx_prl_remove_db_encryption_key' ) ) {
+		if ( ! isset( $_POST['nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ) ), 'dfxprl_remove_db_encryption_key' ) ) {
 			wp_send_json_error( array( 'message' => __( 'Security check failed.', 'dfx-parish-retreat-letters' ) ) );
 		}
 
@@ -4305,7 +4305,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 		}
 
 		// Verify that a wp-config.php key is defined (otherwise we shouldn't remove the database key)
-		if ( ! defined( 'DFX_PARISH_RETREAT_LETTERS_ENCRYPTION_KEY' ) ) {
+		if ( ! defined( 'DFXPRL_ENCRYPTION_KEY' ) ) {
 			wp_send_json_error( array( 'message' => __( 'Cannot remove database key: no encryption key is defined in wp-config.php.', 'dfx-parish-retreat-letters' ) ) );
 		}
 
@@ -4326,7 +4326,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 	 */
 	public function ajax_get_invitation_message() {
 		// Verify nonce
-		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ?? '' ) ), 'dfx_prl_retreats_nonce' ) ) {
+		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ?? '' ) ), 'dfxprl_retreats_nonce' ) ) {
 			wp_send_json_error( array( 'message' => __( 'Security check failed.', 'dfx-parish-retreat-letters' ) ) );
 		}
 
@@ -4736,7 +4736,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 			<hr class="wp-header-end">
 
 			<form method="post" action="">
-				<?php wp_nonce_field( 'dfx_prl_global_settings_nonce' ); ?>
+				<?php wp_nonce_field( 'dfxprl_global_settings_nonce' ); ?>
 
 				<table class="form-table">
 					<tbody>
@@ -4819,7 +4819,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 						<td><?php echo esc_html( implode( ', ', $manager->roles ) ); ?></td>
 						<td>
 							<form method="post" style="display: inline-block;">
-								<?php wp_nonce_field( 'dfx_prl_user_management_nonce' ); ?>
+								<?php wp_nonce_field( 'dfxprl_user_management_nonce' ); ?>
 								<input type="hidden" name="user_management_action" value="revoke">
 								<input type="hidden" name="user_id" value="<?php echo esc_attr( $manager->ID ); ?>">
 								<button type="submit" class="button button-small" onclick="return confirm('<?php esc_attr_e( 'Are you sure you want to revoke global retreat management access from this user?', 'dfx-parish-retreat-letters' ); ?>')">
@@ -4840,7 +4840,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 				<p><em><?php esc_html_e( 'No non-administrator users available.', 'dfx-parish-retreat-letters' ); ?></em></p>
 			<?php else : ?>
 				<form method="post">
-					<?php wp_nonce_field( 'dfx_prl_user_management_nonce' ); ?>
+					<?php wp_nonce_field( 'dfxprl_user_management_nonce' ); ?>
 					<input type="hidden" name="user_management_action" value="grant">
 
 					<table class="form-table">
@@ -4849,7 +4849,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 								<label for="user_id"><?php esc_html_e( 'Select User', 'dfx-parish-retreat-letters' ); ?></label>
 							</th>
 							<td>
-								<select name="user_id" id="user_id" class="dfx-prl-user-select" style="width: 300px;" required>
+								<select name="user_id" id="user_id" class="dfxprl-user-select" style="width: 300px;" required>
 									<option value=""><?php esc_html_e( 'Choose a user...', 'dfx-parish-retreat-letters' ); ?></option>
 									<?php foreach ( $non_admin_users as $user ) : ?>
 										<?php if ( ! $user->has_cap( 'manage_retreat_plugin' ) ) : ?>
@@ -4881,7 +4881,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 			jQuery(document).ready(function($) {
 				// Initialize Select2 for user selection
 				if ($.fn.select2) {
-					$('.dfx-prl-user-select').select2({
+					$('.dfxprl-user-select').select2({
 						placeholder: '<?php esc_html_e( 'Choose a user...', 'dfx-parish-retreat-letters' ); ?>',
 						allowClear: true,
 						width: '100%'
@@ -4918,7 +4918,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 		}
 
 		// Verify nonce
-		if ( ! isset( $_POST['_wpnonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['_wpnonce'] ) ), 'dfx_prl_global_settings_nonce' ) ) {
+		if ( ! isset( $_POST['_wpnonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['_wpnonce'] ) ), 'dfxprl_global_settings_nonce' ) ) {
 			$this->add_admin_notice( __( 'Security check failed. Please try again.', 'dfx-parish-retreat-letters' ), 'error' );
 			return;
 		}
@@ -4950,7 +4950,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 	 */
 	private function handle_user_management_actions() {
 		// Verify nonce
-		if ( ! isset( $_POST['_wpnonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['_wpnonce'] ) ), 'dfx_prl_user_management_nonce' ) ) {
+		if ( ! isset( $_POST['_wpnonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['_wpnonce'] ) ), 'dfxprl_user_management_nonce' ) ) {
 			$this->add_admin_notice( __( 'Security check failed. Please try again.', 'dfx-parish-retreat-letters' ), 'error' );
 			return;
 		}
@@ -5012,7 +5012,7 @@ class DFX_Parish_Retreat_Letters_Admin {
 	 */
 	private function render_plugin_footer() {
 		?>
-		<div class="dfx-prl-plugin-footer" style="position: fixed; bottom: 0; right: 0; left: 200px; z-index: 1000; background: #f1f1f1; border-top: 1px solid #ddd; padding: 10px 20px;">
+		<div class="dfxprl-plugin-footer" style="position: fixed; bottom: 0; right: 0; left: 200px; z-index: 1000; background: #f1f1f1; border-top: 1px solid #ddd; padding: 10px 20px;">
 			<p style="margin: 0; color: #666; font-size: 12px; text-align: right;">
 				<?php
 				echo wp_kses_post( sprintf(

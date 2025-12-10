@@ -2,7 +2,7 @@
 /**
  * Unit tests for Message Request Template functionality
  *
- * @package DFX_Parish_Retreat_Letters
+ * @package DFXPRL
  */
 
 use PHPUnit\Framework\TestCase;
@@ -24,10 +24,10 @@ class MessageRequestTemplateTest extends TestCase {
 		// Load plugin classes if not already loaded
 		$plugin_dir = dirname( __DIR__, 2 );
 		
-		if ( ! class_exists( 'DFX_Parish_Retreat_Letters_Database' ) ) {
+		if ( ! class_exists( 'DFXPRL_Database' ) ) {
 			require_once $plugin_dir . '/includes/class-database.php';
 		}
-		if ( ! class_exists( 'DFX_Parish_Retreat_Letters_Retreat' ) ) {
+		if ( ! class_exists( 'DFXPRL_Retreat' ) ) {
 			require_once $plugin_dir . '/includes/class-retreat.php';
 		}
 
@@ -61,7 +61,7 @@ class MessageRequestTemplateTest extends TestCase {
 	 * Test that message_request_template field is included in sanitize_retreat_data
 	 */
 	public function test_retreat_sanitize_includes_message_request_template() {
-		$retreat = new DFX_Parish_Retreat_Letters_Retreat();
+		$retreat = new DFXPRL_Retreat();
 
 		$reflection = new ReflectionClass( $retreat );
 		$method = $reflection->getMethod( 'sanitize_retreat_data' );
@@ -85,7 +85,7 @@ class MessageRequestTemplateTest extends TestCase {
 	 * Test that database schema includes message_request_template field
 	 */
 	public function test_database_schema_includes_message_request_template() {
-		$database = DFX_Parish_Retreat_Letters_Database::get_instance();
+		$database = DFXPRL_Database::get_instance();
 
 		// Use reflection to access the setup_tables method
 		$reflection = new ReflectionClass( $database );
@@ -103,7 +103,7 @@ class MessageRequestTemplateTest extends TestCase {
 	 */
 	public function test_retreat_create_includes_message_request_template() {
 		// This test verifies that the create method signature accepts the field
-		$retreat = new DFX_Parish_Retreat_Letters_Retreat();
+		$retreat = new DFXPRL_Retreat();
 		
 		$reflection = new ReflectionClass( $retreat );
 		$method = $reflection->getMethod( 'sanitize_retreat_data' );
@@ -130,7 +130,7 @@ class MessageRequestTemplateTest extends TestCase {
 	 * Test template string handling for special characters
 	 */
 	public function test_message_request_template_sanitization() {
-		$retreat = new DFX_Parish_Retreat_Letters_Retreat();
+		$retreat = new DFXPRL_Retreat();
 
 		$reflection = new ReflectionClass( $retreat );
 		$method = $reflection->getMethod( 'sanitize_retreat_data' );
@@ -156,7 +156,7 @@ class MessageRequestTemplateTest extends TestCase {
 	 * Test message_request_template field can be empty
 	 */
 	public function test_message_request_template_can_be_empty() {
-		$retreat = new DFX_Parish_Retreat_Letters_Retreat();
+		$retreat = new DFXPRL_Retreat();
 
 		$reflection = new ReflectionClass( $retreat );
 		$method = $reflection->getMethod( 'sanitize_retreat_data' );
@@ -181,7 +181,7 @@ class MessageRequestTemplateTest extends TestCase {
 	 */
 	public function test_template_expansion_with_notes_enabled() {
 		// Mock the Admin class and the expand_invitation_template method
-		$admin = $this->getMockBuilder( 'DFX_Parish_Retreat_Letters_Admin' )
+		$admin = $this->getMockBuilder( 'DFXPRL_Admin' )
 			->disableOriginalConstructor()
 			->getMock();
 

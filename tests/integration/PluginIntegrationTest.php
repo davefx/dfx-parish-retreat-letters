@@ -2,7 +2,7 @@
 /**
  * Integration tests for DFX Parish Retreat Letters plugin
  *
- * @package DFX_Parish_Retreat_Letters
+ * @package DFXPRL
  */
 
 /**
@@ -20,7 +20,7 @@ class PluginIntegrationTest extends PHPUnit\Framework\TestCase {
      */
     public function setUp(): void {
         // Load the plugin files if not already loaded
-        if (!class_exists('DFX_Parish_Retreat_Letters')) {
+        if (!class_exists('DFXPRL')) {
             // Load all the plugin classes
             $plugin_dir = dirname(dirname(__DIR__));
             require_once $plugin_dir . '/includes/class-database.php';
@@ -37,14 +37,14 @@ class PluginIntegrationTest extends PHPUnit\Framework\TestCase {
             require_once $plugin_dir . '/includes/class-print-log.php';
             
             // Define plugin constants if not defined
-            if (!defined('DFX_PARISH_RETREAT_LETTERS_VERSION')) {
-                define('DFX_PARISH_RETREAT_LETTERS_VERSION', '25.12.09');
+            if (!defined('DFXPRL_VERSION')) {
+                define('DFXPRL_VERSION', '25.12.09');
             }
-            if (!defined('DFX_PARISH_RETREAT_LETTERS_PLUGIN_DIR')) {
-                define('DFX_PARISH_RETREAT_LETTERS_PLUGIN_DIR', $plugin_dir . '/');
+            if (!defined('DFXPRL_PLUGIN_DIR')) {
+                define('DFXPRL_PLUGIN_DIR', $plugin_dir . '/');
             }
-            if (!defined('DFX_PARISH_RETREAT_LETTERS_PLUGIN_URL')) {
-                define('DFX_PARISH_RETREAT_LETTERS_PLUGIN_URL', 'http://example.com/wp-content/plugins/dfx-parish-retreat-letters/');
+            if (!defined('DFXPRL_PLUGIN_URL')) {
+                define('DFXPRL_PLUGIN_URL', 'http://example.com/wp-content/plugins/dfx-parish-retreat-letters/');
             }
         }
         
@@ -102,7 +102,7 @@ class PluginIntegrationTest extends PHPUnit\Framework\TestCase {
         
         try {
             // Test that the correct table name is used
-            $expected_table_name = $wpdb->prefix . 'dfx_prl_retreats';
+            $expected_table_name = $wpdb->prefix . 'dfxprl_retreats';
             
             // Check if table exists initially (should be false)
             $table_exists_before = ($wpdb->get_var)("SHOW TABLES LIKE '$expected_table_name'") === $expected_table_name;
@@ -126,17 +126,17 @@ class PluginIntegrationTest extends PHPUnit\Framework\TestCase {
      */
     public function test_plugin_initialization() {
         // Test that the main plugin class exists
-        $this->assertTrue(class_exists('DFX_Parish_Retreat_Letters'), 'Main plugin class should exist');
+        $this->assertTrue(class_exists('DFXPRL'), 'Main plugin class should exist');
         
         // Test that the database class exists  
-        $this->assertTrue(class_exists('DFX_Parish_Retreat_Letters_Database'), 'Database class should exist');
+        $this->assertTrue(class_exists('DFXPRL_Database'), 'Database class should exist');
         
         // Test that essential methods exist
-        $this->assertTrue(method_exists('DFX_Parish_Retreat_Letters_Database', 'get_instance'), 'Database get_instance method should exist');
-        $this->assertTrue(method_exists('DFX_Parish_Retreat_Letters_Database', 'setup_tables'), 'Database setup_tables method should exist');
+        $this->assertTrue(method_exists('DFXPRL_Database', 'get_instance'), 'Database get_instance method should exist');
+        $this->assertTrue(method_exists('DFXPRL_Database', 'setup_tables'), 'Database setup_tables method should exist');
         
         // Test that the number of required methods is reasonable (more than 0)
-        $database_methods = get_class_methods('DFX_Parish_Retreat_Letters_Database');
+        $database_methods = get_class_methods('DFXPRL_Database');
         $this->assertGreaterThan(5, count($database_methods), 'Database class should have multiple methods');
     }
 
@@ -145,13 +145,13 @@ class PluginIntegrationTest extends PHPUnit\Framework\TestCase {
      */
     public function test_essential_plugin_classes_exist() {
         $essential_classes = [
-            'DFX_Parish_Retreat_Letters',
-            'DFX_Parish_Retreat_Letters_Database',
-            'DFX_Parish_Retreat_Letters_Retreat',
-            'DFX_Parish_Retreat_Letters_Attendant',
-            'DFX_Parish_Retreat_Letters_ConfidentialMessage',
-            'DFX_Parish_Retreat_Letters_Security',
-            'DFX_Parish_Retreat_Letters_Admin',
+            'DFXPRL',
+            'DFXPRL_Database',
+            'DFXPRL_Retreat',
+            'DFXPRL_Attendant',
+            'DFXPRL_ConfidentialMessage',
+            'DFXPRL_Security',
+            'DFXPRL_Admin',
         ];
         
         foreach ($essential_classes as $class_name) {
@@ -164,9 +164,9 @@ class PluginIntegrationTest extends PHPUnit\Framework\TestCase {
      */
     public function test_database_table_definitions() {
         // Test that database class has proper table name getters
-        $this->assertTrue(method_exists('DFX_Parish_Retreat_Letters_Database', 'get_retreats_table'), 'get_retreats_table method should exist');
-        $this->assertTrue(method_exists('DFX_Parish_Retreat_Letters_Database', 'get_attendants_table'), 'get_attendants_table method should exist');
-        $this->assertTrue(method_exists('DFX_Parish_Retreat_Letters_Database', 'get_messages_table'), 'get_messages_table method should exist');
+        $this->assertTrue(method_exists('DFXPRL_Database', 'get_retreats_table'), 'get_retreats_table method should exist');
+        $this->assertTrue(method_exists('DFXPRL_Database', 'get_attendants_table'), 'get_attendants_table method should exist');
+        $this->assertTrue(method_exists('DFXPRL_Database', 'get_messages_table'), 'get_messages_table method should exist');
     }
 
     /**
@@ -174,9 +174,9 @@ class PluginIntegrationTest extends PHPUnit\Framework\TestCase {
      */
     public function test_model_classes_have_crud_methods() {
         $models_and_methods = [
-            'DFX_Parish_Retreat_Letters_Retreat' => ['create', 'get', 'update', 'delete', 'get_all'],
-            'DFX_Parish_Retreat_Letters_Attendant' => ['create', 'get', 'update', 'delete', 'get_by_retreat'],
-            'DFX_Parish_Retreat_Letters_ConfidentialMessage' => ['create', 'get', 'delete', 'get_all_with_metadata', 'get_by_attendant'],
+            'DFXPRL_Retreat' => ['create', 'get', 'update', 'delete', 'get_all'],
+            'DFXPRL_Attendant' => ['create', 'get', 'update', 'delete', 'get_by_retreat'],
+            'DFXPRL_ConfidentialMessage' => ['create', 'get', 'delete', 'get_all_with_metadata', 'get_by_attendant'],
         ];
         
         foreach ($models_and_methods as $class_name => $methods) {
@@ -194,12 +194,12 @@ class PluginIntegrationTest extends PHPUnit\Framework\TestCase {
      */
     public function test_plugin_constants_and_version() {
         // Test that essential constants are defined
-        $this->assertTrue(defined('DFX_PARISH_RETREAT_LETTERS_VERSION'), 'Plugin version constant should be defined');
-        $this->assertTrue(defined('DFX_PARISH_RETREAT_LETTERS_PLUGIN_DIR'), 'Plugin directory constant should be defined');
-        $this->assertTrue(defined('DFX_PARISH_RETREAT_LETTERS_PLUGIN_URL'), 'Plugin URL constant should be defined');
+        $this->assertTrue(defined('DFXPRL_VERSION'), 'Plugin version constant should be defined');
+        $this->assertTrue(defined('DFXPRL_PLUGIN_DIR'), 'Plugin directory constant should be defined');
+        $this->assertTrue(defined('DFXPRL_PLUGIN_URL'), 'Plugin URL constant should be defined');
         
         // Test that version follows semantic versioning pattern (PHPUnit 9+ compatible)
-        $version = DFX_PARISH_RETREAT_LETTERS_VERSION;
+        $version = DFXPRL_VERSION;
         $this->assertMatchesRegularExpression('/^\d+\.\d+\.\d+$/', $version, 'Plugin version should follow semantic versioning');
     }
 
@@ -207,12 +207,12 @@ class PluginIntegrationTest extends PHPUnit\Framework\TestCase {
      * Test security class exists and has expected methods
      */
     public function test_security_features_exist() {
-        $this->assertTrue(class_exists('DFX_Parish_Retreat_Letters_Security'), 'Security class should exist');
+        $this->assertTrue(class_exists('DFXPRL_Security'), 'Security class should exist');
         
         $security_methods = ['encrypt_data', 'decrypt_data', 'generate_secure_token', 'hash_ip_address'];
         foreach ($security_methods as $method) {
             $this->assertTrue(
-                method_exists('DFX_Parish_Retreat_Letters_Security', $method),
+                method_exists('DFXPRL_Security', $method),
                 "Security method $method should exist"
             );
         }
@@ -222,13 +222,13 @@ class PluginIntegrationTest extends PHPUnit\Framework\TestCase {
      * Test admin interface components exist
      */
     public function test_admin_interface_components() {
-        $this->assertTrue(class_exists('DFX_Parish_Retreat_Letters_Admin'), 'Admin class should exist');
+        $this->assertTrue(class_exists('DFXPRL_Admin'), 'Admin class should exist');
         
         // Test that admin class has expected methods
         $admin_methods = ['retreats_list_page', 'handle_admin_form_submissions'];
         foreach ($admin_methods as $method) {
             $this->assertTrue(
-                method_exists('DFX_Parish_Retreat_Letters_Admin', $method),
+                method_exists('DFXPRL_Admin', $method),
                 "Admin method $method should exist"
             );
         }

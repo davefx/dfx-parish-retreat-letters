@@ -7,8 +7,8 @@
  * @link       https://github.com/davefx/dfx-parish-retreat-letters
  * @since      1.0.0
  *
- * @package    DFX_Parish_Retreat_Letters
- * @subpackage DFX_Parish_Retreat_Letters/includes
+ * @package    DFXPRL
+ * @subpackage DFXPRL/includes
  */
 
 /**
@@ -17,17 +17,17 @@
  * This class handles all CRUD operations for retreats.
  *
  * @since      1.0.0
- * @package    DFX_Parish_Retreat_Letters
- * @subpackage DFX_Parish_Retreat_Letters/includes
+ * @package    DFXPRL
+ * @subpackage DFXPRL/includes
  * @author     DaveFX
  */
-class DFX_Parish_Retreat_Letters_Retreat {
+class DFXPRL_Retreat {
 
 	/**
 	 * The database instance.
 	 *
 	 * @since 1.0.0
-	 * @var DFX_Parish_Retreat_Letters_Database
+	 * @var DFXPRL_Database
 	 */
 	private $database;
 
@@ -37,7 +37,7 @@ class DFX_Parish_Retreat_Letters_Retreat {
 	 * @since 1.0.0
 	 */
 	public function __construct() {
-		$this->database = DFX_Parish_Retreat_Letters_Database::get_instance();
+		$this->database = DFXPRL_Database::get_instance();
 	}
 
 	/**
@@ -157,15 +157,15 @@ class DFX_Parish_Retreat_Letters_Retreat {
 		global $wpdb;
 
 		// Delete all attendants for this retreat (which will cascade delete messages)
-		$attendant_model = new DFX_Parish_Retreat_Letters_Attendant();
+		$attendant_model = new DFXPRL_Attendant();
 		$attendant_model->delete_by_retreat( $id );
 
 		// Delete all permissions and audit logs for this retreat
-		$permissions_model = DFX_Parish_Retreat_Letters_Permissions::get_instance();
+		$permissions_model = DFXPRL_Permissions::get_instance();
 		$permissions_model->delete_by_retreat( $id );
 
 		// Delete all invitations for this retreat
-		$invitations_model = DFX_Parish_Retreat_Letters_Invitations::get_instance();
+		$invitations_model = DFXPRL_Invitations::get_instance();
 		$invitations_model->delete_by_retreat( $id );
 
 		// Delete the retreat
@@ -243,7 +243,7 @@ class DFX_Parish_Retreat_Letters_Retreat {
 
 		// Add attendant counts if requested
 		if ( $args['include_attendant_count'] && ! empty( $results ) ) {
-			$attendant_model = new DFX_Parish_Retreat_Letters_Attendant();
+			$attendant_model = new DFXPRL_Attendant();
 			$retreat_ids = wp_list_pluck( $results, 'id' );
 			$attendant_counts = $attendant_model->get_counts_for_retreats( $retreat_ids );
 			

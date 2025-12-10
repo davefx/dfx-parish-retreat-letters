@@ -8,7 +8,7 @@
  * Usage: Place this file in the plugin directory and access via wp-admin
  * or run via WP-CLI: wp eval-file validate-constraint-fixes.php
  *
- * @package DFX_Parish_Retreat_Letters
+ * @package DFXPRL
  */
 
 // Only allow execution in WordPress environment
@@ -24,7 +24,7 @@ if ( ! current_user_can( 'manage_options' ) ) {
 echo "<h2>Database Constraint Fixes Validation</h2>\n";
 
 // Check database version
-$database = DFX_Parish_Retreat_Letters_Database::get_instance();
+$database = DFXPRL_Database::get_instance();
 $current_version = $database->get_database_version();
 $schema_version = $database->get_schema_version();
 
@@ -102,7 +102,7 @@ echo "<h3>Scenario Testing:</h3>\n";
 echo "<p><strong>Invitation Cancellation Test:</strong></p>\n";
 try {
     // This would previously fail with "Duplicate entry" error
-    $invitations = DFX_Parish_Retreat_Letters_Invitations::get_instance();
+    $invitations = DFXPRL_Invitations::get_instance();
     echo "<p style='color: green;'>✓ Invitations class can be instantiated</p>\n";
     
     if ( method_exists( $invitations, 'cancel_invitation' ) ) {
@@ -117,7 +117,7 @@ try {
 echo "<p><strong>Audit Logging Test:</strong></p>\n";
 try {
     // This would previously fail with foreign key constraint error
-    $permissions = DFX_Parish_Retreat_Letters_Permissions::get_instance();
+    $permissions = DFXPRL_Permissions::get_instance();
     echo "<p style='color: green;'>✓ Permissions class can be instantiated</p>\n";
     
     if ( method_exists( $permissions, 'log_permission_action' ) ) {

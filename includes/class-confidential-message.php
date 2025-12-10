@@ -7,8 +7,8 @@
  * @link       https://github.com/davefx/dfx-parish-retreat-letters
  * @since      1.2.0
  *
- * @package    DFX_Parish_Retreat_Letters
- * @subpackage DFX_Parish_Retreat_Letters/includes
+ * @package    DFXPRL
+ * @subpackage DFXPRL/includes
  */
 
 /**
@@ -18,17 +18,17 @@
  * with built-in encryption and security features.
  *
  * @since      1.2.0
- * @package    DFX_Parish_Retreat_Letters
- * @subpackage DFX_Parish_Retreat_Letters/includes
+ * @package    DFXPRL
+ * @subpackage DFXPRL/includes
  * @author     DaveFX
  */
-class DFX_Parish_Retreat_Letters_ConfidentialMessage {
+class DFXPRL_ConfidentialMessage {
 
 	/**
 	 * The database instance.
 	 *
 	 * @since 1.2.0
-	 * @var DFX_Parish_Retreat_Letters_Database
+	 * @var DFXPRL_Database
 	 */
 	private $database;
 
@@ -36,7 +36,7 @@ class DFX_Parish_Retreat_Letters_ConfidentialMessage {
 	 * The security instance.
 	 *
 	 * @since 1.2.0
-	 * @var DFX_Parish_Retreat_Letters_Security
+	 * @var DFXPRL_Security
 	 */
 	private $security;
 
@@ -46,8 +46,8 @@ class DFX_Parish_Retreat_Letters_ConfidentialMessage {
 	 * @since 1.2.0
 	 */
 	public function __construct() {
-		$this->database = DFX_Parish_Retreat_Letters_Database::get_instance();
-		$this->security = DFX_Parish_Retreat_Letters_Security::get_instance();
+		$this->database = DFXPRL_Database::get_instance();
+		$this->security = DFXPRL_Security::get_instance();
 	}
 
 	/**
@@ -492,7 +492,7 @@ class DFX_Parish_Retreat_Letters_ConfidentialMessage {
 		global $wpdb;
 
 		// First delete associated files from filesystem
-		$file_model = new DFX_Parish_Retreat_Letters_MessageFile();
+		$file_model = new DFXPRL_MessageFile();
 		$files = $file_model->get_by_message( $id );
 		foreach ( $files as $file ) {
 			$file_model->delete( $file->id );

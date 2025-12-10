@@ -2,9 +2,9 @@
  * Retreat Edit Page JavaScript
  * 
  * Handles retreat editing functionality including permissions and invitations management.
- * Requires jQuery and expects dfxPRLRetreatEdit object to be localized.
+ * Requires jQuery and expects dfxprlRetreatEdit object to be localized.
  * 
- * @package DFX_Parish_Retreat_Letters
+ * @package DFXPRL
  * @since 25.12.10
  */
 
@@ -12,8 +12,8 @@
 'use strict';
 
 $(document).ready(function() {
-var nonce = dfxPRLRetreatEdit.nonce;
-var retreatId = dfxPRLRetreatEdit.retreatId;
+var nonce = dfxprlRetreatEdit.nonce;
+var retreatId = dfxprlRetreatEdit.retreatId;
 var searchTimeout;
 
 // Tab switching
@@ -46,7 +46,7 @@ searchUsers(searchTerm);
 
 // Hide search results when clicking outside
 $(document).on('click', function(e) {
-if (!$(e.target).closest('.dfx-prl-user-search').length) {
+if (!$(e.target).closest('.dfxprl-user-search').length) {
 $('#user-search-results').hide();
 }
 });
@@ -56,7 +56,7 @@ $.ajax({
 url: ajaxurl,
 type: 'POST',
 data: {
-action: 'dfx_prl_search_users',
+action: 'dfxprl_search_users',
 nonce: nonce,
 retreat_id: retreatId,
 search: searchTerm
@@ -65,11 +65,11 @@ success: function(response) {
 if (response.success) {
 displaySearchResults(response.data);
 } else {
-$('#user-search-results').html('<div class="dfx-prl-search-error">' + dfxPRLRetreatEdit.i18n.searchFailed + '</div>').show();
+$('#user-search-results').html('<div class="dfxprl-search-error">' + dfxprlRetreatEdit.i18n.searchFailed + '</div>').show();
 }
 },
 error: function() {
-$('#user-search-results').html('<div class="dfx-prl-search-error">' + dfxPRLRetreatEdit.i18n.searchFailed + '</div>').show();
+$('#user-search-results').html('<div class="dfxprl-search-error">' + dfxprlRetreatEdit.i18n.searchFailed + '</div>').show();
 }
 });
 }
@@ -79,18 +79,18 @@ var results = $('#user-search-results');
 results.empty();
 
 if (users.length === 0) {
-results.html('<div class="dfx-prl-no-results">' + dfxPRLRetreatEdit.i18n.noUsersFound + '</div>');
+results.html('<div class="dfxprl-no-results">' + dfxprlRetreatEdit.i18n.noUsersFound + '</div>');
 } else {
-var html = '<div class="dfx-prl-search-results-list">';
+var html = '<div class="dfxprl-search-results-list">';
 users.forEach(function(user) {
-html += '<div class="dfx-prl-search-result-item" data-user-id="' + user.id + '">' +
+html += '<div class="dfxprl-search-result-item" data-user-id="' + user.id + '">' +
 '<strong>' + user.display_name + '</strong> (' + user.user_login + ')' +
-'<select class="dfx-prl-role-select" data-user-id="' + user.id + '">' +
-'<option value="">' + dfxPRLRetreatEdit.i18n.selectRole + '</option>' +
-'<option value="manager">' + dfxPRLRetreatEdit.i18n.retreatManager + '</option>' +
-'<option value="message_manager">' + dfxPRLRetreatEdit.i18n.messageManager + '</option>' +
+'<select class="dfxprl-role-select" data-user-id="' + user.id + '">' +
+'<option value="">' + dfxprlRetreatEdit.i18n.selectRole + '</option>' +
+'<option value="manager">' + dfxprlRetreatEdit.i18n.retreatManager + '</option>' +
+'<option value="message_manager">' + dfxprlRetreatEdit.i18n.messageManager + '</option>' +
 '</select>' +
-'<button class="button button-small dfx-prl-grant-btn" data-user-id="' + user.id + '">' + dfxPRLRetreatEdit.i18n.grant + '</button>' +
+'<button class="button button-small dfxprl-grant-btn" data-user-id="' + user.id + '">' + dfxprlRetreatEdit.i18n.grant + '</button>' +
 '</div>';
 });
 html += '</div>';
@@ -101,12 +101,12 @@ results.show();
 }
 
 // Grant permission
-$(document).on('click', '.dfx-prl-grant-btn', function() {
+$(document).on('click', '.dfxprl-grant-btn', function() {
 var userId = $(this).data('user-id');
-var role = $('.dfx-prl-role-select[data-user-id="' + userId + '"]').val();
+var role = $('.dfxprl-role-select[data-user-id="' + userId + '"]').val();
 
 if (!role) {
-alert(dfxPRLRetreatEdit.i18n.pleaseSelectRole);
+alert(dfxprlRetreatEdit.i18n.pleaseSelectRole);
 return;
 }
 
@@ -118,7 +118,7 @@ $.ajax({
 url: ajaxurl,
 type: 'POST',
 data: {
-action: 'dfx_prl_grant_permission',
+action: 'dfxprl_grant_permission',
 nonce: nonce,
 retreat_id: retreatId,
 user_id: userId,
@@ -128,17 +128,17 @@ success: function(response) {
 if (response.success) {
 location.reload();
 } else {
-alert(dfxPRLRetreatEdit.i18n.failedToGrantPermission);
+alert(dfxprlRetreatEdit.i18n.failedToGrantPermission);
 }
 },
 error: function() {
-alert(dfxPRLRetreatEdit.i18n.failedToGrantPermission);
+alert(dfxprlRetreatEdit.i18n.failedToGrantPermission);
 }
 });
 }
 
 // Revoke permission
-$(document).on('click', '.dfx-prl-revoke-permission', function(e) {
+$(document).on('click', '.dfxprl-revoke-permission', function(e) {
 e.preventDefault();
 var permissionId = $(this).data('permission-id');
 
@@ -152,7 +152,7 @@ $.ajax({
 url: ajaxurl,
 type: 'POST',
 data: {
-action: 'dfx_prl_revoke_permission',
+action: 'dfxprl_revoke_permission',
 nonce: nonce,
 retreat_id: retreatId,
 permission_id: permissionId
@@ -161,17 +161,17 @@ success: function(response) {
 if (response.success) {
 location.reload();
 } else {
-alert(dfxPRLRetreatEdit.i18n.failedToRevokePermission);
+alert(dfxprlRetreatEdit.i18n.failedToRevokePermission);
 }
 },
 error: function() {
-alert(dfxPRLRetreatEdit.i18n.failedToRevokePermission);
+alert(dfxprlRetreatEdit.i18n.failedToRevokePermission);
 }
 });
 }
 
 // Send invitation
-$('#dfx-prl-send-invitation-form').on('submit', function(e) {
+$('#dfxprl-send-invitation-form').on('submit', function(e) {
 e.preventDefault();
 
 var email = $('#invitation-email').val();
@@ -187,7 +187,7 @@ $.ajax({
 url: ajaxurl,
 type: 'POST',
 data: {
-action: 'dfx_prl_send_invitation',
+action: 'dfxprl_send_invitation',
 nonce: nonce,
 retreat_id: retreatId,
 email: email,
@@ -199,17 +199,17 @@ success: function(response) {
 if (response.success) {
 location.reload();
 } else {
-alert(response.data.message || dfxPRLRetreatEdit.i18n.failedToSendInvitation);
+alert(response.data.message || dfxprlRetreatEdit.i18n.failedToSendInvitation);
 }
 },
 error: function() {
-alert(dfxPRLRetreatEdit.i18n.failedToSendInvitation);
+alert(dfxprlRetreatEdit.i18n.failedToSendInvitation);
 }
 });
 }
 
 // Cancel invitation
-$(document).on('click', '.dfx-prl-cancel-invitation', function(e) {
+$(document).on('click', '.dfxprl-cancel-invitation', function(e) {
 e.preventDefault();
 var invitationId = $(this).data('invitation-id');
 
@@ -223,7 +223,7 @@ $.ajax({
 url: ajaxurl,
 type: 'POST',
 data: {
-action: 'dfx_prl_cancel_invitation',
+action: 'dfxprl_cancel_invitation',
 nonce: nonce,
 invitation_id: invitationId
 },
@@ -231,11 +231,11 @@ success: function(response) {
 if (response.success) {
 location.reload();
 } else {
-alert(dfxPRLRetreatEdit.i18n.failedToCancelInvitation);
+alert(dfxprlRetreatEdit.i18n.failedToCancelInvitation);
 }
 },
 error: function() {
-alert(dfxPRLRetreatEdit.i18n.failedToCancelInvitation);
+alert(dfxprlRetreatEdit.i18n.failedToCancelInvitation);
 }
 });
 }

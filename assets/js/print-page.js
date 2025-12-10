@@ -3,7 +3,7 @@
  * 
  * Auto-triggers print dialog and handles window closing after printing.
  * 
- * @package DFX_Parish_Retreat_Letters
+ * @package DFXPRL
  * @since 25.12.10
  */
 

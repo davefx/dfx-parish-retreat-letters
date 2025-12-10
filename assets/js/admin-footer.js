@@ -4,7 +4,7 @@
  * Adjusts admin footer positioning based on WordPress admin menu state.
  * Requires jQuery.
  * 
- * @package DFX_Parish_Retreat_Letters
+ * @package DFXPRL
  * @since 25.12.10
  */
 
@@ -14,7 +14,7 @@
 	$(document).ready(function() {
 		// Adjust footer positioning based on admin menu state
 		function adjustFooterPosition() {
-			var $footer = $('.dfx-prl-plugin-footer');
+			var $footer = $('.dfxprl-plugin-footer');
 			var $adminMenu = $('#adminmenumain');
 
 			if ($adminMenu.length && $adminMenu.hasClass('folded')) {

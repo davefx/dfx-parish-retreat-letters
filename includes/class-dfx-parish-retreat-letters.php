@@ -8,8 +8,8 @@
  * @link       https://github.com/davefx/dfx-parish-retreat-letters
  * @since      1.0.0
  *
- * @package    DFX_Parish_Retreat_Letters
- * @subpackage DFX_Parish_Retreat_Letters/includes
+ * @package    DFXPRL
+ * @subpackage DFXPRL/includes
  */
 
 /**
@@ -22,17 +22,17 @@
  * version of the plugin.
  *
  * @since      1.0.0
- * @package    DFX_Parish_Retreat_Letters
- * @subpackage DFX_Parish_Retreat_Letters/includes
+ * @package    DFXPRL
+ * @subpackage DFXPRL/includes
  * @author     DaveFX
  */
-class DFX_Parish_Retreat_Letters {
+class DFXPRL {
 
 	/**
 	 * The single instance of the class.
 	 *
 	 * @since 1.0.0
-	 * @var DFX_Parish_Retreat_Letters|null
+	 * @var DFXPRL|null
 	 */
 	private static $instance = null;
 
@@ -41,7 +41,7 @@ class DFX_Parish_Retreat_Letters {
 	 *
 	 * @since    1.0.0
 	 * @access   protected
-	 * @var      DFX_Parish_Retreat_Letters_Database    $database    Manages database operations.
+	 * @var      DFXPRL_Database    $database    Manages database operations.
 	 */
 	protected $database;
 
@@ -50,7 +50,7 @@ class DFX_Parish_Retreat_Letters {
 	 *
 	 * @since    1.0.0
 	 * @access   protected
-	 * @var      DFX_Parish_Retreat_Letters_Admin    $admin    Manages admin interface.
+	 * @var      DFXPRL_Admin    $admin    Manages admin interface.
 	 */
 	protected $admin;
 
@@ -59,7 +59,7 @@ class DFX_Parish_Retreat_Letters {
 	 *
 	 * @since    1.2.0
 	 * @access   protected
-	 * @var      DFX_Parish_Retreat_Letters_Security    $security    Manages security operations.
+	 * @var      DFXPRL_Security    $security    Manages security operations.
 	 */
 	protected $security;
 
@@ -68,7 +68,7 @@ class DFX_Parish_Retreat_Letters {
 	 *
 	 * @since    1.2.0
 	 * @access   protected
-	 * @var      DFX_Parish_Retreat_Letters_GDPR    $gdpr    Manages GDPR compliance.
+	 * @var      DFXPRL_GDPR    $gdpr    Manages GDPR compliance.
 	 */
 	protected $gdpr;
 
@@ -77,7 +77,7 @@ class DFX_Parish_Retreat_Letters {
 	 *
 	 * @since    1.3.0
 	 * @access   protected
-	 * @var      DFX_Parish_Retreat_Letters_Permissions    $permissions    Manages permissions system.
+	 * @var      DFXPRL_Permissions    $permissions    Manages permissions system.
 	 */
 	protected $permissions;
 
@@ -86,7 +86,7 @@ class DFX_Parish_Retreat_Letters {
 	 *
 	 * @since    1.3.0
 	 * @access   protected
-	 * @var      DFX_Parish_Retreat_Letters_Invitations    $invitations    Manages invitation system.
+	 * @var      DFXPRL_Invitations    $invitations    Manages invitation system.
 	 */
 	protected $invitations;
 
@@ -109,13 +109,13 @@ class DFX_Parish_Retreat_Letters {
 	protected $version;
 
 	/**
-	 * Main DFX_Parish_Retreat_Letters Instance.
+	 * Main DFXPRL Instance.
 	 *
-	 * Ensures only one instance of DFX_Parish_Retreat_Letters is loaded or can be loaded.
+	 * Ensures only one instance of DFXPRL is loaded or can be loaded.
 	 *
 	 * @since 1.0.0
 	 * @static
-	 * @return DFX_Parish_Retreat_Letters - Main instance.
+	 * @return DFXPRL - Main instance.
 	 */
 	public static function get_instance() {
 		if ( is_null( self::$instance ) ) {
@@ -134,8 +134,8 @@ class DFX_Parish_Retreat_Letters {
 	 * @since    1.0.0
 	 */
 	private function __construct() {
-		if ( defined( 'DFX_PARISH_RETREAT_LETTERS_VERSION' ) ) {
-			$this->version = DFX_PARISH_RETREAT_LETTERS_VERSION;
+		if ( defined( 'DFXPRL_VERSION' ) ) {
+			$this->version = DFXPRL_VERSION;
 		} else {
 			$this->version = '1.0.0';
 		}
@@ -174,15 +174,15 @@ class DFX_Parish_Retreat_Letters {
 	 *
 	 * Include the following files that make up the plugin:
 	 *
-	 * - DFX_Parish_Retreat_Letters_I18n. Defines internationalization functionality.
-	 * - DFX_Parish_Retreat_Letters_Database. Manages database operations.
-	 * - DFX_Parish_Retreat_Letters_Security. Handles encryption and security.
-	 * - DFX_Parish_Retreat_Letters_Retreat. Handles retreat CRUD operations.
-	 * - DFX_Parish_Retreat_Letters_Attendant. Handles attendant CRUD operations.
-	 * - DFX_Parish_Retreat_Letters_ConfidentialMessage. Handles message CRUD operations.
-	 * - DFX_Parish_Retreat_Letters_MessageFile. Handles file CRUD operations.
-	 * - DFX_Parish_Retreat_Letters_PrintLog. Handles print logging.
-	 * - DFX_Parish_Retreat_Letters_Admin. Manages admin interface.
+	 * - DFXPRL_I18n. Defines internationalization functionality.
+	 * - DFXPRL_Database. Manages database operations.
+	 * - DFXPRL_Security. Handles encryption and security.
+	 * - DFXPRL_Retreat. Handles retreat CRUD operations.
+	 * - DFXPRL_Attendant. Handles attendant CRUD operations.
+	 * - DFXPRL_ConfidentialMessage. Handles message CRUD operations.
+	 * - DFXPRL_MessageFile. Handles file CRUD operations.
+	 * - DFXPRL_PrintLog. Handles print logging.
+	 * - DFXPRL_Admin. Manages admin interface.
 	 *
 	 * @since    1.0.0
 	 * @access   private
@@ -258,7 +258,7 @@ class DFX_Parish_Retreat_Letters {
 	 * @access   private
 	 */
 	private function init_database() {
-		$this->database = DFX_Parish_Retreat_Letters_Database::get_instance();
+		$this->database = DFXPRL_Database::get_instance();
 	}
 
 	/**
@@ -268,7 +268,7 @@ class DFX_Parish_Retreat_Letters {
 	 * @access   private
 	 */
 	private function init_security() {
-		$this->security = DFX_Parish_Retreat_Letters_Security::get_instance();
+		$this->security = DFXPRL_Security::get_instance();
 	}
 
 	/**
@@ -278,7 +278,7 @@ class DFX_Parish_Retreat_Letters {
 	 * @access   private
 	 */
 	private function init_gdpr() {
-		$this->gdpr = DFX_Parish_Retreat_Letters_GDPR::get_instance();
+		$this->gdpr = DFXPRL_GDPR::get_instance();
 	}
 
 	/**
@@ -288,7 +288,7 @@ class DFX_Parish_Retreat_Letters {
 	 * @access   private
 	 */
 	private function init_permissions() {
-		$this->permissions = DFX_Parish_Retreat_Letters_Permissions::get_instance();
+		$this->permissions = DFXPRL_Permissions::get_instance();
 	}
 
 	/**
@@ -298,7 +298,7 @@ class DFX_Parish_Retreat_Letters {
 	 * @access   private
 	 */
 	private function init_invitations() {
-		$this->invitations = DFX_Parish_Retreat_Letters_Invitations::get_instance();
+		$this->invitations = DFXPRL_Invitations::get_instance();
 	}
 
 	/**
@@ -309,7 +309,7 @@ class DFX_Parish_Retreat_Letters {
 	 */
 	private function init_admin() {
 		if ( is_admin() ) {
-			$this->admin = DFX_Parish_Retreat_Letters_Admin::get_instance();
+			$this->admin = DFXPRL_Admin::get_instance();
 		}
 	}
 
@@ -322,12 +322,12 @@ class DFX_Parish_Retreat_Letters {
 	private function init_public_hooks() {
 		add_action( 'wp_loaded', array( $this, 'handle_message_url_routing' ) );
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_public_scripts' ) );
-		add_action( 'wp_ajax_nopriv_dfx_prl_submit_message', array( $this, 'handle_message_submission' ) );
-		add_action( 'wp_ajax_dfx_prl_submit_message', array( $this, 'handle_message_submission' ) );
+		add_action( 'wp_ajax_nopriv_dfxprl_submit_message', array( $this, 'handle_message_submission' ) );
+		add_action( 'wp_ajax_dfxprl_submit_message', array( $this, 'handle_message_submission' ) );
 
 		// Schedule cleanup tasks
 		add_action( 'init', array( $this, 'schedule_cleanup_tasks' ) );
-		add_action( 'dfx_prl_retreat_cleanup_hook', array( $this, 'run_cleanup_tasks' ) );
+		add_action( 'dfxprl_retreat_cleanup_hook', array( $this, 'run_cleanup_tasks' ) );
 	}
 
 	/**
@@ -385,7 +385,7 @@ class DFX_Parish_Retreat_Letters {
 	 * Get the database instance.
 	 *
 	 * @since     1.0.0
-	 * @return    DFX_Parish_Retreat_Letters_Database    The database instance.
+	 * @return    DFXPRL_Database    The database instance.
 	 */
 	public function get_database() {
 		return $this->database;
@@ -599,11 +599,11 @@ class DFX_Parish_Retreat_Letters {
 	 */
 	private function render_message_form( $attendant, $retreat = null ) {
 		?>
-		<div class="dfx-prl-message-form-container">
-			<div class="dfx-prl-message-form-content">
+		<div class="dfxprl-message-form-container">
+			<div class="dfxprl-message-form-content">
 				<h1><?php esc_html_e( 'Send a Confidential Message', 'dfx-parish-retreat-letters' ); ?></h1>
 
-				<div class="dfx-prl-retreat-info">
+				<div class="dfxprl-retreat-info">
 					<h2><?php esc_html_e( 'For Retreat Attendant', 'dfx-parish-retreat-letters' ); ?></h2>
 					<p><strong><?php echo esc_html( $attendant->name . ' ' . $attendant->surnames ); ?></strong></p>
 					<p><?php echo esc_html( $attendant->retreat_name ); ?> - <?php echo esc_html( $attendant->retreat_location ); ?></p>
@@ -611,26 +611,26 @@ class DFX_Parish_Retreat_Letters {
 				</div>
 
 				<?php if ( ! empty( $attendant->custom_message ) ) : ?>
-				<div class="dfx-prl-custom-message">
+				<div class="dfxprl-custom-message">
 					<?php echo wp_kses_post( wpautop( $attendant->custom_message ) ); ?>
 				</div>
 				<?php endif; ?>
 
-				<div id="dfx-prl-message-notices"></div>
+				<div id="dfxprl-message-notices"></div>
 
-				<form id="dfx-prl-message-form" enctype="multipart/form-data">
-					<?php wp_nonce_field( 'dfx_prl_submit_message', 'message_nonce' ); ?>
-					<input type="hidden" name="action" value="dfx_prl_submit_message">
+				<form id="dfxprl-message-form" enctype="multipart/form-data">
+					<?php wp_nonce_field( 'dfxprl_submit_message', 'message_nonce' ); ?>
+					<input type="hidden" name="action" value="dfxprl_submit_message">
 					<input type="hidden" name="attendant_id" value="<?php echo esc_attr( $attendant->id ); ?>">
 
-					<div class="dfx-prl-form-group">
+					<div class="dfxprl-form-group">
 						<label for="sender_name"><?php esc_html_e( 'Your Name', 'dfx-parish-retreat-letters' ); ?> <span class="required">*</span></label>
 						<input type="text" id="sender_name" name="sender_name" required maxlength="255" placeholder="<?php esc_attr_e( 'Enter your name', 'dfx-parish-retreat-letters' ); ?>">
 					</div>
 
-					<div class="dfx-prl-message-mode">
+					<div class="dfxprl-message-mode">
 						<h3><?php esc_html_e( 'Choose message type:', 'dfx-parish-retreat-letters' ); ?></h3>
-						<div class="dfx-prl-mode-selector">
+						<div class="dfxprl-mode-selector">
 							<label>
 								<input type="radio" name="message_mode" value="text" checked>
 								<?php esc_html_e( 'Text Message', 'dfx-parish-retreat-letters' ); ?>
@@ -642,10 +642,10 @@ class DFX_Parish_Retreat_Letters {
 						</div>
 					</div>
 
-					<div class="dfx-prl-form-group" id="dfx-prl-text-group">
+					<div class="dfxprl-form-group" id="dfxprl-text-group">
 						<label for="message_content"><?php esc_html_e( 'Your Message', 'dfx-parish-retreat-letters' ); ?> <span class="required">*</span></label>
-						<div id="dfx-prl-editor-container">
-							<div class="dfx-prl-editor-toolbar">
+						<div id="dfxprl-editor-container">
+							<div class="dfxprl-editor-toolbar">
 								<button type="button" data-command="bold" title="<?php esc_attr_e( 'Bold', 'dfx-parish-retreat-letters' ); ?>"><strong>B</strong></button>
 								<button type="button" data-command="italic" title="<?php esc_attr_e( 'Italic', 'dfx-parish-retreat-letters' ); ?>"><em>I</em></button>
 								<button type="button" data-command="underline" title="<?php esc_attr_e( 'Underline', 'dfx-parish-retreat-letters' ); ?>"><u>U</u></button>
@@ -654,20 +654,20 @@ class DFX_Parish_Retreat_Letters {
 								<button type="button" data-command="undo" title="<?php esc_attr_e( 'Undo', 'dfx-parish-retreat-letters' ); ?>"><?php esc_html_e( 'Undo', 'dfx-parish-retreat-letters' ); ?></button>
 								<button type="button" data-command="redo" title="<?php esc_attr_e( 'Redo', 'dfx-parish-retreat-letters' ); ?>"><?php esc_html_e( 'Redo', 'dfx-parish-retreat-letters' ); ?></button>
 							</div>
-							<div id="message_content" contenteditable="true" class="dfx-prl-editor" placeholder="<?php
+							<div id="message_content" contenteditable="true" class="dfxprl-editor" placeholder="<?php
 								$attendant_full_name = trim( esc_html( $attendant->name ) . ' ' . esc_html( $attendant->surnames ) );
 								/* translators: %s: attendant full name (name and surnames) */
 								echo esc_attr( sprintf( __( 'Write your confidential message for %s here...', 'dfx-parish-retreat-letters' ), $attendant_full_name ) );
 							?>"></div>
 							<textarea id="message_content_hidden" name="message_content" style="display: none;"></textarea>
 						</div>
-						<p class="dfx-prl-help-text"><?php esc_html_e( 'You can use the toolbar to format your text, create lists, and paste images. HTML is allowed but will be filtered for security.', 'dfx-parish-retreat-letters' ); ?></p>
+						<p class="dfxprl-help-text"><?php esc_html_e( 'You can use the toolbar to format your text, create lists, and paste images. HTML is allowed but will be filtered for security.', 'dfx-parish-retreat-letters' ); ?></p>
 					</div>
 
-					<div class="dfx-prl-form-group" id="dfx-prl-file-group" style="display: none;">
+					<div class="dfxprl-form-group" id="dfxprl-file-group" style="display: none;">
 						<label for="message_files"><?php esc_html_e( 'Attach Files', 'dfx-parish-retreat-letters' ); ?> <span class="required">*</span></label>
 						<input type="file" id="message_files" name="message_files[]" multiple accept=".pdf,.doc,.docx,.txt,.jpg,.jpeg,.png,.gif">
-						<p class="dfx-prl-help-text">
+						<p class="dfxprl-help-text">
 							<?php
 							$max_per_file = $this->security->get_max_upload_size();
 							$max_combined = $this->security->get_max_combined_upload_size();
@@ -698,27 +698,27 @@ class DFX_Parish_Retreat_Letters {
 							}
 							?>
 						</p>
-						<div id="dfx-prl-file-list"></div>
+						<div id="dfxprl-file-list"></div>
 					</div>
 
-					<div class="dfx-prl-form-group">
-						<div class="dfx-prl-captcha-container">
+					<div class="dfxprl-form-group">
+						<div class="dfxprl-captcha-container">
 							<label for="captcha_answer"><?php esc_html_e( 'Security Check', 'dfx-parish-retreat-letters' ); ?> <span class="required">*</span></label>
-							<div id="dfx-prl-captcha-question"></div>
+							<div id="dfxprl-captcha-question"></div>
 							<input type="text" id="captcha_answer" name="captcha_answer" required autocomplete="off" placeholder="<?php esc_html_e( 'Please enter the result', 'dfx-parish-retreat-letters' );?>">
 							<input type="hidden" id="captcha_token" name="captcha_token">
 						</div>
 					</div>
 
 					<?php if ( ! empty( $attendant->disclaimer_text ) ) : ?>
-					<div class="dfx-prl-form-group">
-						<div class="dfx-prl-disclaimer-container">
+					<div class="dfxprl-form-group">
+						<div class="dfxprl-disclaimer-container">
 							<h3><?php esc_html_e( 'Legal Disclaimer', 'dfx-parish-retreat-letters' ); ?></h3>
-							<div class="dfx-prl-disclaimer-text">
+							<div class="dfxprl-disclaimer-text">
 								<?php echo wp_kses_post( wpautop( $attendant->disclaimer_text ) ); ?>
 							</div>
-							<div class="dfx-prl-disclaimer-acceptance">
-								<label class="dfx-prl-checkbox-label">
+							<div class="dfxprl-disclaimer-acceptance">
+								<label class="dfxprl-checkbox-label">
 									<input type="checkbox" id="disclaimer_accepted" name="disclaimer_accepted" required>
 									<span class="required">*</span>
 									<?php
@@ -733,17 +733,17 @@ class DFX_Parish_Retreat_Letters {
 					</div>
 					<?php endif; ?>
 
-					<div class="dfx-prl-form-group">
-						<button type="submit" id="dfx-prl-submit-btn" class="dfx-prl-submit-button">
-							<span class="dfx-prl-submit-text"><?php esc_html_e( 'Send Confidential Message', 'dfx-parish-retreat-letters' ); ?></span>
-							<span class="dfx-prl-loading-spinner" style="display: none;">
+					<div class="dfxprl-form-group">
+						<button type="submit" id="dfxprl-submit-btn" class="dfxprl-submit-button">
+							<span class="dfxprl-submit-text"><?php esc_html_e( 'Send Confidential Message', 'dfx-parish-retreat-letters' ); ?></span>
+							<span class="dfxprl-loading-spinner" style="display: none;">
 								<?php esc_html_e( 'Sending...', 'dfx-parish-retreat-letters' ); ?>
 							</span>
 						</button>
 					</div>
 				</form>
 
-				<div class="dfx-prl-privacy-notice">
+				<div class="dfxprl-privacy-notice">
 					<h3><?php esc_html_e( 'Privacy & Security', 'dfx-parish-retreat-letters' ); ?></h3>
 					<ul>
 						<li><?php esc_html_e( 'Your message will be encrypted and stored securely.', 'dfx-parish-retreat-letters' ); ?></li>
@@ -805,9 +805,9 @@ class DFX_Parish_Retreat_Letters {
 			// Enqueue styles for message form from external CSS file
 			wp_enqueue_style(
 				'dfx-prl-message-form',
-				DFX_PARISH_RETREAT_LETTERS_PLUGIN_URL . 'assets/css/message-form.css',
+				DFXPRL_PLUGIN_URL . 'assets/css/message-form.css',
 				array(),
-				DFX_PARISH_RETREAT_LETTERS_VERSION
+				DFXPRL_VERSION
 			);
 
 			// Add custom CSS (from settings) as inline styles
@@ -816,9 +816,9 @@ class DFX_Parish_Retreat_Letters {
 			// Enqueue message form JavaScript
 			wp_enqueue_script(
 				'dfx-prl-message-form',
-				DFX_PARISH_RETREAT_LETTERS_PLUGIN_URL . 'assets/js/message-form.js',
+				DFXPRL_PLUGIN_URL . 'assets/js/message-form.js',
 				array( 'jquery' ),
-				DFX_PARISH_RETREAT_LETTERS_VERSION,
+				DFXPRL_VERSION,
 				true // Load in footer
 			);
 
@@ -867,7 +867,7 @@ class DFX_Parish_Retreat_Letters {
 				$token = $matches[1];
 				$attendant = $this->get_attendant_by_token( $token );
 				if ( $attendant ) {
-					$retreat_model = new DFX_Parish_Retreat_Letters_Retreat();
+					$retreat_model = new DFXPRL_Retreat();
 					$retreat = $retreat_model->get( $attendant->retreat_id );
 				}
 			}
@@ -888,7 +888,7 @@ class DFX_Parish_Retreat_Letters {
 	 * @return string The custom CSS.
 	 */
 	private function get_custom_css_for_message_form( $retreat = null ) {
-		$global_settings = DFX_Parish_Retreat_Letters_GlobalSettings::get_instance();
+		$global_settings = DFXPRL_GlobalSettings::get_instance();
 		$global_css = $global_settings->get_default_css();
 
 		$retreat_css = '';
@@ -933,7 +933,7 @@ class DFX_Parish_Retreat_Letters {
 	 */
 	public function handle_message_submission() {
 		// Verify nonce
-		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['message_nonce'] ?? '' ) ), 'dfx_prl_submit_message' ) ) {
+		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['message_nonce'] ?? '' ) ), 'dfxprl_submit_message' ) ) {
 			wp_send_json_error( array( 'message' => __( 'Security check failed.', 'dfx-parish-retreat-letters' ) ) );
 		}
 
@@ -1023,7 +1023,7 @@ class DFX_Parish_Retreat_Letters {
 		}
 
 		// Create message
-		$message_model = new DFX_Parish_Retreat_Letters_ConfidentialMessage();
+		$message_model = new DFXPRL_ConfidentialMessage();
 		$message_data = array(
 			'attendant_id' => $attendant_id,
 			'sender_name'  => $sender_name,
@@ -1137,7 +1137,7 @@ class DFX_Parish_Retreat_Letters {
 	 * @return array Array with success status and any error messages.
 	 */
 	private function handle_file_uploads( $message_id, $files ) {
-		$file_model = new DFX_Parish_Retreat_Letters_MessageFile();
+		$file_model = new DFXPRL_MessageFile();
 
 		$file_count = count( $files['name'] );
 		$uploaded_count = 0;
@@ -1248,17 +1248,17 @@ class DFX_Parish_Retreat_Letters {
 			wp_die( esc_html__( 'Invalid print request.', 'dfx-parish-retreat-letters' ) );
 		}
 
-		$message_id = get_transient( 'dfx_prl_print_token_' . $token );
+		$message_id = get_transient( 'dfxprl_print_token_' . $token );
 		if ( ! $message_id ) {
 			wp_die( esc_html__( 'Print token expired or invalid.', 'dfx-parish-retreat-letters' ) );
 		}
 
 		// Delete the token after use
-		delete_transient( 'dfx_prl_print_token_' . $token );
+		delete_transient( 'dfxprl_print_token_' . $token );
 
 		// Initialize models
-		$message_model = new DFX_Parish_Retreat_Letters_ConfidentialMessage();
-		$file_model = new DFX_Parish_Retreat_Letters_MessageFile();
+		$message_model = new DFXPRL_ConfidentialMessage();
+		$file_model = new DFXPRL_MessageFile();
 
 		// Get message with decrypted content
 		$message = $message_model->get_with_decrypted_content( $message_id );
@@ -1301,7 +1301,7 @@ class DFX_Parish_Retreat_Letters {
 	 *
 	 * @since 1.2.1
 	 * @param object $file File object.
-	 * @param DFX_Parish_Retreat_Letters_MessageFile $file_model File model instance.
+	 * @param DFXPRL_MessageFile $file_model File model instance.
 	 */
 	private function serve_file_directly( $file, $file_model ) {
 		$decrypted_file = $file_model->get_decrypted_file( $file->id );
@@ -1331,7 +1331,7 @@ class DFX_Parish_Retreat_Letters {
 	 *
 	 * @since 1.2.2
 	 * @param array  $files Array of file objects.
-	 * @param DFX_Parish_Retreat_Letters_MessageFile $file_model File model instance.
+	 * @param DFXPRL_MessageFile $file_model File model instance.
 	 * @param object $message Message object.
 	 */
 	private function serve_files_as_zip( $files, $file_model, $message ) {
@@ -1505,7 +1505,7 @@ class DFX_Parish_Retreat_Letters {
 				echo '</div>';
 			} elseif ( $message->message_type === 'file' && ! empty( $files ) ) {
 				// Initialize file model for decryption
-				$file_model = new DFX_Parish_Retreat_Letters_MessageFile();
+				$file_model = new DFXPRL_MessageFile();
 
 				// Count image files to determine if multi-image styling should be applied
 				$image_files = array_filter( $files, function( $file ) {
@@ -1585,17 +1585,17 @@ class DFX_Parish_Retreat_Letters {
 		// Enqueue print page styles
 		wp_enqueue_style(
 			'dfx-prl-print-page',
-			DFX_PARISH_RETREAT_LETTERS_PLUGIN_URL . 'assets/css/print-page.css',
+			DFXPRL_PLUGIN_URL . 'assets/css/print-page.css',
 			array(),
-			DFX_PARISH_RETREAT_LETTERS_VERSION
+			DFXPRL_VERSION
 		);
 
 		// Enqueue print page script
 		wp_enqueue_script(
 			'dfx-prl-print-page',
-			DFX_PARISH_RETREAT_LETTERS_PLUGIN_URL . 'assets/js/print-page.js',
+			DFXPRL_PLUGIN_URL . 'assets/js/print-page.js',
 			array(),
-			DFX_PARISH_RETREAT_LETTERS_VERSION,
+			DFXPRL_VERSION,
 			true
 		);
 	}
@@ -1606,8 +1606,8 @@ class DFX_Parish_Retreat_Letters {
 	 * @since 1.3.0
 	 */
 	public function schedule_cleanup_tasks() {
-		if ( ! wp_next_scheduled( 'dfx_prl_retreat_cleanup_hook' ) ) {
-			wp_schedule_event( time(), 'daily', 'dfx_prl_retreat_cleanup_hook' );
+		if ( ! wp_next_scheduled( 'dfxprl_retreat_cleanup_hook' ) ) {
+			wp_schedule_event( time(), 'daily', 'dfxprl_retreat_cleanup_hook' );
 		}
 	}
 

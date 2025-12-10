@@ -1,7 +1,7 @@
 /**
  * Admin JavaScript for DFX Parish Retreat Letters
  *
- * @package DFX_Parish_Retreat_Letters
+ * @package DFXPRL
  * @since 1.0.0
  */
 
@@ -9,11 +9,11 @@
     'use strict';
 
     $(document).ready(function() {
-        // Check if dfxPRLAdmin is available
-        if (typeof dfxPRLAdmin === 'undefined') {
-            console.warn('dfxPRLAdmin is not defined. Admin functionality may be limited.');
+        // Check if dfxprlAdmin is available
+        if (typeof dfxprlAdmin === 'undefined') {
+            console.warn('dfxprlAdmin is not defined. Admin functionality may be limited.');
             // Create a fallback object to prevent errors
-            window.dfxPRLAdmin = {
+            window.dfxprlAdmin = {
                 ajaxurl: (typeof ajaxurl !== 'undefined') ? ajaxurl : '',
                 nonce: '',
                 messages: {
@@ -45,29 +45,29 @@
             };
         }
         // Add modal styles
-        if (!$('#dfx-prl-modal-styles').length) {
-            $('<style id="dfx-prl-modal-styles">' +
-                '.dfx-prl-modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 100000; display: none; }' +
-                '.dfx-prl-modal-dialog { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #fff; border-radius: 4px; box-shadow: 0 4px 20px rgba(0,0,0,0.3); max-width: 500px; width: 90%; }' +
-                '.dfx-prl-modal-header { padding: 20px 20px 10px; border-bottom: 1px solid #ddd; position: relative; }' +
-                '.dfx-prl-modal-header h3 { margin: 0; font-size: 18px; color: #d63638; }' +
-                '.dfx-prl-modal-close { position: absolute; top: 15px; right: 20px; background: none; border: none; font-size: 24px; line-height: 1; cursor: pointer; color: #666; padding: 0; }' +
-                '.dfx-prl-modal-close:hover { color: #000; }' +
-                '.dfx-prl-modal-body { padding: 20px; }' +
-                '.dfx-prl-warning-message { background: #fff8e5; border: 1px solid #f0b849; border-radius: 4px; padding: 15px; margin-bottom: 20px; }' +
-                '.dfx-prl-warning-message p { margin: 0 0 10px; }' +
-                '.dfx-prl-warning-message ul { margin: 0; padding-left: 20px; }' +
-                '.dfx-prl-confirmation-section p { margin: 10px 0; }' +
-                '.dfx-prl-confirmation-section input { width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px; }' +
-                '.dfx-prl-modal-footer { padding: 15px 20px; border-top: 1px solid #ddd; text-align: right; }' +
-                '.dfx-prl-modal-footer .button { margin-left: 10px; }' +
-                '#dfx-prl-print-log-modal .dfx-prl-modal-dialog { max-width: 700px; }' +
-                '#dfx-prl-print-log-modal .dfx-prl-modal-body table { margin: 0; }' +
-                '#dfx-prl-print-log-modal .dfx-prl-modal-body th, #dfx-prl-print-log-modal .dfx-prl-modal-body td { padding: 8px 12px; }' +
+        if (!$('#dfxprl-modal-styles').length) {
+            $('<style id="dfxprl-modal-styles">' +
+                '.dfxprl-modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 100000; display: none; }' +
+                '.dfxprl-modal-dialog { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #fff; border-radius: 4px; box-shadow: 0 4px 20px rgba(0,0,0,0.3); max-width: 500px; width: 90%; }' +
+                '.dfxprl-modal-header { padding: 20px 20px 10px; border-bottom: 1px solid #ddd; position: relative; }' +
+                '.dfxprl-modal-header h3 { margin: 0; font-size: 18px; color: #d63638; }' +
+                '.dfxprl-modal-close { position: absolute; top: 15px; right: 20px; background: none; border: none; font-size: 24px; line-height: 1; cursor: pointer; color: #666; padding: 0; }' +
+                '.dfxprl-modal-close:hover { color: #000; }' +
+                '.dfxprl-modal-body { padding: 20px; }' +
+                '.dfxprl-warning-message { background: #fff8e5; border: 1px solid #f0b849; border-radius: 4px; padding: 15px; margin-bottom: 20px; }' +
+                '.dfxprl-warning-message p { margin: 0 0 10px; }' +
+                '.dfxprl-warning-message ul { margin: 0; padding-left: 20px; }' +
+                '.dfxprl-confirmation-section p { margin: 10px 0; }' +
+                '.dfxprl-confirmation-section input { width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px; }' +
+                '.dfxprl-modal-footer { padding: 15px 20px; border-top: 1px solid #ddd; text-align: right; }' +
+                '.dfxprl-modal-footer .button { margin-left: 10px; }' +
+                '#dfxprl-print-log-modal .dfxprl-modal-dialog { max-width: 700px; }' +
+                '#dfxprl-print-log-modal .dfxprl-modal-body table { margin: 0; }' +
+                '#dfxprl-print-log-modal .dfxprl-modal-body th, #dfxprl-print-log-modal .dfxprl-modal-body td { padding: 8px 12px; }' +
             '</style>').appendTo('head');
         }
         // Handle delete retreat button clicks
-        $('.dfx-prl-delete-retreat').on('click', function(e) {
+        $('.dfxprl-delete-retreat').on('click', function(e) {
             e.preventDefault();
 
             var retreatId = $(this).data('retreat-id');
@@ -83,29 +83,29 @@
         function showDeleteRetreatModal(retreatId, retreatName, $row, $button) {
             // Create modal HTML
             var modalHtml =
-                '<div id="dfx-prl-delete-retreat-modal" class="dfx-prl-modal-overlay">' +
-                    '<div class="dfx-prl-modal-dialog">' +
-                        '<div class="dfx-prl-modal-header">' +
-                            '<h3>' + dfxPRLAdmin.messages.deleteRetreatTitle + '</h3>' +
+                '<div id="dfxprl-delete-retreat-modal" class="dfxprl-modal-overlay">' +
+                    '<div class="dfxprl-modal-dialog">' +
+                        '<div class="dfxprl-modal-header">' +
+                            '<h3>' + dfxprlAdmin.messages.deleteRetreatTitle + '</h3>' +
                         '</div>' +
-                        '<div class="dfx-prl-modal-body">' +
-                            '<div class="dfx-prl-warning-message">' +
-                                '<p><strong>' + dfxPRLAdmin.messages.deleteWarning + '</strong></p>' +
+                        '<div class="dfxprl-modal-body">' +
+                            '<div class="dfxprl-warning-message">' +
+                                '<p><strong>' + dfxprlAdmin.messages.deleteWarning + '</strong></p>' +
                                 '<ul>' +
-                                    '<li>' + dfxPRLAdmin.messages.deleteWarningAttendants + '</li>' +
-                                    '<li>' + dfxPRLAdmin.messages.deleteWarningLetters + '</li>' +
-                                    '<li>' + dfxPRLAdmin.messages.deleteWarningPermanent + '</li>' +
+                                    '<li>' + dfxprlAdmin.messages.deleteWarningAttendants + '</li>' +
+                                    '<li>' + dfxprlAdmin.messages.deleteWarningLetters + '</li>' +
+                                    '<li>' + dfxprlAdmin.messages.deleteWarningPermanent + '</li>' +
                                 '</ul>' +
                             '</div>' +
-                            '<div class="dfx-prl-confirmation-section">' +
-                                '<p>' + dfxPRLAdmin.messages.typeRetreatName + '</p>' +
+                            '<div class="dfxprl-confirmation-section">' +
+                                '<p>' + dfxprlAdmin.messages.typeRetreatName + '</p>' +
                                 '<p><strong>' + retreatName + '</strong></p>' +
-                                '<input type="text" id="dfx-prl-retreat-name-confirm" placeholder="' + dfxPRLAdmin.messages.retreatNamePlaceholder + '" />' +
+                                '<input type="text" id="dfxprl-retreat-name-confirm" placeholder="' + dfxprlAdmin.messages.retreatNamePlaceholder + '" />' +
                             '</div>' +
                         '</div>' +
-                        '<div class="dfx-prl-modal-footer">' +
-                            '<button type="button" id="dfx-prl-confirm-delete" class="button button-primary" disabled>' + dfxPRLAdmin.messages.deleteButton + '</button>' +
-                            '<button type="button" id="dfx-prl-cancel-delete" class="button">' + dfxPRLAdmin.messages.cancelButton + '</button>' +
+                        '<div class="dfxprl-modal-footer">' +
+                            '<button type="button" id="dfxprl-confirm-delete" class="button button-primary" disabled>' + dfxprlAdmin.messages.deleteButton + '</button>' +
+                            '<button type="button" id="dfxprl-cancel-delete" class="button">' + dfxprlAdmin.messages.cancelButton + '</button>' +
                         '</div>' +
                     '</div>' +
                 '</div>';
@@ -113,9 +113,9 @@
             // Add modal to body
             $('body').append(modalHtml);
 
-            var $modal = $('#dfx-prl-delete-retreat-modal');
-            var $confirmInput = $('#dfx-prl-retreat-name-confirm');
-            var $confirmButton = $('#dfx-prl-confirm-delete');
+            var $modal = $('#dfxprl-delete-retreat-modal');
+            var $confirmInput = $('#dfxprl-retreat-name-confirm');
+            var $confirmButton = $('#dfxprl-confirm-delete');
 
             // Show modal
             $modal.fadeIn();
@@ -132,7 +132,7 @@
             });
 
             // Handle cancel
-            $('#dfx-prl-cancel-delete, .dfx-prl-modal-overlay').on('click', function(e) {
+            $('#dfxprl-cancel-delete, .dfxprl-modal-overlay').on('click', function(e) {
                 if (e.target === this) {
                     $modal.fadeOut(function() {
                         $modal.remove();
@@ -147,16 +147,16 @@
                 });
 
                 // Disable button and show loading state
-                $button.prop('disabled', true).text(dfxPRLAdmin.messages.deleting);
+                $button.prop('disabled', true).text(dfxprlAdmin.messages.deleting);
 
                 $.ajax({
-                    url: dfxPRLAdmin.ajaxurl,
+                    url: dfxprlAdmin.ajaxurl,
                     type: 'POST',
                     data: {
-                        action: 'dfx_prl_delete_retreat',
+                        action: 'dfxprl_delete_retreat',
                         retreat_id: retreatId,
                         retreat_name: retreatName,
-                        nonce: dfxPRLAdmin.nonce
+                        nonce: dfxprlAdmin.nonce
                     },
                     success: function(response) {
                         if (response.success) {
@@ -169,30 +169,30 @@
                                     .insertAfter('.wp-header-end');
                             });
                         } else {
-                            alert(response.data.message || dfxPRLAdmin.messages.deleteError);
+                            alert(response.data.message || dfxprlAdmin.messages.deleteError);
                             // Re-enable button
-                            $button.prop('disabled', false).text(dfxPRLAdmin.messages.deleteButton);
+                            $button.prop('disabled', false).text(dfxprlAdmin.messages.deleteButton);
                         }
                     },
                     error: function() {
-                        alert(dfxPRLAdmin.messages.deleteError);
+                        alert(dfxprlAdmin.messages.deleteError);
                         // Re-enable button
-                        $button.prop('disabled', false).text(dfxPRLAdmin.messages.deleteButton);
+                        $button.prop('disabled', false).text(dfxprlAdmin.messages.deleteButton);
                     }
                 });
             });
         }
 
         // Handle delete attendant button clicks
-        $('.dfx-prl-delete-attendant').on('click', function(e) {
+        $('.dfxprl-delete-attendant').on('click', function(e) {
             e.preventDefault();
 
             var attendantId = $(this).data('attendant-id');
             var $row = $(this).closest('tr');
 
-            // Check if dfxPRLAdmin is available
-            var confirmMessage = (typeof dfxPRLAdmin !== 'undefined' && dfxPRLAdmin.messages && dfxPRLAdmin.messages.confirmDeleteAttendant)
-                ? dfxPRLAdmin.messages.confirmDeleteAttendant
+            // Check if dfxprlAdmin is available
+            var confirmMessage = (typeof dfxprlAdmin !== 'undefined' && dfxprlAdmin.messages && dfxprlAdmin.messages.confirmDeleteAttendant)
+                ? dfxprlAdmin.messages.confirmDeleteAttendant
                 : 'Are you sure you want to delete this attendant?';
 
             if (!confirm(confirmMessage)) {
@@ -202,18 +202,18 @@
             // Disable button and show loading state
             $(this).prop('disabled', true).text('Deleting...');
 
-            var ajaxUrl = (typeof dfxPRLAdmin !== 'undefined' && dfxPRLAdmin.ajaxurl)
-                ? dfxPRLAdmin.ajaxurl
+            var ajaxUrl = (typeof dfxprlAdmin !== 'undefined' && dfxprlAdmin.ajaxurl)
+                ? dfxprlAdmin.ajaxurl
                 : (typeof ajaxurl !== 'undefined' ? ajaxurl : '');
-            var nonce = (typeof dfxPRLAdmin !== 'undefined' && dfxPRLAdmin.nonce)
-                ? dfxPRLAdmin.nonce
+            var nonce = (typeof dfxprlAdmin !== 'undefined' && dfxprlAdmin.nonce)
+                ? dfxprlAdmin.nonce
                 : '';
 
             $.ajax({
                 url: ajaxUrl,
                 type: 'POST',
                 data: {
-                    action: 'dfx_prl_delete_attendant',
+                    action: 'dfxprl_delete_attendant',
                     attendant_id: attendantId,
                     nonce: nonce
                 },
@@ -231,7 +231,7 @@
                     } else {
                         alert(response.data.message || 'Error deleting attendant.');
                         // Re-enable button
-                        $('.dfx-prl-delete-attendant[data-attendant-id="' + attendantId + '"]')
+                        $('.dfxprl-delete-attendant[data-attendant-id="' + attendantId + '"]')
                             .prop('disabled', false)
                             .text('Delete');
                     }
@@ -239,7 +239,7 @@
                 error: function() {
                     alert('Error deleting attendant. Please try again.');
                     // Re-enable button
-                    $('.dfx-prl-delete-attendant[data-attendant-id="' + attendantId + '"]')
+                    $('.dfxprl-delete-attendant[data-attendant-id="' + attendantId + '"]')
                         .prop('disabled', false)
                         .text('Delete');
                 }
@@ -247,7 +247,7 @@
         });
 
         // Handle delete all attendants button clicks
-        $('.dfx-prl-delete-all-attendants').on('click', function(e) {
+        $('.dfxprl-delete-all-attendants').on('click', function(e) {
             e.preventDefault();
 
             var retreatId = $(this).data('retreat-id');
@@ -264,31 +264,31 @@
         function showDeleteAllAttendantsModal(retreatId, retreatName, attendantCount, messageCount, $button) {
             // Create modal HTML
             var modalHtml =
-                '<div id="dfx-prl-delete-all-attendants-modal" class="dfx-prl-modal-overlay">' +
-                    '<div class="dfx-prl-modal-dialog">' +
-                        '<div class="dfx-prl-modal-header">' +
-                            '<h3>' + dfxPRLAdmin.messages.deleteAllAttendantsTitle + '</h3>' +
+                '<div id="dfxprl-delete-all-attendants-modal" class="dfxprl-modal-overlay">' +
+                    '<div class="dfxprl-modal-dialog">' +
+                        '<div class="dfxprl-modal-header">' +
+                            '<h3>' + dfxprlAdmin.messages.deleteAllAttendantsTitle + '</h3>' +
                         '</div>' +
-                        '<div class="dfx-prl-modal-body">' +
-                            '<div class="dfx-prl-warning-message">' +
-                                '<p><strong>' + dfxPRLAdmin.messages.deleteWarning + '</strong></p>' +
-                                '<p>' + dfxPRLAdmin.messages.deleteAllAttendantsWarning + '</p>' +
-                                '<p><strong>' + dfxPRLAdmin.messages.deleteAllAttendantsWarningCount + '</strong></p>' +
+                        '<div class="dfxprl-modal-body">' +
+                            '<div class="dfxprl-warning-message">' +
+                                '<p><strong>' + dfxprlAdmin.messages.deleteWarning + '</strong></p>' +
+                                '<p>' + dfxprlAdmin.messages.deleteAllAttendantsWarning + '</p>' +
+                                '<p><strong>' + dfxprlAdmin.messages.deleteAllAttendantsWarningCount + '</strong></p>' +
                                 '<ul>' +
-                                    '<li>' + dfxPRLAdmin.messages.deleteAllAttendantsWarningAttendants.replace('%d', attendantCount) + '</li>' +
-                                    '<li>' + dfxPRLAdmin.messages.deleteAllAttendantsWarningMessages.replace('%d', messageCount) + '</li>' +
-                                    '<li>' + dfxPRLAdmin.messages.deleteWarningPermanent + '</li>' +
+                                    '<li>' + dfxprlAdmin.messages.deleteAllAttendantsWarningAttendants.replace('%d', attendantCount) + '</li>' +
+                                    '<li>' + dfxprlAdmin.messages.deleteAllAttendantsWarningMessages.replace('%d', messageCount) + '</li>' +
+                                    '<li>' + dfxprlAdmin.messages.deleteWarningPermanent + '</li>' +
                                 '</ul>' +
                             '</div>' +
-                            '<div class="dfx-prl-confirmation-section">' +
-                                '<p><code style="background: #f0f0f1; padding: 5px 10px; display: inline-block;">' + dfxPRLAdmin.messages.confirmationText + '</code></p>' +
-                                '<p>' + dfxPRLAdmin.messages.typeConfirmation + '</p>' +
-                                '<input type="text" id="dfx-prl-confirmation-text" placeholder="' + dfxPRLAdmin.messages.confirmationPlaceholder + '" />' +
+                            '<div class="dfxprl-confirmation-section">' +
+                                '<p><code style="background: #f0f0f1; padding: 5px 10px; display: inline-block;">' + dfxprlAdmin.messages.confirmationText + '</code></p>' +
+                                '<p>' + dfxprlAdmin.messages.typeConfirmation + '</p>' +
+                                '<input type="text" id="dfxprl-confirmation-text" placeholder="' + dfxprlAdmin.messages.confirmationPlaceholder + '" />' +
                             '</div>' +
                         '</div>' +
-                        '<div class="dfx-prl-modal-footer">' +
-                            '<button type="button" id="dfx-prl-confirm-delete-all" class="button button-primary" disabled>' + dfxPRLAdmin.messages.deleteAllButton + '</button>' +
-                            '<button type="button" id="dfx-prl-cancel-delete-all" class="button">' + dfxPRLAdmin.messages.cancelButton + '</button>' +
+                        '<div class="dfxprl-modal-footer">' +
+                            '<button type="button" id="dfxprl-confirm-delete-all" class="button button-primary" disabled>' + dfxprlAdmin.messages.deleteAllButton + '</button>' +
+                            '<button type="button" id="dfxprl-cancel-delete-all" class="button">' + dfxprlAdmin.messages.cancelButton + '</button>' +
                         '</div>' +
                     '</div>' +
                 '</div>';
@@ -296,9 +296,9 @@
             // Add modal to body
             $('body').append(modalHtml);
 
-            var $modal = $('#dfx-prl-delete-all-attendants-modal');
-            var $confirmInput = $('#dfx-prl-confirmation-text');
-            var $confirmButton = $('#dfx-prl-confirm-delete-all');
+            var $modal = $('#dfxprl-delete-all-attendants-modal');
+            var $confirmInput = $('#dfxprl-confirmation-text');
+            var $confirmButton = $('#dfxprl-confirm-delete-all');
 
             // Show modal
             $modal.fadeIn();
@@ -307,7 +307,7 @@
             // Check input as user types
             $confirmInput.on('input', function() {
                 var enteredText = $(this).val().trim();
-                if (enteredText === dfxPRLAdmin.messages.confirmationText) {
+                if (enteredText === dfxprlAdmin.messages.confirmationText) {
                     $confirmButton.prop('disabled', false);
                 } else {
                     $confirmButton.prop('disabled', true);
@@ -315,7 +315,7 @@
             });
 
             // Handle cancel
-            $('#dfx-prl-cancel-delete-all, .dfx-prl-modal-overlay').on('click', function(e) {
+            $('#dfxprl-cancel-delete-all, .dfxprl-modal-overlay').on('click', function(e) {
                 if (e.target === this) {
                     $modal.fadeOut(function() {
                         $modal.remove();
@@ -330,16 +330,16 @@
                 });
 
                 // Disable button and show loading state
-                $button.prop('disabled', true).text(dfxPRLAdmin.messages.deleting);
+                $button.prop('disabled', true).text(dfxprlAdmin.messages.deleting);
 
                 $.ajax({
-                    url: dfxPRLAdmin.ajaxurl,
+                    url: dfxprlAdmin.ajaxurl,
                     type: 'POST',
                     data: {
-                        action: 'dfx_prl_delete_all_attendants',
+                        action: 'dfxprl_delete_all_attendants',
                         retreat_id: retreatId,
-                        confirmation_text: dfxPRLAdmin.messages.confirmationText,
-                        nonce: dfxPRLAdmin.nonce
+                        confirmation_text: dfxprlAdmin.messages.confirmationText,
+                        nonce: dfxprlAdmin.nonce
                     },
                     success: function(response) {
                         if (response.success) {
@@ -352,15 +352,15 @@
                                 location.reload();
                             }, 1500);
                         } else {
-                            alert(response.data.message || dfxPRLAdmin.messages.deleteError);
+                            alert(response.data.message || dfxprlAdmin.messages.deleteError);
                             // Re-enable button
-                            $button.prop('disabled', false).text(dfxPRLAdmin.messages.deleteAllButton);
+                            $button.prop('disabled', false).text(dfxprlAdmin.messages.deleteAllButton);
                         }
                     },
                     error: function() {
-                        alert(dfxPRLAdmin.messages.deleteError);
+                        alert(dfxprlAdmin.messages.deleteError);
                         // Re-enable button
-                        $button.prop('disabled', false).text(dfxPRLAdmin.messages.deleteAllButton);
+                        $button.prop('disabled', false).text(dfxprlAdmin.messages.deleteAllButton);
                     }
                 });
             });
@@ -383,38 +383,38 @@
         // $('.notice.is-dismissible').delay(5000).fadeOut();
 
         // Handle generate message URL button clicks
-        $('.dfx-prl-generate-url').on('click', function(e) {
+        $('.dfxprl-generate-url').on('click', function(e) {
             e.preventDefault();
 
             var attendantId = $(this).data('attendant-id');
             var $button = $(this);
 
             // Get localized text with fallbacks
-            var generatingText = (typeof dfxPRLAdmin !== 'undefined' && dfxPRLAdmin.messages && dfxPRLAdmin.messages.generating)
-                ? dfxPRLAdmin.messages.generating
+            var generatingText = (typeof dfxprlAdmin !== 'undefined' && dfxprlAdmin.messages && dfxprlAdmin.messages.generating)
+                ? dfxprlAdmin.messages.generating
                 : 'Generating URL...';
-            var urlGeneratedText = (typeof dfxPRLAdmin !== 'undefined' && dfxPRLAdmin.messages && dfxPRLAdmin.messages.urlGenerated)
-                ? dfxPRLAdmin.messages.urlGenerated
+            var urlGeneratedText = (typeof dfxprlAdmin !== 'undefined' && dfxprlAdmin.messages && dfxprlAdmin.messages.urlGenerated)
+                ? dfxprlAdmin.messages.urlGenerated
                 : 'Message URL generated successfully!';
-            var generateErrorText = (typeof dfxPRLAdmin !== 'undefined' && dfxPRLAdmin.messages && dfxPRLAdmin.messages.generateError)
-                ? dfxPRLAdmin.messages.generateError
+            var generateErrorText = (typeof dfxprlAdmin !== 'undefined' && dfxprlAdmin.messages && dfxprlAdmin.messages.generateError)
+                ? dfxprlAdmin.messages.generateError
                 : 'Error generating message URL. Please try again.';
 
             // Disable button and show loading state
             $button.prop('disabled', true).text(generatingText);
 
-            var ajaxUrl = (typeof dfxPRLAdmin !== 'undefined' && dfxPRLAdmin.ajaxurl)
-                ? dfxPRLAdmin.ajaxurl
+            var ajaxUrl = (typeof dfxprlAdmin !== 'undefined' && dfxprlAdmin.ajaxurl)
+                ? dfxprlAdmin.ajaxurl
                 : (typeof ajaxurl !== 'undefined' ? ajaxurl : '');
-            var nonce = (typeof dfxPRLAdmin !== 'undefined' && dfxPRLAdmin.nonce)
-                ? dfxPRLAdmin.nonce
+            var nonce = (typeof dfxprlAdmin !== 'undefined' && dfxprlAdmin.nonce)
+                ? dfxprlAdmin.nonce
                 : '';
 
             $.ajax({
                 url: ajaxUrl,
                 type: 'POST',
                 data: {
-                    action: 'dfx_prl_generate_message_url',
+                    action: 'dfxprl_generate_message_url',
                     attendant_id: attendantId,
                     nonce: nonce
                 },
@@ -425,7 +425,7 @@
                         var attendantSurnames = response.data.attendant_surnames || '';
                         
                         // Replace button with copy URL button (including attendant data attributes)
-                        var newButton = '<button type="button" class="button button-small button-primary dfx-prl-copy-url" ' +
+                        var newButton = '<button type="button" class="button button-small button-primary dfxprl-copy-url" ' +
                                        'data-url="' + escapeHtmlAttribute(response.data.url) + '" ' +
                                        'data-attendant-name="' + escapeHtmlAttribute(attendantName) + '" ' +
                                        'data-attendant-surnames="' + escapeHtmlAttribute(attendantSurnames) + '">' +
@@ -454,7 +454,7 @@
         });
 
         // Handle copy URL button clicks (using event delegation for dynamically added buttons)
-        $(document).on('click', '.dfx-prl-copy-url', function(e) {
+        $(document).on('click', '.dfxprl-copy-url', function(e) {
             e.preventDefault();
 
             var url = $(this).data('url');
@@ -469,8 +469,8 @@
             var urlWithAnchor = url + anchor;
 
             // Get localized text with fallbacks
-            var urlCopiedText = (typeof dfxPRLAdmin !== 'undefined' && dfxPRLAdmin.messages && dfxPRLAdmin.messages.urlCopied)
-                ? dfxPRLAdmin.messages.urlCopied
+            var urlCopiedText = (typeof dfxprlAdmin !== 'undefined' && dfxprlAdmin.messages && dfxprlAdmin.messages.urlCopied)
+                ? dfxprlAdmin.messages.urlCopied
                 : 'URL copied to clipboard!';
 
             if (copyToClipboard(urlWithAnchor)) {
@@ -484,35 +484,35 @@
         });
 
         // Handle print message button clicks
-        $('.dfx-prl-print-message').on('click', function(e) {
+        $('.dfxprl-print-message').on('click', function(e) {
             e.preventDefault();
 
             var messageId = $(this).data('message-id');
             var $button = $(this);
 
             // Get localized text with fallbacks
-            var printingText = (typeof dfxPRLAdmin !== 'undefined' && dfxPRLAdmin.messages && dfxPRLAdmin.messages.printing)
-                ? dfxPRLAdmin.messages.printing
+            var printingText = (typeof dfxprlAdmin !== 'undefined' && dfxprlAdmin.messages && dfxprlAdmin.messages.printing)
+                ? dfxprlAdmin.messages.printing
                 : 'Preparing for print...';
-            var printErrorText = (typeof dfxPRLAdmin !== 'undefined' && dfxPRLAdmin.messages && dfxPRLAdmin.messages.printError)
-                ? dfxPRLAdmin.messages.printError
+            var printErrorText = (typeof dfxprlAdmin !== 'undefined' && dfxprlAdmin.messages && dfxprlAdmin.messages.printError)
+                ? dfxprlAdmin.messages.printError
                 : 'Error preparing message for print. Please try again.';
 
             // Disable button and show loading state
             $button.prop('disabled', true).text(printingText);
 
-            var ajaxUrl = (typeof dfxPRLAdmin !== 'undefined' && dfxPRLAdmin.ajaxurl)
-                ? dfxPRLAdmin.ajaxurl
+            var ajaxUrl = (typeof dfxprlAdmin !== 'undefined' && dfxprlAdmin.ajaxurl)
+                ? dfxprlAdmin.ajaxurl
                 : (typeof ajaxurl !== 'undefined' ? ajaxurl : '');
-            var nonce = (typeof dfxPRLAdmin !== 'undefined' && dfxPRLAdmin.nonce)
-                ? dfxPRLAdmin.nonce
+            var nonce = (typeof dfxprlAdmin !== 'undefined' && dfxprlAdmin.nonce)
+                ? dfxprlAdmin.nonce
                 : '';
 
             $.ajax({
                 url: ajaxUrl,
                 type: 'POST',
                 data: {
-                    action: 'dfx_prl_print_message',
+                    action: 'dfxprl_print_message',
                     message_id: messageId,
                     nonce: nonce
                 },
@@ -535,18 +535,18 @@
         });
 
         // Handle delete message button clicks
-        $('.dfx-prl-delete-message').on('click', function(e) {
+        $('.dfxprl-delete-message').on('click', function(e) {
             e.preventDefault();
 
             var messageId = $(this).data('message-id');
             var $row = $(this).closest('tr');
 
             // Get localized text with fallbacks
-            var confirmMessage = (typeof dfxPRLAdmin !== 'undefined' && dfxPRLAdmin.messages && dfxPRLAdmin.messages.confirmDeleteMessage)
-                ? dfxPRLAdmin.messages.confirmDeleteMessage
+            var confirmMessage = (typeof dfxprlAdmin !== 'undefined' && dfxprlAdmin.messages && dfxprlAdmin.messages.confirmDeleteMessage)
+                ? dfxprlAdmin.messages.confirmDeleteMessage
                 : 'Are you sure you want to delete this message? This action cannot be undone.';
-            var messageDeletedText = (typeof dfxPRLAdmin !== 'undefined' && dfxPRLAdmin.messages && dfxPRLAdmin.messages.messageDeleted)
-                ? dfxPRLAdmin.messages.messageDeleted
+            var messageDeletedText = (typeof dfxprlAdmin !== 'undefined' && dfxprlAdmin.messages && dfxprlAdmin.messages.messageDeleted)
+                ? dfxprlAdmin.messages.messageDeleted
                 : 'Message deleted successfully.';
 
             if (!confirm(confirmMessage)) {
@@ -556,18 +556,18 @@
             // Disable button and show loading state
             $(this).prop('disabled', true).text('Deleting...');
 
-            var ajaxUrl = (typeof dfxPRLAdmin !== 'undefined' && dfxPRLAdmin.ajaxurl)
-                ? dfxPRLAdmin.ajaxurl
+            var ajaxUrl = (typeof dfxprlAdmin !== 'undefined' && dfxprlAdmin.ajaxurl)
+                ? dfxprlAdmin.ajaxurl
                 : (typeof ajaxurl !== 'undefined' ? ajaxurl : '');
-            var nonce = (typeof dfxPRLAdmin !== 'undefined' && dfxPRLAdmin.nonce)
-                ? dfxPRLAdmin.nonce
+            var nonce = (typeof dfxprlAdmin !== 'undefined' && dfxprlAdmin.nonce)
+                ? dfxprlAdmin.nonce
                 : '';
 
             $.ajax({
                 url: ajaxUrl,
                 type: 'POST',
                 data: {
-                    action: 'dfx_prl_delete_message',
+                    action: 'dfxprl_delete_message',
                     message_id: messageId,
                     nonce: nonce
                 },
@@ -585,7 +585,7 @@
                     } else {
                         alert(response.data.message || 'Error deleting message.');
                         // Re-enable button
-                        $('.dfx-prl-delete-message[data-message-id="' + messageId + '"]')
+                        $('.dfxprl-delete-message[data-message-id="' + messageId + '"]')
                             .prop('disabled', false)
                             .text('Delete');
                     }
@@ -593,7 +593,7 @@
                 error: function() {
                     alert('Error deleting message. Please try again.');
                     // Re-enable button
-                    $('.dfx-prl-delete-message[data-message-id="' + messageId + '"]')
+                    $('.dfxprl-delete-message[data-message-id="' + messageId + '"]')
                         .prop('disabled', false)
                         .text('Delete');
                 }
@@ -601,16 +601,16 @@
         });
 
         // Handle view print log clicks
-        $('.dfx-prl-view-print-log').on('click', function(e) {
+        $('.dfxprl-view-print-log').on('click', function(e) {
             e.preventDefault();
 
             var messageId = $(this).data('message-id');
 
-            var ajaxUrl = (typeof dfxPRLAdmin !== 'undefined' && dfxPRLAdmin.ajaxurl)
-                ? dfxPRLAdmin.ajaxurl
+            var ajaxUrl = (typeof dfxprlAdmin !== 'undefined' && dfxprlAdmin.ajaxurl)
+                ? dfxprlAdmin.ajaxurl
                 : (typeof ajaxurl !== 'undefined' ? ajaxurl : '');
-            var nonce = (typeof dfxPRLAdmin !== 'undefined' && dfxPRLAdmin.nonce)
-                ? dfxPRLAdmin.nonce
+            var nonce = (typeof dfxprlAdmin !== 'undefined' && dfxprlAdmin.nonce)
+                ? dfxprlAdmin.nonce
                 : '';
 
             // Show loading state
@@ -620,7 +620,7 @@
                 url: ajaxUrl,
                 type: 'POST',
                 data: {
-                    action: 'dfx_prl_get_print_log',
+                    action: 'dfxprl_get_print_log',
                     message_id: messageId,
                     nonce: nonce
                 },
@@ -642,19 +642,19 @@
         // Function to show print log modal
         function showPrintLogModal(messageId, data, loading) {
             // Remove existing modal if any
-            $('#dfx-prl-print-log-modal').remove();
+            $('#dfxprl-print-log-modal').remove();
 
             var modalHtml = '';
 
             if (loading) {
                 modalHtml =
-                    '<div id="dfx-prl-print-log-modal" class="dfx-prl-modal-overlay">' +
-                        '<div class="dfx-prl-modal-dialog">' +
-                            '<div class="dfx-prl-modal-header">' +
+                    '<div id="dfxprl-print-log-modal" class="dfxprl-modal-overlay">' +
+                        '<div class="dfxprl-modal-dialog">' +
+                            '<div class="dfxprl-modal-header">' +
                                 '<h3>Print History</h3>' +
-                                '<button type="button" class="dfx-prl-modal-close" aria-label="Close">&times;</button>' +
+                                '<button type="button" class="dfxprl-modal-close" aria-label="Close">&times;</button>' +
                             '</div>' +
-                            '<div class="dfx-prl-modal-body">' +
+                            '<div class="dfxprl-modal-body">' +
                                 '<p>Loading print history...</p>' +
                             '</div>' +
                         '</div>' +
@@ -687,13 +687,13 @@
                 }
 
                 modalHtml =
-                    '<div id="dfx-prl-print-log-modal" class="dfx-prl-modal-overlay">' +
-                        '<div class="dfx-prl-modal-dialog" style="max-width: 700px;">' +
-                            '<div class="dfx-prl-modal-header">' +
+                    '<div id="dfxprl-print-log-modal" class="dfxprl-modal-overlay">' +
+                        '<div class="dfxprl-modal-dialog" style="max-width: 700px;">' +
+                            '<div class="dfxprl-modal-header">' +
                                 '<h3>Print History (Total: ' + data.total_count + ')</h3>' +
-                                '<button type="button" class="dfx-prl-modal-close" aria-label="Close">&times;</button>' +
+                                '<button type="button" class="dfxprl-modal-close" aria-label="Close">&times;</button>' +
                             '</div>' +
-                            '<div class="dfx-prl-modal-body">' +
+                            '<div class="dfxprl-modal-body">' +
                                 logsTable +
                             '</div>' +
                         '</div>' +
@@ -701,16 +701,16 @@
             }
 
             $('body').append(modalHtml);
-            $('#dfx-prl-print-log-modal').show();
+            $('#dfxprl-print-log-modal').show();
 
             // Handle close button clicks
-            $('.dfx-prl-modal-close').on('click', function(e) {
+            $('.dfxprl-modal-close').on('click', function(e) {
                 e.preventDefault();
                 closePrintLogModal();
             });
 
             // Handle backdrop clicks
-            $('#dfx-prl-print-log-modal').on('click', function(e) {
+            $('#dfxprl-print-log-modal').on('click', function(e) {
                 if (e.target === this) {
                     closePrintLogModal();
                 }
@@ -719,7 +719,7 @@
 
         // Function to close print log modal
         function closePrintLogModal() {
-            $('#dfx-prl-print-log-modal').fadeOut(200, function() {
+            $('#dfxprl-print-log-modal').fadeOut(200, function() {
                 $(this).remove();
             });
         }
@@ -805,7 +805,7 @@
         }
 
         // Handle invitation message button clicks
-        $('.dfx-prl-show-invitation-message').on('click', function(e) {
+        $('.dfxprl-show-invitation-message').on('click', function(e) {
             e.preventDefault();
             
             var attendantId = $(this).data('attendant-id');
@@ -815,15 +815,15 @@
             // Show loading state
             $button.prop('disabled', true);
             var originalText = $button.text();
-            $button.text(dfxPRLAdmin.messages.loadingMessage || 'Loading...');
+            $button.text(dfxprlAdmin.messages.loadingMessage || 'Loading...');
             
             // Make AJAX request to get the expanded message
             $.ajax({
-                url: dfxPRLAdmin.ajaxurl,
+                url: dfxprlAdmin.ajaxurl,
                 type: 'POST',
                 data: {
-                    action: 'dfx_prl_get_invitation_message',
-                    nonce: dfxPRLAdmin.nonce,
+                    action: 'dfxprl_get_invitation_message',
+                    nonce: dfxprlAdmin.nonce,
                     attendant_id: attendantId,
                     retreat_id: retreatId
                 },
@@ -834,13 +834,13 @@
                     if (response.success) {
                         showInvitationMessageModal(response.data.message);
                     } else {
-                        alert(response.data.message || dfxPRLAdmin.messages.loadMessageError);
+                        alert(response.data.message || dfxprlAdmin.messages.loadMessageError);
                     }
                 },
                 error: function() {
                     $button.prop('disabled', false);
                     $button.text(originalText);
-                    alert(dfxPRLAdmin.messages.loadMessageError);
+                    alert(dfxprlAdmin.messages.loadMessageError);
                 }
             });
         });
@@ -848,53 +848,53 @@
         // Show invitation message modal
         function showInvitationMessageModal(message) {
             // Create modal if it doesn't exist
-            if (!$('#dfx-prl-invitation-modal').length) {
+            if (!$('#dfxprl-invitation-modal').length) {
                 $('body').append(
-                    '<div id="dfx-prl-invitation-modal" class="dfx-prl-modal-overlay">' +
-                        '<div class="dfx-prl-modal-dialog">' +
-                            '<div class="dfx-prl-modal-header">' +
-                                '<h3>' + (dfxPRLAdmin.messages.invitationMessageTitle || 'Invitation Message') + '</h3>' +
-                                '<button class="dfx-prl-modal-close">&times;</button>' +
+                    '<div id="dfxprl-invitation-modal" class="dfxprl-modal-overlay">' +
+                        '<div class="dfxprl-modal-dialog">' +
+                            '<div class="dfxprl-modal-header">' +
+                                '<h3>' + (dfxprlAdmin.messages.invitationMessageTitle || 'Invitation Message') + '</h3>' +
+                                '<button class="dfxprl-modal-close">&times;</button>' +
                             '</div>' +
-                            '<div class="dfx-prl-modal-body">' +
-                                '<div class="dfx-prl-message-content" style="background: #f9f9f9; border: 1px solid #ddd; border-radius: 4px; padding: 15px; margin-bottom: 15px; white-space: pre-wrap; font-family: monospace; max-height: 400px; overflow-y: auto;"></div>' +
+                            '<div class="dfxprl-modal-body">' +
+                                '<div class="dfxprl-message-content" style="background: #f9f9f9; border: 1px solid #ddd; border-radius: 4px; padding: 15px; margin-bottom: 15px; white-space: pre-wrap; font-family: monospace; max-height: 400px; overflow-y: auto;"></div>' +
                             '</div>' +
-                            '<div class="dfx-prl-modal-footer">' +
-                                '<button class="button button-primary dfx-prl-copy-message">' + 'Copy Message' + '</button>' +
-                                '<button class="button dfx-prl-modal-close">' + (dfxPRLAdmin.messages.cancelButton || 'Close') + '</button>' +
+                            '<div class="dfxprl-modal-footer">' +
+                                '<button class="button button-primary dfxprl-copy-message">' + 'Copy Message' + '</button>' +
+                                '<button class="button dfxprl-modal-close">' + (dfxprlAdmin.messages.cancelButton || 'Close') + '</button>' +
                             '</div>' +
                         '</div>' +
                     '</div>'
                 );
                 
                 // Handle close button clicks
-                $('#dfx-prl-invitation-modal').on('click', '.dfx-prl-modal-close', function() {
-                    $('#dfx-prl-invitation-modal').fadeOut(200);
+                $('#dfxprl-invitation-modal').on('click', '.dfxprl-modal-close', function() {
+                    $('#dfxprl-invitation-modal').fadeOut(200);
                 });
                 
                 // Handle copy button click
-                $('#dfx-prl-invitation-modal').on('click', '.dfx-prl-copy-message', function() {
-                    var messageText = $('#dfx-prl-invitation-modal .dfx-prl-message-content').text();
+                $('#dfxprl-invitation-modal').on('click', '.dfxprl-copy-message', function() {
+                    var messageText = $('#dfxprl-invitation-modal .dfxprl-message-content').text();
                     
                     if (copyToClipboard(messageText)) {
-                        alert(dfxPRLAdmin.messages.messageCopied || 'Message copied to clipboard!');
-                        $('#dfx-prl-invitation-modal').fadeOut(200);
+                        alert(dfxprlAdmin.messages.messageCopied || 'Message copied to clipboard!');
+                        $('#dfxprl-invitation-modal').fadeOut(200);
                     } else {
-                        alert(dfxPRLAdmin.messages.messageCopyError || 'Failed to copy message.');
+                        alert(dfxprlAdmin.messages.messageCopyError || 'Failed to copy message.');
                     }
                 });
                 
                 // Close on overlay click
-                $('#dfx-prl-invitation-modal').on('click', function(e) {
-                    if ($(e.target).is('#dfx-prl-invitation-modal')) {
+                $('#dfxprl-invitation-modal').on('click', function(e) {
+                    if ($(e.target).is('#dfxprl-invitation-modal')) {
                         $(this).fadeOut(200);
                     }
                 });
             }
             
             // Set the message content and show the modal
-            $('#dfx-prl-invitation-modal .dfx-prl-message-content').text(message);
-            $('#dfx-prl-invitation-modal').fadeIn(200);
+            $('#dfxprl-invitation-modal .dfxprl-message-content').text(message);
+            $('#dfxprl-invitation-modal').fadeIn(200);
         }
     });
 

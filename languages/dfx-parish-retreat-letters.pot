@@ -2818,7 +2818,7 @@ msgid "DFX Parish Retreat Letters: OpenSSL extension is required for the confide
 msgstr ""
 
 #: includes/class-security.php:139
-msgid "DFX Parish Retreat Letters: The encryption key is stored in the database. For better security, please define DFX_PARISH_RETREAT_LETTERS_ENCRYPTION_KEY in wp-config.php."
+msgid "DFX Parish Retreat Letters: The encryption key is stored in the database. For better security, please define DFXPRL_ENCRYPTION_KEY in wp-config.php."
 msgstr ""
 
 #: includes/class-security.php:141

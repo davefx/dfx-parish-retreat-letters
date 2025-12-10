@@ -5,7 +5,7 @@
  * Tests the actual PHP-based cascade delete implementation that replaces
  * database foreign key constraints by simulating database operations.
  *
- * @package DFX_Parish_Retreat_Letters
+ * @package DFXPRL
  * @subpackage Tests
  */
 
@@ -134,16 +134,16 @@ class CascadeDeleteTest extends PHPUnit\Framework\TestCase {
 	 */
 	public function testCascadeDeleteMethodsExist() {
 		// Test that new cascade delete methods exist
-		$this->assertTrue( method_exists( 'DFX_Parish_Retreat_Letters_ConfidentialMessage', 'delete_by_attendant' ) );
-		$this->assertTrue( method_exists( 'DFX_Parish_Retreat_Letters_ConfidentialMessage', 'delete_by_attendants' ) );
-		$this->assertTrue( method_exists( 'DFX_Parish_Retreat_Letters_Permissions', 'delete_by_retreat' ) );
-		$this->assertTrue( method_exists( 'DFX_Parish_Retreat_Letters_Invitations', 'delete_by_retreat' ) );
-		$this->assertTrue( method_exists( 'DFX_Parish_Retreat_Letters_Attendant', 'delete_by_retreat' ) );
+		$this->assertTrue( method_exists( 'DFXPRL_ConfidentialMessage', 'delete_by_attendant' ) );
+		$this->assertTrue( method_exists( 'DFXPRL_ConfidentialMessage', 'delete_by_attendants' ) );
+		$this->assertTrue( method_exists( 'DFXPRL_Permissions', 'delete_by_retreat' ) );
+		$this->assertTrue( method_exists( 'DFXPRL_Invitations', 'delete_by_retreat' ) );
+		$this->assertTrue( method_exists( 'DFXPRL_Attendant', 'delete_by_retreat' ) );
 		
 		// Test that existing delete methods still exist
-		$this->assertTrue( method_exists( 'DFX_Parish_Retreat_Letters_Retreat', 'delete' ) );
-		$this->assertTrue( method_exists( 'DFX_Parish_Retreat_Letters_Attendant', 'delete' ) );
-		$this->assertTrue( method_exists( 'DFX_Parish_Retreat_Letters_ConfidentialMessage', 'delete' ) );
+		$this->assertTrue( method_exists( 'DFXPRL_Retreat', 'delete' ) );
+		$this->assertTrue( method_exists( 'DFXPRL_Attendant', 'delete' ) );
+		$this->assertTrue( method_exists( 'DFXPRL_ConfidentialMessage', 'delete' ) );
 	}
 
 	/**
@@ -448,26 +448,26 @@ class CascadeDeleteTest extends PHPUnit\Framework\TestCase {
 	 */
 	public function testRetreatDeletionUsesSingletonPattern() {
 		// Test that Permissions and Invitations classes follow singleton pattern
-		$this->assertTrue( method_exists( 'DFX_Parish_Retreat_Letters_Permissions', 'get_instance' ) );
-		$this->assertTrue( method_exists( 'DFX_Parish_Retreat_Letters_Invitations', 'get_instance' ) );
+		$this->assertTrue( method_exists( 'DFXPRL_Permissions', 'get_instance' ) );
+		$this->assertTrue( method_exists( 'DFXPRL_Invitations', 'get_instance' ) );
 		
 		// Test that both classes have private constructors (singleton pattern)
-		$permissions_reflection = new ReflectionClass( 'DFX_Parish_Retreat_Letters_Permissions' );
-		$invitations_reflection = new ReflectionClass( 'DFX_Parish_Retreat_Letters_Invitations' );
+		$permissions_reflection = new ReflectionClass( 'DFXPRL_Permissions' );
+		$invitations_reflection = new ReflectionClass( 'DFXPRL_Invitations' );
 		
 		$this->assertFalse( $permissions_reflection->getConstructor()->isPublic() );
 		$this->assertFalse( $invitations_reflection->getConstructor()->isPublic() );
 		
 		// Test that singleton instances can be obtained without errors
-		$permissions_instance = DFX_Parish_Retreat_Letters_Permissions::get_instance();
-		$invitations_instance = DFX_Parish_Retreat_Letters_Invitations::get_instance();
+		$permissions_instance = DFXPRL_Permissions::get_instance();
+		$invitations_instance = DFXPRL_Invitations::get_instance();
 		
-		$this->assertInstanceOf( 'DFX_Parish_Retreat_Letters_Permissions', $permissions_instance );
-		$this->assertInstanceOf( 'DFX_Parish_Retreat_Letters_Invitations', $invitations_instance );
+		$this->assertInstanceOf( 'DFXPRL_Permissions', $permissions_instance );
+		$this->assertInstanceOf( 'DFXPRL_Invitations', $invitations_instance );
 		
 		// Test singleton behavior - same instance returned
-		$permissions_instance2 = DFX_Parish_Retreat_Letters_Permissions::get_instance();
-		$invitations_instance2 = DFX_Parish_Retreat_Letters_Invitations::get_instance();
+		$permissions_instance2 = DFXPRL_Permissions::get_instance();
+		$invitations_instance2 = DFXPRL_Invitations::get_instance();
 		
 		$this->assertSame( $permissions_instance, $permissions_instance2 );
 		$this->assertSame( $invitations_instance, $invitations_instance2 );
@@ -489,6 +489,6 @@ class CascadeDeleteTest extends PHPUnit\Framework\TestCase {
 		$this->expectExceptionMessage( 'Call to private' );
 		
 		// This should fail - testing one is enough to validate the pattern
-		$permissions = new DFX_Parish_Retreat_Letters_Permissions();
+		$permissions = new DFXPRL_Permissions();
 	}
 }

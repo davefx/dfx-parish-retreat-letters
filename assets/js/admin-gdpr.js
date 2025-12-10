@@ -2,9 +2,9 @@
  * GDPR Tools JavaScript
  * 
  * Handles GDPR data export and erasure functionality.
- * Requires jQuery and expects dfxPRLGDPR object to be localized.
+ * Requires jQuery and expects dfxprlGDPR object to be localized.
  * 
- * @package DFX_Parish_Retreat_Letters
+ * @package DFXPRL
  * @since 25.12.10
  */
 
@@ -16,18 +16,18 @@
 		$('#export-data-btn').on('click', function() {
 			var identifier = $('#export-identifier').val().trim();
 			if (!identifier) {
-				alert(dfxPRLGDPR.i18n.pleaseEnterIdentifier);
+				alert(dfxprlGDPR.i18n.pleaseEnterIdentifier);
 				return;
 			}
 
 			var form = $('<form>', {
 				method: 'POST',
-				action: dfxPRLGDPR.ajaxurl
+				action: dfxprlGDPR.ajaxurl
 			});
 
-			form.append($('<input>', { type: 'hidden', name: 'action', value: 'dfx_prl_export_personal_data' }));
+			form.append($('<input>', { type: 'hidden', name: 'action', value: 'dfxprl_export_personal_data' }));
 			form.append($('<input>', { type: 'hidden', name: 'identifier', value: identifier }));
-			form.append($('<input>', { type: 'hidden', name: 'nonce', value: dfxPRLGDPR.nonce }));
+			form.append($('<input>', { type: 'hidden', name: 'nonce', value: dfxprlGDPR.nonce }));
 
 			$('body').append(form);
 			form.submit();
@@ -39,43 +39,43 @@
 			var confirm = $('#erase-confirm').val().trim();
 
 			if (!identifier) {
-				alert(dfxPRLGDPR.i18n.pleaseEnterIdentifier);
+				alert(dfxprlGDPR.i18n.pleaseEnterIdentifier);
 				return;
 			}
 
-			if (confirm !== dfxPRLGDPR.i18n.confirmationText) {
-				alert(dfxPRLGDPR.i18n.invalidConfirmation);
+			if (confirm !== dfxprlGDPR.i18n.confirmationText) {
+				alert(dfxprlGDPR.i18n.invalidConfirmation);
 				return;
 			}
 
-			if (!window.confirm(dfxPRLGDPR.i18n.confirmErasure)) {
+			if (!window.confirm(dfxprlGDPR.i18n.confirmErasure)) {
 				return;
 			}
 
 			var $button = $(this);
-			$button.prop('disabled', true).text(dfxPRLGDPR.i18n.erasing);
+			$button.prop('disabled', true).text(dfxprlGDPR.i18n.erasing);
 
 			$.ajax({
-				url: dfxPRLGDPR.ajaxurl,
+				url: dfxprlGDPR.ajaxurl,
 				type: 'POST',
 				data: {
-					action: 'dfx_prl_erase_personal_data',
+					action: 'dfxprl_erase_personal_data',
 					identifier: identifier,
-					nonce: dfxPRLGDPR.nonce
+					nonce: dfxprlGDPR.nonce
 				},
 				success: function(response) {
 					if (response.success) {
-						alert(dfxPRLGDPR.i18n.dataErased);
+						alert(dfxprlGDPR.i18n.dataErased);
 						$('#erase-identifier').val('');
 						$('#erase-confirm').val('');
 					} else {
-						alert(response.data.message || dfxPRLGDPR.i18n.erasureError);
+						alert(response.data.message || dfxprlGDPR.i18n.erasureError);
 					}
-					$button.prop('disabled', false).text(dfxPRLGDPR.i18n.eraseDataButton);
+					$button.prop('disabled', false).text(dfxprlGDPR.i18n.eraseDataButton);
 				},
 				error: function() {
-					alert(dfxPRLGDPR.i18n.erasureError);
-					$button.prop('disabled', false).text(dfxPRLGDPR.i18n.eraseDataButton);
+					alert(dfxprlGDPR.i18n.erasureError);
+					$button.prop('disabled', false).text(dfxprlGDPR.i18n.eraseDataButton);
 				}
 			});
 		});
