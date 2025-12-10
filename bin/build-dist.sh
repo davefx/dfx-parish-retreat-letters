@@ -70,6 +70,14 @@ rsync -av \
     "${RSYNC_EXCLUDES[@]}" \
     --exclude="build" \
     --exclude=".git" \
+    --exclude="*.orig" \
+    --exclude="*.rej" \
+    --exclude="*~" \
+    --exclude="*.bak" \
+    --exclude="*.tmp" \
+    --exclude="*.swn" \
+    --exclude="*.swo" \
+    --exclude="*.swp" \
     "$PLUGIN_ROOT/" \
     "$DIST_DIR/"
 

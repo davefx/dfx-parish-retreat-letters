@@ -49,6 +49,7 @@ The build script performs the following operations:
    - IDE configuration files (.vscode, .idea)
    - Build artifacts and temporary files
    - CI/CD configuration files
+   - Git conflict and temporary files (*.orig, *.rej, *~, *.bak, *.tmp)
 4. **Archive Creation**: Creates a versioned ZIP file (e.g., `dfx-parish-retreat-letters-25.11.20.zip`)
 5. **Verification**: Displays package information and file count
 
@@ -90,6 +91,7 @@ The distribution package includes:
 - Build scripts and tools (/bin directory)
 - Developer documentation (BUILD.md, TESTING.md, etc.)
 - Build artifacts from previous runs
+- Temporary and conflict files (*.orig, *.rej, *~, *.bak, *.tmp, etc.)
 
 ## Customizing Exclusions
 

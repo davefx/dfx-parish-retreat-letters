@@ -39,6 +39,16 @@ Thumbs.db
 /tmp
 /coverage
 
+# Git conflict and temporary files
+*.orig
+*.rej
+*~
+*.bak
+*.tmp
+*.swn
+*.swo
+*.swp
+
 # Documentation (optional - keep LICENSE and readme.txt)
 # Uncomment if you don't want to include these in distribution
 # /docs
