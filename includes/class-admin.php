@@ -799,7 +799,7 @@ class DFXPRL_Admin {
 			'disclaimer_acceptance_text' => sanitize_text_field( wp_unslash( $_POST['disclaimer_acceptance_text'] ?? '' ) ),
 			'custom_header_block_id'     => $this->parse_block_selection( sanitize_text_field( wp_unslash( $_POST['custom_header_block_id'] ?? '' ) ) ),
 			'custom_footer_block_id'     => $this->parse_block_selection( sanitize_text_field( wp_unslash( $_POST['custom_footer_block_id'] ?? '' ) ) ),
-			'custom_css'                 => sanitize_textarea_field( wp_unslash( $_POST['custom_css'] ?? '' ) ),
+			'custom_css'                 => '', // CSS customization disabled - always save empty string
 			'notes_enabled'              => isset( $_POST['notes_enabled'] ) ? 1 : 0,
 			'internal_notes_enabled'     => isset( $_POST['internal_notes_enabled'] ) ? 1 : 0,
 			'message_request_template'   => sanitize_textarea_field( wp_unslash( $_POST['message_request_template'] ?? '' ) ),
@@ -1165,15 +1165,6 @@ class DFXPRL_Admin {
 										<td>
 											<?php $this->render_block_selector( 'custom_footer_block_id', $retreat->custom_footer_block_id ?? null, $footer_default_text ); ?>
 											<p class="description"><?php esc_html_e( 'Select a reusable block, template part, or pattern to display as custom footer in the letters form page. Leave empty to use the default footer.', 'dfx-parish-retreat-letters' ); ?></p>
-										</td>
-									</tr>
-									<tr>
-										<th scope="row">
-											<label for="custom_css"><?php esc_html_e( 'Custom CSS Styles', 'dfx-parish-retreat-letters' ); ?></label>
-										</th>
-										<td>
-											<textarea id="custom_css" name="custom_css" rows="10" cols="80" class="large-text code"><?php echo esc_textarea( $retreat->custom_css ?? '' ); ?></textarea>
-											<p class="description"><?php esc_html_e( 'CSS styles specific to this retreat\'s message form page. Do not include &lt;style&gt; tags. Leave empty to use only the global default CSS.', 'dfx-parish-retreat-letters' ); ?></p>
 										</td>
 									</tr>
 									<?php endif; ?>
@@ -4727,7 +4718,6 @@ class DFXPRL_Admin {
 		// Get current settings
 		$default_header = $this->global_settings->get_default_header();
 		$default_footer = $this->global_settings->get_default_footer();
-		$default_css = $this->global_settings->get_default_css();
 		$per_retreat_customization_enabled = $this->global_settings->is_per_retreat_customization_enabled();
 
 		?>
@@ -4748,7 +4738,7 @@ class DFXPRL_Admin {
 							</th>
 							<td>
 								<input type="checkbox" id="enable_per_retreat_customization" name="enable_per_retreat_customization" value="1" <?php checked( $per_retreat_customization_enabled ); ?>>
-								<label for="enable_per_retreat_customization"><?php esc_html_e( 'Allow individual retreats to customize headers, footers, and CSS', 'dfx-parish-retreat-letters' ); ?></label>
+								<label for="enable_per_retreat_customization"><?php esc_html_e( 'Allow individual retreats to customize headers and footers', 'dfx-parish-retreat-letters' ); ?></label>
 								<p class="description"><?php esc_html_e( 'When disabled, all retreats will use the global default settings defined below.', 'dfx-parish-retreat-letters' ); ?></p>
 							</td>
 						</tr>
@@ -4773,16 +4763,6 @@ class DFXPRL_Admin {
 							</td>
 						</tr>
 						<?php endif; ?>
-
-						<tr>
-							<th scope="row">
-								<label for="default_css"><?php esc_html_e( 'Default CSS Styles', 'dfx-parish-retreat-letters' ); ?></label>
-							</th>
-							<td>
-								<textarea id="default_css" name="default_css" rows="15" cols="80" class="large-text code"><?php echo esc_textarea( $default_css ); ?></textarea>
-								<p class="description"><?php esc_html_e( 'CSS styles to be applied to all retreat message form pages. Do not include &lt;style&gt; tags.', 'dfx-parish-retreat-letters' ); ?></p>
-							</td>
-						</tr>
 					</tbody>
 				</table>
 
@@ -4929,14 +4909,13 @@ class DFXPRL_Admin {
 		$per_retreat_customization = isset( $_POST['enable_per_retreat_customization'] ) ? 1 : 0;
 		$default_header = $this->parse_block_selection( sanitize_text_field( wp_unslash( $_POST['default_header_block_id'] ?? '' ) ) );
 		$default_footer = $this->parse_block_selection( sanitize_text_field( wp_unslash( $_POST['default_footer_block_id'] ?? '' ) ) );
-		$default_css = sanitize_textarea_field( wp_unslash( $_POST['default_css'] ?? '' ) );
 
 		// Save settings
 		$success = true;
 		$success = $this->global_settings->set_per_retreat_customization_enabled( $per_retreat_customization ) && $success;
 		$success = $this->global_settings->set_default_header( $default_header ) && $success;
 		$success = $this->global_settings->set_default_footer( $default_footer ) && $success;
-		$success = $this->global_settings->set_default_css( $default_css ) && $success;
+		$success = $this->global_settings->set_default_css( '' ) && $success; // CSS customization disabled - always save empty string
 
 		if ( $success ) {
 			$this->add_admin_notice( __( 'Global settings saved successfully.', 'dfx-parish-retreat-letters' ), 'success' );
