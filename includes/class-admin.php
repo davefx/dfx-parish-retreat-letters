@@ -799,11 +799,23 @@ class DFXPRL_Admin {
 			'disclaimer_acceptance_text' => sanitize_text_field( wp_unslash( $_POST['disclaimer_acceptance_text'] ?? '' ) ),
 			'custom_header_block_id'     => $this->parse_block_selection( sanitize_text_field( wp_unslash( $_POST['custom_header_block_id'] ?? '' ) ) ),
 			'custom_footer_block_id'     => $this->parse_block_selection( sanitize_text_field( wp_unslash( $_POST['custom_footer_block_id'] ?? '' ) ) ),
-			'custom_css'                 => apply_filters( 'dfxprl_save_retreat_custom_field', '', 'custom_css', $_POST['custom_css'] ?? '', $retreat_id ),
+			'custom_css'                 => '',
 			'notes_enabled'              => isset( $_POST['notes_enabled'] ) ? 1 : 0,
 			'internal_notes_enabled'     => isset( $_POST['internal_notes_enabled'] ) ? 1 : 0,
 			'message_request_template'   => sanitize_textarea_field( wp_unslash( $_POST['message_request_template'] ?? '' ) ),
 		);
+
+		/**
+		 * Filters the retreat data before saving.
+		 * 
+		 * This filter allows plugins to modify or add custom fields to retreat data.
+		 *
+		 * @since 25.12.10
+		 * @param array    $data       The retreat data array.
+		 * @param int|null $retreat_id The retreat ID being edited, or null for new retreats.
+		 * @param array    $post_data  The raw POST data.
+		 */
+		$data = apply_filters( 'dfxprl_save_retreat_data', $data, $retreat_id, $_POST );
 
 		if ( $retreat_id ) {
 			// Update existing retreat
@@ -4927,17 +4939,30 @@ class DFXPRL_Admin {
 		}
 
 		// Process form submission
-		$per_retreat_customization = isset( $_POST['enable_per_retreat_customization'] ) ? 1 : 0;
-		$default_header = $this->parse_block_selection( sanitize_text_field( wp_unslash( $_POST['default_header_block_id'] ?? '' ) ) );
-		$default_footer = $this->parse_block_selection( sanitize_text_field( wp_unslash( $_POST['default_footer_block_id'] ?? '' ) ) );
+		$settings_data = array(
+			'enable_per_retreat_customization' => isset( $_POST['enable_per_retreat_customization'] ) ? 1 : 0,
+			'default_header_block_id'          => $this->parse_block_selection( sanitize_text_field( wp_unslash( $_POST['default_header_block_id'] ?? '' ) ) ),
+			'default_footer_block_id'          => $this->parse_block_selection( sanitize_text_field( wp_unslash( $_POST['default_footer_block_id'] ?? '' ) ) ),
+			'default_css'                      => '',
+		);
+
+		/**
+		 * Filters the global settings data before saving.
+		 * 
+		 * This filter allows plugins to modify or add custom fields to global settings data.
+		 *
+		 * @since 25.12.10
+		 * @param array $settings_data The global settings data array.
+		 * @param array $post_data     The raw POST data.
+		 */
+		$settings_data = apply_filters( 'dfxprl_save_global_settings_data', $settings_data, $_POST );
 
 		// Save settings
 		$success = true;
-		$success = $this->global_settings->set_per_retreat_customization_enabled( $per_retreat_customization ) && $success;
-		$success = $this->global_settings->set_default_header( $default_header ) && $success;
-		$success = $this->global_settings->set_default_footer( $default_footer ) && $success;
-		$default_css = apply_filters( 'dfxprl_save_global_custom_field', '', 'default_css', $_POST['default_css'] ?? '' );
-		$success = $this->global_settings->set_default_css( $default_css ) && $success;
+		$success = $this->global_settings->set_per_retreat_customization_enabled( $settings_data['enable_per_retreat_customization'] ) && $success;
+		$success = $this->global_settings->set_default_header( $settings_data['default_header_block_id'] ) && $success;
+		$success = $this->global_settings->set_default_footer( $settings_data['default_footer_block_id'] ) && $success;
+		$success = $this->global_settings->set_default_css( $settings_data['default_css'] ) && $success;
 
 		if ( $success ) {
 			$this->add_admin_notice( __( 'Global settings saved successfully.', 'dfx-parish-retreat-letters' ), 'success' );

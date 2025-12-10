@@ -6,45 +6,55 @@ This document describes the WordPress hooks available for extending the plugin f
 
 ### Filters
 
-#### `dfxprl_save_retreat_custom_field`
+#### `dfxprl_save_retreat_data`
 
-Filters a custom field value before saving it to a retreat.
+Filters the entire retreat data array before saving.
 
 **Parameters:**
-- `$value` (mixed) - The value being saved (default: empty string)
-- `$field_name` (string) - The name of the field being saved (e.g., 'custom_css')
-- `$posted_value` (mixed) - The raw value from the form submission
+- `$data` (array) - The retreat data array containing all fields
 - `$retreat_id` (int|null) - The retreat ID being edited, or null for new retreats
+- `$post_data` (array) - The raw POST data
 
 **Example:**
 ```php
-add_filter( 'dfxprl_save_retreat_custom_field', function( $value, $field_name, $posted_value, $retreat_id ) {
-    // Only allow custom_css if user has premium features
-    if ( $field_name === 'custom_css' && has_premium_features() ) {
-        return sanitize_textarea_field( $posted_value );
+add_filter( 'dfxprl_save_retreat_data', function( $data, $retreat_id, $post_data ) {
+    // Add custom_css field if user has premium features
+    if ( has_premium_features() && isset( $post_data['custom_css'] ) ) {
+        $data['custom_css'] = sanitize_textarea_field( $post_data['custom_css'] );
     }
-    return $value; // Return default value
-}, 10, 4 );
+    
+    // Add any other custom fields
+    if ( has_premium_features() && isset( $post_data['my_custom_field'] ) ) {
+        $data['my_custom_field'] = sanitize_text_field( $post_data['my_custom_field'] );
+    }
+    
+    return $data;
+}, 10, 3 );
 ```
 
-#### `dfxprl_save_global_custom_field`
+#### `dfxprl_save_global_settings_data`
 
-Filters a global custom field value before saving it to settings.
+Filters the entire global settings data array before saving.
 
 **Parameters:**
-- `$value` (mixed) - The value being saved (default: empty string)
-- `$field_name` (string) - The name of the field being saved (e.g., 'default_css')
-- `$posted_value` (mixed) - The raw value from the form submission
+- `$settings_data` (array) - The global settings data array containing all fields
+- `$post_data` (array) - The raw POST data
 
 **Example:**
 ```php
-add_filter( 'dfxprl_save_global_custom_field', function( $value, $field_name, $posted_value ) {
-    // Only allow default_css if user has premium features
-    if ( $field_name === 'default_css' && has_premium_features() ) {
-        return sanitize_textarea_field( $posted_value );
+add_filter( 'dfxprl_save_global_settings_data', function( $settings_data, $post_data ) {
+    // Add default_css field if user has premium features
+    if ( has_premium_features() && isset( $post_data['default_css'] ) ) {
+        $settings_data['default_css'] = sanitize_textarea_field( $post_data['default_css'] );
     }
-    return $value; // Return default value
-}, 10, 3 );
+    
+    // Add any other custom settings
+    if ( has_premium_features() && isset( $post_data['my_custom_setting'] ) ) {
+        $settings_data['my_custom_setting'] = sanitize_text_field( $post_data['my_custom_setting'] );
+    }
+    
+    return $settings_data;
+}, 10, 2 );
 ```
 
 ### Actions
@@ -134,21 +144,33 @@ function dfxprl_premium_has_valid_license() {
     return true; // Replace with actual validation
 }
 
-// Filter retreat custom fields to allow saving
-add_filter( 'dfxprl_save_retreat_custom_field', function( $value, $field_name, $posted_value, $retreat_id ) {
-    if ( $field_name === 'custom_css' && dfxprl_premium_has_valid_license() ) {
-        return sanitize_textarea_field( $posted_value );
+// Filter retreat data to add custom fields
+add_filter( 'dfxprl_save_retreat_data', function( $data, $retreat_id, $post_data ) {
+    if ( ! dfxprl_premium_has_valid_license() ) {
+        return $data;
     }
-    return $value;
-}, 10, 4 );
-
-// Filter global custom fields to allow saving
-add_filter( 'dfxprl_save_global_custom_field', function( $value, $field_name, $posted_value ) {
-    if ( $field_name === 'default_css' && dfxprl_premium_has_valid_license() ) {
-        return sanitize_textarea_field( $posted_value );
+    
+    // Add custom_css field if provided
+    if ( isset( $post_data['custom_css'] ) ) {
+        $data['custom_css'] = sanitize_textarea_field( $post_data['custom_css'] );
     }
-    return $value;
+    
+    return $data;
 }, 10, 3 );
+
+// Filter global settings data to add custom fields
+add_filter( 'dfxprl_save_global_settings_data', function( $settings_data, $post_data ) {
+    if ( ! dfxprl_premium_has_valid_license() ) {
+        return $settings_data;
+    }
+    
+    // Add default_css field if provided
+    if ( isset( $post_data['default_css'] ) ) {
+        $settings_data['default_css'] = sanitize_textarea_field( $post_data['default_css'] );
+    }
+    
+    return $settings_data;
+}, 10, 2 );
 
 // Add custom field to retreat edit form
 add_action( 'dfxprl_after_retreat_customization_fields', function( $retreat ) {
