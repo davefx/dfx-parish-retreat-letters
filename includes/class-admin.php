@@ -640,6 +640,15 @@ class DFX_Parish_Retreat_Letters_Admin {
 				),
 			)
 		);
+
+		// Enqueue admin footer positioning script
+		wp_enqueue_script(
+			'dfx-prl-admin-footer',
+			DFX_PARISH_RETREAT_LETTERS_PLUGIN_URL . 'assets/js/admin-footer.js',
+			array( 'jquery' ),
+			DFX_PARISH_RETREAT_LETTERS_VERSION,
+			true
+		);
 	}
 
 	/**
@@ -5481,33 +5490,8 @@ class DFX_Parish_Retreat_Letters_Admin {
 				?>
 			</p>
 		</div>
-
-		<script>
-		jQuery(document).ready(function($) {
-			// Adjust footer positioning based on admin menu state
-			function adjustFooterPosition() {
-				var $footer = $('.dfx-prl-plugin-footer');
-				var $adminMenu = $('#adminmenumain');
-
-				if ($adminMenu.length && $adminMenu.hasClass('folded')) {
-					// Menu is collapsed
-					$footer.css('left', '36px');
-				} else {
-					// Menu is expanded
-					$footer.css('left', '160px');
-				}
-			}
-
-			// Initial adjustment
-			adjustFooterPosition();
-
-			// Listen for menu fold/unfold events
-			$(document).on('wp-collapse-menu', adjustFooterPosition);
-
-			// Fallback: monitor window resize
-			$(window).on('resize', adjustFooterPosition);
-		});
-		</script>
 		<?php
+		// Footer positioning script is now properly enqueued via enqueue_admin_scripts()
+		// and loaded from assets/js/admin-footer.js
 	}
 }
