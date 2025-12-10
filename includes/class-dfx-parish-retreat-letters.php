@@ -1018,6 +1018,13 @@ class DFXPRL {
 			if ( ! isset( $_FILES['message_files'] ) || empty( $_FILES['message_files']['name'][0] ) ) {
 				wp_send_json_error( array( 'message' => __( 'At least one file is required.', 'dfx-parish-retreat-letters' ) ) );
 			}
+			
+			// Sanitize file names array immediately upon first access
+			$message_files = $_FILES['message_files'];
+			if ( isset( $message_files['name'] ) && is_array( $message_files['name'] ) ) {
+				$message_files['name'] = array_map( 'sanitize_file_name', $message_files['name'] );
+			}
+			
 			$content = __( 'File upload message', 'dfx-parish-retreat-letters' );
 			$message_type = 'file';
 		}
@@ -1038,11 +1045,11 @@ class DFXPRL {
 
 		// Handle file uploads only if in file mode
 		$upload_result = array( 'uploaded_count' => 0, 'errors' => array() );
-		if ( $message_mode === 'file' && ! empty( $_FILES['message_files']['name'][0] ) ) { // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- File array validated in handle_file_uploads()
+		if ( $message_mode === 'file' && ! empty( $message_files['name'][0] ) ) {
 			// Check if expected file count matches received file count
 			// This detects when post_max_size is exceeded and PHP truncates the upload
 			$expected_file_count = isset( $_POST['expected_file_count'] ) ? absint( $_POST['expected_file_count'] ) : 0;
-			$received_file_count = count( array_filter( $_FILES['message_files']['name'] ) ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- File array validated in handle_file_uploads() // Count non-empty filenames
+			$received_file_count = count( array_filter( $message_files['name'] ) ); // Count non-empty filenames
 
 			if ( $expected_file_count > 0 && $received_file_count < $expected_file_count ) {
 				// Delete the message since the upload was incomplete
@@ -1060,7 +1067,7 @@ class DFXPRL {
 				wp_send_json_error( array( 'message' => $error_message ) );
 			}
 
-			$upload_result = $this->handle_file_uploads( $message_id, $_FILES['message_files'] ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- File array validated in handle_file_uploads()
+			$upload_result = $this->handle_file_uploads( $message_id, $message_files );
 
 			// If no files were uploaded successfully, return an error
 			if ( $upload_result['uploaded_count'] === 0 ) {
