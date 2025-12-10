@@ -175,7 +175,7 @@ class DFXPRL_Security {
 		
 		// Enqueue jQuery and add inline script for the button handler
 		wp_enqueue_script( 'jquery' );
-		add_action( 'admin_print_footer_scripts', array( $this, 'output_encryption_key_mismatch_script' ) );
+		$this->enqueue_encryption_key_mismatch_script( $nonce );
 		?>
 		<div class="notice notice-error" id="dfxprl-encryption-key-mismatch-notice">
 			<p>
@@ -206,53 +206,58 @@ class DFXPRL_Security {
 	}
 
 	/**
-	 * Output inline script for encryption key mismatch notice.
+	 * Enqueue inline script for encryption key mismatch notice.
 	 *
 	 * @since 25.12.10
+	 * @param string $nonce The nonce for the AJAX request.
 	 */
-	public function output_encryption_key_mismatch_script() {
-		?>
-		<script type="text/javascript">
-		jQuery(document).ready(function($) {
-			$('#dfxprl-remove-db-key-btn').on('click', function() {
-				var $button = $(this);
-				var $status = $('#dfxprl-remove-db-key-status');
-				var nonce = $button.data('nonce');
+	public function enqueue_encryption_key_mismatch_script( $nonce ) {
+		$confirm_message = esc_js( __( 'Are you sure you want to remove the encryption key from the database? Any messages encrypted with the old key will become unreadable. This action cannot be undone.', 'dfx-parish-retreat-letters' ) );
+		$removing_text = esc_js( __( 'Removing...', 'dfx-parish-retreat-letters' ) );
+		$error_text = esc_js( __( 'An error occurred. Please try again.', 'dfx-parish-retreat-letters' ) );
+		
+		$script = <<<JAVASCRIPT
+jQuery(document).ready(function($) {
+	$('#dfxprl-remove-db-key-btn').on('click', function() {
+		var \$button = $(this);
+		var \$status = $('#dfxprl-remove-db-key-status');
+		var nonce = \$button.data('nonce');
 
-				if (!confirm('<?php echo esc_js( __( 'Are you sure you want to remove the encryption key from the database? Any messages encrypted with the old key will become unreadable. This action cannot be undone.', 'dfx-parish-retreat-letters' ) ); ?>')) {
-					return;
+		if (!confirm('{$confirm_message}')) {
+			return;
+		}
+
+		\$button.prop('disabled', true);
+		\$status.text('{$removing_text}');
+
+		$.ajax({
+			url: ajaxurl,
+			type: 'POST',
+			data: {
+				action: 'dfxprl_remove_db_encryption_key',
+				nonce: nonce
+			},
+			success: function(response) {
+				if (response.success) {
+					\$status.html('<span style="color: green;">' + response.data.message + '</span>');
+					$('#dfxprl-encryption-key-mismatch-notice').fadeOut(2000, function() {
+						$(this).remove();
+					});
+				} else {
+					\$status.html('<span style="color: red;">' + response.data.message + '</span>');
+					\$button.prop('disabled', false);
 				}
-
-				$button.prop('disabled', true);
-				$status.text('<?php echo esc_js( __( 'Removing...', 'dfx-parish-retreat-letters' ) ); ?>');
-
-				$.ajax({
-					url: ajaxurl,
-					type: 'POST',
-					data: {
-						action: 'dfxprl_remove_db_encryption_key',
-						nonce: nonce
-					},
-					success: function(response) {
-						if (response.success) {
-							$status.html('<span style="color: green;">' + response.data.message + '</span>');
-							$('#dfxprl-encryption-key-mismatch-notice').fadeOut(2000, function() {
-								$(this).remove();
-							});
-						} else {
-							$status.html('<span style="color: red;">' + response.data.message + '</span>');
-							$button.prop('disabled', false);
-						}
-					},
-					error: function() {
-						$status.html('<span style="color: red;"><?php echo esc_js( __( 'An error occurred. Please try again.', 'dfx-parish-retreat-letters' ) ); ?></span>');
-						$button.prop('disabled', false);
-					}
-				});
-			});
+			},
+			error: function() {
+				\$status.html('<span style="color: red;">{$error_text}</span>');
+				\$button.prop('disabled', false);
+			}
 		});
-		</script>
-		<?php
+	});
+});
+JAVASCRIPT;
+		
+		wp_add_inline_script( 'jquery', $script );
 	}
 
 	/**
