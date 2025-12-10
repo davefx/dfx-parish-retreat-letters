@@ -6,7 +6,7 @@
  * It sets up the WordPress test environment and includes
  * necessary files for testing.
  *
- * @package DFX_Parish_Retreat_Letters
+ * @package DFXPRL
  */
 
 // Composer autoloader

@@ -1,7 +1,7 @@
 /**
  * Admin JavaScript for DFX Parish Retreat Letters
  *
- * @package DFX_Parish_Retreat_Letters
+ * @package DFXPRL
  * @since 1.0.0
  */
 

@@ -2,7 +2,7 @@
 /**
  * Unit tests for DFXPRL main class
  *
- * @package DFX_Parish_Retreat_Letters
+ * @package DFXPRL
  */
 
 use PHPUnit\Framework\TestCase;
@@ -10,7 +10,7 @@ use Brain\Monkey;
 use Brain\Monkey\Functions;
 
 /**
- * Test class for DFX_Parish_Retreat_Letters
+ * Test class for DFXPRL
  */
 class DFXParishRetreatLettersTest extends TestCase {
 
@@ -55,7 +55,7 @@ class DFXParishRetreatLettersTest extends TestCase {
         $instance2 = DFXPRL::get_instance();
         
         $this->assertSame($instance1, $instance2);
-        $this->assertInstanceOf('DFX_Parish_Retreat_Letters', $instance1);
+        $this->assertInstanceOf('DFXPRL', $instance1);
     }
 
     /**

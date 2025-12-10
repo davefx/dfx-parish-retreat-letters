@@ -4,7 +4,7 @@
  *
  * This bootstrap is for testing that doesn't require WordPress
  *
- * @package DFX_Parish_Retreat_Letters
+ * @package DFXPRL
  */
 
 // Set error reporting

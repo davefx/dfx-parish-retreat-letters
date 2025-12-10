@@ -2,7 +2,7 @@
 /**
  * Tests for database constraint fixes
  *
- * @package DFX_Parish_Retreat_Letters
+ * @package DFXPRL
  * @subpackage Tests
  */
 

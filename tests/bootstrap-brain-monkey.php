@@ -4,7 +4,7 @@
  *
  * This bootstrap is for unit tests that use Brain Monkey for WordPress function mocking
  *
- * @package DFX_Parish_Retreat_Letters
+ * @package DFXPRL
  */
 
 // Set error reporting

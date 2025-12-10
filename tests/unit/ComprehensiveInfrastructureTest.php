@@ -2,7 +2,7 @@
 /**
  * Comprehensive infrastructure tests for all plugin features
  *
- * @package DFX_Parish_Retreat_Letters
+ * @package DFXPRL
  */
 
 use PHPUnit\Framework\TestCase;
@@ -105,7 +105,7 @@ class ComprehensiveInfrastructureTest extends TestCase {
         }
         
         $singleton_classes = [
-            'DFX_Parish_Retreat_Letters',
+            'DFXPRL',
             'DFXPRL_Database',
             'DFXPRL_Admin',
             'DFXPRL_Security',

@@ -5,7 +5,7 @@
  * Tests the actual PHP-based cascade delete implementation that replaces
  * database foreign key constraints by simulating database operations.
  *
- * @package DFX_Parish_Retreat_Letters
+ * @package DFXPRL
  * @subpackage Tests
  */
 

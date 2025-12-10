@@ -5,7 +5,7 @@
  * Tests that file upload validation errors don't terminate script execution,
  * allowing subsequent files in a batch to be processed.
  *
- * @package DFX_Parish_Retreat_Letters
+ * @package DFXPRL
  */
 
 use PHPUnit\Framework\TestCase;

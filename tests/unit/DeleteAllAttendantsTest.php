@@ -2,7 +2,7 @@
 /**
  * Tests for the Delete All Attendants feature
  *
- * @package DFX_Parish_Retreat_Letters
+ * @package DFXPRL
  * @subpackage Tests
  */
 

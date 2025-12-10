@@ -8,7 +8,7 @@
  * Usage: Place this file in the plugin directory and access via wp-admin
  * or run via WP-CLI: wp eval-file validate-constraint-fixes.php
  *
- * @package DFX_Parish_Retreat_Letters
+ * @package DFXPRL
  */
 
 // Only allow execution in WordPress environment

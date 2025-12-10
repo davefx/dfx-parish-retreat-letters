@@ -2,7 +2,7 @@
 /**
  * Unit tests for DFXPRL_Permissions class
  *
- * @package DFX_Parish_Retreat_Letters
+ * @package DFXPRL
  */
 
 use PHPUnit\Framework\TestCase;

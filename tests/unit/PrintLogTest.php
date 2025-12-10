@@ -2,7 +2,7 @@
 /**
  * Unit tests for DFXPRL_PrintLog class
  *
- * @package DFX_Parish_Retreat_Letters
+ * @package DFXPRL
  */
 
 use PHPUnit\Framework\TestCase;

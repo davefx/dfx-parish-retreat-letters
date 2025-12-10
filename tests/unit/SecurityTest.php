@@ -2,7 +2,7 @@
 /**
  * Unit tests for DFXPRL_Security class
  *
- * @package DFX_Parish_Retreat_Letters
+ * @package DFXPRL
  */
 
 use PHPUnit\Framework\TestCase;

@@ -2,7 +2,7 @@
 /**
  * Basic infrastructure test to verify PHPUnit works
  *
- * @package DFX_Parish_Retreat_Letters
+ * @package DFXPRL
  */
 
 use PHPUnit\Framework\TestCase;

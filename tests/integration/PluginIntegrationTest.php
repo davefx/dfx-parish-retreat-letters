@@ -2,7 +2,7 @@
 /**
  * Integration tests for DFX Parish Retreat Letters plugin
  *
- * @package DFX_Parish_Retreat_Letters
+ * @package DFXPRL
  */
 
 /**
@@ -20,7 +20,7 @@ class PluginIntegrationTest extends PHPUnit\Framework\TestCase {
      */
     public function setUp(): void {
         // Load the plugin files if not already loaded
-        if (!class_exists('DFX_Parish_Retreat_Letters')) {
+        if (!class_exists('DFXPRL')) {
             // Load all the plugin classes
             $plugin_dir = dirname(dirname(__DIR__));
             require_once $plugin_dir . '/includes/class-database.php';
@@ -126,7 +126,7 @@ class PluginIntegrationTest extends PHPUnit\Framework\TestCase {
      */
     public function test_plugin_initialization() {
         // Test that the main plugin class exists
-        $this->assertTrue(class_exists('DFX_Parish_Retreat_Letters'), 'Main plugin class should exist');
+        $this->assertTrue(class_exists('DFXPRL'), 'Main plugin class should exist');
         
         // Test that the database class exists  
         $this->assertTrue(class_exists('DFXPRL_Database'), 'Database class should exist');
@@ -145,7 +145,7 @@ class PluginIntegrationTest extends PHPUnit\Framework\TestCase {
      */
     public function test_essential_plugin_classes_exist() {
         $essential_classes = [
-            'DFX_Parish_Retreat_Letters',
+            'DFXPRL',
             'DFXPRL_Database',
             'DFXPRL_Retreat',
             'DFXPRL_Attendant',
