@@ -560,6 +560,9 @@ class DFX_Parish_Retreat_Letters_Invitations {
 			? __( 'Retreat Manager', 'dfx-parish-retreat-letters' )
 			: __( 'Message Manager', 'dfx-parish-retreat-letters' );
 
+		// Enqueue invitation page styles
+		add_action( 'wp_head', array( $this, 'output_invitation_styles' ), 100 );
+
 		$this->render_theme_header();
 		?>
 		<div class="dfx-prl-invitation-container">
@@ -618,7 +621,18 @@ class DFX_Parish_Retreat_Letters_Invitations {
 			</div>
 		</div>
 
-		<style>
+		<?php
+		// Styles are now output via output_invitation_styles() method
+		$this->render_theme_footer();
+	}
+
+	/**
+	 * Output styles for invitation page.
+	 *
+	 * @since 25.12.10
+	 */
+	public function output_invitation_styles() {
+		$styles = '
 		.dfx-prl-invitation-container {
 			max-width: 600px;
 			margin: 2rem auto;
@@ -667,6 +681,10 @@ class DFX_Parish_Retreat_Letters_Invitations {
 			color: #333;
 		}
 
+		.required {
+			color: #d63384;
+		}
+
 		.dfx-prl-form-group input {
 			width: 100%;
 			padding: 0.75rem;
@@ -675,26 +693,34 @@ class DFX_Parish_Retreat_Letters_Invitations {
 			font-size: 1rem;
 		}
 
-		.dfx-prl-accept-button {
+		.dfx-prl-form-group input:focus {
+			outline: none;
+			border-color: #007cba;
+		}
+
+		.dfx-prl-submit-button {
+			width: 100%;
+			padding: 1rem;
 			background: #007cba;
-			color: white;
-			padding: 1rem 2rem;
+			color: #fff;
 			border: none;
 			border-radius: 4px;
 			font-size: 1.1rem;
+			font-weight: 600;
 			cursor: pointer;
-			width: 100%;
+			transition: background-color 0.3s;
 		}
 
-		.dfx-prl-accept-button:hover {
+		.dfx-prl-submit-button:hover {
 			background: #005a87;
 		}
 
 		.dfx-prl-invitation-info {
-			margin-top: 2rem;
-			padding: 1rem;
 			background: #e7f3ff;
+			padding: 1.5rem;
 			border-radius: 4px;
+			margin: 1.5rem 0;
+			border-left: 4px solid #0073aa;
 		}
 
 		.dfx-prl-invitation-info h3 {
@@ -703,15 +729,19 @@ class DFX_Parish_Retreat_Letters_Invitations {
 		}
 
 		.dfx-prl-invitation-info ul {
-			margin-bottom: 0;
+			margin: 0;
+			padding-left: 1.5rem;
 		}
 
 		.dfx-prl-invitation-info li {
 			margin-bottom: 0.5rem;
 		}
-		</style>
-		<?php
-		$this->render_theme_footer();
+		';
+
+		// Register a dummy style handle and add inline styles
+		wp_register_style( 'dfx-prl-invitation', false ); // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion
+		wp_enqueue_style( 'dfx-prl-invitation' );
+		wp_add_inline_style( 'dfx-prl-invitation', $styles );
 	}
 
 	/**
