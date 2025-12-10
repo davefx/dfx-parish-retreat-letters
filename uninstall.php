@@ -15,7 +15,7 @@
  * @link       https://github.com/davefx/dfx-parish-retreat-letters
  * @since      1.0.0
  *
- * @package    DFX_Parish_Retreat_Letters
+ * @package    DFXPRL
  */
 
 // If uninstall not called from WordPress, then exit.
@@ -26,16 +26,16 @@ if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 /**
  * Drop plugin tables and clean up options.
  */
-function dfx_parish_retreat_letters_uninstall() {
+function dfxprl_uninstall() {
 	// Load database class
 	require_once plugin_dir_path( __FILE__ ) . 'includes/class-database.php';
 	
 	// Remove database tables
-	$database = DFX_Parish_Retreat_Letters_Database::get_instance();
+	$database = DFXPRL_Database::get_instance();
 	$database->drop_tables();
 	
 	// Clean up scheduled tasks
-	wp_clear_scheduled_hook( 'dfx_prl_retreat_cleanup_hook' );
+	wp_clear_scheduled_hook( 'dfxprl_retreat_cleanup_hook' );
 	
 	// Clean up custom capabilities from all roles
 	$roles = wp_roles();
@@ -59,18 +59,18 @@ function dfx_parish_retreat_letters_uninstall() {
 	}
 	
 	// Clean up any remaining options
-	delete_option( 'dfx_parish_retreat_letters_db_version' );
-	delete_option( 'dfx_parish_retreat_letters_encryption_key' );
-	delete_transient( 'dfx_prl_admin_notices' );
-	delete_transient( 'dfx_prl_message_rate_limit_violations' );
+	delete_option( 'dfxprl_db_version' );
+	delete_option( 'dfxprl_encryption_key' );
+	delete_transient( 'dfxprl_admin_notices' );
+	delete_transient( 'dfxprl_message_rate_limit_violations' );
 	
 	// Clean up any remaining rate limit transients
 	global $wpdb;
 	// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Plugin cleanup requires direct database access for transient cleanup
-	$wpdb->query( "DELETE FROM {$wpdb->options} WHERE option_name LIKE '_transient_dfx_prl_message_rate_limit_%'" );
+	$wpdb->query( "DELETE FROM {$wpdb->options} WHERE option_name LIKE '_transient_dfxprl_message_rate_limit_%'" );
 	// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Plugin cleanup requires direct database access for transient cleanup
-	$wpdb->query( "DELETE FROM {$wpdb->options} WHERE option_name LIKE '_transient_timeout_dfx_prl_message_rate_limit_%'" );
+	$wpdb->query( "DELETE FROM {$wpdb->options} WHERE option_name LIKE '_transient_timeout_dfxprl_message_rate_limit_%'" );
 }
 
 // Run uninstall
-dfx_parish_retreat_letters_uninstall();
+dfxprl_uninstall();

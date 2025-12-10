@@ -1,6 +1,6 @@
 <?php
 /**
- * Unit tests for DFX_Parish_Retreat_Letters_Invitations class
+ * Unit tests for DFXPRL_Invitations class
  *
  * @package DFX_Parish_Retreat_Letters
  */
@@ -10,7 +10,7 @@ use Brain\Monkey;
 use Brain\Monkey\Functions;
 
 /**
- * Test class for DFX_Parish_Retreat_Letters_Invitations
+ * Test class for DFXPRL_Invitations
  */
 class InvitationsTest extends TestCase {
 
@@ -54,7 +54,7 @@ class InvitationsTest extends TestCase {
      * Test invitation creation
      */
     public function testCreateInvitation() {
-        $invitations = new DFX_Parish_Retreat_Letters_Invitations();
+        $invitations = new DFXPRL_Invitations();
         
         if (method_exists($invitations, 'create_invitation')) {
             $invitation_data = [
@@ -75,7 +75,7 @@ class InvitationsTest extends TestCase {
      * Test send invitation email
      */
     public function testSendInvitationEmail() {
-        $invitations = new DFX_Parish_Retreat_Letters_Invitations();
+        $invitations = new DFXPRL_Invitations();
         
         if (method_exists($invitations, 'send_invitation_email')) {
             $email_data = [
@@ -96,7 +96,7 @@ class InvitationsTest extends TestCase {
      * Test bulk invitation sending
      */
     public function testBulkInvitationSending() {
-        $invitations = new DFX_Parish_Retreat_Letters_Invitations();
+        $invitations = new DFXPRL_Invitations();
         
         if (method_exists($invitations, 'send_bulk_invitations')) {
             $attendant_ids = [1, 2, 3];
@@ -113,7 +113,7 @@ class InvitationsTest extends TestCase {
      * Test invitation template generation
      */
     public function testInvitationTemplateGeneration() {
-        $invitations = new DFX_Parish_Retreat_Letters_Invitations();
+        $invitations = new DFXPRL_Invitations();
         
         if (method_exists($invitations, 'generate_invitation_template')) {
             $template_data = [
@@ -134,7 +134,7 @@ class InvitationsTest extends TestCase {
      * Test invitation tracking
      */
     public function testInvitationTracking() {
-        $invitations = new DFX_Parish_Retreat_Letters_Invitations();
+        $invitations = new DFXPRL_Invitations();
         
         if (method_exists($invitations, 'track_invitation')) {
             $invitation_id = 1;
@@ -151,7 +151,7 @@ class InvitationsTest extends TestCase {
      * Test RSVP functionality
      */
     public function testRSVPFunctionality() {
-        $invitations = new DFX_Parish_Retreat_Letters_Invitations();
+        $invitations = new DFXPRL_Invitations();
         
         if (method_exists($invitations, 'process_rsvp')) {
             $rsvp_data = [

@@ -7,8 +7,8 @@
  * @link       https://github.com/davefx/dfx-parish-retreat-letters
  * @since      1.0.0
  *
- * @package    DFX_Parish_Retreat_Letters
- * @subpackage DFX_Parish_Retreat_Letters/includes
+ * @package    DFXPRL
+ * @subpackage DFXPRL/includes
  */
 
 /**
@@ -17,17 +17,17 @@
  * This class handles all CRUD operations for attendants.
  *
  * @since      1.0.0
- * @package    DFX_Parish_Retreat_Letters
- * @subpackage DFX_Parish_Retreat_Letters/includes
+ * @package    DFXPRL
+ * @subpackage DFXPRL/includes
  * @author     DaveFX
  */
-class DFX_Parish_Retreat_Letters_Attendant {
+class DFXPRL_Attendant {
 
 	/**
 	 * The database instance.
 	 *
 	 * @since 1.0.0
-	 * @var DFX_Parish_Retreat_Letters_Database
+	 * @var DFXPRL_Database
 	 */
 	private $database;
 
@@ -37,7 +37,7 @@ class DFX_Parish_Retreat_Letters_Attendant {
 	 * @since 1.0.0
 	 */
 	public function __construct() {
-		$this->database = DFX_Parish_Retreat_Letters_Database::get_instance();
+		$this->database = DFXPRL_Database::get_instance();
 	}
 
 	/**
@@ -56,7 +56,7 @@ class DFX_Parish_Retreat_Letters_Attendant {
 		}
 
 		// Generate unique message URL token automatically
-		$security = DFX_Parish_Retreat_Letters_Security::get_instance();
+		$security = DFXPRL_Security::get_instance();
 		$message_url_token = $security->generate_unique_message_token();
 
 		$result = $wpdb->insert(
@@ -175,7 +175,7 @@ class DFX_Parish_Retreat_Letters_Attendant {
 		global $wpdb;
 
 		// First delete all messages for this attendant (cascade delete)
-		$message_model = new DFX_Parish_Retreat_Letters_ConfidentialMessage();
+		$message_model = new DFXPRL_ConfidentialMessage();
 		$message_model->delete_by_attendant( $id );
 
 		// Then delete the attendant
@@ -454,7 +454,7 @@ class DFX_Parish_Retreat_Letters_Attendant {
 
 		// Delete all messages for these attendants (cascade delete)
 		if ( ! empty( $attendant_ids ) ) {
-			$message_model = new DFX_Parish_Retreat_Letters_ConfidentialMessage();
+			$message_model = new DFXPRL_ConfidentialMessage();
 			$message_model->delete_by_attendants( $attendant_ids );
 		}
 
@@ -479,7 +479,7 @@ class DFX_Parish_Retreat_Letters_Attendant {
 		$attendants = $this->get_by_retreat( $retreat_id, array( 'per_page' => -1 ) );
 		
 		// Get retreat to check if notes are enabled
-		$retreat_model = new DFX_Parish_Retreat_Letters_Retreat();
+		$retreat_model = new DFXPRL_Retreat();
 		$retreat = $retreat_model->get( $retreat_id );
 		$notes_enabled = ! empty( $retreat->notes_enabled );
 
@@ -568,7 +568,7 @@ class DFX_Parish_Retreat_Letters_Attendant {
 	 * @return bool True if valid, false otherwise.
 	 */
 	private function validate_attendant_data( $data ) {
-		$admin_manager = DFX_Parish_Retreat_Letters_Admin::get_instance();
+		$admin_manager = DFXPRL_Admin::get_instance();
 
 
 		// Check required fields

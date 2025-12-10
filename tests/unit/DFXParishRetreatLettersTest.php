@@ -1,6 +1,6 @@
 <?php
 /**
- * Unit tests for DFX_Parish_Retreat_Letters main class
+ * Unit tests for DFXPRL main class
  *
  * @package DFX_Parish_Retreat_Letters
  */
@@ -34,8 +34,8 @@ class DFXParishRetreatLettersTest extends TestCase {
         Functions\when('load_plugin_textdomain')->justReturn(true);
         
         // Define constants if not already defined
-        if (!defined('DFX_PARISH_RETREAT_LETTERS_VERSION')) {
-            define('DFX_PARISH_RETREAT_LETTERS_VERSION', '25.12.09');
+        if (!defined('DFXPRL_VERSION')) {
+            define('DFXPRL_VERSION', '25.12.09');
         }
     }
 
@@ -51,8 +51,8 @@ class DFXParishRetreatLettersTest extends TestCase {
      * Test singleton pattern
      */
     public function test_singleton_pattern() {
-        $instance1 = DFX_Parish_Retreat_Letters::get_instance();
-        $instance2 = DFX_Parish_Retreat_Letters::get_instance();
+        $instance1 = DFXPRL::get_instance();
+        $instance2 = DFXPRL::get_instance();
         
         $this->assertSame($instance1, $instance2);
         $this->assertInstanceOf('DFX_Parish_Retreat_Letters', $instance1);
@@ -62,7 +62,7 @@ class DFXParishRetreatLettersTest extends TestCase {
      * Test plugin version is set correctly
      */
     public function test_plugin_version_is_set() {
-        $plugin = DFX_Parish_Retreat_Letters::get_instance();
+        $plugin = DFXPRL::get_instance();
         
         $reflection = new ReflectionClass($plugin);
         $version_property = $reflection->getProperty('version');
@@ -76,7 +76,7 @@ class DFXParishRetreatLettersTest extends TestCase {
      * Test plugin name is set correctly
      */
     public function test_plugin_name_is_set() {
-        $plugin = DFX_Parish_Retreat_Letters::get_instance();
+        $plugin = DFXPRL::get_instance();
         
         $reflection = new ReflectionClass($plugin);
         $name_property = $reflection->getProperty('plugin_name');
@@ -90,7 +90,7 @@ class DFXParishRetreatLettersTest extends TestCase {
      * Test database instance is initialized
      */
     public function test_database_instance_initialized() {
-        $plugin = DFX_Parish_Retreat_Letters::get_instance();
+        $plugin = DFXPRL::get_instance();
         
         $reflection = new ReflectionClass($plugin);
         $database_property = $reflection->getProperty('database');
@@ -104,7 +104,7 @@ class DFXParishRetreatLettersTest extends TestCase {
      * Test run method exists and is callable
      */
     public function test_run_method_exists() {
-        $plugin = DFX_Parish_Retreat_Letters::get_instance();
+        $plugin = DFXPRL::get_instance();
         
         $this->assertTrue(method_exists($plugin, 'run'));
         $this->assertTrue(is_callable([$plugin, 'run']));
@@ -114,7 +114,7 @@ class DFXParishRetreatLettersTest extends TestCase {
      * Test maybe_load_plugin_textdomain method exists and is callable
      */
     public function test_maybe_load_plugin_textdomain_method_exists() {
-        $plugin = DFX_Parish_Retreat_Letters::get_instance();
+        $plugin = DFXPRL::get_instance();
         
         $this->assertTrue(method_exists($plugin, 'maybe_load_plugin_textdomain'));
         $this->assertTrue(is_callable([$plugin, 'maybe_load_plugin_textdomain']));
@@ -129,7 +129,7 @@ class DFXParishRetreatLettersTest extends TestCase {
             ->once()
             ->with('plugins_loaded', \Mockery::type('array'));
         
-        $plugin = DFX_Parish_Retreat_Letters::get_instance();
+        $plugin = DFXPRL::get_instance();
         $plugin->run();
     }
 }

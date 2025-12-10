@@ -45,7 +45,7 @@ class ComprehensiveInfrastructureTest extends TestCase {
         $plugin_dir = dirname(__DIR__, 2);
         
         // Only include the main plugin file if constants aren't already defined
-        if (!defined('DFX_PARISH_RETREAT_LETTERS_VERSION')) {
+        if (!defined('DFXPRL_VERSION')) {
             require_once $plugin_dir . '/dfx-parish-retreat-letters.php';
         }
         
@@ -55,14 +55,15 @@ class ComprehensiveInfrastructureTest extends TestCase {
             '/includes/class-database.php',
             '/includes/class-retreat.php',
             '/includes/class-attendant.php',
-            '/includes/class-admin.php',
             '/includes/class-security.php',
             '/includes/class-confidential-message.php',
             '/includes/class-gdpr.php',
             '/includes/class-permissions.php',
             '/includes/class-invitations.php',
+            '/includes/class-global-settings.php',
             '/includes/class-message-file.php',
-            '/includes/class-print-log.php'
+            '/includes/class-print-log.php',
+            '/includes/class-admin.php'
         ];
         
         foreach ($class_files as $file) {
@@ -73,18 +74,18 @@ class ComprehensiveInfrastructureTest extends TestCase {
         
         // Test that core classes exist
         $core_classes = [
-            'DFX_Parish_Retreat_Letters',
-            'DFX_Parish_Retreat_Letters_Database',
-            'DFX_Parish_Retreat_Letters_Retreat',
-            'DFX_Parish_Retreat_Letters_Attendant',
-            'DFX_Parish_Retreat_Letters_Admin',
-            'DFX_Parish_Retreat_Letters_Security',
-            'DFX_Parish_Retreat_Letters_ConfidentialMessage',
-            'DFX_Parish_Retreat_Letters_GDPR',
-            'DFX_Parish_Retreat_Letters_Permissions',
-            'DFX_Parish_Retreat_Letters_Invitations',
-            'DFX_Parish_Retreat_Letters_MessageFile',
-            'DFX_Parish_Retreat_Letters_PrintLog'
+            'DFXPRL',
+            'DFXPRL_Database',
+            'DFXPRL_Retreat',
+            'DFXPRL_Attendant',
+            'DFXPRL_Admin',
+            'DFXPRL_Security',
+            'DFXPRL_ConfidentialMessage',
+            'DFXPRL_GDPR',
+            'DFXPRL_Permissions',
+            'DFXPRL_Invitations',
+            'DFXPRL_MessageFile',
+            'DFXPRL_PrintLog'
         ];
 
         foreach ($core_classes as $class) {
@@ -105,11 +106,11 @@ class ComprehensiveInfrastructureTest extends TestCase {
         
         $singleton_classes = [
             'DFX_Parish_Retreat_Letters',
-            'DFX_Parish_Retreat_Letters_Database',
-            'DFX_Parish_Retreat_Letters_Admin',
-            'DFX_Parish_Retreat_Letters_Security',
-            'DFX_Parish_Retreat_Letters_GDPR',
-            'DFX_Parish_Retreat_Letters_Permissions'
+            'DFXPRL_Database',
+            'DFXPRL_Admin',
+            'DFXPRL_Security',
+            'DFXPRL_GDPR',
+            'DFXPRL_Permissions'
         ];
 
         $tested_classes = 0;
@@ -138,9 +139,9 @@ class ComprehensiveInfrastructureTest extends TestCase {
      */
     public function testCRUDClassesHaveRequiredMethods() {
         $crud_classes = [
-            'DFX_Parish_Retreat_Letters_Retreat' => ['create', 'get', 'update', 'delete'],
-            'DFX_Parish_Retreat_Letters_Attendant' => ['create', 'get', 'update', 'delete'],
-            'DFX_Parish_Retreat_Letters_ConfidentialMessage' => ['create', 'get', 'delete'] // No update method in this class
+            'DFXPRL_Retreat' => ['create', 'get', 'update', 'delete'],
+            'DFXPRL_Attendant' => ['create', 'get', 'update', 'delete'],
+            'DFXPRL_ConfidentialMessage' => ['create', 'get', 'delete'] // No update method in this class
         ];
 
         $tested_classes = 0;
@@ -164,7 +165,7 @@ class ComprehensiveInfrastructureTest extends TestCase {
      * Test security features are available
      */
     public function testSecurityFeaturesAvailable() {
-        if (class_exists('DFX_Parish_Retreat_Letters_Security')) {
+        if (class_exists('DFXPRL_Security')) {
             $security_methods = [
                 'encrypt_data',
                 'decrypt_data',
@@ -176,21 +177,21 @@ class ComprehensiveInfrastructureTest extends TestCase {
 
             $tested_methods = 0;
             foreach ($security_methods as $method) {
-                if (method_exists('DFX_Parish_Retreat_Letters_Security', $method)) {
+                if (method_exists('DFXPRL_Security', $method)) {
                     $this->assertTrue(true, "Security method $method exists");
                     $tested_methods++;
                 }
             }
 
             // Test security constants
-            if (defined('DFX_Parish_Retreat_Letters_Security::ENCRYPTION_METHOD')) {
-                $this->assertTrue(defined('DFX_Parish_Retreat_Letters_Security::ENCRYPTION_METHOD'));
+            if (defined('DFXPRL_Security::ENCRYPTION_METHOD')) {
+                $this->assertTrue(defined('DFXPRL_Security::ENCRYPTION_METHOD'));
             }
-            if (defined('DFX_Parish_Retreat_Letters_Security::SALT_LENGTH')) {
-                $this->assertTrue(defined('DFX_Parish_Retreat_Letters_Security::SALT_LENGTH'));
+            if (defined('DFXPRL_Security::SALT_LENGTH')) {
+                $this->assertTrue(defined('DFXPRL_Security::SALT_LENGTH'));
             }
-            if (defined('DFX_Parish_Retreat_Letters_Security::TOKEN_LENGTH')) {
-                $this->assertTrue(defined('DFX_Parish_Retreat_Letters_Security::TOKEN_LENGTH'));
+            if (defined('DFXPRL_Security::TOKEN_LENGTH')) {
+                $this->assertTrue(defined('DFXPRL_Security::TOKEN_LENGTH'));
             }
             
             // Ensure at least some security features were tested
@@ -212,37 +213,37 @@ class ComprehensiveInfrastructureTest extends TestCase {
      * @see https://github.com/davefx/dfx-parish-retreat-letters/issues/145
      */
     public function testUploadSizeFallbackHandling() {
-        if (!class_exists('DFX_Parish_Retreat_Letters_Security')) {
+        if (!class_exists('DFXPRL_Security')) {
             $this->markTestSkipped('Security class not available');
         }
 
         // Test DEFAULT_MAX_UPLOAD_SIZE constant exists and is 8 MB
         $this->assertTrue(
-            defined('DFX_Parish_Retreat_Letters_Security::DEFAULT_MAX_UPLOAD_SIZE'),
+            defined('DFXPRL_Security::DEFAULT_MAX_UPLOAD_SIZE'),
             'DEFAULT_MAX_UPLOAD_SIZE constant should be defined'
         );
         $this->assertEquals(
             8388608,
-            DFX_Parish_Retreat_Letters_Security::DEFAULT_MAX_UPLOAD_SIZE,
+            DFXPRL_Security::DEFAULT_MAX_UPLOAD_SIZE,
             'DEFAULT_MAX_UPLOAD_SIZE should be 8 MB (8388608 bytes)'
         );
 
         // Verify upload size methods exist
         $this->assertTrue(
-            method_exists('DFX_Parish_Retreat_Letters_Security', 'get_max_upload_size'),
+            method_exists('DFXPRL_Security', 'get_max_upload_size'),
             'get_max_upload_size method should exist'
         );
         $this->assertTrue(
-            method_exists('DFX_Parish_Retreat_Letters_Security', 'get_max_combined_upload_size'),
+            method_exists('DFXPRL_Security', 'get_max_combined_upload_size'),
             'get_max_combined_upload_size method should exist'
         );
         $this->assertTrue(
-            method_exists('DFX_Parish_Retreat_Letters_Security', 'get_max_upload_size_for_validation'),
+            method_exists('DFXPRL_Security', 'get_max_upload_size_for_validation'),
             'get_max_upload_size_for_validation method should exist'
         );
 
         // Get instance
-        $security = DFX_Parish_Retreat_Letters_Security::get_instance();
+        $security = DFXPRL_Security::get_instance();
 
         // Test display methods - should return null or valid value, never "0 bytes"
         $max_size_formatted = $security->get_max_upload_size(true);
@@ -280,7 +281,7 @@ class ComprehensiveInfrastructureTest extends TestCase {
      * Test database management features
      */
     public function testDatabaseManagementFeatures() {
-        if (class_exists('DFX_Parish_Retreat_Letters_Database')) {
+        if (class_exists('DFXPRL_Database')) {
             $database_methods = [
                 'setup_tables',
                 'get_retreats_table',
@@ -290,15 +291,15 @@ class ComprehensiveInfrastructureTest extends TestCase {
 
             $tested_methods = 0;
             foreach ($database_methods as $method) {
-                if (method_exists('DFX_Parish_Retreat_Letters_Database', $method)) {
+                if (method_exists('DFXPRL_Database', $method)) {
                     $this->assertTrue(true, "Database method $method exists");
                     $tested_methods++;
                 }
             }
 
             // Test database version constant
-            if (defined('DFX_Parish_Retreat_Letters_Database::DB_VERSION')) {
-                $this->assertTrue(defined('DFX_Parish_Retreat_Letters_Database::DB_VERSION'));
+            if (defined('DFXPRL_Database::DB_VERSION')) {
+                $this->assertTrue(defined('DFXPRL_Database::DB_VERSION'));
             }
             
             // Ensure at least some database methods were tested
@@ -312,7 +313,7 @@ class ComprehensiveInfrastructureTest extends TestCase {
      * Test admin interface features
      */
     public function testAdminInterfaceFeatures() {
-        if (class_exists('DFX_Parish_Retreat_Letters_Admin')) {
+        if (class_exists('DFXPRL_Admin')) {
             $admin_methods = [
                 'add_admin_menu',
                 'enqueue_admin_scripts',
@@ -323,7 +324,7 @@ class ComprehensiveInfrastructureTest extends TestCase {
 
             $tested_methods = 0;
             foreach ($admin_methods as $method) {
-                if (method_exists('DFX_Parish_Retreat_Letters_Admin', $method)) {
+                if (method_exists('DFXPRL_Admin', $method)) {
                     $this->assertTrue(true, "Admin method $method exists");
                     $tested_methods++;
                 }
@@ -339,7 +340,7 @@ class ComprehensiveInfrastructureTest extends TestCase {
      * Test GDPR compliance features
      */
     public function testGDPRComplianceFeatures() {
-        if (class_exists('DFX_Parish_Retreat_Letters_GDPR')) {
+        if (class_exists('DFXPRL_GDPR')) {
             $gdpr_methods = [
                 'export_personal_data',
                 'erase_personal_data',
@@ -348,7 +349,7 @@ class ComprehensiveInfrastructureTest extends TestCase {
 
             $tested_methods = 0;
             foreach ($gdpr_methods as $method) {
-                if (method_exists('DFX_Parish_Retreat_Letters_GDPR', $method)) {
+                if (method_exists('DFXPRL_GDPR', $method)) {
                     $this->assertTrue(true, "GDPR method $method exists");
                     $tested_methods++;
                 }
@@ -364,7 +365,7 @@ class ComprehensiveInfrastructureTest extends TestCase {
      * Test permissions management features
      */
     public function testPermissionsManagementFeatures() {
-        if (class_exists('DFX_Parish_Retreat_Letters_Permissions')) {
+        if (class_exists('DFXPRL_Permissions')) {
             $permission_methods = [
                 'current_user_can_manage_plugin',
                 'current_user_can_manage_retreat',
@@ -375,7 +376,7 @@ class ComprehensiveInfrastructureTest extends TestCase {
 
             $tested_methods = 0;
             foreach ($permission_methods as $method) {
-                if (method_exists('DFX_Parish_Retreat_Letters_Permissions', $method)) {
+                if (method_exists('DFXPRL_Permissions', $method)) {
                     $this->assertTrue(true, "Permission method $method exists");
                     $tested_methods++;
                 }
@@ -391,7 +392,7 @@ class ComprehensiveInfrastructureTest extends TestCase {
      * Test invitation system features
      */
     public function testInvitationSystemFeatures() {
-        if (class_exists('DFX_Parish_Retreat_Letters_Invitations')) {
+        if (class_exists('DFXPRL_Invitations')) {
             $invitation_methods = [
                 'create_invitation',
                 'send_invitation_email',
@@ -400,7 +401,7 @@ class ComprehensiveInfrastructureTest extends TestCase {
 
             $tested_methods = 0;
             foreach ($invitation_methods as $method) {
-                if (method_exists('DFX_Parish_Retreat_Letters_Invitations', $method)) {
+                if (method_exists('DFXPRL_Invitations', $method)) {
                     $this->assertTrue(true, "Invitation method $method exists");
                     $tested_methods++;
                 }
@@ -416,7 +417,7 @@ class ComprehensiveInfrastructureTest extends TestCase {
      * Test file management features
      */
     public function testFileManagementFeatures() {
-        if (class_exists('DFX_Parish_Retreat_Letters_MessageFile')) {
+        if (class_exists('DFXPRL_MessageFile')) {
             $file_methods = [
                 'create',
                 'get',
@@ -427,7 +428,7 @@ class ComprehensiveInfrastructureTest extends TestCase {
 
             $tested_methods = 0;
             foreach ($file_methods as $method) {
-                if (method_exists('DFX_Parish_Retreat_Letters_MessageFile', $method)) {
+                if (method_exists('DFXPRL_MessageFile', $method)) {
                     $this->assertTrue(true, "File method $method exists");
                     $tested_methods++;
                 }
@@ -443,7 +444,7 @@ class ComprehensiveInfrastructureTest extends TestCase {
      * Test print logging features
      */
     public function testPrintLoggingFeatures() {
-        if (class_exists('DFX_Parish_Retreat_Letters_PrintLog')) {
+        if (class_exists('DFXPRL_PrintLog')) {
             $log_methods = [
                 'log_print',
                 'get',
@@ -454,7 +455,7 @@ class ComprehensiveInfrastructureTest extends TestCase {
 
             $tested_methods = 0;
             foreach ($log_methods as $method) {
-                if (method_exists('DFX_Parish_Retreat_Letters_PrintLog', $method)) {
+                if (method_exists('DFXPRL_PrintLog', $method)) {
                     $this->assertTrue(true, "Print log method $method exists");
                     $tested_methods++;
                 }
@@ -471,20 +472,20 @@ class ComprehensiveInfrastructureTest extends TestCase {
      */
     public function testPluginConstantsAreDefined() {
         // Load plugin file if constants aren't defined yet
-        if (!defined('DFX_PARISH_RETREAT_LETTERS_VERSION')) {
+        if (!defined('DFXPRL_VERSION')) {
             $plugin_dir = dirname(__DIR__, 2);
             require_once $plugin_dir . '/dfx-parish-retreat-letters.php';
         }
         
         $required_constants = [
-            'DFX_PARISH_RETREAT_LETTERS_VERSION'
+            'DFXPRL_VERSION'
         ];
         
         // These constants may not be defined in test environment
         $optional_constants = [
-            'DFX_PARISH_RETREAT_LETTERS_PLUGIN_DIR',
-            'DFX_PARISH_RETREAT_LETTERS_PLUGIN_URL',
-            'DFX_PARISH_RETREAT_LETTERS_PLUGIN_BASENAME'
+            'DFXPRL_PLUGIN_DIR',
+            'DFXPRL_PLUGIN_URL',
+            'DFXPRL_PLUGIN_BASENAME'
         ];
 
         foreach ($required_constants as $constant) {
@@ -507,8 +508,8 @@ class ComprehensiveInfrastructureTest extends TestCase {
      * Test plugin version compatibility
      */
     public function testPluginVersionCompatibility() {
-        if (defined('DFX_PARISH_RETREAT_LETTERS_VERSION')) {
-            $version = DFX_PARISH_RETREAT_LETTERS_VERSION;
+        if (defined('DFXPRL_VERSION')) {
+            $version = DFXPRL_VERSION;
             
             // Test version format (should be semantic versioning)
             $this->assertTrue(preg_match('/^\d+\.\d+\.\d+$/', $version) === 1, 'Version should follow semantic versioning');
@@ -565,9 +566,9 @@ class ComprehensiveInfrastructureTest extends TestCase {
     public function testActivationAndDeactivationHooks() {        
         // In test environment, these functions should exist
         $plugin_functions = [
-            'activate_dfx_parish_retreat_letters',
-            'deactivate_dfx_parish_retreat_letters',
-            'run_dfx_parish_retreat_letters'
+            'activate_dfxprl',
+            'deactivate_dfxprl',
+            'run_dfxprl'
         ];
         
         $defined_functions = 0;
@@ -593,12 +594,12 @@ class ComprehensiveInfrastructureTest extends TestCase {
         $wpdb->prefix = 'wp_';
         
         // Test that the database class has the current version
-        if (class_exists('DFX_Parish_Retreat_Letters_Database')) {
-            $this->assertEquals('1.9.0', DFX_Parish_Retreat_Letters_Database::DB_VERSION, 'Database version should be 1.9.0');
+        if (class_exists('DFXPRL_Database')) {
+            $this->assertEquals('1.9.0', DFXPRL_Database::DB_VERSION, 'Database version should be 1.9.0');
             
             // Test that the database instance can be created
-            $database = DFX_Parish_Retreat_Letters_Database::get_instance();
-            $this->assertInstanceOf('DFX_Parish_Retreat_Letters_Database', $database);
+            $database = DFXPRL_Database::get_instance();
+            $this->assertInstanceOf('DFXPRL_Database', $database);
             
             // Test that required methods exist
             $required_methods = [
@@ -634,7 +635,7 @@ class ComprehensiveInfrastructureTest extends TestCase {
      * Test audit log can handle user_id = 0 (invitation scenario)
      */
     public function testAuditLogHandlesUserIdZero() {
-        if (class_exists('DFX_Parish_Retreat_Letters_Permissions')) {
+        if (class_exists('DFXPRL_Permissions')) {
             // Mock global $wpdb to simulate successful audit log insertion
             global $wpdb;
             if (!$wpdb) {
@@ -646,8 +647,8 @@ class ComprehensiveInfrastructureTest extends TestCase {
             $wpdb->insert = function() { return 1; };
             
             // Get permissions instance
-            $permissions = DFX_Parish_Retreat_Letters_Permissions::get_instance();
-            $this->assertInstanceOf('DFX_Parish_Retreat_Letters_Permissions', $permissions);
+            $permissions = DFXPRL_Permissions::get_instance();
+            $this->assertInstanceOf('DFXPRL_Permissions', $permissions);
             
             // Test that log_permission_action method exists
             $this->assertTrue(method_exists($permissions, 'log_permission_action'), 
@@ -676,9 +677,9 @@ class ComprehensiveInfrastructureTest extends TestCase {
      * Test that ConfidentialMessage class has the new non-printed count method
      */
     public function testConfidentialMessageHasNonPrintedCountMethod() {
-        if (class_exists('DFX_Parish_Retreat_Letters_ConfidentialMessage')) {
-            $message = new DFX_Parish_Retreat_Letters_ConfidentialMessage();
-            $this->assertInstanceOf('DFX_Parish_Retreat_Letters_ConfidentialMessage', $message);
+        if (class_exists('DFXPRL_ConfidentialMessage')) {
+            $message = new DFXPRL_ConfidentialMessage();
+            $this->assertInstanceOf('DFXPRL_ConfidentialMessage', $message);
             
             // Test that the new method exists
             $this->assertTrue(method_exists($message, 'get_non_printed_count_by_attendant'), 
@@ -728,9 +729,9 @@ class ComprehensiveInfrastructureTest extends TestCase {
      * Test that Database class has the print log table method
      */
     public function testDatabaseHasPrintLogTableMethod() {
-        if (class_exists('DFX_Parish_Retreat_Letters_Database')) {
-            $database = DFX_Parish_Retreat_Letters_Database::get_instance();
-            $this->assertInstanceOf('DFX_Parish_Retreat_Letters_Database', $database);
+        if (class_exists('DFXPRL_Database')) {
+            $database = DFXPRL_Database::get_instance();
+            $this->assertInstanceOf('DFXPRL_Database', $database);
             
             // Test that the print log table method exists (required for non-printed count)
             $this->assertTrue(method_exists($database, 'get_message_print_log_table'), 
@@ -817,8 +818,8 @@ class ComprehensiveInfrastructureTest extends TestCase {
         }
         
         // Test 9: Verify that render_print_page method exists
-        if (class_exists('DFX_Parish_Retreat_Letters')) {
-            $plugin = DFX_Parish_Retreat_Letters::get_instance();
+        if (class_exists('DFXPRL')) {
+            $plugin = DFXPRL::get_instance();
             $reflection = new ReflectionClass($plugin);
             $this->assertTrue($reflection->hasMethod('render_print_page'), 
                 'Plugin class should have render_print_page method');
@@ -836,9 +837,9 @@ class ComprehensiveInfrastructureTest extends TestCase {
      * were missing the initials suffix (e.g., /#jd for "John Doe").
      */
     public function testAdminHasGenerateInitialsSuffixMethod() {
-        if (class_exists('DFX_Parish_Retreat_Letters_Admin')) {
-            $admin = DFX_Parish_Retreat_Letters_Admin::get_instance();
-            $this->assertInstanceOf('DFX_Parish_Retreat_Letters_Admin', $admin);
+        if (class_exists('DFXPRL_Admin')) {
+            $admin = DFXPRL_Admin::get_instance();
+            $this->assertInstanceOf('DFXPRL_Admin', $admin);
             
             // Test that the generate_initials_suffix method exists
             $reflection = new ReflectionClass($admin);
@@ -901,8 +902,8 @@ class ComprehensiveInfrastructureTest extends TestCase {
      * which should now include the initials suffix in the messages URL.
      */
     public function testExpandInvitationTemplateMethodExists() {
-        if (class_exists('DFX_Parish_Retreat_Letters_Admin')) {
-            $admin = DFX_Parish_Retreat_Letters_Admin::get_instance();
+        if (class_exists('DFXPRL_Admin')) {
+            $admin = DFXPRL_Admin::get_instance();
             $reflection = new ReflectionClass($admin);
             
             $this->assertTrue($reflection->hasMethod('expand_invitation_template'), 

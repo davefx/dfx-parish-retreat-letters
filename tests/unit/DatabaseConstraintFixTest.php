@@ -32,7 +32,7 @@ class DatabaseConstraintFixTest extends TestCase {
 	public function test_database_version_bumped() {
 		require_once dirname( dirname( __DIR__ ) ) . '/includes/class-database.php';
 		
-		$this->assertEquals( '1.6.2', DFX_Parish_Retreat_Letters_Database::DB_VERSION );
+		$this->assertEquals( '1.6.2', DFXPRL_Database::DB_VERSION );
 	}
 
 	/**
@@ -42,7 +42,7 @@ class DatabaseConstraintFixTest extends TestCase {
 		require_once dirname( dirname( __DIR__ ) ) . '/includes/class-database.php';
 		
 		// Get the table creation SQL
-		$reflection = new ReflectionClass( 'DFX_Parish_Retreat_Letters_Database' );
+		$reflection = new ReflectionClass( 'DFXPRL_Database' );
 		$database = $reflection->newInstanceWithoutConstructor();
 		
 		// Use reflection to access the setup_tables method to get SQL
@@ -56,7 +56,7 @@ class DatabaseConstraintFixTest extends TestCase {
 		// Set up the database instance properly
 		$property = $reflection->getProperty( 'invitations_table' );
 		$property->setAccessible( true );
-		$property->setValue( $database, 'wp_dfx_prl_retreat_invitations' );
+		$property->setValue( $database, 'wp_dfxprl_retreat_invitations' );
 		
 		// Check that the problematic constraint name is not in use anymore
 		// The constraint should not include status in the combination
@@ -69,7 +69,7 @@ class DatabaseConstraintFixTest extends TestCase {
 	public function test_foreign_key_removal_methods_exist() {
 		require_once dirname( dirname( __DIR__ ) ) . '/includes/class-database.php';
 		
-		$reflection = new ReflectionClass( 'DFX_Parish_Retreat_Letters_Database' );
+		$reflection = new ReflectionClass( 'DFXPRL_Database' );
 		
 		// Check that the foreign key removal method exists
 		$this->assertTrue( $reflection->hasMethod( 'remove_audit_log_foreign_keys' ) );
@@ -84,7 +84,7 @@ class DatabaseConstraintFixTest extends TestCase {
 	public function test_upgrade_method_calls_constraint_fixes() {
 		require_once dirname( dirname( __DIR__ ) ) . '/includes/class-database.php';
 		
-		$reflection = new ReflectionClass( 'DFX_Parish_Retreat_Letters_Database' );
+		$reflection = new ReflectionClass( 'DFXPRL_Database' );
 		$method = $reflection->getMethod( 'upgrade_database' );
 		$method->setAccessible( true );
 		
@@ -110,11 +110,11 @@ class DatabaseConstraintFixTest extends TestCase {
 		
 		// Test that the permissions class can handle logging with user_id = 0
 		// This would previously fail due to foreign key constraints
-		$this->assertTrue( method_exists( 'DFX_Parish_Retreat_Letters_Permissions', 'log_permission_action' ) );
+		$this->assertTrue( method_exists( 'DFXPRL_Permissions', 'log_permission_action' ) );
 		
 		// The actual database interaction would be tested in integration tests
 		// Here we just verify the method signature allows user_id = 0
-		$reflection = new ReflectionClass( 'DFX_Parish_Retreat_Letters_Permissions' );
+		$reflection = new ReflectionClass( 'DFXPRL_Permissions' );
 		$method = $reflection->getMethod( 'log_permission_action' );
 		$parameters = $method->getParameters();
 		
@@ -136,11 +136,11 @@ class DatabaseConstraintFixTest extends TestCase {
 		require_once dirname( dirname( __DIR__ ) ) . '/includes/class-invitations.php';
 		
 		// Test that the invitations class has the cancel_invitation method
-		$this->assertTrue( method_exists( 'DFX_Parish_Retreat_Letters_Invitations', 'cancel_invitation' ) );
+		$this->assertTrue( method_exists( 'DFXPRL_Invitations', 'cancel_invitation' ) );
 		
 		// Verify the method can be called without constraint issues
 		// The actual database constraint fix would be tested in integration tests
-		$reflection = new ReflectionClass( 'DFX_Parish_Retreat_Letters_Invitations' );
+		$reflection = new ReflectionClass( 'DFXPRL_Invitations' );
 		$method = $reflection->getMethod( 'cancel_invitation' );
 		
 		// Verify method exists and has correct signature

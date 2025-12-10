@@ -7,8 +7,8 @@
  * @link       https://github.com/davefx/dfx-parish-retreat-letters
  * @since      1.6.0
  *
- * @package    DFX_Parish_Retreat_Letters
- * @subpackage DFX_Parish_Retreat_Letters/includes
+ * @package    DFXPRL
+ * @subpackage DFXPRL/includes
  */
 
 /**
@@ -18,20 +18,20 @@
  * 
  * Since version 1.6.1, global settings are stored as WordPress options instead of a custom
  * database table. This provides better performance, built-in caching, and easier backup/restore.
- * All option names are prefixed with 'dfx_prl_global_' to avoid conflicts.
+ * All option names are prefixed with 'dfxprl_global_' to avoid conflicts.
  *
  * @since      1.6.0
- * @package    DFX_Parish_Retreat_Letters
- * @subpackage DFX_Parish_Retreat_Letters/includes
+ * @package    DFXPRL
+ * @subpackage DFXPRL/includes
  * @author     DaveFX
  */
-class DFX_Parish_Retreat_Letters_GlobalSettings {
+class DFXPRL_GlobalSettings {
 
 	/**
 	 * The single instance of the class.
 	 *
 	 * @since 1.6.0
-	 * @var DFX_Parish_Retreat_Letters_GlobalSettings|null
+	 * @var DFXPRL_GlobalSettings|null
 	 */
 	private static $instance = null;
 
@@ -41,13 +41,13 @@ class DFX_Parish_Retreat_Letters_GlobalSettings {
 	 * @since 1.6.0
 	 * @var string
 	 */
-	const OPTION_PREFIX = 'dfx_prl_global_';
+	const OPTION_PREFIX = 'dfxprl_global_';
 
 	/**
 	 * Get the single instance of the class.
 	 *
 	 * @since 1.6.0
-	 * @return DFX_Parish_Retreat_Letters_GlobalSettings
+	 * @return DFXPRL_GlobalSettings
 	 */
 	public static function get_instance() {
 		if ( is_null( self::$instance ) ) {

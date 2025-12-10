@@ -26,7 +26,7 @@ class MultiFileUploadTest extends TestCase {
 
 		// Include required plugin class files
 		$plugin_dir = dirname(__DIR__, 2);
-		if (!class_exists('DFX_Parish_Retreat_Letters_Security')) {
+		if (!class_exists('DFXPRL_Security')) {
 			require_once $plugin_dir . '/includes/class-security.php';
 		}
 
@@ -77,7 +77,7 @@ class MultiFileUploadTest extends TestCase {
 		$temp_files[] = $valid_file2;
 
 		// Test that we can process multiple files even when one fails
-		$security = DFX_Parish_Retreat_Letters_Security::get_instance();
+		$security = DFXPRL_Security::get_instance();
 		$results = [];
 		$script_terminated = false;
 
@@ -146,7 +146,7 @@ class MultiFileUploadTest extends TestCase {
 			'error' => UPLOAD_ERR_OK
 		];
 
-		$security = DFX_Parish_Retreat_Letters_Security::get_instance();
+		$security = DFXPRL_Security::get_instance();
 		
 		$error_level = null;
 		set_error_handler(function($errno, $errstr) use (&$error_level) {
@@ -192,7 +192,7 @@ class MultiFileUploadTest extends TestCase {
 			['name' => 'valid2.txt', 'content' => 'test content 2'],
 		];
 
-		$security = DFX_Parish_Retreat_Letters_Security::get_instance();
+		$security = DFXPRL_Security::get_instance();
 
 		// Suppress error output during test
 		set_error_handler(function() { return true; });

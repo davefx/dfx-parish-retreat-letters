@@ -1,6 +1,6 @@
 <?php
 /**
- * Unit tests for DFX_Parish_Retreat_Letters_GDPR class
+ * Unit tests for DFXPRL_GDPR class
  *
  * @package DFX_Parish_Retreat_Letters
  */
@@ -10,7 +10,7 @@ use Brain\Monkey;
 use Brain\Monkey\Functions;
 
 /**
- * Test class for DFX_Parish_Retreat_Letters_GDPR
+ * Test class for DFXPRL_GDPR
  */
 class GDPRTest extends TestCase {
 
@@ -43,18 +43,18 @@ class GDPRTest extends TestCase {
      * Test singleton pattern
      */
     public function testSingletonPattern() {
-        $instance1 = DFX_Parish_Retreat_Letters_GDPR::get_instance();
-        $instance2 = DFX_Parish_Retreat_Letters_GDPR::get_instance();
+        $instance1 = DFXPRL_GDPR::get_instance();
+        $instance2 = DFXPRL_GDPR::get_instance();
         
         $this->assertSame($instance1, $instance2);
-        $this->assertInstanceOf('DFX_Parish_Retreat_Letters_GDPR', $instance1);
+        $this->assertInstanceOf('DFXPRL_GDPR', $instance1);
     }
 
     /**
      * Test personal data export
      */
     public function testPersonalDataExport() {
-        $gdpr = DFX_Parish_Retreat_Letters_GDPR::get_instance();
+        $gdpr = DFXPRL_GDPR::get_instance();
         
         if (method_exists($gdpr, 'export_personal_data')) {
             // Mock database results
@@ -80,7 +80,7 @@ class GDPRTest extends TestCase {
      * Test personal data erasure
      */
     public function testPersonalDataErasure() {
-        $gdpr = DFX_Parish_Retreat_Letters_GDPR::get_instance();
+        $gdpr = DFXPRL_GDPR::get_instance();
         
         if (method_exists($gdpr, 'erase_personal_data')) {
             $result = $gdpr->erase_personal_data('john.doe@example.com');
@@ -96,7 +96,7 @@ class GDPRTest extends TestCase {
      * Test data anonymization
      */
     public function testDataAnonymization() {
-        $gdpr = DFX_Parish_Retreat_Letters_GDPR::get_instance();
+        $gdpr = DFXPRL_GDPR::get_instance();
         
         if (method_exists($gdpr, 'anonymize_attendant_data')) {
             $attendant_id = 1;
@@ -112,7 +112,7 @@ class GDPRTest extends TestCase {
      * Test consent tracking
      */
     public function testConsentTracking() {
-        $gdpr = DFX_Parish_Retreat_Letters_GDPR::get_instance();
+        $gdpr = DFXPRL_GDPR::get_instance();
         
         if (method_exists($gdpr, 'record_consent')) {
             $attendant_id = 1;
@@ -129,7 +129,7 @@ class GDPRTest extends TestCase {
      * Test privacy policy compliance
      */
     public function testPrivacyPolicyCompliance() {
-        $gdpr = DFX_Parish_Retreat_Letters_GDPR::get_instance();
+        $gdpr = DFXPRL_GDPR::get_instance();
         
         if (method_exists($gdpr, 'check_privacy_compliance')) {
             $result = $gdpr->check_privacy_compliance();

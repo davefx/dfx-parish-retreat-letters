@@ -1,6 +1,6 @@
 <?php
 /**
- * Unit tests for DFX_Parish_Retreat_Letters_Admin class
+ * Unit tests for DFXPRL_Admin class
  *
  * @package DFX_Parish_Retreat_Letters
  */
@@ -10,7 +10,7 @@ use Brain\Monkey;
 use Brain\Monkey\Functions;
 
 /**
- * Test class for DFX_Parish_Retreat_Letters_Admin
+ * Test class for DFXPRL_Admin
  */
 class AdminTest extends TestCase {
 
@@ -67,18 +67,18 @@ class AdminTest extends TestCase {
      * Test singleton pattern
      */
     public function testSingletonPattern() {
-        $instance1 = DFX_Parish_Retreat_Letters_Admin::get_instance();
-        $instance2 = DFX_Parish_Retreat_Letters_Admin::get_instance();
+        $instance1 = DFXPRL_Admin::get_instance();
+        $instance2 = DFXPRL_Admin::get_instance();
         
         $this->assertSame($instance1, $instance2);
-        $this->assertInstanceOf('DFX_Parish_Retreat_Letters_Admin', $instance1);
+        $this->assertInstanceOf('DFXPRL_Admin', $instance1);
     }
 
     /**
      * Test admin hooks are registered
      */
     public function testAdminHooksRegistered() {
-        $admin = DFX_Parish_Retreat_Letters_Admin::get_instance();
+        $admin = DFXPRL_Admin::get_instance();
         
         if (method_exists($admin, 'register_hooks')) {
             // Verify method exists and is callable
@@ -98,7 +98,7 @@ class AdminTest extends TestCase {
      * Test admin menu creation
      */
     public function testAdminMenuCreation() {
-        $admin = DFX_Parish_Retreat_Letters_Admin::get_instance();
+        $admin = DFXPRL_Admin::get_instance();
         
         if (method_exists($admin, 'add_admin_menu')) {
             // Verify method exists and is callable
@@ -112,7 +112,7 @@ class AdminTest extends TestCase {
      * Test script and style enqueuing
      */
     public function testScriptAndStyleEnqueuing() {
-        $admin = DFX_Parish_Retreat_Letters_Admin::get_instance();
+        $admin = DFXPRL_Admin::get_instance();
         
         if (method_exists($admin, 'enqueue_admin_scripts')) {
             $this->assertTrue(is_callable([$admin, 'enqueue_admin_scripts']));
@@ -132,7 +132,7 @@ class AdminTest extends TestCase {
      * Test AJAX handler for creating retreat
      */
     public function testAjaxCreateRetreat() {
-        $admin = DFX_Parish_Retreat_Letters_Admin::get_instance();
+        $admin = DFXPRL_Admin::get_instance();
         
         if (method_exists($admin, 'ajax_create_retreat')) {
             // Mock $_POST data
@@ -146,7 +146,7 @@ class AdminTest extends TestCase {
             ];
             
             // Mock retreat model
-            $retreat_mock = $this->createMock('DFX_Parish_Retreat_Letters_Retreat');
+            $retreat_mock = $this->createMock('DFXPRL_Retreat');
             $retreat_mock->method('create')->willReturn(123);
             
             // Use reflection to set retreat model
@@ -168,7 +168,7 @@ class AdminTest extends TestCase {
      * Test AJAX handler for creating attendant
      */
     public function testAjaxCreateAttendant() {
-        $admin = DFX_Parish_Retreat_Letters_Admin::get_instance();
+        $admin = DFXPRL_Admin::get_instance();
         
         if (method_exists($admin, 'ajax_create_attendant')) {
             // Mock $_POST data
@@ -184,7 +184,7 @@ class AdminTest extends TestCase {
             ];
             
             // Mock attendant model
-            $attendant_mock = $this->createMock('DFX_Parish_Retreat_Letters_Attendant');
+            $attendant_mock = $this->createMock('DFXPRL_Attendant');
             $attendant_mock->method('create')->willReturn(456);
             
             // Use reflection to set attendant model
@@ -206,7 +206,7 @@ class AdminTest extends TestCase {
      * Test AJAX handler for sending message
      */
     public function testAjaxSendMessage() {
-        $admin = DFX_Parish_Retreat_Letters_Admin::get_instance();
+        $admin = DFXPRL_Admin::get_instance();
         
         if (method_exists($admin, 'ajax_send_message')) {
             // Mock $_POST data
@@ -219,7 +219,7 @@ class AdminTest extends TestCase {
             ];
             
             // Mock message model
-            $message_mock = $this->createMock('DFX_Parish_Retreat_Letters_ConfidentialMessage');
+            $message_mock = $this->createMock('DFXPRL_ConfidentialMessage');
             $message_mock->method('create')->willReturn(789);
             
             // Use reflection to set message model
@@ -241,7 +241,7 @@ class AdminTest extends TestCase {
      * Test nonce verification
      */
     public function testNonceVerification() {
-        $admin = DFX_Parish_Retreat_Letters_Admin::get_instance();
+        $admin = DFXPRL_Admin::get_instance();
         
         $reflection = new ReflectionClass($admin);
         
@@ -266,7 +266,7 @@ class AdminTest extends TestCase {
      * Test permission checking
      */
     public function testPermissionChecking() {
-        $admin = DFX_Parish_Retreat_Letters_Admin::get_instance();
+        $admin = DFXPRL_Admin::get_instance();
         
         $reflection = new ReflectionClass($admin);
         
@@ -286,11 +286,11 @@ class AdminTest extends TestCase {
      * Test retreat listing functionality
      */
     public function testRetreatListing() {
-        $admin = DFX_Parish_Retreat_Letters_Admin::get_instance();
+        $admin = DFXPRL_Admin::get_instance();
         
         if (method_exists($admin, 'display_retreats_page')) {
             // Mock retreat model
-            $retreat_mock = $this->createMock('DFX_Parish_Retreat_Letters_Retreat');
+            $retreat_mock = $this->createMock('DFXPRL_Retreat');
             $retreat_mock->method('get_all')->willReturn([
                 (object) [
                     'id' => 1,
@@ -318,11 +318,11 @@ class AdminTest extends TestCase {
      * Test attendant listing functionality
      */
     public function testAttendantListing() {
-        $admin = DFX_Parish_Retreat_Letters_Admin::get_instance();
+        $admin = DFXPRL_Admin::get_instance();
         
         if (method_exists($admin, 'display_attendants_page')) {
             // Mock attendant model
-            $attendant_mock = $this->createMock('DFX_Parish_Retreat_Letters_Attendant');
+            $attendant_mock = $this->createMock('DFXPRL_Attendant');
             $attendant_mock->method('get_all')->willReturn([
                 (object) [
                     'id' => 1,
@@ -351,7 +351,7 @@ class AdminTest extends TestCase {
      * Test data export functionality
      */
     public function testDataExport() {
-        $admin = DFX_Parish_Retreat_Letters_Admin::get_instance();
+        $admin = DFXPRL_Admin::get_instance();
         
         if (method_exists($admin, 'export_data')) {
             // Verify method is callable
@@ -365,11 +365,11 @@ class AdminTest extends TestCase {
      * Test print log functionality
      */
     public function testPrintLogFunctionality() {
-        $admin = DFX_Parish_Retreat_Letters_Admin::get_instance();
+        $admin = DFXPRL_Admin::get_instance();
         
         if (method_exists($admin, 'log_print_action')) {
             // Mock print log model
-            $print_log_mock = $this->createMock('DFX_Parish_Retreat_Letters_PrintLog');
+            $print_log_mock = $this->createMock('DFXPRL_PrintLog');
             $print_log_mock->method('log')->willReturn(true);
             
             // Use reflection to set print log model
@@ -391,7 +391,7 @@ class AdminTest extends TestCase {
      * Test bulk operations
      */
     public function testBulkOperations() {
-        $admin = DFX_Parish_Retreat_Letters_Admin::get_instance();
+        $admin = DFXPRL_Admin::get_instance();
         
         if (method_exists($admin, 'handle_bulk_actions')) {
             // Mock $_POST data for bulk action
@@ -412,7 +412,7 @@ class AdminTest extends TestCase {
      * Test settings page functionality
      */
     public function testSettingsPage() {
-        $admin = DFX_Parish_Retreat_Letters_Admin::get_instance();
+        $admin = DFXPRL_Admin::get_instance();
         
         if (method_exists($admin, 'display_settings_page')) {
             // Verify method is callable
@@ -426,11 +426,11 @@ class AdminTest extends TestCase {
      * Test GDPR compliance features
      */
     public function testGdprCompliance() {
-        $admin = DFX_Parish_Retreat_Letters_Admin::get_instance();
+        $admin = DFXPRL_Admin::get_instance();
         
         if (method_exists($admin, 'handle_gdpr_request')) {
             // Mock GDPR model
-            $gdpr_mock = $this->createMock('DFX_Parish_Retreat_Letters_GDPR');
+            $gdpr_mock = $this->createMock('DFXPRL_GDPR');
             $gdpr_mock->method('export_personal_data')->willReturn(['data' => 'exported']);
             
             // Use reflection to set GDPR model
@@ -452,7 +452,7 @@ class AdminTest extends TestCase {
      * Test constructor initializes dependencies
      */
     public function testConstructorInitializesDependencies() {
-        $admin = DFX_Parish_Retreat_Letters_Admin::get_instance();
+        $admin = DFXPRL_Admin::get_instance();
         
         $reflection = new ReflectionClass($admin);
         
@@ -473,7 +473,7 @@ class AdminTest extends TestCase {
      * Test AJAX error handling
      */
     public function testAjaxErrorHandling() {
-        $admin = DFX_Parish_Retreat_Letters_Admin::get_instance();
+        $admin = DFXPRL_Admin::get_instance();
         
         $reflection = new ReflectionClass($admin);
         
@@ -499,7 +499,7 @@ class AdminTest extends TestCase {
      * Test form validation
      */
     public function testFormValidation() {
-        $admin = DFX_Parish_Retreat_Letters_Admin::get_instance();
+        $admin = DFXPRL_Admin::get_instance();
         
         $reflection = new ReflectionClass($admin);
         
@@ -534,7 +534,7 @@ class AdminTest extends TestCase {
      * Test AJAX handler for removing database encryption key exists
      */
     public function testAjaxRemoveDbEncryptionKeyMethodExists() {
-        $admin = DFX_Parish_Retreat_Letters_Admin::get_instance();
+        $admin = DFXPRL_Admin::get_instance();
         
         $this->assertTrue(
             method_exists($admin, 'ajax_remove_db_encryption_key'),

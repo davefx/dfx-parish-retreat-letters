@@ -1,6 +1,6 @@
 <?php
 /**
- * Unit tests for DFX_Parish_Retreat_Letters_Permissions class
+ * Unit tests for DFXPRL_Permissions class
  *
  * @package DFX_Parish_Retreat_Letters
  */
@@ -10,7 +10,7 @@ use Brain\Monkey;
 use Brain\Monkey\Functions;
 
 /**
- * Test class for DFX_Parish_Retreat_Letters_Permissions
+ * Test class for DFXPRL_Permissions
  */
 class PermissionsTest extends TestCase {
 
@@ -45,18 +45,18 @@ class PermissionsTest extends TestCase {
      * Test singleton pattern
      */
     public function testSingletonPattern() {
-        $instance1 = DFX_Parish_Retreat_Letters_Permissions::get_instance();
-        $instance2 = DFX_Parish_Retreat_Letters_Permissions::get_instance();
+        $instance1 = DFXPRL_Permissions::get_instance();
+        $instance2 = DFXPRL_Permissions::get_instance();
         
         $this->assertSame($instance1, $instance2);
-        $this->assertInstanceOf('DFX_Parish_Retreat_Letters_Permissions', $instance1);
+        $this->assertInstanceOf('DFXPRL_Permissions', $instance1);
     }
 
     /**
      * Test permission checking for retreats
      */
     public function testRetreatPermissions() {
-        $permissions = DFX_Parish_Retreat_Letters_Permissions::get_instance();
+        $permissions = DFXPRL_Permissions::get_instance();
         
         if (method_exists($permissions, 'can_manage_retreats')) {
             $result = $permissions->can_manage_retreats();
@@ -70,7 +70,7 @@ class PermissionsTest extends TestCase {
      * Test permission checking for attendants
      */
     public function testAttendantPermissions() {
-        $permissions = DFX_Parish_Retreat_Letters_Permissions::get_instance();
+        $permissions = DFXPRL_Permissions::get_instance();
         
         if (method_exists($permissions, 'can_manage_attendants')) {
             $result = $permissions->can_manage_attendants();
@@ -84,7 +84,7 @@ class PermissionsTest extends TestCase {
      * Test permission checking for messages
      */
     public function testMessagePermissions() {
-        $permissions = DFX_Parish_Retreat_Letters_Permissions::get_instance();
+        $permissions = DFXPRL_Permissions::get_instance();
         
         if (method_exists($permissions, 'can_send_messages')) {
             $result = $permissions->can_send_messages();
@@ -98,7 +98,7 @@ class PermissionsTest extends TestCase {
      * Test role-based permissions
      */
     public function testRoleBasedPermissions() {
-        $permissions = DFX_Parish_Retreat_Letters_Permissions::get_instance();
+        $permissions = DFXPRL_Permissions::get_instance();
         
         if (method_exists($permissions, 'check_role_permission')) {
             $result = $permissions->check_role_permission('administrator', 'manage_retreats');
@@ -112,7 +112,7 @@ class PermissionsTest extends TestCase {
      * Test custom capability checking
      */
     public function testCustomCapabilityChecking() {
-        $permissions = DFX_Parish_Retreat_Letters_Permissions::get_instance();
+        $permissions = DFXPRL_Permissions::get_instance();
         
         if (method_exists($permissions, 'has_custom_capability')) {
             $result = $permissions->has_custom_capability('dfx_manage_retreat_letters');

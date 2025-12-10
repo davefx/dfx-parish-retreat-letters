@@ -1,6 +1,6 @@
 <?php
 /**
- * Unit tests for DFX_Parish_Retreat_Letters_Retreat class
+ * Unit tests for DFXPRL_Retreat class
  *
  * @package DFX_Parish_Retreat_Letters
  */
@@ -10,7 +10,7 @@ use Brain\Monkey;
 use Brain\Monkey\Functions;
 
 /**
- * Test class for DFX_Parish_Retreat_Letters_Retreat
+ * Test class for DFXPRL_Retreat
  */
 class RetreatTest extends TestCase {
 
@@ -43,7 +43,7 @@ class RetreatTest extends TestCase {
      */
     public function test_create_retreat_with_valid_data() {
         // Mock the database instance
-        $database_mock = $this->createMock('DFX_Parish_Retreat_Letters_Database');
+        $database_mock = $this->createMock('DFXPRL_Database');
         $database_mock->method('get_retreats_table')->willReturn('wp_dfx_retreats');
         
         // Mock global wpdb
@@ -55,7 +55,7 @@ class RetreatTest extends TestCase {
              ->willReturn(true);
         
         // Create retreat instance and inject mocked database
-        $retreat = new DFX_Parish_Retreat_Letters_Retreat();
+        $retreat = new DFXPRL_Retreat();
         
         // Use reflection to set the private database property
         $reflection = new ReflectionClass($retreat);
@@ -79,7 +79,7 @@ class RetreatTest extends TestCase {
      * Test retreat constructor initializes database
      */
     public function test_constructor_initializes_database() {
-        $retreat = new DFX_Parish_Retreat_Letters_Retreat();
+        $retreat = new DFXPRL_Retreat();
         
         $reflection = new ReflectionClass($retreat);
         $database_property = $reflection->getProperty('database');
@@ -94,7 +94,7 @@ class RetreatTest extends TestCase {
      */
     public function test_get_returns_retreat_data() {
         // Mock the database instance
-        $database_mock = $this->createMock('DFX_Parish_Retreat_Letters_Database');
+        $database_mock = $this->createMock('DFXPRL_Database');
         $database_mock->method('get_retreats_table')->willReturn('wp_dfx_retreats');
         
         // Mock global wpdb
@@ -116,7 +116,7 @@ class RetreatTest extends TestCase {
              ->willReturn("SELECT * FROM wp_dfx_retreats WHERE id = 1");
         
         // Create retreat instance and inject mocked database
-        $retreat = new DFX_Parish_Retreat_Letters_Retreat();
+        $retreat = new DFXPRL_Retreat();
         
         // Use reflection to set the private database property
         $reflection = new ReflectionClass($retreat);
@@ -133,7 +133,7 @@ class RetreatTest extends TestCase {
      */
     public function test_update_retreat() {
         // Mock the database instance
-        $database_mock = $this->createMock('DFX_Parish_Retreat_Letters_Database');
+        $database_mock = $this->createMock('DFXPRL_Database');
         $database_mock->method('get_retreats_table')->willReturn('wp_dfx_retreats');
         
         // Mock global wpdb
@@ -144,7 +144,7 @@ class RetreatTest extends TestCase {
              ->willReturn(1);
         
         // Create retreat instance and inject mocked database
-        $retreat = new DFX_Parish_Retreat_Letters_Retreat();
+        $retreat = new DFXPRL_Retreat();
         
         $reflection = new ReflectionClass($retreat);
         $database_property = $reflection->getProperty('database');
@@ -170,7 +170,7 @@ class RetreatTest extends TestCase {
      */
     public function test_delete_retreat_uses_singleton_pattern() {
         // Mock the database instance
-        $database_mock = $this->createMock('DFX_Parish_Retreat_Letters_Database');
+        $database_mock = $this->createMock('DFXPRL_Database');
         $database_mock->method('get_retreats_table')->willReturn('wp_dfx_retreats');
         
         // Mock global wpdb
@@ -182,24 +182,24 @@ class RetreatTest extends TestCase {
              ->willReturn(1);
         
         // Mock singleton instances - these should be called via get_instance()
-        $permissions_mock = $this->createMock('DFX_Parish_Retreat_Letters_Permissions');
+        $permissions_mock = $this->createMock('DFXPRL_Permissions');
         $permissions_mock->expects($this->once())
                         ->method('delete_by_retreat')
                         ->with(1);
                         
-        $invitations_mock = $this->createMock('DFX_Parish_Retreat_Letters_Invitations');
+        $invitations_mock = $this->createMock('DFXPRL_Invitations');
         $invitations_mock->expects($this->once())
                         ->method('delete_by_retreat')
                         ->with(1);
         
         // Mock attendant model (this one doesn't use singleton pattern)
-        $attendant_mock = $this->createMock('DFX_Parish_Retreat_Letters_Attendant');
+        $attendant_mock = $this->createMock('DFXPRL_Attendant');
         $attendant_mock->expects($this->once())
                       ->method('delete_by_retreat')
                       ->with(1);
         
         // Create retreat instance and inject mocked database
-        $retreat = new DFX_Parish_Retreat_Letters_Retreat();
+        $retreat = new DFXPRL_Retreat();
         
         $reflection = new ReflectionClass($retreat);
         $database_property = $reflection->getProperty('database');
@@ -218,7 +218,7 @@ class RetreatTest extends TestCase {
      */
     public function test_delete_retreat_handles_failure() {
         // Mock the database instance
-        $database_mock = $this->createMock('DFX_Parish_Retreat_Letters_Database');
+        $database_mock = $this->createMock('DFXPRL_Database');
         $database_mock->method('get_retreats_table')->willReturn('wp_dfx_retreats');
         
         // Mock global wpdb to return false (deletion failed)
@@ -229,7 +229,7 @@ class RetreatTest extends TestCase {
              ->willReturn(false);
         
         // Create retreat instance and inject mocked database
-        $retreat = new DFX_Parish_Retreat_Letters_Retreat();
+        $retreat = new DFXPRL_Retreat();
         
         $reflection = new ReflectionClass($retreat);
         $database_property = $reflection->getProperty('database');
@@ -245,7 +245,7 @@ class RetreatTest extends TestCase {
      */
     public function test_get_all_retreats() {
         // Mock the database instance
-        $database_mock = $this->createMock('DFX_Parish_Retreat_Letters_Database');
+        $database_mock = $this->createMock('DFXPRL_Database');
         $database_mock->method('get_retreats_table')->willReturn('wp_dfx_retreats');
         
         // Mock global wpdb
@@ -270,7 +270,7 @@ class RetreatTest extends TestCase {
              ->willReturn($expected_retreats);
         
         // Create retreat instance and inject mocked database
-        $retreat = new DFX_Parish_Retreat_Letters_Retreat();
+        $retreat = new DFXPRL_Retreat();
         
         $reflection = new ReflectionClass($retreat);
         $database_property = $reflection->getProperty('database');
@@ -290,7 +290,7 @@ class RetreatTest extends TestCase {
      * Test retreat data validation with invalid dates
      */
     public function test_validate_retreat_data_with_invalid_dates() {
-        $retreat = new DFX_Parish_Retreat_Letters_Retreat();
+        $retreat = new DFXPRL_Retreat();
         
         $reflection = new ReflectionClass($retreat);
         
@@ -318,7 +318,7 @@ class RetreatTest extends TestCase {
      */
     public function test_search_retreats() {
         // Mock the database instance
-        $database_mock = $this->createMock('DFX_Parish_Retreat_Letters_Database');
+        $database_mock = $this->createMock('DFXPRL_Database');
         $database_mock->method('get_retreats_table')->willReturn('wp_dfx_retreats');
         
         // Mock global wpdb
@@ -338,7 +338,7 @@ class RetreatTest extends TestCase {
              ->willReturn($search_results);
         
         // Create retreat instance and inject mocked database
-        $retreat = new DFX_Parish_Retreat_Letters_Retreat();
+        $retreat = new DFXPRL_Retreat();
         
         $reflection = new ReflectionClass($retreat);
         $database_property = $reflection->getProperty('database');
@@ -362,7 +362,7 @@ class RetreatTest extends TestCase {
      */
     public function test_get_active_retreats() {
         // Mock the database instance
-        $database_mock = $this->createMock('DFX_Parish_Retreat_Letters_Database');
+        $database_mock = $this->createMock('DFXPRL_Database');
         $database_mock->method('get_retreats_table')->willReturn('wp_dfx_retreats');
         
         // Mock global wpdb
@@ -383,7 +383,7 @@ class RetreatTest extends TestCase {
              ->willReturn($active_retreats);
         
         // Create retreat instance and inject mocked database
-        $retreat = new DFX_Parish_Retreat_Letters_Retreat();
+        $retreat = new DFXPRL_Retreat();
         
         $reflection = new ReflectionClass($retreat);
         $database_property = $reflection->getProperty('database');
@@ -410,7 +410,7 @@ class RetreatTest extends TestCase {
         });
 
         // Mock the database instance  
-        $database_mock = $this->createMock('DFX_Parish_Retreat_Letters_Database');
+        $database_mock = $this->createMock('DFXPRL_Database');
         $database_mock->method('get_retreats_table')->willReturn('wp_dfx_retreats');
         
         // Mock global wpdb
@@ -434,7 +434,7 @@ class RetreatTest extends TestCase {
              ->willReturn(true);
         
         // Create retreat instance and inject mocked database
-        $retreat = new DFX_Parish_Retreat_Letters_Retreat();
+        $retreat = new DFXPRL_Retreat();
         
         $reflection = new ReflectionClass($retreat);
         $database_property = $reflection->getProperty('database');
@@ -474,7 +474,7 @@ class RetreatTest extends TestCase {
         
         try {
             // Create a retreat instance
-            $retreat = new DFX_Parish_Retreat_Letters_Retreat();
+            $retreat = new DFXPRL_Retreat();
             
             // The key test: verify that calling methods that use singleton instances
             // doesn't throw constructor access errors
@@ -484,15 +484,15 @@ class RetreatTest extends TestCase {
             
             // Test that we can access the singleton classes without constructor errors
             // This would have failed before the fix with "Call to private constructor"
-            $permissions_instance = DFX_Parish_Retreat_Letters_Permissions::get_instance();
-            $invitations_instance = DFX_Parish_Retreat_Letters_Invitations::get_instance();
+            $permissions_instance = DFXPRL_Permissions::get_instance();
+            $invitations_instance = DFXPRL_Invitations::get_instance();
             
-            $this->assertInstanceOf('DFX_Parish_Retreat_Letters_Permissions', $permissions_instance);
-            $this->assertInstanceOf('DFX_Parish_Retreat_Letters_Invitations', $invitations_instance);
+            $this->assertInstanceOf('DFXPRL_Permissions', $permissions_instance);
+            $this->assertInstanceOf('DFXPRL_Invitations', $invitations_instance);
             
             // Verify that both calls return the same instance (singleton behavior)
-            $permissions_instance2 = DFX_Parish_Retreat_Letters_Permissions::get_instance();
-            $invitations_instance2 = DFX_Parish_Retreat_Letters_Invitations::get_instance();
+            $permissions_instance2 = DFXPRL_Permissions::get_instance();
+            $invitations_instance2 = DFXPRL_Invitations::get_instance();
             
             $this->assertSame($permissions_instance, $permissions_instance2);
             $this->assertSame($invitations_instance, $invitations_instance2);
@@ -515,7 +515,7 @@ class RetreatTest extends TestCase {
         });
 
         // Mock the database instance
-        $database_mock = $this->createMock('DFX_Parish_Retreat_Letters_Database');
+        $database_mock = $this->createMock('DFXPRL_Database');
         $database_mock->method('get_retreats_table')->willReturn('wp_dfx_retreats');
         
         // Mock global wpdb
@@ -539,7 +539,7 @@ class RetreatTest extends TestCase {
              ->willReturn(true);
         
         // Create retreat instance and inject mocked database
-        $retreat = new DFX_Parish_Retreat_Letters_Retreat();
+        $retreat = new DFXPRL_Retreat();
         
         $reflection = new ReflectionClass($retreat);
         $database_property = $reflection->getProperty('database');

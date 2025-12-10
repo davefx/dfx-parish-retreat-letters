@@ -1,6 +1,6 @@
 <?php
 /**
- * Unit tests for DFX_Parish_Retreat_Letters_Security class
+ * Unit tests for DFXPRL_Security class
  *
  * @package DFX_Parish_Retreat_Letters
  */
@@ -10,7 +10,7 @@ use Brain\Monkey;
 use Brain\Monkey\Functions;
 
 /**
- * Test class for DFX_Parish_Retreat_Letters_Security
+ * Test class for DFXPRL_Security
  */
 class SecurityTest extends TestCase {
 
@@ -23,7 +23,7 @@ class SecurityTest extends TestCase {
         
         // Mock WordPress functions
         Functions\when('get_option')->alias(function($option, $default = false) {
-            if ($option === 'dfx_parish_retreat_letters_encryption_key') {
+            if ($option === 'dfxprl_encryption_key') {
                 return false; // Force key generation
             }
             return $default;
@@ -48,27 +48,27 @@ class SecurityTest extends TestCase {
      * Test singleton pattern
      */
     public function testSingletonPattern() {
-        $instance1 = DFX_Parish_Retreat_Letters_Security::get_instance();
-        $instance2 = DFX_Parish_Retreat_Letters_Security::get_instance();
+        $instance1 = DFXPRL_Security::get_instance();
+        $instance2 = DFXPRL_Security::get_instance();
         
         $this->assertSame($instance1, $instance2);
-        $this->assertInstanceOf('DFX_Parish_Retreat_Letters_Security', $instance1);
+        $this->assertInstanceOf('DFXPRL_Security', $instance1);
     }
 
     /**
      * Test encryption constants are defined
      */
     public function testEncryptionConstants() {
-        $this->assertEquals('AES-256-CBC', DFX_Parish_Retreat_Letters_Security::ENCRYPTION_METHOD);
-        $this->assertEquals(32, DFX_Parish_Retreat_Letters_Security::SALT_LENGTH);
-        $this->assertEquals(64, DFX_Parish_Retreat_Letters_Security::TOKEN_LENGTH);
+        $this->assertEquals('AES-256-CBC', DFXPRL_Security::ENCRYPTION_METHOD);
+        $this->assertEquals(32, DFXPRL_Security::SALT_LENGTH);
+        $this->assertEquals(64, DFXPRL_Security::TOKEN_LENGTH);
     }
 
     /**
      * Test encryption key generation
      */
     public function testEncryptionKeyGeneration() {
-        $security = DFX_Parish_Retreat_Letters_Security::get_instance();
+        $security = DFXPRL_Security::get_instance();
         
         // Use reflection to access private method
         $reflection = new ReflectionClass($security);
@@ -88,7 +88,7 @@ class SecurityTest extends TestCase {
      * Test secure token generation
      */
     public function testSecureTokenGeneration() {
-        $security = DFX_Parish_Retreat_Letters_Security::get_instance();
+        $security = DFXPRL_Security::get_instance();
         
         if (method_exists($security, 'generate_secure_token')) {
             $token1 = $security->generate_secure_token();
@@ -109,7 +109,7 @@ class SecurityTest extends TestCase {
      * Test unique message token generation
      */
     public function testUniqueMessageTokenGeneration() {
-        $security = DFX_Parish_Retreat_Letters_Security::get_instance();
+        $security = DFXPRL_Security::get_instance();
         
         if (method_exists($security, 'generate_unique_message_token')) {
             // Mock database check for uniqueness
@@ -134,7 +134,7 @@ class SecurityTest extends TestCase {
             $this->markTestSkipped('OpenSSL functions not available');
         }
 
-        $security = DFX_Parish_Retreat_Letters_Security::get_instance();
+        $security = DFXPRL_Security::get_instance();
         
         if (method_exists($security, 'encrypt_data') && method_exists($security, 'decrypt_data')) {
             $original_data = 'This is a test message for encryption';
@@ -162,7 +162,7 @@ class SecurityTest extends TestCase {
             $this->markTestSkipped('OpenSSL functions not available');
         }
 
-        $security = DFX_Parish_Retreat_Letters_Security::get_instance();
+        $security = DFXPRL_Security::get_instance();
         
         if (method_exists($security, 'encrypt_data')) {
             $result = $security->encrypt_data('');
@@ -176,7 +176,7 @@ class SecurityTest extends TestCase {
      * Test IP address retrieval and anonymization
      */
     public function testIpAddressHandling() {
-        $security = DFX_Parish_Retreat_Letters_Security::get_instance();
+        $security = DFXPRL_Security::get_instance();
         
         if (method_exists($security, 'get_user_ip')) {
             // Mock $_SERVER variables
@@ -201,7 +201,7 @@ class SecurityTest extends TestCase {
      * Test hash generation for data integrity
      */
     public function testHashGeneration() {
-        $security = DFX_Parish_Retreat_Letters_Security::get_instance();
+        $security = DFXPRL_Security::get_instance();
         
         if (method_exists($security, 'generate_hash')) {
             $data = 'test data for hashing';
@@ -226,7 +226,7 @@ class SecurityTest extends TestCase {
      * Test password hashing functionality
      */
     public function testPasswordHashing() {
-        $security = DFX_Parish_Retreat_Letters_Security::get_instance();
+        $security = DFXPRL_Security::get_instance();
         
         if (method_exists($security, 'hash_password') && method_exists($security, 'verify_password')) {
             $password = 'test_password_123';
@@ -249,7 +249,7 @@ class SecurityTest extends TestCase {
      * Test rate limiting functionality
      */
     public function testRateLimiting() {
-        $security = DFX_Parish_Retreat_Letters_Security::get_instance();
+        $security = DFXPRL_Security::get_instance();
         
         if (method_exists($security, 'check_rate_limit')) {
             $ip = '192.168.1.100';
@@ -267,7 +267,7 @@ class SecurityTest extends TestCase {
      * Test CSRF token generation and validation
      */
     public function testCsrfTokenHandling() {
-        $security = DFX_Parish_Retreat_Letters_Security::get_instance();
+        $security = DFXPRL_Security::get_instance();
         
         if (method_exists($security, 'generate_csrf_token') && method_exists($security, 'verify_csrf_token')) {
             $token = $security->generate_csrf_token();
@@ -289,7 +289,7 @@ class SecurityTest extends TestCase {
      * Test security headers functionality
      */
     public function testSecurityHeaders() {
-        $security = DFX_Parish_Retreat_Letters_Security::get_instance();
+        $security = DFXPRL_Security::get_instance();
         
         if (method_exists($security, 'set_security_headers')) {
             // This test would check if headers are set correctly
@@ -305,7 +305,7 @@ class SecurityTest extends TestCase {
      * Test remove_encryption_key_from_database method exists and is callable
      */
     public function testRemoveEncryptionKeyFromDatabaseMethodExists() {
-        $security = DFX_Parish_Retreat_Letters_Security::get_instance();
+        $security = DFXPRL_Security::get_instance();
         
         $this->assertTrue(
             method_exists($security, 'remove_encryption_key_from_database'),
@@ -321,7 +321,7 @@ class SecurityTest extends TestCase {
      * Test has_database_encryption_key method exists and is callable
      */
     public function testHasDatabaseEncryptionKeyMethodExists() {
-        $security = DFX_Parish_Retreat_Letters_Security::get_instance();
+        $security = DFXPRL_Security::get_instance();
         
         $this->assertTrue(
             method_exists($security, 'has_database_encryption_key'),
@@ -337,7 +337,7 @@ class SecurityTest extends TestCase {
      * Test display_encryption_key_mismatch_notice method exists and is callable
      */
     public function testDisplayEncryptionKeyMismatchNoticeMethodExists() {
-        $security = DFX_Parish_Retreat_Letters_Security::get_instance();
+        $security = DFXPRL_Security::get_instance();
         
         $this->assertTrue(
             method_exists($security, 'display_encryption_key_mismatch_notice'),

@@ -1,6 +1,6 @@
 <?php
 /**
- * Unit tests for DFX_Parish_Retreat_Letters_Database class
+ * Unit tests for DFXPRL_Database class
  *
  * @package DFX_Parish_Retreat_Letters
  */
@@ -10,7 +10,7 @@ use Brain\Monkey;
 use Brain\Monkey\Functions;
 
 /**
- * Test class for DFX_Parish_Retreat_Letters_Database
+ * Test class for DFXPRL_Database
  */
 class DatabaseTest extends TestCase {
 
@@ -44,18 +44,18 @@ class DatabaseTest extends TestCase {
         $wpdb = $this->createMock('wpdb');
         $wpdb->prefix = 'wp_';
         
-        $instance1 = DFX_Parish_Retreat_Letters_Database::get_instance();
-        $instance2 = DFX_Parish_Retreat_Letters_Database::get_instance();
+        $instance1 = DFXPRL_Database::get_instance();
+        $instance2 = DFXPRL_Database::get_instance();
         
         $this->assertSame($instance1, $instance2);
-        $this->assertInstanceOf('DFX_Parish_Retreat_Letters_Database', $instance1);
+        $this->assertInstanceOf('DFXPRL_Database', $instance1);
     }
 
     /**
      * Test database version constant
      */
     public function test_database_version_constant() {
-        $this->assertEquals('1.6.2', DFX_Parish_Retreat_Letters_Database::DB_VERSION);
+        $this->assertEquals('1.6.2', DFXPRL_Database::DB_VERSION);
     }
 
     /**
@@ -66,7 +66,7 @@ class DatabaseTest extends TestCase {
         $wpdb = $this->createMock('wpdb');
         $wpdb->prefix = 'wp_';
         
-        $database = DFX_Parish_Retreat_Letters_Database::get_instance();
+        $database = DFXPRL_Database::get_instance();
         
         // Use reflection to access private method if it exists
         $reflection = new ReflectionClass($database);
@@ -89,7 +89,7 @@ class DatabaseTest extends TestCase {
         $wpdb = $this->createMock('wpdb');
         $wpdb->prefix = 'wp_';
         
-        $database = DFX_Parish_Retreat_Letters_Database::get_instance();
+        $database = DFXPRL_Database::get_instance();
         
         if (method_exists($database, 'setup_tables')) {
             // Mock dbDelta function
@@ -106,7 +106,7 @@ class DatabaseTest extends TestCase {
      * Test database version management
      */
     public function test_database_version_management() {
-        $database = DFX_Parish_Retreat_Letters_Database::get_instance();
+        $database = DFXPRL_Database::get_instance();
         
         if (method_exists($database, 'needs_upgrade')) {
             $result = $database->needs_upgrade();
@@ -124,7 +124,7 @@ class DatabaseTest extends TestCase {
         $wpdb = $this->createMock('wpdb');
         $wpdb->prefix = 'wp_';
         
-        $database = DFX_Parish_Retreat_Letters_Database::get_instance();
+        $database = DFXPRL_Database::get_instance();
         
         if (method_exists($database, 'get_retreats_table')) {
             $retreats_table = $database->get_retreats_table();
@@ -149,7 +149,7 @@ class DatabaseTest extends TestCase {
      * Test database migration functionality
      */
     public function test_database_migration() {
-        $database = DFX_Parish_Retreat_Letters_Database::get_instance();
+        $database = DFXPRL_Database::get_instance();
         
         if (method_exists($database, 'migrate_to_version')) {
             $target_version = '1.6.2';
@@ -168,7 +168,7 @@ class DatabaseTest extends TestCase {
         $wpdb = $this->createMock('wpdb');
         $wpdb->method('get_var')->willReturn('wp_dfx_retreats');
         
-        $database = DFX_Parish_Retreat_Letters_Database::get_instance();
+        $database = DFXPRL_Database::get_instance();
         
         if (method_exists($database, 'table_exists')) {
             $result = $database->table_exists('wp_dfx_retreats');
@@ -182,7 +182,7 @@ class DatabaseTest extends TestCase {
      * Test database cleanup functionality
      */
     public function test_database_cleanup() {
-        $database = DFX_Parish_Retreat_Letters_Database::get_instance();
+        $database = DFXPRL_Database::get_instance();
         
         if (method_exists($database, 'cleanup_orphaned_data')) {
             $result = $database->cleanup_orphaned_data();
@@ -201,7 +201,7 @@ class DatabaseTest extends TestCase {
         $wpdb->prefix = 'wp_';
         
         // Mock the audit log table name
-        $audit_log_table = 'wp_dfx_prl_permission_audit_log';
+        $audit_log_table = 'wp_dfxprl_permission_audit_log';
         
         // Mock get_var to simulate table existence check
         $wpdb->method('get_var')
@@ -209,7 +209,7 @@ class DatabaseTest extends TestCase {
              
         // Mock get_results to return foreign key constraints
         $constraint = new stdClass();
-        $constraint->CONSTRAINT_NAME = 'wp_dfx_prl_permission_audit_log_ibfk_1';
+        $constraint->CONSTRAINT_NAME = 'wp_dfxprl_permission_audit_log_ibfk_1';
         $wpdb->method('get_results')
              ->willReturn([$constraint]);
              
@@ -217,7 +217,7 @@ class DatabaseTest extends TestCase {
         $wpdb->method('query')
              ->willReturn(1);
         
-        $database = DFX_Parish_Retreat_Letters_Database::get_instance();
+        $database = DFXPRL_Database::get_instance();
         
         // Test that the remove_audit_log_foreign_keys method exists and can be called
         $reflection = new ReflectionClass($database);
@@ -237,7 +237,7 @@ class DatabaseTest extends TestCase {
      * Test database backup functionality
      */
     public function test_database_backup() {
-        $database = DFX_Parish_Retreat_Letters_Database::get_instance();
+        $database = DFXPRL_Database::get_instance();
         
         if (method_exists($database, 'create_backup')) {
             $result = $database->create_backup();

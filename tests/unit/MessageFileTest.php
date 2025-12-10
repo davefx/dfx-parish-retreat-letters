@@ -1,6 +1,6 @@
 <?php
 /**
- * Unit tests for DFX_Parish_Retreat_Letters_MessageFile class
+ * Unit tests for DFXPRL_MessageFile class
  *
  * @package DFX_Parish_Retreat_Letters
  */
@@ -10,7 +10,7 @@ use Brain\Monkey;
 use Brain\Monkey\Functions;
 
 /**
- * Test class for DFX_Parish_Retreat_Letters_MessageFile
+ * Test class for DFXPRL_MessageFile
  */
 class MessageFileTest extends TestCase {
 
@@ -52,7 +52,7 @@ class MessageFileTest extends TestCase {
      * Test file upload functionality
      */
     public function testFileUpload() {
-        $message_file = new DFX_Parish_Retreat_Letters_MessageFile();
+        $message_file = new DFXPRL_MessageFile();
         
         if (method_exists($message_file, 'upload_file')) {
             $file_data = [
@@ -73,7 +73,7 @@ class MessageFileTest extends TestCase {
      * Test file validation
      */
     public function testFileValidation() {
-        $message_file = new DFX_Parish_Retreat_Letters_MessageFile();
+        $message_file = new DFXPRL_MessageFile();
         
         if (method_exists($message_file, 'validate_file')) {
             // Test valid file
@@ -95,7 +95,7 @@ class MessageFileTest extends TestCase {
      * Test file deletion
      */
     public function testFileDeleting() {
-        $message_file = new DFX_Parish_Retreat_Letters_MessageFile();
+        $message_file = new DFXPRL_MessageFile();
         
         if (method_exists($message_file, 'delete_file')) {
             $file_id = 1;
@@ -110,7 +110,7 @@ class MessageFileTest extends TestCase {
      * Test get file info
      */
     public function testGetFileInfo() {
-        $message_file = new DFX_Parish_Retreat_Letters_MessageFile();
+        $message_file = new DFXPRL_MessageFile();
         
         if (method_exists($message_file, 'get_file')) {
             $file_id = 1;
@@ -125,7 +125,7 @@ class MessageFileTest extends TestCase {
      * Test secure file download
      */
     public function testSecureFileDownload() {
-        $message_file = new DFX_Parish_Retreat_Letters_MessageFile();
+        $message_file = new DFXPRL_MessageFile();
         
         if (method_exists($message_file, 'secure_download')) {
             $file_id = 1;

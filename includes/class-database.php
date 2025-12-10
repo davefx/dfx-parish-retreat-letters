@@ -7,8 +7,8 @@
  * @link       https://github.com/davefx/dfx-parish-retreat-letters
  * @since      1.0.0
  *
- * @package    DFX_Parish_Retreat_Letters
- * @subpackage DFX_Parish_Retreat_Letters/includes
+ * @package    DFXPRL
+ * @subpackage DFXPRL/includes
  */
 
 /**
@@ -18,17 +18,17 @@
  * required by the plugin.
  *
  * @since      1.0.0
- * @package    DFX_Parish_Retreat_Letters
- * @subpackage DFX_Parish_Retreat_Letters/includes
+ * @package    DFXPRL
+ * @subpackage DFXPRL/includes
  * @author     DaveFX
  */
-class DFX_Parish_Retreat_Letters_Database {
+class DFXPRL_Database {
 
 	/**
 	 * The single instance of the class.
 	 *
 	 * @since 1.0.0
-	 * @var DFX_Parish_Retreat_Letters_Database|null
+	 * @var DFXPRL_Database|null
 	 */
 	private static $instance = null;
 
@@ -46,7 +46,7 @@ class DFX_Parish_Retreat_Letters_Database {
 	 * @since 1.0.0
 	 * @var string
 	 */
-	const DB_VERSION_OPTION = 'dfx_parish_retreat_letters_db_version';
+	const DB_VERSION_OPTION = 'dfxprl_db_version';
 
 	/**
 	 * The table name for retreats.
@@ -116,7 +116,7 @@ class DFX_Parish_Retreat_Letters_Database {
 	 * Get the single instance of the class.
 	 *
 	 * @since 1.0.0
-	 * @return DFX_Parish_Retreat_Letters_Database
+	 * @return DFXPRL_Database
 	 */
 	public static function get_instance() {
 		if ( is_null( self::$instance ) ) {
@@ -136,14 +136,14 @@ class DFX_Parish_Retreat_Letters_Database {
 		// Ensure $wpdb and prefix are properly set, fallback to 'wp_' if not available
 		$prefix = ( isset( $wpdb->prefix ) && ! empty( $wpdb->prefix ) ) ? $wpdb->prefix : 'wp_';
 		
-		$this->retreats_table = $prefix . 'dfx_prl_retreats';
-		$this->attendants_table = $prefix . 'dfx_prl_attendants';
-		$this->messages_table = $prefix . 'dfx_prl_confidential_messages';
-		$this->message_files_table = $prefix . 'dfx_prl_message_files';
-		$this->message_print_log_table = $prefix . 'dfx_prl_message_print_log';
-		$this->permissions_table = $prefix . 'dfx_prl_retreat_permissions';
-		$this->invitations_table = $prefix . 'dfx_prl_retreat_invitations';
-		$this->audit_log_table = $prefix . 'dfx_prl_permission_audit_log';
+		$this->retreats_table = $prefix . 'dfxprl_retreats';
+		$this->attendants_table = $prefix . 'dfxprl_attendants';
+		$this->messages_table = $prefix . 'dfxprl_confidential_messages';
+		$this->message_files_table = $prefix . 'dfxprl_message_files';
+		$this->message_print_log_table = $prefix . 'dfxprl_message_print_log';
+		$this->permissions_table = $prefix . 'dfxprl_retreat_permissions';
+		$this->invitations_table = $prefix . 'dfxprl_retreat_invitations';
+		$this->audit_log_table = $prefix . 'dfxprl_permission_audit_log';
 		
 		// Only check for database upgrades if WordPress is fully loaded
 		if ( did_action( 'init' ) || current_action() === 'init' ) {

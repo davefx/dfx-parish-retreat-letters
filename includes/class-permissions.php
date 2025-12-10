@@ -7,8 +7,8 @@
  * @link       https://github.com/davefx/dfx-parish-retreat-letters
  * @since      1.3.0
  *
- * @package    DFX_Parish_Retreat_Letters
- * @subpackage DFX_Parish_Retreat_Letters/includes
+ * @package    DFXPRL
+ * @subpackage DFXPRL/includes
  */
 
 /**
@@ -20,17 +20,17 @@
  * - Message Managers (message-only access)
  *
  * @since      1.3.0
- * @package    DFX_Parish_Retreat_Letters
- * @subpackage DFX_Parish_Retreat_Letters/includes
+ * @package    DFXPRL
+ * @subpackage DFXPRL/includes
  * @author     DaveFX
  */
-class DFX_Parish_Retreat_Letters_Permissions {
+class DFXPRL_Permissions {
 
 	/**
 	 * The single instance of the class.
 	 *
 	 * @since 1.3.0
-	 * @var DFX_Parish_Retreat_Letters_Permissions|null
+	 * @var DFXPRL_Permissions|null
 	 */
 	private static $instance = null;
 
@@ -38,7 +38,7 @@ class DFX_Parish_Retreat_Letters_Permissions {
 	 * The database instance.
 	 *
 	 * @since 1.3.0
-	 * @var DFX_Parish_Retreat_Letters_Database
+	 * @var DFXPRL_Database
 	 */
 	private $database;
 
@@ -52,7 +52,7 @@ class DFX_Parish_Retreat_Letters_Permissions {
 	 * Get the single instance of the class.
 	 *
 	 * @since 1.3.0
-	 * @return DFX_Parish_Retreat_Letters_Permissions
+	 * @return DFXPRL_Permissions
 	 */
 	public static function get_instance() {
 		if ( is_null( self::$instance ) ) {
@@ -67,7 +67,7 @@ class DFX_Parish_Retreat_Letters_Permissions {
 	 * @since 1.3.0
 	 */
 	private function __construct() {
-		$this->database = DFX_Parish_Retreat_Letters_Database::get_instance();
+		$this->database = DFXPRL_Database::get_instance();
 
 		// Maybe add capabilities to admin role
 		add_action( 'admin_init', array( $this, 'maybe_add_admin_capabilities' ), 10, 0 );
@@ -429,8 +429,8 @@ class DFX_Parish_Retreat_Letters_Permissions {
 		// Get user agent and IP for security logging
 		$user_agent = isset( $_SERVER['HTTP_USER_AGENT'] ) ? sanitize_text_field( wp_unslash( $_SERVER['HTTP_USER_AGENT'] ) ) : '';
 		$ip_address = '';
-		if ( class_exists( 'DFX_Parish_Retreat_Letters_Security' ) ) {
-			$security = DFX_Parish_Retreat_Letters_Security::get_instance();
+		if ( class_exists( 'DFXPRL_Security' ) ) {
+			$security = DFXPRL_Security::get_instance();
 			$ip_address = $security->get_user_ip();
 		}
 
