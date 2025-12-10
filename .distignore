@@ -46,8 +46,6 @@ Thumbs.db
 *.bak
 *.tmp
 *.swn
-*.swo
-*.swp
 
 # Documentation (optional - keep LICENSE and readme.txt)
 # Uncomment if you don't want to include these in distribution
