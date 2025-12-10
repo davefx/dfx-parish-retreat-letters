@@ -658,8 +658,10 @@ class DFXPRL_Admin {
 	 */
 	public function retreats_list_page() {
 		// Handle different actions
+		// phpcs:disable WordPress.Security.NonceVerification.Recommended -- URL parameters for page routing and navigation
 		$action = sanitize_text_field( wp_unslash( $_GET['action'] ?? '' ) );
 		$retreat_id = absint( $_GET['retreat_id'] ?? 0 );
+		// phpcs:enable WordPress.Security.NonceVerification.Recommended
 
 		switch ( $action ) {
 			case 'attendants':
@@ -669,7 +671,7 @@ class DFXPRL_Admin {
 				$this->attendant_add_page( $retreat_id );
 				break;
 			case 'edit_attendant':
-				$attendant_id = absint( $_GET['attendant_id'] ?? 0 );
+				$attendant_id = absint( $_GET['attendant_id'] ?? 0 ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- URL parameter for attendant ID routing
 				$this->attendant_edit_page( $retreat_id, $attendant_id );
 				break;
 			case 'import_attendants':
@@ -729,7 +731,7 @@ class DFXPRL_Admin {
 	 * @since 1.0.0
 	 */
 	public function retreat_add_page() {
-		$retreat_id = absint( $_GET['edit'] ?? 0 );
+		$retreat_id = absint( $_GET['edit'] ?? 0 ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- URL parameter for edit ID routing
 		$retreat = $retreat_id ? $this->retreat_model->get( $retreat_id ) : null;
 
 		// Check permissions
