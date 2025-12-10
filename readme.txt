@@ -3,21 +3,27 @@ Contributors: davefx
 Tags: parish, retreat, letters, confidential, GDPR
 Requires at least: 5.0
 Tested up to: 6.9
-Stable tag: 25.12.09
+Stable tag: 25.12.10
 Requires PHP: 7.4
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 Manage parish retreat programs with confidentiality, GDPR compliance, and user management.
 
+== DFX Parish Retreat Letters ==
+
 # DFX Parish Retreat Letters
 
 **Enterprise-Grade Retreat Management System for WordPress**
 
-A comprehensive, security-focused WordPress plugin designed for parishes and organizations to manage retreat programs with complete confidentiality, GDPR compliance, and advanced user management capabilities.
+A comprehensive, security-focused WordPress plugin designed for parishes and organizations to 
+manage retreat programs with complete confidentiality, GDPR compliance, and advanced user management capabilities.
 
 ## Description
 
-DFX Parish Retreat Letters is a professional-grade retreat management system that provides churches and organizations with enterprise-level security and functionality for managing retreat programs. The plugin features a complete retreat lifecycle management system, secure confidential messaging with military-grade encryption, and a sophisticated three-tier authorization system designed to protect sensitive spiritual and personal communications.
+DFX Parish Retreat Letters is a professional-grade retreat management system that provides churches and organizations 
+with enterprise-level security and functionality for managing retreat programs. The plugin features a complete retreat 
+lifecycle management system, secure confidential messaging with military-grade encryption, and a sophisticated three-tier 
+authorization system designed to protect sensitive spiritual and personal communications.
 
 ## Core Features
 
@@ -340,6 +346,13 @@ Contributions are welcome! Please:
 5. Include appropriate tests and documentation
 
 ## Changelog
+
+### 25.12.10
+
+- Fix: Now always using enqueue functions to add JS or CSS to the different pages.
+- Fix: Fixed problem affecting CAPTCHA validation when logged in.
+- Fix: Replaced the plugin prefix from dfx-prl to dfxprl to be accepted in WordPress.org repository.
+- Fix: Added a few extra parameter validations
 
 ### 25.12.09
 

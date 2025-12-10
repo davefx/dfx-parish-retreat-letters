@@ -38,7 +38,7 @@ class PluginIntegrationTest extends PHPUnit\Framework\TestCase {
             
             // Define plugin constants if not defined
             if (!defined('DFXPRL_VERSION')) {
-                define('DFXPRL_VERSION', '25.12.09');
+                define('DFXPRL_VERSION', '25.12.10');
             }
             if (!defined('DFXPRL_PLUGIN_DIR')) {
                 define('DFXPRL_PLUGIN_DIR', $plugin_dir . '/');
