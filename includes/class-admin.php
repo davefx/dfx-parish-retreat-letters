@@ -799,7 +799,7 @@ class DFXPRL_Admin {
 			'disclaimer_acceptance_text' => sanitize_text_field( wp_unslash( $_POST['disclaimer_acceptance_text'] ?? '' ) ),
 			'custom_header_block_id'     => $this->parse_block_selection( sanitize_text_field( wp_unslash( $_POST['custom_header_block_id'] ?? '' ) ) ),
 			'custom_footer_block_id'     => $this->parse_block_selection( sanitize_text_field( wp_unslash( $_POST['custom_footer_block_id'] ?? '' ) ) ),
-			'custom_css'                 => '', // CSS customization disabled - always save empty string
+			'custom_css'                 => apply_filters( 'dfxprl_retreat_custom_css', '', $_POST['custom_css'] ?? '', $retreat_id ),
 			'notes_enabled'              => isset( $_POST['notes_enabled'] ) ? 1 : 0,
 			'internal_notes_enabled'     => isset( $_POST['internal_notes_enabled'] ) ? 1 : 0,
 			'message_request_template'   => sanitize_textarea_field( wp_unslash( $_POST['message_request_template'] ?? '' ) ),
@@ -1167,6 +1167,19 @@ class DFXPRL_Admin {
 											<p class="description"><?php esc_html_e( 'Select a reusable block, template part, or pattern to display as custom footer in the letters form page. Leave empty to use the default footer.', 'dfx-parish-retreat-letters' ); ?></p>
 										</td>
 									</tr>
+									<?php
+									/**
+									 * Fires after the custom footer block field in the retreat edit form.
+									 * 
+									 * This action hook allows plugins to add custom CSS or other customization fields
+									 * to the retreat edit form. Useful for premium plugins that want to re-enable
+									 * CSS customization features.
+									 *
+									 * @since 25.12.10
+									 * @param object|null $retreat The retreat object being edited, or null for new retreats.
+									 */
+									do_action( 'dfxprl_after_retreat_customization_fields', $retreat ?? null );
+									?>
 									<?php endif; ?>
 									<?php endif; ?>
 								</tbody>
@@ -4763,6 +4776,18 @@ class DFXPRL_Admin {
 							</td>
 						</tr>
 						<?php endif; ?>
+						<?php
+						/**
+						 * Fires after the global default customization fields in the settings form.
+						 * 
+						 * This action hook allows plugins to add custom CSS or other global customization fields
+						 * to the global settings form. Useful for premium plugins that want to re-enable
+						 * CSS customization features.
+						 *
+						 * @since 25.12.10
+						 */
+						do_action( 'dfxprl_after_global_customization_fields' );
+						?>
 					</tbody>
 				</table>
 
@@ -4915,7 +4940,8 @@ class DFXPRL_Admin {
 		$success = $this->global_settings->set_per_retreat_customization_enabled( $per_retreat_customization ) && $success;
 		$success = $this->global_settings->set_default_header( $default_header ) && $success;
 		$success = $this->global_settings->set_default_footer( $default_footer ) && $success;
-		$success = $this->global_settings->set_default_css( '' ) && $success; // CSS customization disabled - always save empty string
+		$default_css = apply_filters( 'dfxprl_global_default_css', '', $_POST['default_css'] ?? '' );
+		$success = $this->global_settings->set_default_css( $default_css ) && $success;
 
 		if ( $success ) {
 			$this->add_admin_notice( __( 'Global settings saved successfully.', 'dfx-parish-retreat-letters' ), 'success' );
