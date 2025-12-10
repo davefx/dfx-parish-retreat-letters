@@ -756,420 +756,11 @@ class DFX_Parish_Retreat_Letters {
 			</div>
 		</div>
 
-		<style>
-		.dfx-prl-message-form-container {
-			max-width: 800px;
-			margin: 2rem auto;
-			padding: 2rem;
-			background: #fff;
-			box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-			border-radius: 8px;
-		}
-
-		.dfx-prl-message-form-content h1 {
-			color: #333;
-			margin-bottom: 1rem;
-			text-align: center;
-		}
-
-		.dfx-prl-retreat-info {
-			background: #f8f9fa;
-			padding: 1rem;
-			border-radius: 4px;
-			margin-bottom: 2rem;
-			border-left: 4px solid #007cba;
-		}
-
-		.dfx-prl-retreat-info h2 {
-			margin-top: 0;
-			color: #007cba;
-			font-size: 1.1rem;
-		}
-
-		.dfx-prl-custom-message {
-			background: #e7f3ff;
-			padding: 1.5rem;
-			border-radius: 4px;
-			margin-bottom: 2rem;
-			border-left: 4px solid #0073aa;
-		}
-
-		.dfx-prl-custom-message p {
-			margin-bottom: 1rem;
-		}
-
-		.dfx-prl-custom-message p:last-child {
-			margin-bottom: 0;
-		}
-
-		.dfx-prl-message-mode {
-			margin-bottom: 1.5rem;
-			padding: 1rem;
-			background: #f8f9fa;
-			border-radius: 4px;
-			border: 1px solid #ddd;
-		}
-
-		.dfx-prl-message-mode h3 {
-			margin-top: 0;
-			margin-bottom: 1rem;
-			color: #333;
-		}
-
-		.dfx-prl-mode-selector {
-			display: flex;
-			gap: 2rem;
-		}
-
-		.dfx-prl-mode-selector label {
-			display: flex;
-			align-items: center;
-			gap: 0.5rem;
-			cursor: pointer;
-			font-weight: 600;
-		}
-
-		.dfx-prl-mode-selector input[type="radio"] {
-			margin: 0;
-		}
-
-		.dfx-prl-form-group {
-			margin-bottom: 1.5rem;
-		}
-
-		.dfx-prl-form-group label {
-			display: block;
-			margin-bottom: 0.5rem;
-			font-weight: 600;
-			color: #333;
-		}
-
-		.required {
-			color: #d63384;
-		}
-
-		.dfx-prl-form-group input[type="text"],
-		.dfx-prl-form-group textarea,
-		.dfx-prl-form-group input[type="file"] {
-			width: 100%;
-			padding: 0.75rem;
-			border: 1px solid #ddd;
-			border-radius: 4px;
-			font-size: 1rem;
-		}
-
-		.dfx-prl-form-group textarea {
-			resize: vertical;
-			min-height: 150px;
-		}
-
-		.dfx-prl-editor {
-			min-height: 150px;
-			max-height: 400px;
-			overflow-y: auto;
-			padding: 0.75rem;
-			border: 1px solid #ddd;
-			border-radius: 4px;
-			font-size: 1rem;
-			font-family: inherit;
-			line-height: 1.5;
-			background: white;
-			outline: none;
-			margin-top: 0.5rem;
-		}
-
-		.dfx-prl-editor:focus {
-			border-color: #007cba;
-			box-shadow: 0 0 0 1px #007cba;
-		}
-
-		.dfx-prl-editor[contenteditable="true"]:empty:before {
-			content: attr(placeholder);
-			color: #999;
-			pointer-events: none;
-		}
-
-		.dfx-prl-editor.empty:before {
-			content: attr(placeholder);
-			color: #999;
-			pointer-events: none;
-		}
-
-		.dfx-prl-editor img {
-			max-width: 100%;
-			height: auto;
-			border-radius: 4px;
-			margin: 0.5rem 0;
-		}
-
-		.dfx-prl-editor ul, .dfx-prl-editor ol {
-			margin: 1rem 0;
-			padding-left: 2rem;
-		}
-
-		.dfx-prl-editor li {
-			margin-bottom: 0.25rem;
-		}
-
-		.dfx-prl-editor-toolbar {
-			margin-bottom: 0.5rem;
-			display: flex;
-			gap: 0.5rem;
-			flex-wrap: wrap;
-			padding: 0.5rem;
-			background: #f8f9fa;
-			border: 1px solid #ddd;
-			border-radius: 4px;
-		}
-
-		.dfx-prl-editor-toolbar button {
-			padding: 0.375rem 0.75rem;
-			border: 1px solid #ddd;
-			background: white;
-			cursor: pointer;
-			border-radius: 3px;
-			font-size: 0.875rem;
-			transition: all 0.2s;
-		}
-
-		.dfx-prl-editor-toolbar button:hover {
-			background: #e9ecef;
-			border-color: #adb5bd;
-		}
-
-		.dfx-prl-editor-toolbar button:active,
-		.dfx-prl-editor-toolbar button.active {
-			background: #007cba;
-			color: white;
-			border-color: #005a87;
-		}
-
-		.dfx-prl-help-text {
-			font-size: 0.9rem;
-			color: #666;
-			margin-top: 0.25rem;
-		}
-
-		.dfx-prl-captcha-container {
-			background: #f8f9fa;
-			padding: 1rem;
-			border-radius: 4px;
-			border: 1px solid #ddd;
-		}
-
-		#dfx-prl-captcha-question {
-			font-weight: 600;
-			margin-bottom: 0.5rem;
-			color: #333;
-		}
-
-		.dfx-prl-disclaimer-container {
-			background: #fffbe6;
-			padding: 1.5rem;
-			border-radius: 4px;
-			border: 2px solid #f4d03f;
-			margin-bottom: 1rem;
-		}
-
-		.dfx-prl-disclaimer-container h3 {
-			margin-top: 0;
-			margin-bottom: 1rem;
-			color: #b7950b;
-			font-size: 1.1rem;
-		}
-
-		.dfx-prl-disclaimer-text {
-			background: white;
-			padding: 1rem;
-			border-radius: 4px;
-			border: 1px solid #f4d03f;
-			margin-bottom: 1rem;
-			font-size: 0.95rem;
-			line-height: 1.6;
-		}
-
-		.dfx-prl-disclaimer-text p {
-			margin-bottom: 0.75rem;
-		}
-
-		.dfx-prl-disclaimer-text p:last-child {
-			margin-bottom: 0;
-		}
-
-		.dfx-prl-disclaimer-acceptance {
-			padding: 0.75rem;
-			background: #fcf3cf;
-			border-radius: 4px;
-			border: 1px solid #f4d03f;
-		}
-
-		.dfx-prl-checkbox-label {
-			display: flex;
-			align-items: flex-start;
-			gap: 0.75rem;
-			cursor: pointer;
-			font-weight: 600;
-			color: #7d6608;
-			line-height: 1.4;
-		}
-
-		.dfx-prl-checkbox-label input[type="checkbox"] {
-			margin: 0;
-			transform: scale(1.2);
-			flex-shrink: 0;
-			margin-top: 0.1rem;
-		}
-
-		.dfx-prl-checkbox-label .required {
-			color: #d63384;
-			flex-shrink: 0;
-		}
-
-		.dfx-prl-submit-button {
-			background: #007cba;
-			color: white;
-			padding: 1rem 2rem;
-			border: none;
-			border-radius: 4px;
-			font-size: 1.1rem;
-			cursor: pointer;
-			width: 100%;
-			transition: background-color 0.3s;
-		}
-
-		.dfx-prl-submit-button:hover:not(:disabled) {
-			background: #005a87;
-		}
-
-		.dfx-prl-submit-button:disabled {
-			background: #6c757d;
-			cursor: not-allowed;
-		}
-
-		.dfx-prl-privacy-notice {
-			margin-top: 2rem;
-			padding: 1rem;
-			background: #f8f9fa;
-			border-radius: 4px;
-		}
-
-		.dfx-prl-privacy-notice h3 {
-			margin-top: 0;
-			color: #333;
-		}
-
-		.dfx-prl-privacy-notice ul {
-			margin-bottom: 0;
-		}
-
-		.dfx-prl-privacy-notice li {
-			margin-bottom: 0.5rem;
-		}
-
-		.dfx-prl-notice {
-			padding: 1rem;
-			margin-bottom: 1rem;
-			border-radius: 4px;
-		}
-
-		.dfx-prl-notice.success {
-			background: #d4edda;
-			color: #155724;
-			border: 1px solid #c3e6cb;
-		}
-
-		.dfx-prl-notice.error {
-			background: #f8d7da;
-			color: #721c24;
-			border: 1px solid #f5c6cb;
-		}
-
-		#dfx-prl-file-list {
-			margin-top: 0.5rem;
-		}
-
-		.dfx-prl-file-item {
-			display: flex;
-			justify-content: space-between;
-			align-items: center;
-			padding: 0.5rem;
-			background: #f8f9fa;
-			border: 1px solid #ddd;
-			border-radius: 4px;
-			margin-bottom: 0.5rem;
-		}
-
-		.dfx-prl-file-remove {
-			background: #dc3545;
-			color: white;
-			border: none;
-			padding: 0.25rem 0.5rem;
-			border-radius: 2px;
-			cursor: pointer;
-			font-size: 0.8rem;
-		}
-
-		@media (max-width: 768px) {
-			.dfx-prl-message-form-container {
-				margin: 1rem;
-				padding: 1rem;
-			}
-
-			.dfx-prl-mode-selector {
-				flex-direction: column;
-				gap: 1rem;
-			}
-		}
-
 		<?php
-		// Include custom CSS from global settings and retreat-specific settings
-		$this->render_custom_css_for_message_form( $retreat );
-		?>
-		</style>
-		<?php
+		// Styles for message form are properly enqueued via enqueue_public_scripts()
+		// from assets/css/message-form.css with custom CSS via wp_add_inline_style()
 	}
 
-	/**
-	 * Render custom CSS for the message form from global settings and retreat-specific settings.
-	 *
-	 * @since 25.9.12
-	 * @param object|null $retreat Retreat object (optional).
-	 */
-	private function render_custom_css_for_message_form( $retreat = null ) {
-		// Get global settings instance
-		$global_settings = DFX_Parish_Retreat_Letters_GlobalSettings::get_instance();
-
-		// Get global default CSS
-		$global_css = $global_settings->get_default_css();
-
-		// Get retreat-specific CSS if per-retreat customization is enabled and retreat data is available
-		$retreat_css = '';
-		if ( $retreat && $global_settings->is_per_retreat_customization_enabled() ) {
-			// Get the full retreat data including custom_css
-			$retreat_model = new DFX_Parish_Retreat_Letters_Retreat();
-			$full_retreat_data = $retreat_model->get( $retreat->id );
-			if ( $full_retreat_data && ! empty( $full_retreat_data->custom_css ) ) {
-				$retreat_css = $full_retreat_data->custom_css;
-			}
-		}
-
-		// Output CSS if any exists
-		if ( ! empty( $global_css ) || ! empty( $retreat_css ) ) {
-			echo "\n/* Custom CSS from DFX Parish Retreat Letters Plugin */\n";
-
-			if ( ! empty( $global_css ) ) {
-				echo "/* Global Default CSS */\n";
-				// CSS is already sanitized when saved via sanitize_textarea_field
-				echo wp_strip_all_tags( $global_css ) . "\n"; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-			}
-
-			if ( ! empty( $retreat_css ) ) {
-				echo "/* Retreat-Specific CSS */\n";
-				// CSS is already sanitized when saved via sanitize_textarea_field
-				echo wp_strip_all_tags( $retreat_css ) . "\n"; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-			}
-		}
-	}
 
 	/**
 	 * Enqueue scripts and styles for the public message form.
@@ -1211,6 +802,17 @@ class DFX_Parish_Retreat_Letters {
 			// Enqueue jQuery (dependency for our script)
 			wp_enqueue_script( 'jquery' );
 
+			// Enqueue styles for message form from external CSS file
+			wp_enqueue_style(
+				'dfx-prl-message-form',
+				DFX_PARISH_RETREAT_LETTERS_PLUGIN_URL . 'assets/css/message-form.css',
+				array(),
+				DFX_PARISH_RETREAT_LETTERS_VERSION
+			);
+
+			// Add custom CSS (from settings) as inline styles
+			add_action( 'wp_head', array( $this, 'output_custom_message_form_styles' ), 11 );
+
 			// Enqueue message form JavaScript
 			wp_enqueue_script(
 				'dfx-prl-message-form',
@@ -1248,6 +850,68 @@ class DFX_Parish_Retreat_Letters {
 				)
 			);
 		}
+	}
+
+	/**
+	 * Output custom CSS for the message form (from global/retreat-specific settings).
+	 *
+	 * @since 25.12.10
+	 */
+	public function output_custom_message_form_styles() {
+		// Get retreat data from current URL to include custom CSS
+		$retreat = null;
+		$request_uri = isset( $_SERVER['REQUEST_URI'] ) ? sanitize_text_field( wp_unslash( $_SERVER['REQUEST_URI'] ) ) : '';
+		if ( is_string( $request_uri ) && ! empty( $request_uri ) ) {
+			$request_uri = strtok( $request_uri, '?' );
+			if ( $request_uri !== false && preg_match( '#/messages/([a-zA-Z0-9]+)/?$#', $request_uri, $matches ) ) {
+				$token = $matches[1];
+				$attendant = $this->get_attendant_by_token( $token );
+				if ( $attendant ) {
+					$retreat_model = new DFX_Parish_Retreat_Letters_Retreat();
+					$retreat = $retreat_model->get( $attendant->retreat_id );
+				}
+			}
+		}
+
+		// Get custom CSS from global settings and retreat-specific settings
+		$custom_css = $this->get_custom_css_for_message_form( $retreat );
+		if ( ! empty( $custom_css ) ) {
+			wp_add_inline_style( 'dfx-prl-message-form', $custom_css );
+		}
+	}
+
+	/**
+	 * Get custom CSS for message form from global and retreat-specific settings.
+	 *
+	 * @since 25.12.10
+	 * @param object|null $retreat Retreat object (optional).
+	 * @return string The custom CSS.
+	 */
+	private function get_custom_css_for_message_form( $retreat = null ) {
+		$global_settings = DFX_Parish_Retreat_Letters_GlobalSettings::get_instance();
+		$global_css = $global_settings->get_default_css();
+
+		$retreat_css = '';
+		if ( $retreat && $global_settings->is_per_retreat_customization_enabled() ) {
+			if ( ! empty( $retreat->custom_css ) ) {
+				$retreat_css = $retreat->custom_css;
+			}
+		}
+
+		$custom_css = '';
+		if ( ! empty( $global_css ) || ! empty( $retreat_css ) ) {
+			$custom_css .= "\n/* Custom CSS from DFX Parish Retreat Letters Plugin */\n";
+			if ( ! empty( $global_css ) ) {
+				$custom_css .= "/* Global Default CSS */\n";
+				$custom_css .= wp_strip_all_tags( $global_css ) . "\n";
+			}
+			if ( ! empty( $retreat_css ) ) {
+				$custom_css .= "/* Retreat-Specific CSS */\n";
+				$custom_css .= wp_strip_all_tags( $retreat_css ) . "\n";
+			}
+		}
+
+		return $custom_css;
 	}
 
 	/**
