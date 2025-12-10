@@ -105,12 +105,24 @@ class DFXPRL_Security {
 	 */
 	private function get_encryption_key($show_message = false) {
 		// Check if key is defined in wp-config.php (recommended for production)
+		// Support both new and old constant names for backward compatibility
+		$constant_key = null;
+		$constant_name = null;
+		
 		if ( defined( 'DFXPRL_ENCRYPTION_KEY' ) ) {
-
+			$constant_key = DFXPRL_ENCRYPTION_KEY;
+			$constant_name = 'DFXPRL_ENCRYPTION_KEY';
+		} elseif ( defined( 'DFX_PARISH_RETREAT_LETTERS_ENCRYPTION_KEY' ) ) {
+			// Backward compatibility: support old constant name
+			$constant_key = DFX_PARISH_RETREAT_LETTERS_ENCRYPTION_KEY;
+			$constant_name = 'DFX_PARISH_RETREAT_LETTERS_ENCRYPTION_KEY';
+		}
+		
+		if ( $constant_key !== null ) {
 			// Check if we also have it in options, and if so, remove it to avoid duplication
 			$defined_in_option = get_option( 'dfxprl_encryption_key' );
 			if ( $defined_in_option ) {
-				if ( $defined_in_option !== DFXPRL_ENCRYPTION_KEY ) {
+				if ( $defined_in_option !== $constant_key ) {
 					// If the option value does not match the defined constant, show a critical error
 					// message in the backend with an option to remove the database key
 					add_action( 'admin_notices', array( $this, 'display_encryption_key_mismatch_notice' ) );
@@ -120,7 +132,7 @@ class DFXPRL_Security {
 				}
 			}
 
-			return DFXPRL_ENCRYPTION_KEY;
+			return $constant_key;
 		}
 
 		// Generate and store key in options as fallback
@@ -133,7 +145,7 @@ class DFXPRL_Security {
 
 		// Generate a warning message in the backend, so the admin knows the key is stored in the database
 		// and with instructions to move it to wp-config.php
-		if ( $show_message && is_admin() && ! defined( 'DFXPRL_ENCRYPTION_KEY' ) ) {
+		if ( $show_message && is_admin() && ! defined( 'DFXPRL_ENCRYPTION_KEY' ) && ! defined( 'DFX_PARISH_RETREAT_LETTERS_ENCRYPTION_KEY' ) ) {
 			add_action( 'admin_notices', function() use ( $key ) {
 				echo '<div class="notice notice-warning"><p>';
 				esc_html_e( 'DFX Parish Retreat Letters: The encryption key is stored in the database. For better security, please define DFXPRL_ENCRYPTION_KEY in wp-config.php.', 'dfx-parish-retreat-letters' );
