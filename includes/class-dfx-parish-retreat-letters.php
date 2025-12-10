@@ -867,7 +867,7 @@ class DFXPRL {
 				$token = $matches[1];
 				$attendant = $this->get_attendant_by_token( $token );
 				if ( $attendant ) {
-					$retreat_model = new DFX_Parish_Retreat_Letters_Retreat();
+					$retreat_model = new DFXPRL_Retreat();
 					$retreat = $retreat_model->get( $attendant->retreat_id );
 				}
 			}
@@ -888,7 +888,7 @@ class DFXPRL {
 	 * @return string The custom CSS.
 	 */
 	private function get_custom_css_for_message_form( $retreat = null ) {
-		$global_settings = DFX_Parish_Retreat_Letters_GlobalSettings::get_instance();
+		$global_settings = DFXPRL_GlobalSettings::get_instance();
 		$global_css = $global_settings->get_default_css();
 
 		$retreat_css = '';
