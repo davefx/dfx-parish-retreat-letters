@@ -10,7 +10,7 @@ This document describes the WordPress hooks available for extending the plugin f
 
 Filters the entire retreat data array before saving.
 
-**Note:** The base plugin does not include `custom_css` in the data array by default. If your plugin needs to manage this field, you must handle it in this filter. If not provided, the Retreat model will default it to an empty string.
+**Note:** The base plugin does not include `custom_css` in the data array by default. If your plugin needs to manage this field, you must handle it in this filter. If not provided in the filtered data array, the Retreat model's sanitize method will use an empty string as the default value, which will overwrite any existing data in the database.
 
 **Parameters:**
 - `$data` (array) - The retreat data array containing all fields
