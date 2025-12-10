@@ -45,6 +45,14 @@ define( 'DFXPRL_PLUGIN_BASENAME', plugin_basename( __FILE__ ) );
  * The code that runs during plugin activation.
  */
 function activate_dfxprl() {
+	// Load migration class first
+	require_once plugin_dir_path( __FILE__ ) . 'includes/class-prefix-migration.php';
+	
+	// Run migration to rename old tables (if they exist) before creating new ones
+	// This ensures we don't end up with duplicate tables
+	DFXPRL_Prefix_Migration::run_migration();
+	
+	// Now setup tables (will create only if they don't exist after migration)
 	require_once plugin_dir_path( __FILE__ ) . 'includes/class-database.php';
 	$database = DFXPRL_Database::get_instance();
 	$database->setup_tables();
@@ -80,7 +88,8 @@ require plugin_dir_path( __FILE__ ) . 'includes/class-prefix-migration.php';
  */
 function run_dfxprl() {
 	// Run prefix migration if needed (will only run once)
-	add_action( 'admin_init', array( 'DFXPRL_Prefix_Migration', 'run_migration' ), 5 );
+	// Use priority 0 to ensure it runs BEFORE database setup (which runs at priority 1 on init)
+	add_action( 'init', array( 'DFXPRL_Prefix_Migration', 'run_migration' ), 0 );
 	
 	$plugin = DFXPRL::get_instance();
 	$plugin->run();
