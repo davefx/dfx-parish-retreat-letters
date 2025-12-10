@@ -789,6 +789,15 @@ class DFXPRL_Admin {
 			wp_die( esc_html__( 'Security check failed.', 'dfx-parish-retreat-letters' ) );
 		}
 
+		// Get existing custom_css value if editing
+		$existing_custom_css = '';
+		if ( $retreat_id ) {
+			$existing_retreat = $this->retreat_model->get( $retreat_id );
+			if ( $existing_retreat && ! empty( $existing_retreat->custom_css ) ) {
+				$existing_custom_css = $existing_retreat->custom_css;
+			}
+		}
+
 		$data = array(
 			'name'                       => sanitize_text_field( wp_unslash( $_POST['name'] ?? '' ) ),
 			'location'                   => sanitize_text_field( wp_unslash( $_POST['location'] ?? '' ) ),
@@ -799,7 +808,7 @@ class DFXPRL_Admin {
 			'disclaimer_acceptance_text' => sanitize_text_field( wp_unslash( $_POST['disclaimer_acceptance_text'] ?? '' ) ),
 			'custom_header_block_id'     => $this->parse_block_selection( sanitize_text_field( wp_unslash( $_POST['custom_header_block_id'] ?? '' ) ) ),
 			'custom_footer_block_id'     => $this->parse_block_selection( sanitize_text_field( wp_unslash( $_POST['custom_footer_block_id'] ?? '' ) ) ),
-			'custom_css'                 => '',
+			'custom_css'                 => $existing_custom_css,
 			'notes_enabled'              => isset( $_POST['notes_enabled'] ) ? 1 : 0,
 			'internal_notes_enabled'     => isset( $_POST['internal_notes_enabled'] ) ? 1 : 0,
 			'message_request_template'   => sanitize_textarea_field( wp_unslash( $_POST['message_request_template'] ?? '' ) ),
@@ -4938,12 +4947,14 @@ class DFXPRL_Admin {
 			return;
 		}
 
-		// Process form submission
+		// Process form submission - preserve existing default_css if it exists
+		$existing_default_css = $this->global_settings->get_default_css();
+		
 		$settings_data = array(
 			'enable_per_retreat_customization' => isset( $_POST['enable_per_retreat_customization'] ) ? 1 : 0,
 			'default_header_block_id'          => $this->parse_block_selection( sanitize_text_field( wp_unslash( $_POST['default_header_block_id'] ?? '' ) ) ),
 			'default_footer_block_id'          => $this->parse_block_selection( sanitize_text_field( wp_unslash( $_POST['default_footer_block_id'] ?? '' ) ) ),
-			'default_css'                      => '',
+			'default_css'                      => $existing_default_css,
 		);
 
 		/**
