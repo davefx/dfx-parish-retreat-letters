@@ -1456,6 +1456,12 @@ class DFX_Parish_Retreat_Letters {
 	 * @param array  $files   Array of file objects.
 	 */
 	private function render_print_page( $message, $files ) {
+		// Enqueue print page assets using WordPress functions
+		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_print_page_assets' ) );
+		
+		// Trigger the enqueue action to register our assets
+		do_action( 'wp_enqueue_scripts' );
+		
 		// Output clean HTML for printing
 		?>
 		<!DOCTYPE html>
@@ -1464,93 +1470,10 @@ class DFX_Parish_Retreat_Letters {
 			<meta charset="<?php bloginfo( 'charset' ); ?>">
 			<meta name="viewport" content="width=device-width, initial-scale=1">
 			<title><?php esc_html_e( 'Print Message', 'dfx-parish-retreat-letters' ); ?></title>
-			<style>
-				body {
-					font-family: Arial, sans-serif;
-					line-height: 1.6;
-					margin: 20px;
-					color: #333;
-				}
-				.message-content {
-					margin: 0;
-					padding: 0;
-				}
-				.file-content {
-					margin-top: 20px;
-					padding: 20px;
-					border: 1px solid #ddd;
-					background: #f9f9f9;
-				}
-				.file-content h3 {
-					margin-top: 0;
-				}
-				.file-text {
-					white-space: pre-wrap;
-					font-family: 'Courier New', monospace;
-					background: white;
-					padding: 15px;
-					border: 1px solid #ccc;
-				}
-				.file-image {
-					max-width: 100%;
-					height: auto;
-				}
-				@media print {
-					body { margin: 0; }
-					.no-print { display: none !important; }
-					
-					/* Multi-image print optimization */
-					.file-content.multi-image {
-						margin: 0;
-						padding: 0;
-						border: none;
-						background: none;
-						display: flex;
-						align-items: center;
-						justify-content: center;
-						min-height: 100vh;
-						page-break-inside: avoid;
-						page-break-after: always;
-					}
-					
-					/* First image should stay on same page as sender name */
-					.file-content.multi-image:nth-child(2)
-					{
-						page-break-before: auto;
-						page-break-after: always;
-                                                min-height: calc(100vh - 200px);
-                                                max-height: calc(100vh - 200px);
-					}
-					
-					/* Last image should not force a page break after */
-					.file-content.multi-image:last-child {
-						page-break-after: auto;
-					}
-					
-					.file-content.multi-image h3 {
-						display: none; /* Hide filename for multi-image prints */
-					}
-					
-					.file-content.multi-image .file-image {
-						max-width: 100vw;
-						width: auto;
-						height: auto;
-						object-fit: contain;
-					}
-					
-					/* First image gets special scaling to fit under To/From header */
-					.file-content.multi-image:nth-child(2) .file-image {
-						max-height: calc(100vh - 150px);
-						max-width: 100vw;
-					}
-					
-					/* Subsequent images use full page height */
-					.file-content.multi-image:not(:nth-child(2)) .file-image {
-						max-height: 100vh;
-						max-width: 100vw;
-					}
-				}
-			</style>
+			<?php
+			// Output only the enqueued styles (no other wp_head content)
+			wp_print_styles();
+			?>
 		</head>
 		<body>
 			<?php
@@ -1643,50 +1566,38 @@ class DFX_Parish_Retreat_Letters {
 			}
 			?>
 
-			<script>
-				// Auto-trigger print dialog when page loads
-				window.addEventListener('load', function() {
-					// Small delay to ensure page is fully rendered
-					setTimeout(function() {
-						window.print();
-
-						// Fallback: close window after a reasonable time if afterprint doesn't fire
-						setTimeout(function() {
-							if (!window.closed) {
-								window.close();
-							}
-						}, 3000); // 3 seconds fallback
-					}, 100);
-				});
-
-				// Close tab after printing
-				window.addEventListener('afterprint', function() {
-					setTimeout(function() {
-						window.close();
-					}, 100);
-				});
-
-				// Handle print dialog cancellation (beforeprint + timeout)
-				var printStarted = false;
-				window.addEventListener('beforeprint', function() {
-					printStarted = true;
-				});
-
-				// Additional fallback for browsers that don't support afterprint
-				window.addEventListener('focus', function() {
-					if (printStarted) {
-						setTimeout(function() {
-							if (!window.closed) {
-								window.close();
-							}
-						}, 500);
-					}
-				});
-			</script>
+			<?php
+			// Output only the enqueued scripts (no other wp_footer content)
+			wp_print_scripts();
+			?>
 		</body>
 		</html>
 		<?php
 		exit; // Important: exit after rendering to prevent WordPress from adding headers/footers
+	}
+
+	/**
+	 * Enqueue assets for the print page.
+	 *
+	 * @since 25.12.10
+	 */
+	public function enqueue_print_page_assets() {
+		// Enqueue print page styles
+		wp_enqueue_style(
+			'dfx-prl-print-page',
+			DFX_PARISH_RETREAT_LETTERS_PLUGIN_URL . 'assets/css/print-page.css',
+			array(),
+			DFX_PARISH_RETREAT_LETTERS_VERSION
+		);
+
+		// Enqueue print page script
+		wp_enqueue_script(
+			'dfx-prl-print-page',
+			DFX_PARISH_RETREAT_LETTERS_PLUGIN_URL . 'assets/js/print-page.js',
+			array(),
+			DFX_PARISH_RETREAT_LETTERS_VERSION,
+			true
+		);
 	}
 
 	/**

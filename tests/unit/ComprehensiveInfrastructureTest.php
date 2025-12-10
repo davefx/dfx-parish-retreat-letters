@@ -753,13 +753,13 @@ class ComprehensiveInfrastructureTest extends TestCase {
      */
     public function testRenderPrintPageFirstImageCSSCalculations() {
         $plugin_dir = dirname(__DIR__, 2);
-        $main_class_file = $plugin_dir . '/includes/class-dfx-parish-retreat-letters.php';
+        $print_css_file = $plugin_dir . '/assets/css/print-page.css';
         
-        $this->assertFileExists($main_class_file, 'Main plugin class file should exist');
+        $this->assertFileExists($print_css_file, 'Print page CSS file should exist');
         
-        // Read the source file to verify CSS values
-        $sourceContent = file_get_contents($main_class_file);
-        $this->assertNotFalse($sourceContent, 'Should be able to read the main class file');
+        // Read the CSS file to verify CSS values
+        $sourceContent = file_get_contents($print_css_file);
+        $this->assertNotFalse($sourceContent, 'Should be able to read the print page CSS file');
         
         // Test 1: Verify first image (second child) container has correct min-height
         // User discovered the first image is actually the second child in the parent div
