@@ -66,9 +66,6 @@ register_deactivation_hook( __FILE__, 'deactivate_dfxprl' );
  */
 require plugin_dir_path( __FILE__ ) . 'includes/class-dfx-parish-retreat-letters.php';
 
-// Load the prefix migration utility for one-time migration
-require plugin_dir_path( __FILE__ ) . 'includes/class-prefix-migration.php';
-
 /**
  * Begins execution of the plugin.
  *
@@ -79,10 +76,6 @@ require plugin_dir_path( __FILE__ ) . 'includes/class-prefix-migration.php';
  * @since    1.0.0
  */
 function run_dfxprl() {
-	// Run prefix migration if needed (will only run once)
-	// Use priority 0 to ensure it runs BEFORE database setup (which runs at priority 1 on init)
-	add_action( 'init', array( 'DFXPRL_Prefix_Migration', 'run_migration' ), 0 );
-	
 	$plugin = DFXPRL::get_instance();
 	$plugin->run();
 }
