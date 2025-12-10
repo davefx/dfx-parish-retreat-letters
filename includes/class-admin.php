@@ -519,7 +519,7 @@ class DFXPRL_Admin {
 
 			// Initialize Select2 for user selection
 			$placeholder_text = esc_js( __( 'Choose a user...', 'dfx-parish-retreat-letters' ) );
-			$select2_init = <<<JS
+			$select2_init = <<<JAVASCRIPT
 jQuery(document).ready(function($) {
 	// Initialize Select2 for user selection
 	if ($.fn.select2) {
@@ -530,7 +530,7 @@ jQuery(document).ready(function($) {
 		});
 	}
 });
-JS;
+JAVASCRIPT;
 			wp_add_inline_script( 'select2', $select2_init );
 		}
 
