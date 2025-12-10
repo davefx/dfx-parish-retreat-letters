@@ -92,7 +92,6 @@
 
 		// Form submission
 		$('#dfx-prl-message-form').on('submit', function(e) {
-			console.log('Form submit event triggered');
 			e.preventDefault();
 			e.stopPropagation();
 
@@ -101,7 +100,6 @@
 				hiddenInput.val(editor.html());
 			}
 
-			console.log('About to call submitMessage()');
 			submitMessage();
 
 			// Ensure no actual form submission
@@ -340,8 +338,6 @@
 			var questionElement = $('#dfx-prl-captcha-question');
 			if (questionElement.length) {
 				questionElement.html(dfxPRLMessageForm.i18n.captchaPrefix + '<strong>' + question + '</strong>');
-			} else {
-				console.error('CAPTCHA question element not found');
 			}
 
 			// Set token and clear answer
@@ -352,19 +348,13 @@
 				try {
 					tokenElement.val(btoa(answer.toString()));
 				} catch(e) {
-					console.error('Error encoding CAPTCHA token:', e);
+					// Silent fail - CAPTCHA will be invalid
 				}
-			} else {
-				console.error('CAPTCHA token element not found');
 			}
 
 			if (answerElement.length) {
 				answerElement.val('');
-			} else {
-				console.error('CAPTCHA answer element not found');
 			}
-
-			console.log('CAPTCHA generated: ' + question + ' = ' + answer);
 		}
 
 		function displaySelectedFiles(files) {
@@ -458,8 +448,6 @@
 				contentType: false,
 				timeout: 60000, // 60 second timeout
 				success: function(response) {
-					console.log('AJAX success response:', response);
-
 					if (response.success) {
 						// Show success message
 						var successHtml = '<div class="dfx-prl-success-message">' + 

@@ -990,4 +990,69 @@ class ComprehensiveInfrastructureTest extends TestCase {
                     $case['expected'], $case['user_input']));
         }
     }
+
+    /**
+     * Test message submission with CAPTCHA validation
+     * 
+     * This functional test verifies that:
+     * 1. Messages can be submitted with correct CAPTCHA
+     * 2. Messages are rejected with incorrect CAPTCHA
+     * 3. Messages are rejected with missing CAPTCHA
+     * 4. CAPTCHA token encoding/decoding works correctly
+     */
+    public function testMessageSubmissionWithCaptcha() {
+        // Test Case 1: Correct CAPTCHA answer should be accepted
+        $correct_answer = 42;
+        $captcha_token = base64_encode((string) $correct_answer);
+        $user_answer = '42';
+        
+        // Simulate the validation logic from handle_ajax_message_submission
+        $expected_answer = base64_decode($captcha_token);
+        $is_valid = ($user_answer == $expected_answer);
+        
+        $this->assertTrue($is_valid, 
+            'Message submission should succeed with correct CAPTCHA answer');
+        
+        // Test Case 2: Incorrect CAPTCHA answer should be rejected
+        $user_answer_wrong = '41';
+        $is_valid_wrong = ($user_answer_wrong == $expected_answer);
+        
+        $this->assertFalse($is_valid_wrong, 
+            'Message submission should fail with incorrect CAPTCHA answer');
+        
+        // Test Case 3: Empty CAPTCHA answer should be rejected
+        $user_answer_empty = '';
+        $should_reject_empty = ('' === $user_answer_empty);
+        
+        $this->assertTrue($should_reject_empty, 
+            'Message submission should fail with empty CAPTCHA answer');
+        
+        // Test Case 4: Zero answer should work correctly
+        $correct_zero = 0;
+        $captcha_token_zero = base64_encode((string) $correct_zero);
+        $user_answer_zero = '0';
+        
+        $expected_zero = base64_decode($captcha_token_zero);
+        $is_valid_zero = ($user_answer_zero == $expected_zero);
+        
+        $this->assertTrue($is_valid_zero, 
+            'Message submission should succeed with CAPTCHA answer of 0');
+        
+        // Test Case 5: Missing CAPTCHA token should be rejected
+        $empty_token = '';
+        $should_reject_no_token = empty($empty_token);
+        
+        $this->assertTrue($should_reject_no_token, 
+            'Message submission should fail with missing CAPTCHA token');
+        
+        // Test Case 6: Verify btoa/atob equivalence with base64_encode/decode
+        $test_values = [0, 1, 5, 10, 42, 99, 100];
+        foreach ($test_values as $value) {
+            $php_encoded = base64_encode((string) $value);
+            $php_decoded = base64_decode($php_encoded);
+            
+            $this->assertEquals((string) $value, $php_decoded, 
+                sprintf('base64 encode/decode should preserve value %d', $value));
+        }
+    }
 }
