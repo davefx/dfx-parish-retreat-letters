@@ -621,7 +621,6 @@ class DFXPRL_Invitations {
 			</div>
 		</div>
 
-<<<<<<< HEAD
 		<?php
 		// Styles are now output via output_invitation_styles() method
 		$this->render_theme_footer();
@@ -635,10 +634,6 @@ class DFXPRL_Invitations {
 	public function output_invitation_styles() {
 		$styles = '
 		.dfx-prl-invitation-container {
-=======
-		<style>
-		.dfxprl-invitation-container {
->>>>>>> b57b03b (Complete prefix migration from dfx to dfxprl with database table renaming)
 			max-width: 600px;
 			margin: 2rem auto;
 			padding: 2rem;
@@ -686,15 +681,11 @@ class DFXPRL_Invitations {
 			color: #333;
 		}
 
-<<<<<<< HEAD
 		.required {
 			color: #d63384;
 		}
 
 		.dfx-prl-form-group input {
-=======
-		.dfxprl-form-group input {
->>>>>>> b57b03b (Complete prefix migration from dfx to dfxprl with database table renaming)
 			width: 100%;
 			padding: 0.75rem;
 			border: 1px solid #ddd;
@@ -702,7 +693,6 @@ class DFXPRL_Invitations {
 			font-size: 1rem;
 		}
 
-<<<<<<< HEAD
 		.dfx-prl-form-group input:focus {
 			outline: none;
 			border-color: #007cba;
@@ -711,9 +701,6 @@ class DFXPRL_Invitations {
 		.dfx-prl-submit-button {
 			width: 100%;
 			padding: 1rem;
-=======
-		.dfxprl-accept-button {
->>>>>>> b57b03b (Complete prefix migration from dfx to dfxprl with database table renaming)
 			background: #007cba;
 			color: #fff;
 			border: none;
@@ -724,21 +711,11 @@ class DFXPRL_Invitations {
 			transition: background-color 0.3s;
 		}
 
-<<<<<<< HEAD
 		.dfx-prl-submit-button:hover {
 			background: #005a87;
 		}
 
 		.dfx-prl-invitation-info {
-=======
-		.dfxprl-accept-button:hover {
-			background: #005a87;
-		}
-
-		.dfxprl-invitation-info {
-			margin-top: 2rem;
-			padding: 1rem;
->>>>>>> b57b03b (Complete prefix migration from dfx to dfxprl with database table renaming)
 			background: #e7f3ff;
 			padding: 1.5rem;
 			border-radius: 4px;
@@ -751,14 +728,9 @@ class DFXPRL_Invitations {
 			color: #0073aa;
 		}
 
-<<<<<<< HEAD
 		.dfx-prl-invitation-info ul {
 			margin: 0;
 			padding-left: 1.5rem;
-=======
-		.dfxprl-invitation-info ul {
-			margin-bottom: 0;
->>>>>>> b57b03b (Complete prefix migration from dfx to dfxprl with database table renaming)
 		}
 
 		.dfxprl-invitation-info li {

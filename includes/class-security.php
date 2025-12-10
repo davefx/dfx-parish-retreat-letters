@@ -171,15 +171,11 @@ class DFXPRL_Security {
 			return;
 		}
 
-<<<<<<< HEAD
 		$nonce = wp_create_nonce( 'dfx_prl_remove_db_encryption_key' );
 		
 		// Enqueue jQuery and add inline script for the button handler
 		wp_enqueue_script( 'jquery' );
 		add_action( 'admin_print_footer_scripts', array( $this, 'output_encryption_key_mismatch_script' ) );
-=======
-		$nonce = wp_create_nonce( 'dfxprl_remove_db_encryption_key' );
->>>>>>> b57b03b (Complete prefix migration from dfx to dfxprl with database table renaming)
 		?>
 		<div class="notice notice-error" id="dfxprl-encryption-key-mismatch-notice">
 			<p>
