@@ -1020,6 +1020,8 @@ class DFXPRL {
 			}
 			
 			// Sanitize file names array immediately upon first access
+			// Note: Only 'name' contains user-provided data requiring sanitization.
+			// Other fields (tmp_name, size, type, error) are populated by PHP.
 			$message_files = $_FILES['message_files'];
 			if ( isset( $message_files['name'] ) && is_array( $message_files['name'] ) ) {
 				$message_files['name'] = array_map( 'sanitize_file_name', $message_files['name'] );
