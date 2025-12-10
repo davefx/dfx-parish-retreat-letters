@@ -526,6 +526,40 @@ class DFX_Parish_Retreat_Letters_Admin {
 			true
 		);
 
+		// Enqueue retreat edit script when editing a retreat
+		$retreat_id = absint( $_GET['edit'] ?? $_GET['retreat_id'] ?? 0 ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- URL parameter check for asset loading
+		if ( $retreat_id > 0 && isset( $_GET['page'] ) && sanitize_text_field( wp_unslash( $_GET['page'] ) ) === 'dfx-prl-retreats' ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- URL parameter check for asset loading
+			wp_enqueue_script(
+				'dfx-prl-retreat-edit',
+				DFX_PARISH_RETREAT_LETTERS_PLUGIN_URL . 'assets/js/admin-retreat-edit.js',
+				array( 'jquery' ),
+				DFX_PARISH_RETREAT_LETTERS_VERSION,
+				true
+			);
+
+			wp_localize_script(
+				'dfx-prl-retreat-edit',
+				'dfxPRLRetreatEdit',
+				array(
+					'nonce'     => wp_create_nonce( 'dfx_prl_retreats_nonce' ),
+					'retreatId' => $retreat_id,
+					'i18n'      => array(
+						'searchFailed'             => __( 'Search failed. Please try again.', 'dfx-parish-retreat-letters' ),
+						'noUsersFound'             => __( 'No users found.', 'dfx-parish-retreat-letters' ),
+						'selectRole'               => __( 'Select role...', 'dfx-parish-retreat-letters' ),
+						'retreatManager'           => __( 'Retreat Manager', 'dfx-parish-retreat-letters' ),
+						'messageManager'           => __( 'Message Manager', 'dfx-parish-retreat-letters' ),
+						'grant'                    => __( 'Grant', 'dfx-parish-retreat-letters' ),
+						'pleaseSelectRole'         => __( 'Please select a role.', 'dfx-parish-retreat-letters' ),
+						'failedToGrantPermission'  => __( 'Failed to grant permission. Please try again.', 'dfx-parish-retreat-letters' ),
+						'failedToRevokePermission' => __( 'Failed to revoke permission. Please try again.', 'dfx-parish-retreat-letters' ),
+						'failedToSendInvitation'   => __( 'Failed to send invitation. Please try again.', 'dfx-parish-retreat-letters' ),
+						'failedToCancelInvitation' => __( 'Failed to cancel invitation. Please try again.', 'dfx-parish-retreat-letters' ),
+					),
+				)
+			);
+		}
+
 		wp_localize_script(
 			'dfx-prl-retreats-admin',
 			'dfxPRLAdmin',
@@ -1451,274 +1485,10 @@ class DFX_Parish_Retreat_Letters_Admin {
 		}
 		</style>
 
-		<script>
-		jQuery(document).ready(function($) {
-			var nonce = '<?php echo esc_js( wp_create_nonce( 'dfx_prl_retreats_nonce' ) ); ?>';
-			var retreatId = <?php echo absint( $retreat->id ); ?>;
-			var searchTimeout;
-
-			// Tab switching
-			$('.nav-tab').on('click', function(e) {
-				e.preventDefault();
-				var tabId = $(this).data('tab');
-
-				$('.nav-tab').removeClass('nav-tab-active');
-				$(this).addClass('nav-tab-active');
-
-				$('.tab-content').removeClass('active');
-				$('#' + tabId).addClass('active');
-			});
-
-			// User search
-			$('#user-search').on('input', function() {
-				var searchTerm = $(this).val().trim();
-
-				clearTimeout(searchTimeout);
-
-				if (searchTerm.length < 2) {
-					$('#user-search-results').hide();
-					return;
-				}
-
-				searchTimeout = setTimeout(function() {
-					searchUsers(searchTerm);
-				}, 300);
-			});
-
-			// Hide search results when clicking outside
-			$(document).on('click', function(e) {
-				if (!$(e.target).closest('.dfx-prl-user-search').length) {
-					$('#user-search-results').hide();
-				}
-			});
-
-			function searchUsers(searchTerm) {
-				$.ajax({
-					url: ajaxurl,
-					type: 'POST',
-					data: {
-						action: 'dfx_prl_search_users',
-						nonce: nonce,
-						retreat_id: retreatId,
-						search: searchTerm
-					},
-					success: function(response) {
-						if (response.success) {
-							displaySearchResults(response.data.users);
-						} else {
-							showNotice(response.data.message, 'error');
-						}
-					},
-					error: function() {
-						showNotice('<?php esc_html_e( 'Search failed. Please try again.', 'dfx-parish-retreat-letters' ); ?>', 'error');
-					}
-				});
-			}
-
-			function displaySearchResults(users) {
-				var $results = $('#user-search-results');
-				$results.empty();
-
-				if (users.length === 0) {
-					$results.html('<div class="user-result"><?php esc_html_e( 'No users found.', 'dfx-parish-retreat-letters' ); ?></div>');
-				} else {
-					users.forEach(function(user) {
-						var $userResult = $('<div class="user-result">');
-						$userResult.html(
-							'<div class="user-info">' +
-								'<div class="name">' + escapeHtml(user.display_name) + '</div>' +
-								'<div class="email">' + escapeHtml(user.email) + '</div>' +
-							'</div>' +
-							'<div class="grant-permission-controls">' +
-								'<select class="permission-select">' +
-									'<option value=""><?php esc_html_e( 'Select role...', 'dfx-parish-retreat-letters' ); ?></option>' +
-									'<option value="manager"><?php esc_html_e( 'Retreat Manager', 'dfx-parish-retreat-letters' ); ?></option>' +
-									'<option value="message_manager"><?php esc_html_e( 'Message Manager', 'dfx-parish-retreat-letters' ); ?></option>' +
-								'</select>' +
-								'<button type="button" class="button button-small grant-btn" data-user-id="' + user.id + '"><?php esc_html_e( 'Grant', 'dfx-parish-retreat-letters' ); ?></button>' +
-							'</div>'
-						);
-						$results.append($userResult);
-					});
-				}
-
-				$results.show();
-			}
-
-			// Grant permission to existing user
-			$(document).on('click', '.grant-btn', function() {
-				var userId = $(this).data('user-id');
-				var permissionLevel = $(this).siblings('.permission-select').val();
-
-				if (!permissionLevel) {
-					alert('<?php esc_html_e( 'Please select a role.', 'dfx-parish-retreat-letters' ); ?>');
-					return;
-				}
-
-				grantPermission(userId, permissionLevel);
-			});
-
-			function grantPermission(userId, permissionLevel) {
-				$.ajax({
-					url: ajaxurl,
-					type: 'POST',
-					data: {
-						action: 'dfx_prl_grant_permission',
-						nonce: nonce,
-						retreat_id: retreatId,
-						user_id: userId,
-						permission_level: permissionLevel
-					},
-					success: function(response) {
-						if (response.success) {
-							showNotice(response.data.message, 'success');
-							$('#user-search').val('');
-							$('#user-search-results').hide();
-							// Refresh the page to show the new permission
-							setTimeout(function() {
-								location.reload();
-							}, 1500);
-						} else {
-							showNotice(response.data.message, 'error');
-						}
-					},
-					error: function() {
-						showNotice('<?php esc_html_e( 'Failed to grant permission. Please try again.', 'dfx-parish-retreat-letters' ); ?>', 'error');
-					}
-				});
-			}
-
-			// Revoke permission
-			$('.revoke-permission').on('click', function() {
-				var userId = $(this).data('user-id');
-				var permissionLevel = $(this).data('permission');
-
-				if (confirm('<?php esc_html_e( 'Are you sure you want to revoke this permission?', 'dfx-parish-retreat-letters' ); ?>')) {
-					revokePermission(userId, permissionLevel);
-				}
-			});
-
-			function revokePermission(userId, permissionLevel) {
-				$.ajax({
-					url: ajaxurl,
-					type: 'POST',
-					data: {
-						action: 'dfx_prl_revoke_permission',
-						nonce: nonce,
-						retreat_id: retreatId,
-						user_id: userId,
-						permission_level: permissionLevel
-					},
-					success: function(response) {
-						if (response.success) {
-							showNotice(response.data.message, 'success');
-							// Remove the row from the table
-							$('tr[data-user-id="' + userId + '"][data-permission="' + permissionLevel + '"]').fadeOut();
-						} else {
-							showNotice(response.data.message, 'error');
-						}
-					},
-					error: function() {
-						showNotice('<?php esc_html_e( 'Failed to revoke permission. Please try again.', 'dfx-parish-retreat-letters' ); ?>', 'error');
-					}
-				});
-			}
-
-			// Send invitation
-			$('#invitation-form').on('submit', function(e) {
-				e.preventDefault();
-
-				var formData = {
-					action: 'dfx_prl_send_invitation',
-					nonce: nonce,
-					retreat_id: retreatId,
-					name: $('#invite-name').val(),
-					email: $('#invite-email').val(),
-					permission_level: $('#invite-permission').val()
-				};
-
-				$.ajax({
-					url: ajaxurl,
-					type: 'POST',
-					data: formData,
-					success: function(response) {
-						if (response.success) {
-							showNotice(response.data.message, 'success');
-							$('#invitation-form')[0].reset();
-							// Refresh to show the pending invitation
-							setTimeout(function() {
-								location.reload();
-							}, 1500);
-						} else {
-							showNotice(response.data.message, 'error');
-						}
-					},
-					error: function() {
-						showNotice('<?php esc_html_e( 'Failed to send invitation. Please try again.', 'dfx-parish-retreat-letters' ); ?>', 'error');
-					}
-				});
-			});
-
-			// Cancel invitation
-			$('.cancel-invitation').on('click', function() {
-				var invitationId = $(this).data('invitation-id');
-
-				if (confirm('<?php esc_html_e( 'Are you sure you want to cancel this invitation?', 'dfx-parish-retreat-letters' ); ?>')) {
-					cancelInvitation(invitationId);
-				}
-			});
-
-			function cancelInvitation(invitationId) {
-				$.ajax({
-					url: ajaxurl,
-					type: 'POST',
-					data: {
-						action: 'dfx_prl_cancel_invitation',
-						nonce: nonce,
-						retreat_id: retreatId,
-						invitation_id: invitationId
-					},
-					success: function(response) {
-						if (response.success) {
-							showNotice(response.data.message, 'success');
-							$('tr[data-invitation-id="' + invitationId + '"]').fadeOut();
-						} else {
-							showNotice(response.data.message, 'error');
-						}
-					},
-					error: function() {
-						showNotice('<?php esc_html_e( 'Failed to cancel invitation. Please try again.', 'dfx-parish-retreat-letters' ); ?>', 'error');
-					}
-				});
-			}
-
-			function showNotice(message, type) {
-				var $notice = $('<div class="permission-notice ' + type + '">' + escapeHtml(message) + '</div>');
-				$('#permission-notices').html($notice);
-
-				$('html, body').animate({
-					scrollTop: $notice.offset().top - 20
-				}, 500);
-
-				if (type === 'success') {
-					setTimeout(function() {
-						$notice.fadeOut();
-					}, 5000);
-				}
-			}
-
-			function escapeHtml(text) {
-				var map = {
-					'&': '&amp;',
-					'<': '&lt;',
-					'>': '&gt;',
-					'"': '&quot;',
-					"'": '&#039;'
-				};
-				return text.replace(/[&<>"']/g, function(m) { return map[m]; });
-			}
-		});
-		</script>
+		<?php
+		// JavaScript for retreat editing (permissions, invitations) is now properly enqueued
+		// via enqueue_admin_scripts() and loaded from assets/js/admin-retreat-edit.js
+		?>
 		<?php
 	}
 
