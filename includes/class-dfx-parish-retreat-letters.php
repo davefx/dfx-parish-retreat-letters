@@ -1208,40 +1208,59 @@ class DFX_Parish_Retreat_Letters {
 		$is_message_url = preg_match( $pattern, $request_uri ) || preg_match( $root_pattern, $request_uri );
 
 		if ( $is_message_url ) {
+			// Enqueue jQuery (dependency for our script)
 			wp_enqueue_script( 'jquery' );
 
-			// Register and enqueue message form styles
-			// Using a dummy handle since we'll use wp_add_inline_style
-			wp_register_style( 'dfx-prl-message-form', false ); // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion
-			wp_enqueue_style( 'dfx-prl-message-form' );
-			
-			// Add inline styles hook
-			add_action( 'wp_head', array( $this, 'output_message_form_styles' ), 100 );
+			// Enqueue message form JavaScript
+			wp_enqueue_script(
+				'dfx-prl-message-form',
+				DFX_PARISH_RETREAT_LETTERS_PLUGIN_URL . 'includes/message-form.js',
+				array( 'jquery' ),
+				DFX_PARISH_RETREAT_LETTERS_VERSION,
+				true // Load in footer
+			);
 
-			// Inline script for message form functionality
-			add_action( 'wp_footer', array( $this, 'output_message_form_script' ) );
+			// Localize script with translatable strings and AJAX URL
+			wp_localize_script(
+				'dfx-prl-message-form',
+				'dfxPRLMessageForm',
+				array(
+					'ajaxurl' => admin_url( 'admin-ajax.php' ),
+					'i18n'    => array(
+						'captchaPrefix'              => __( 'Please solve: ', 'dfx-parish-retreat-letters' ),
+						'remove'                     => __( 'Remove', 'dfx-parish-retreat-letters' ),
+						'pleaseEnterMessage'         => __( 'Please enter a message.', 'dfx-parish-retreat-letters' ),
+						'pleaseSelectFile'           => __( 'Please select at least one file.', 'dfx-parish-retreat-letters' ),
+						'pleaseCompleteSecurityCheck' => __( 'Please complete the security check.', 'dfx-parish-retreat-letters' ),
+						'pleaseAcceptDisclaimer'     => __( 'Please accept the legal disclaimer to proceed.', 'dfx-parish-retreat-letters' ),
+						'successMessage'             => __( 'Your message has been sent successfully and securely stored.', 'dfx-parish-retreat-letters' ),
+						'errorSendingMessage'        => __( 'An error occurred while sending your message.', 'dfx-parish-retreat-letters' ),
+						'requestTimeout'             => __( 'The request timed out. Please check your connection and try again.', 'dfx-parish-retreat-letters' ),
+						'requestCancelled'           => __( 'The request was cancelled. Please try again.', 'dfx-parish-retreat-letters' ),
+						'cannotConnectToServer'      => __( 'Cannot connect to the server. Please check your internet connection.', 'dfx-parish-retreat-letters' ),
+						'problemWithRequest'         => __( 'There was a problem with your request. Please refresh the page and try again.', 'dfx-parish-retreat-letters' ),
+						'accessDenied'               => __( 'Access denied. Please refresh the page and try again.', 'dfx-parish-retreat-letters' ),
+						'uploadedFilesTooLarge'      => __( 'The uploaded files are too large. Please reduce the file size and try again.', 'dfx-parish-retreat-letters' ),
+						'serverError'                => __( 'A server error occurred. Please try again later or contact support if the problem persists.', 'dfx-parish-retreat-letters' ),
+						'problemProcessingResponse'  => __( 'There was a problem processing the server response. Please try again.', 'dfx-parish-retreat-letters' ),
+						'networkError'               => __( 'A network error occurred. Please try again.', 'dfx-parish-retreat-letters' ),
+					),
+				)
+			);
 		}
-	}
-
-	/**
-	 * Output inline styles for message form.
-	 * Note: Styles are kept inline in render_message_form() for now.
-	 * This method serves as a placeholder for future refactoring.
-	 *
-	 * @since 25.12.10
-	 */
-	public function output_message_form_styles() {
-		// Styles are currently output inline in render_message_form()
-		// This is acceptable for message form as it's a special frontend page
-		// Future enhancement: Extract styles to this method
 	}
 
 	/**
 	 * Output JavaScript for the message form.
 	 *
 	 * @since 1.2.0
+	 * @deprecated 25.12.10 JavaScript now loaded from includes/message-form.js via wp_enqueue_script()
 	 */
 	public function output_message_form_script() {
+		// JavaScript is now properly enqueued via enqueue_public_scripts()
+		// and loaded from includes/message-form.js
+		// This method is kept for backwards compatibility but does nothing
+		/* OLD INLINE SCRIPT - NOW IN message-form.js
 		?>
 		<script>
 		jQuery(document).ready(function($) {
@@ -1801,6 +1820,7 @@ class DFX_Parish_Retreat_Letters {
 		});
 		</script>
 		<?php
+		END OLD INLINE SCRIPT */
 	}
 
 	/**
