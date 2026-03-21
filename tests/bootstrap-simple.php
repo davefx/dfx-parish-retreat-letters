@@ -152,20 +152,20 @@ if (!function_exists('wp_mkdir_p')) {
 }
 
 // Define plugin activation/deactivation functions for testing
-if (!function_exists('activate_dfxprl')) {
-    function activate_dfxprl() {
+if (!function_exists('dfxprl_activate')) {
+    function dfxprl_activate() {
         // Mock activation function
     }
 }
 
-if (!function_exists('deactivate_dfxprl')) {
-    function deactivate_dfxprl() {
+if (!function_exists('dfxprl_deactivate')) {
+    function dfxprl_deactivate() {
         // Mock deactivation function
     }
 }
 
-if (!function_exists('run_dfxprl')) {
-    function run_dfxprl() {
+if (!function_exists('dfxprl_run')) {
+    function dfxprl_run() {
         // Mock run function
     }
 }

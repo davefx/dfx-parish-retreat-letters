@@ -566,9 +566,9 @@ class ComprehensiveInfrastructureTest extends TestCase {
     public function testActivationAndDeactivationHooks() {        
         // In test environment, these functions should exist
         $plugin_functions = [
-            'activate_dfxprl',
-            'deactivate_dfxprl',
-            'run_dfxprl'
+            'dfxprl_activate',
+            'dfxprl_deactivate',
+            'dfxprl_run'
         ];
         
         $defined_functions = 0;
