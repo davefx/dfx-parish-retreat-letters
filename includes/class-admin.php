@@ -519,18 +519,18 @@ class DFXPRL_Admin {
 
 			// Initialize Select2 for user selection
 			$placeholder_text = esc_js( __( 'Choose a user...', 'dfx-parish-retreat-letters' ) );
-			$select2_init = <<<JAVASCRIPT
-jQuery(document).ready(function($) {
-	// Initialize Select2 for user selection
+			$select2_init = sprintf(
+				'jQuery(document).ready(function($) {
 	if ($.fn.select2) {
-		$('.dfxprl-user-select').select2({
-			placeholder: '{$placeholder_text}',
+		$(".dfxprl-user-select").select2({
+			placeholder: "%s",
 			allowClear: true,
-			width: '100%'
+			width: "100%%"
 		});
 	}
-});
-JAVASCRIPT;
+});',
+				$placeholder_text
+			);
 			wp_add_inline_script( 'select2', $select2_init );
 		}
 

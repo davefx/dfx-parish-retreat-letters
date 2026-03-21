@@ -216,46 +216,49 @@ class DFXPRL_Security {
 		$removing_text = esc_js( __( 'Removing...', 'dfx-parish-retreat-letters' ) );
 		$error_text = esc_js( __( 'An error occurred. Please try again.', 'dfx-parish-retreat-letters' ) );
 		
-		$script = <<<JAVASCRIPT
-jQuery(document).ready(function($) {
-	$('#dfxprl-remove-db-key-btn').on('click', function() {
-		var \$button = $(this);
-		var \$status = $('#dfxprl-remove-db-key-status');
-		var nonce = \$button.data('nonce');
+		$script = sprintf(
+			'jQuery(document).ready(function($) {
+	$("#dfxprl-remove-db-key-btn").on("click", function() {
+		var $button = $(this);
+		var $status = $("#dfxprl-remove-db-key-status");
+		var nonce = $button.data("nonce");
 
-		if (!confirm('{$confirm_message}')) {
+		if (!confirm("%1$s")) {
 			return;
 		}
 
-		\$button.prop('disabled', true);
-		\$status.text('{$removing_text}');
+		$button.prop("disabled", true);
+		$status.text("%2$s");
 
 		$.ajax({
 			url: ajaxurl,
-			type: 'POST',
+			type: "POST",
 			data: {
-				action: 'dfxprl_remove_db_encryption_key',
+				action: "dfxprl_remove_db_encryption_key",
 				nonce: nonce
 			},
 			success: function(response) {
 				if (response.success) {
-					\$status.html('<span style="color: green;">' + response.data.message + '</span>');
-					$('#dfxprl-encryption-key-mismatch-notice').fadeOut(2000, function() {
+					$status.html(\'<span style="color: green;">\' + response.data.message + \'</span>\');
+					$("#dfxprl-encryption-key-mismatch-notice").fadeOut(2000, function() {
 						$(this).remove();
 					});
 				} else {
-					\$status.html('<span style="color: red;">' + response.data.message + '</span>');
-					\$button.prop('disabled', false);
+					$status.html(\'<span style="color: red;">\' + response.data.message + \'</span>\');
+					$button.prop("disabled", false);
 				}
 			},
 			error: function() {
-				\$status.html('<span style="color: red;">{$error_text}</span>');
-				\$button.prop('disabled', false);
+				$status.html(\'<span style="color: red;">%3$s</span>\');
+				$button.prop("disabled", false);
 			}
 		});
 	});
-});
-JAVASCRIPT;
+});',
+			$confirm_message,
+			$removing_text,
+			$error_text
+		);
 		
 		wp_add_inline_script( 'jquery', $script );
 	}
