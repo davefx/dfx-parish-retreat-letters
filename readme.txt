@@ -349,8 +349,14 @@ Contributions are welcome! Please:
 
 ### 26.03.21
 
-- Feature: added the extra class 'dfxprl-message-form' to the body tag of the message form screen
-- Fix: solved a few JS errors due to renaming several classes and variables
+- Feature: added the extra class 'dfxprl-message-form' to the body tag of the message form screen.
+
+- Feature: retreats now have a field to set extra classes to the body tag of the message form screen, allowing 
+  per-retreat customizations.
+
+- Change: Removed CSS customizations from the plugin, as they are not allowed in WordPress plugins repo.
+
+- Fix: solved a few JS errors due to renaming several classes and variables.
 
 ### 25.12.10
 
