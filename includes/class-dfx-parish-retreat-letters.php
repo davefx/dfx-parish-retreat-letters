@@ -322,6 +322,7 @@ class DFXPRL {
 	private function init_public_hooks() {
 		add_action( 'wp_loaded', array( $this, 'handle_message_url_routing' ) );
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_public_scripts' ) );
+		add_filter( 'body_class', array( $this, 'add_message_form_body_class' ) );
 		add_action( 'wp_ajax_nopriv_dfxprl_submit_message', array( $this, 'handle_message_submission' ) );
 		add_action( 'wp_ajax_dfxprl_submit_message', array( $this, 'handle_message_submission' ) );
 
@@ -850,6 +851,37 @@ class DFXPRL {
 				)
 			);
 		}
+	}
+
+	/**
+	 * Add 'dfxprl-message-form' class to the body tag on message form pages.
+	 *
+	 * @since 25.12.10
+	 * @param array $classes Existing body classes.
+	 * @return array Modified body classes.
+	 */
+	public function add_message_form_body_class( $classes ) {
+		$request_uri = isset( $_SERVER['REQUEST_URI'] ) ? sanitize_text_field( wp_unslash( $_SERVER['REQUEST_URI'] ) ) : '';
+		if ( ! is_string( $request_uri ) || empty( $request_uri ) ) {
+			return $classes;
+		}
+
+		$request_uri = strtok( $request_uri, '?' );
+		if ( $request_uri === false ) {
+			return $classes;
+		}
+
+		$site_url  = wp_parse_url( home_url(), PHP_URL_PATH );
+		$site_path = ( is_string( $site_url ) && ! empty( $site_url ) ) ? rtrim( $site_url, '/' ) : '';
+
+		$pattern      = '#^' . preg_quote( $site_path, '#' ) . '/messages/([a-zA-Z0-9]+)/?$#';
+		$root_pattern = '#^/messages/([a-zA-Z0-9]+)/?$#';
+
+		if ( preg_match( $pattern, $request_uri ) || preg_match( $root_pattern, $request_uri ) ) {
+			$classes[] = 'dfxprl-message-form';
+		}
+
+		return $classes;
 	}
 
 	/**

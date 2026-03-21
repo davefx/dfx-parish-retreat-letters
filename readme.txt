@@ -349,6 +349,7 @@ Contributions are welcome! Please:
 
 ### 26.03.21
 
+- Feature: added the extra class 'dfxprl-message-form' to the body tag of the message form screen
 - Fix: solved a few JS errors due to renaming several classes and variables
 
 ### 25.12.10
