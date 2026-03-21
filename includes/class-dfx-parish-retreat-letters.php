@@ -811,8 +811,6 @@ class DFXPRL {
 				DFXPRL_VERSION
 			);
 
-			// Add custom CSS (from settings) as inline styles
-			add_action( 'wp_head', array( $this, 'output_custom_message_form_styles' ), 11 );
 
 			// Enqueue message form JavaScript
 			wp_enqueue_script(
@@ -854,7 +852,10 @@ class DFXPRL {
 	}
 
 	/**
-	 * Add 'dfxprl-message-form' class to the body tag on message form pages.
+	 * Add body classes to the message form pages.
+	 *
+	 * Always adds 'dfxprl-message-form'. Also adds any global and per-retreat
+	 * additional classes configured in the plugin settings.
 	 *
 	 * @since 25.12.10
 	 * @param array $classes Existing body classes.
@@ -877,73 +878,48 @@ class DFXPRL {
 		$pattern      = '#^' . preg_quote( $site_path, '#' ) . '/messages/([a-zA-Z0-9]+)/?$#';
 		$root_pattern = '#^/messages/([a-zA-Z0-9]+)/?$#';
 
-		if ( preg_match( $pattern, $request_uri ) || preg_match( $root_pattern, $request_uri ) ) {
-			$classes[] = 'dfxprl-message-form';
+		$token = null;
+		if ( preg_match( $pattern, $request_uri, $matches ) || preg_match( $root_pattern, $request_uri, $matches ) ) {
+			$token = $matches[1];
 		}
 
-		return $classes;
-	}
+		if ( null === $token ) {
+			return $classes;
+		}
 
-	/**
-	 * Output custom CSS for the message form (from global/retreat-specific settings).
-	 *
-	 * @since 25.12.10
-	 */
-	public function output_custom_message_form_styles() {
-		// Get retreat data from current URL to include custom CSS
-		$retreat = null;
-		$request_uri = isset( $_SERVER['REQUEST_URI'] ) ? sanitize_text_field( wp_unslash( $_SERVER['REQUEST_URI'] ) ) : '';
-		if ( is_string( $request_uri ) && ! empty( $request_uri ) ) {
-			$request_uri = strtok( $request_uri, '?' );
-			if ( $request_uri !== false && preg_match( '#/messages/([a-zA-Z0-9]+)/?$#', $request_uri, $matches ) ) {
-				$token = $matches[1];
-				$attendant = $this->get_attendant_by_token( $token );
-				if ( $attendant ) {
-					$retreat_model = new DFXPRL_Retreat();
-					$retreat = $retreat_model->get( $attendant->retreat_id );
+		$classes[] = 'dfxprl-message-form';
+
+		// Add global additional body classes.
+		$global_settings = DFXPRL_GlobalSettings::get_instance();
+		$global_classes  = $global_settings->get_body_classes();
+		if ( ! empty( $global_classes ) ) {
+			foreach ( explode( ' ', $global_classes ) as $class ) {
+				$class = sanitize_html_class( $class );
+				if ( ! empty( $class ) ) {
+					$classes[] = $class;
 				}
 			}
 		}
 
-		// Get custom CSS from global settings and retreat-specific settings
-		$custom_css = $this->get_custom_css_for_message_form( $retreat );
-		if ( ! empty( $custom_css ) ) {
-			wp_add_inline_style( 'dfx-prl-message-form', $custom_css );
-		}
-	}
-
-	/**
-	 * Get custom CSS for message form from global and retreat-specific settings.
-	 *
-	 * @since 25.12.10
-	 * @param object|null $retreat Retreat object (optional).
-	 * @return string The custom CSS.
-	 */
-	private function get_custom_css_for_message_form( $retreat = null ) {
-		$global_settings = DFXPRL_GlobalSettings::get_instance();
-		$global_css = $global_settings->get_default_css();
-
-		$retreat_css = '';
-		if ( $retreat && $global_settings->is_per_retreat_customization_enabled() ) {
-			if ( ! empty( $retreat->custom_css ) ) {
-				$retreat_css = $retreat->custom_css;
+		// Add per-retreat additional body classes.
+		if ( $global_settings->is_per_retreat_customization_enabled() ) {
+			$attendant = $this->get_attendant_by_token( $token );
+			if ( $attendant ) {
+				$retreat_model   = new DFXPRL_Retreat();
+				$retreat         = $retreat_model->get( $attendant->retreat_id );
+				$retreat_classes = $retreat->body_classes ?? '';
+				if ( ! empty( $retreat_classes ) ) {
+					foreach ( explode( ' ', $retreat_classes ) as $class ) {
+						$class = sanitize_html_class( $class );
+						if ( ! empty( $class ) ) {
+							$classes[] = $class;
+						}
+					}
+				}
 			}
 		}
 
-		$custom_css = '';
-		if ( ! empty( $global_css ) || ! empty( $retreat_css ) ) {
-			$custom_css .= "\n/* Custom CSS from DFX Parish Retreat Letters Plugin */\n";
-			if ( ! empty( $global_css ) ) {
-				$custom_css .= "/* Global Default CSS */\n";
-				$custom_css .= wp_strip_all_tags( $global_css ) . "\n";
-			}
-			if ( ! empty( $retreat_css ) ) {
-				$custom_css .= "/* Retreat-Specific CSS */\n";
-				$custom_css .= wp_strip_all_tags( $retreat_css ) . "\n";
-			}
-		}
-
-		return $custom_css;
+		return $classes;
 	}
 
 	/**

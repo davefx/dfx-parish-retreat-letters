@@ -67,7 +67,7 @@ class DFXPRL_Retreat {
 				'disclaimer_acceptance_text' => $sanitized_data['disclaimer_acceptance_text'],
 				'custom_header_block_id'     => $sanitized_data['custom_header_block_id'],
 				'custom_footer_block_id'     => $sanitized_data['custom_footer_block_id'],
-				'custom_css'                 => $sanitized_data['custom_css'],
+				'body_classes'               => $sanitized_data['body_classes'],
 				'notes_enabled'              => $sanitized_data['notes_enabled'],
 				'internal_notes_enabled'     => $sanitized_data['internal_notes_enabled'],
 				'message_request_template'   => $sanitized_data['message_request_template'],
@@ -125,7 +125,7 @@ class DFXPRL_Retreat {
 				'disclaimer_acceptance_text' => $sanitized_data['disclaimer_acceptance_text'],
 				'custom_header_block_id'     => $sanitized_data['custom_header_block_id'],
 				'custom_footer_block_id'     => $sanitized_data['custom_footer_block_id'],
-				'custom_css'                 => $sanitized_data['custom_css'],
+				'body_classes'               => $sanitized_data['body_classes'],
 				'notes_enabled'              => $sanitized_data['notes_enabled'],
 				'internal_notes_enabled'     => $sanitized_data['internal_notes_enabled'],
 				'message_request_template'   => $sanitized_data['message_request_template'],
@@ -310,7 +310,7 @@ class DFXPRL_Retreat {
 			'disclaimer_acceptance_text' => sanitize_text_field( $data['disclaimer_acceptance_text'] ?? '' ),
 			'custom_header_block_id'     => $this->sanitize_block_selection( $data['custom_header_block_id'] ?? null ),
 			'custom_footer_block_id'     => $this->sanitize_block_selection( $data['custom_footer_block_id'] ?? null ),
-			'custom_css'                 => $this->sanitize_css( $data['custom_css'] ?? '' ),
+			'body_classes'               => sanitize_text_field( $data['body_classes'] ?? '' ),
 			'notes_enabled'              => isset( $data['notes_enabled'] ) ? (int) (bool) $data['notes_enabled'] : 0,
 			'internal_notes_enabled'     => isset( $data['internal_notes_enabled'] ) ? (int) (bool) $data['internal_notes_enabled'] : 0,
 			'message_request_template'   => sanitize_textarea_field( $data['message_request_template'] ?? '' ),
@@ -347,26 +347,6 @@ class DFXPRL_Retreat {
 		}
 
 		return null;
-	}
-
-	/**
-	 * Sanitize CSS content.
-	 *
-	 * @since 1.6.0
-	 * @param string $css CSS content to sanitize.
-	 * @return string Sanitized CSS.
-	 */
-	private function sanitize_css( $css ) {
-		if ( empty( $css ) ) {
-			return '';
-		}
-		
-		// Remove any PHP tags and script tags for security
-		$css = preg_replace( '/<\?php.*?\?>/is', '', $css );
-		$css = preg_replace( '/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/mi', '', $css );
-		
-		// Allow only CSS content
-		return wp_strip_all_tags( $css );
 	}
 
 	/**

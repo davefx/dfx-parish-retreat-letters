@@ -815,7 +815,7 @@ JAVASCRIPT;
 			'disclaimer_acceptance_text' => sanitize_text_field( wp_unslash( $_POST['disclaimer_acceptance_text'] ?? '' ) ),
 			'custom_header_block_id'     => $this->parse_block_selection( sanitize_text_field( wp_unslash( $_POST['custom_header_block_id'] ?? '' ) ) ),
 			'custom_footer_block_id'     => $this->parse_block_selection( sanitize_text_field( wp_unslash( $_POST['custom_footer_block_id'] ?? '' ) ) ),
-			'custom_css'                 => sanitize_textarea_field( wp_unslash( $_POST['custom_css'] ?? '' ) ),
+			'body_classes'               => sanitize_text_field( wp_unslash( $_POST['body_classes'] ?? '' ) ),
 			'notes_enabled'              => isset( $_POST['notes_enabled'] ) ? 1 : 0,
 			'internal_notes_enabled'     => isset( $_POST['internal_notes_enabled'] ) ? 1 : 0,
 			'message_request_template'   => sanitize_textarea_field( wp_unslash( $_POST['message_request_template'] ?? '' ) ),
@@ -1185,11 +1185,11 @@ JAVASCRIPT;
 									</tr>
 									<tr>
 										<th scope="row">
-											<label for="custom_css"><?php esc_html_e( 'Custom CSS Styles', 'dfx-parish-retreat-letters' ); ?></label>
+											<label for="body_classes"><?php esc_html_e( 'Additional Body Classes', 'dfx-parish-retreat-letters' ); ?></label>
 										</th>
 										<td>
-											<textarea id="custom_css" name="custom_css" rows="10" cols="80" class="large-text code"><?php echo esc_textarea( $retreat->custom_css ?? '' ); ?></textarea>
-											<p class="description"><?php esc_html_e( 'CSS styles specific to this retreat\'s message form page. Do not include &lt;style&gt; tags. Leave empty to use only the global default CSS.', 'dfx-parish-retreat-letters' ); ?></p>
+											<input type="text" id="body_classes" name="body_classes" class="regular-text" value="<?php echo esc_attr( $retreat->body_classes ?? '' ); ?>">
+											<p class="description"><?php esc_html_e( 'Space-separated CSS class names to add to the &lt;body&gt; tag on this retreat\'s message form page. Leave empty to use only the global default classes.', 'dfx-parish-retreat-letters' ); ?></p>
 										</td>
 									</tr>
 									<?php endif; ?>
@@ -4743,7 +4743,7 @@ JAVASCRIPT;
 		// Get current settings
 		$default_header = $this->global_settings->get_default_header();
 		$default_footer = $this->global_settings->get_default_footer();
-		$default_css = $this->global_settings->get_default_css();
+		$body_classes = $this->global_settings->get_body_classes();
 		$per_retreat_customization_enabled = $this->global_settings->is_per_retreat_customization_enabled();
 
 		?>
@@ -4792,11 +4792,11 @@ JAVASCRIPT;
 
 						<tr>
 							<th scope="row">
-								<label for="default_css"><?php esc_html_e( 'Default CSS Styles', 'dfx-parish-retreat-letters' ); ?></label>
+								<label for="body_classes"><?php esc_html_e( 'Additional Body Classes', 'dfx-parish-retreat-letters' ); ?></label>
 							</th>
 							<td>
-								<textarea id="default_css" name="default_css" rows="15" cols="80" class="large-text code"><?php echo esc_textarea( $default_css ); ?></textarea>
-								<p class="description"><?php esc_html_e( 'CSS styles to be applied to all retreat message form pages. Do not include &lt;style&gt; tags.', 'dfx-parish-retreat-letters' ); ?></p>
+								<input type="text" id="body_classes" name="body_classes" class="regular-text" value="<?php echo esc_attr( $body_classes ); ?>">
+								<p class="description"><?php esc_html_e( 'Space-separated CSS class names to add to the &lt;body&gt; tag on all retreat message form pages.', 'dfx-parish-retreat-letters' ); ?></p>
 							</td>
 						</tr>
 					</tbody>
@@ -4932,14 +4932,14 @@ JAVASCRIPT;
 		$per_retreat_customization = isset( $_POST['enable_per_retreat_customization'] ) ? 1 : 0;
 		$default_header = $this->parse_block_selection( sanitize_text_field( wp_unslash( $_POST['default_header_block_id'] ?? '' ) ) );
 		$default_footer = $this->parse_block_selection( sanitize_text_field( wp_unslash( $_POST['default_footer_block_id'] ?? '' ) ) );
-		$default_css = sanitize_textarea_field( wp_unslash( $_POST['default_css'] ?? '' ) );
+		$body_classes = sanitize_text_field( wp_unslash( $_POST['body_classes'] ?? '' ) );
 
 		// Save settings
 		$success = true;
 		$success = $this->global_settings->set_per_retreat_customization_enabled( $per_retreat_customization ) && $success;
 		$success = $this->global_settings->set_default_header( $default_header ) && $success;
 		$success = $this->global_settings->set_default_footer( $default_footer ) && $success;
-		$success = $this->global_settings->set_default_css( $default_css ) && $success;
+		$success = $this->global_settings->set_body_classes( $body_classes ) && $success;
 
 		if ( $success ) {
 			$this->add_admin_notice( __( 'Global settings saved successfully.', 'dfx-parish-retreat-letters' ), 'success' );

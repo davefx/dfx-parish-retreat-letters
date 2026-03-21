@@ -146,24 +146,24 @@ class DFXPRL_GlobalSettings {
 	}
 
 	/**
-	 * Get default CSS styles.
+	 * Get additional body CSS classes for the message form.
 	 *
 	 * @since 1.6.0
 	 * @return string
 	 */
-	public function get_default_css() {
-		return $this->get( 'default_css', '' );
+	public function get_body_classes() {
+		return $this->get( 'body_classes', '' );
 	}
 
 	/**
-	 * Set default CSS styles.
+	 * Set additional body CSS classes for the message form.
 	 *
 	 * @since 1.6.0
-	 * @param string $css The CSS styles.
+	 * @param string $classes Space-separated CSS class names.
 	 * @return bool
 	 */
-	public function set_default_css( $css ) {
-		return $this->set( 'default_css', $css );
+	public function set_body_classes( $classes ) {
+		return $this->set( 'body_classes', $classes );
 	}
 
 	/**

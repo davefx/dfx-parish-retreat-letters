@@ -186,7 +186,7 @@ class DFXPRL_Database {
 			disclaimer_acceptance_text varchar(500) NULL DEFAULT NULL,
 			custom_header_block_id varchar(100) NULL DEFAULT NULL,
 			custom_footer_block_id varchar(100) NULL DEFAULT NULL,
-			custom_css text NULL DEFAULT NULL,
+			body_classes varchar(255) NULL DEFAULT NULL,
 			notes_enabled tinyint(1) NOT NULL DEFAULT 0,
 			internal_notes_enabled tinyint(1) NOT NULL DEFAULT 0,
 			message_request_template text NULL DEFAULT NULL,
