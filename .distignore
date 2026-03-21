@@ -30,6 +30,7 @@ validate-constraint-fixes.php
 # IDE and editor files
 .vscode
 .idea
+.claude
 *.swp
 *.swo
 .DS_Store
