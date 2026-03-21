@@ -825,7 +825,7 @@ class DFXPRL {
 			// Localize script with translatable strings and AJAX URL
 			wp_localize_script(
 				'dfx-prl-message-form',
-				'dfxPRLMessageForm',
+				'dfxprlMessageForm',
 				array(
 					'ajaxurl' => admin_url( 'admin-ajax.php' ),
 					'i18n'    => array(

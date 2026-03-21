@@ -555,7 +555,7 @@ JAVASCRIPT;
 
 			wp_localize_script(
 				'dfx-prl-retreat-edit',
-				'dfxPRLRetreatEdit',
+				'dfxprlRetreatEdit',
 				array(
 					'nonce'     => wp_create_nonce( 'dfx_prl_retreats_nonce' ),
 					'retreatId' => $retreat_id,
@@ -588,7 +588,7 @@ JAVASCRIPT;
 
 			wp_localize_script(
 				'dfx-prl-admin-gdpr',
-				'dfxPRLGDPR',
+				'dfxprlGDPR',
 				array(
 					'ajaxurl' => admin_url( 'admin-ajax.php' ),
 					'nonce'   => wp_create_nonce( 'dfx_prl_gdpr_nonce' ),
