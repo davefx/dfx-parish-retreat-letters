@@ -7,328 +7,170 @@ Stable tag: 26.03.22
 Requires PHP: 7.4
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
-Manage parish retreat programs with confidentiality, GDPR compliance, and user management.
-
-== DFX Parish Retreat Letters ==
-
-# DFX Parish Retreat Letters
-
-**Enterprise-Grade Personal Messaging Management System for Parish-organized Retreats**
-
-A comprehensive, security-focused WordPress plugin designed for parishes and organizations to manage personal messages in parish-organized retreats with complete confidentiality, GDPR compliance, and advanced user management capabilities.
-
-## Description
-
-DFX Parish Retreat Letters is a professional-grade management system that provides churches and organizations with enterprise-level security and functionality for managing personal messages within spiritual retreats. 
-The plugin features a complete secure confidential messaging system with military-grade encryption, and a sophisticated three-tier authorization system designed to protect sensitive spiritual and personal communications.
-
-## Core Features
-
-### Secure Confidential Message System
-- **Privacy-Compliant Messaging**: Full adherence to Spanish privacy laws (LOPD-GDD) and European GDPR regulations
-- **Cryptographically Secure URLs**: Unique, unguessable URLs generated for each attendant using cryptographic tokens
-- **Military-Grade Encryption**: AES-256-CBC encryption for all message content and file attachments
-- **Public Submission Interface**: Rich text editor with file upload capabilities for attendant message submission
-- **Print-Only Backend Access**: Administrative interface shows no content preview - messages only accessible via secure printing
-- **Complete Audit Trails**: Comprehensive logging of all message operations, access attempts, and administrative actions
-- **Secure File Storage**: Encrypted file storage outside web directory with access control protection
-
-### Three-Tier Authorization System
-- **Plugin Administrators**: Global access to all functionality with complete system control
-- **Retreat Managers**: Full control over assigned retreats with permission delegation capabilities
-- **Message Managers**: Specialized message-only access with read-only attendant information
-- **User Invitation System**: Email-based invitations with secure token authentication and role assignment
-- **Hierarchical Permissions**: Sophisticated permission inheritance with granular access control
-- **Complete Audit Logging**: Track all administrative actions with user attribution and timestamps
-
-## Enterprise Security & Compliance
-
-### Advanced Security Features
-- **Enterprise-Grade Encryption**: AES-256-CBC encryption for all sensitive data storage and transmission
-- **GDPR Full Compliance**: Complete implementation of European General Data Protection Regulation requirements
-- **Spanish Privacy Law Compliance**: Full adherence to LOPD-GDD (Ley Orgánica de Protección de Datos)
-- **Complete Input Validation**: Comprehensive sanitization and validation preventing SQL injection and XSS attacks
-- **CSRF Protection**: Cross-Site Request Forgery protection with WordPress nonce validation throughout the system
-- **Rate Limiting**: Advanced abuse protection with intelligent rate limiting on sensitive operations
-- **Comprehensive Audit Logging**: Complete audit trails for all administrative actions with forensic-level detail
-
-### Privacy & Data Protection
-- **Right to be Forgotten**: Complete GDPR Article 17 implementation with secure data erasure
-- **Data Minimization**: Collect and store only necessary data with configurable retention policies
-- **IP Address Anonymization**: Automatic IP address anonymization after 30-day retention period
-- **Automated Data Cleanup**: Configurable data retention policies with automatic secure deletion
-- **Consent Management**: Integrated consent tracking and privacy policy compliance
-- **Data Export/Portability**: GDPR Article 20 compliance with secure data export functionality
-
-## Technical Architecture
-
-### WordPress Integration Excellence
-- **Custom Post Types**: Seamless integration with WordPress content management system
-- **Custom Database Tables**: Optimized database schema for retreat-specific data with proper indexing
-- **WordPress Capability System**: Deep integration with WordPress user roles and capabilities
-- **Email System Integration**: Native WordPress email system for secure invitations and notifications
-- **Internationalization Ready**: Complete i18n support with professional Spanish translations
-- **Responsive Admin Interface**: Modern, mobile-friendly administration interface with intuitive UX/UI
-
-### Modern Development Standards
-- **Object-Oriented Architecture**: Clean, maintainable OOP design with singleton patterns for optimal performance
-- **Enterprise Design Patterns**: Implementation of proven design patterns for scalability and maintainability
-- **WordPress Coding Standards**: Full compliance with WordPress coding standards and best practices
-- **Modern PHP Requirements**: Built for PHP 7.4+ with support for latest PHP features and security standards
-- **Database Schema Management**: Automated database migrations with version control and rollback capabilities
-- **Security-First Development**: Security considerations integrated into every aspect of the codebase
-
-## System Requirements
-
-### Minimum Requirements
-- **WordPress**: 5.0 or higher (WordPress 6.0+ recommended for optimal performance)
-- **PHP**: 7.4 or higher (PHP 8.0+ recommended for enhanced security and performance)
-- **MySQL**: 5.6 or higher (MySQL 8.0+ or MariaDB 10.3+ recommended)
-- **Memory**: 256MB PHP memory limit minimum (512MB+ recommended for bulk operations)
-- **Disk Space**: 50MB minimum for plugin files and database storage
-
-### Security Recommendations
-- **HTTPS Required**: SSL/TLS encryption mandatory for production environments
-- **Server Configuration**: Secure server configuration with proper file permissions
-- **WordPress Updates**: Keep WordPress core, themes, and plugins updated
-- **Database Security**: Secure database configuration with strong passwords and restricted access
-- **Backup Strategy**: Regular automated backups of database and uploaded files
-
-## Installation & Setup
-
-### Quick Installation
-1. **Download Plugin**: Download the latest release from the official repository
-2. **Upload to WordPress**: Upload the `dfx-parish-retreat-letters` folder to `/wp-content/plugins/`
-3. **Activate Plugin**: Activate through the WordPress 'Plugins' admin menu
-4. **Database Setup**: Plugin automatically creates required database tables on activation
-5. **Initial Configuration**: Access plugin settings to configure basic parameters
-
-### Post-Installation Setup
-
-#### 1. Administrator Configuration
-- Navigate to **DFX Retreat Letters** in WordPress admin menu
-- Configure global plugin settings and security parameters
-- Set up email templates for invitations and notifications
-- Configure data retention and privacy compliance settings
-
-#### 2. Permission System Setup
-- Create initial Plugin Administrators through WordPress user management
-- Set up Retreat Manager roles for retreat-specific administration
-- Configure Message Manager roles for confidential message access
-- Test invitation system with secure token generation
-
-#### 3. Security Configuration
-- Verify HTTPS is properly configured and enforced
-- Configure secure file storage directory outside web root
-- Set up backup procedures for encrypted data
-- Review and configure rate limiting settings
-
-#### 4. GDPR Compliance Setup
-- Configure data retention policies according to local regulations
-- Set up privacy policy integration
-- Configure consent management settings
-- Test data export and erasure functionality
-
-## Usage Guide
-
-### For Plugin Administrators
-
-#### Creating and Managing Retreats
-- **Retreat Creation**: Create new retreats with comprehensive details including dates, descriptions, and capacity limits
-- **Retreat Organization**: Organize retreats by categories, dates, and status for efficient management
-- **Attendant Registration**: Set up registration forms and manage attendant information securely
-- **Message URL Configuration**: Generate cryptographically secure URLs for confidential message submission
+Manage parish retreat programmes: attendants, confidential messages, permissions, and GDPR compliance — all in one place.
 
-#### User Permission Management
-- **Invite Users**: Send secure email invitations with role-specific access tokens
-- **Assign Roles**: Delegate specific retreat management or message access permissions
-- **Monitor Access**: Review user activity and access logs through comprehensive audit trails
-- **Revoke Access**: Instantly revoke user permissions with complete session invalidation
-
-### For Retreat Managers
-
-#### Managing Assigned Retreats
-- **Retreat Administration**: Full control over assigned retreats including attendant management
-- **Attendant Operations**: Add, edit, and manage attendant information with bulk import/export capabilities
-- **Message Management**: Access confidential messages through secure print-only interface
-- **Permission Delegation**: Invite and assign Message Managers for specific retreat message handling
-
-#### Advanced Attendant Features
-- **CSV Import/Export**: Bulk attendant operations with data validation and error reporting
-- **Personal Information Security**: View and manage encrypted personal data with audit logging
-- **Communication Tracking**: Monitor message submission and printing activity
-
-### For Message Managers
-
-#### Confidential Message Operations
-- **Secure Message Access**: View submitted confidential messages through print-only interface
-- **Print Tracking**: All message printing activities are logged with timestamp and user attribution
-- **Attendant Information**: Read-only access to attendant details for message context
-- **Audit Compliance**: Complete audit trail of all message access and printing operations
-
-#### Privacy Protection Features
-- **No Content Preview**: Administrative interface prevents content display for maximum privacy
-- **Secure Printing**: Encrypted message content only accessible through controlled printing system
-- **Access Logging**: All message access attempts logged for security and compliance
-
-## Developer Information
-
-### Plugin Architecture
-
-#### Database Schema
-The plugin creates and manages several custom database tables:
-
-- **`{prefix}_dfx_prl_retreats`**: Core retreat information with status tracking
-- **`{prefix}_dfx_prl_attendants`**: Encrypted attendant personal information
-- **`{prefix}_dfx_prl_confidential_messages`**: AES-256 encrypted message content
-- **`{prefix}_dfx_prl_message_files`**: Encrypted file attachments with secure storage
-- **`{prefix}_dfx_prl_message_print_log`**: Comprehensive audit trail for message printing
-- **`{prefix}_dfx_prl_retreat_permissions`**: Three-tier authorization system data
-- **`{prefix}_dfx_prl_retreat_invitations`**: Secure invitation token management
-
-#### Core Classes and Design Patterns
-
-```php
-// Main plugin singleton
-DFXPRL::get_instance()
-
-// Security and encryption utilities
-DFXPRL_Security::get_instance()
-
-// GDPR compliance management
-DFXPRL_GDPR::get_instance()
-
-// Three-tier permission system
-DFXPRL_Permissions::get_instance()
-
-// Database operations
-DFXPRL_Database::get_instance()
-```
-
-#### Security Implementation Details
-
-##### Encryption Methods
-- **Algorithm**: AES-256-CBC with HMAC-SHA256 authentication
-- **Key Management**: WordPress-integrated key derivation with salt rotation
-- **File Encryption**: Separate encryption keys for file contents and metadata
-
-##### Permission System
-```php
-// Check user permissions for retreat access
-$permissions->can_user_manage_retreat($user_id, $retreat_id)
-
-// Verify message manager access
-$permissions->can_user_access_messages($user_id, $retreat_id)
-
-// Audit logging for all permission checks
-$audit->log_permission_check($user_id, $action, $resource_id)
-```
-
-#### Extension Points for Developers
-
-##### Custom Hooks and Filters
-```php
-// Customize encryption parameters
-add_filter('dfx_prl_retreat_letters_encryption_config', $callback);
-
-// Extend GDPR compliance features
-add_action('dfx_prl_retreat_letters_gdpr_data_export', $callback);
-
-// Customize permission logic
-add_filter('dfx_prl_retreat_letters_user_permissions', $callback);
-
-// Extend audit logging
-add_action('dfx_prl_retreat_letters_audit_log', $callback);
-```
-
-##### API Endpoints
-The plugin provides secure REST API endpoints for:
-- Retreat management operations
-- Attendant data handling (with encryption)
-- Secure message submission
-- Permission verification
-- Audit log access (admin only)
-
-### Security Best Practices Implemented
-
-- **Input Validation**: Comprehensive sanitization using WordPress standards
-- **SQL Injection Prevention**: Prepared statements and WordPress database abstraction
-- **Cross-Site Scripting (XSS) Protection**: Output escaping and Content Security Policy headers
-- **Cross-Site Request Forgery (CSRF) Protection**: WordPress nonce validation throughout
-- **Data Encryption**: AES-256-CBC for all sensitive data at rest
-- **Secure Communications**: HTTPS enforcement and secure token generation
-- **Audit Logging**: Complete forensic-level activity logging
-
-## Plugin Structure
-
-```
-dfx-parish-retreat-letters/
-├── dfx-parish-retreat-letters.php    # Main plugin file and initialization
-├── includes/                         # Core plugin classes
-│   ├── class-dfx-parish-retreat-letters.php    # Main plugin singleton
-│   ├── class-admin.php                          # Administrative interface
-│   ├── class-database.php                      # Database management
-│   ├── class-security.php                      # Encryption and security
-│   ├── class-permissions.php                   # Three-tier authorization
-│   ├── class-retreat.php                       # Retreat management
-│   ├── class-attendant.php                     # Attendant operations
-│   ├── class-confidential-message.php          # Secure messaging
-│   ├── class-message-file.php                  # Encrypted file handling
-│   ├── class-print-log.php                     # Print audit logging
-│   ├── class-gdpr.php                          # GDPR compliance
-│   ├── class-invitations.php                   # User invitation system
-│   ├── class-i18n.php                          # Internationalization
-│   └── admin.js                                # Admin interface scripts
-├── languages/                        # Translation files
-│   ├── dfx-parish-retreat-letters.pot          # Translation template
-│   ├── dfx-parish-retreat-letters-es_ES.po     # Spanish translation
-│   └── dfx-parish-retreat-letters-es_ES.mo     # Compiled Spanish translation
-├── uninstall.php                     # Clean uninstallation procedures
-├── LICENSE                           # GPL v3 license
-└── README.md                         # This comprehensive documentation
-```
-
-## Internationalization
-
-The plugin is fully translation-ready and includes professional translations:
-
-- **English (en_US)**: Default language with complete interface coverage
-- **Spanish (es_ES)**: Professional translation for Spanish-speaking parishes
-- **Translation Template**: Complete `.pot` file for additional language translations
-
-### Adding New Languages
-1. Use the provided `dfx-parish-retreat-letters.pot` template
-2. Create new `.po` and `.mo` files for your target language
-3. Place translation files in the `languages/` directory
-4. Follow WordPress translation standards and guidelines
-
-## License
-
-This plugin is licensed under the **GNU General Public License v3.0 or later**.
-
-- **Freedom to Use**: Use the plugin for any purpose, including commercial applications
-- **Freedom to Study**: Access to complete source code and documentation
-- **Freedom to Modify**: Modify the plugin to meet your specific requirements
-- **Freedom to Distribute**: Share the plugin with others under the same license terms
-
-For complete license terms, see [LICENSE](LICENSE) file or visit [GNU GPL v3](https://www.gnu.org/licenses/gpl-3.0.html).
-
-## Author & Support
-
-**David Marín Carreño (DaveFX)**
-- **Website**: [davefx.com](https://davefx.com)
-- **GitHub Profile**: [@davefx](https://github.com/davefx)
-- **Project Repository**: [dfx-parish-retreat-letters](https://github.com/davefx/dfx-parish-retreat-letters)
-- **Issue Tracking**: Report bugs and feature requests through GitHub Issues
-- **Documentation**: Complete documentation available in this README
-
-### Contributing
-Contributions are welcome! Please:
-1. Fork the repository
-2. Create a feature branch
-3. Submit a pull request with detailed description
-4. Follow WordPress coding standards
-5. Include appropriate tests and documentation
+== Description ==
+
+DFX Parish Retreat Letters lets your parish manage the full lifecycle of confidential personal messages for retreat attendants — from collecting letters through a public web form to printing them securely in the admin, while keeping every piece of content fully encrypted and every action fully audited.
+
+= How it works =
+
+1. **Create a retreat** and register your attendants.
+2. **Share each attendant's unique, private URL** with the people who want to write to them — family, friends, spiritual directors.
+3. **Writers fill in the form** on a clean public page: they can type a rich-text message, attach images or documents, and agree to a legal disclaimer. A simple arithmetic CAPTCHA protects against bots.
+4. **Messages are stored encrypted** in the database. Nobody can read them by browsing the admin — they are only revealed at print time.
+5. **Authorised staff print the messages** from the admin panel. Each print is logged with the user's name, timestamp, and IP address.
+6. **Messages are handed to attendants** during or after the retreat.
+
+= Retreat management =
+
+* Create retreats with name, location, start and end dates, and a custom welcome message shown on the submission form.
+* Set a legal disclaimer text and an acceptance checkbox label that writers must tick before they can submit.
+* Enable or disable optional **Notes** and **Internal Notes** fields per retreat (Notes are exportable; Internal Notes are not).
+* Set custom **body CSS classes** on the message-form page per retreat, so each retreat can use a different visual style.
+* Choose a custom **header block** and **footer block** (any WordPress block or template part) to brand the submission form page.
+* Delete a retreat together with all its attendants and messages in one action.
+
+= Attendant management =
+
+* Add attendants individually or **import them from a CSV file** (supports merge mode to add emergency-contact data without overwriting existing records).
+* Each attendant stores: name, surnames, date of birth, and the following optional fields — notes, internal notes, emergency-contact details (name, surnames, relationship, email), inviting person, and incompatibilities.
+* **Export attendants to CSV** including their unique message URL, message count, and all standard fields.
+* Sort and filter the attendant list by name, message count, notes, or any other available column.
+* The attendant list shows at a glance how many messages each person has received and how many have not yet been printed.
+* Delete individual attendants, or remove all attendants from a retreat at once.
+
+= Confidential message submission (public form) =
+
+* Each attendant has a **unique, cryptographically secure URL** (based on a random token). Anyone with the link can submit a message without logging in to WordPress.
+* The submission form provides a **rich-text editor** (with formatting, images, and copy-paste from Word or Google Docs).
+* Writers can attach **images and documents** (PDF, DOCX, and other common types). If a message has multiple non-image files, they are bundled into a ZIP for printing.
+* An optional **legal disclaimer** with a configurable acceptance checkbox can be required before submission.
+* A simple **arithmetic CAPTCHA** prevents automated submissions. Logged-in WordPress users skip the CAPTCHA.
+* The form URL includes the attendant's initials as a suffix for easy identification when sharing links, without exposing the full name.
+* **Rate limiting** (20 requests per hour per IP) prevents abuse.
+
+= Secure message access and printing =
+
+* The admin interface **never displays message content** — there is no content-preview panel. This protects confidentiality if a screen is visible to others.
+* Authorised users open a message and click **Print**. The plugin decrypts the content on the fly, renders it in a print-ready format with the recipient's name and the sender's name, and sends it to the printer.
+* Each print action is recorded in a **print log** (user, timestamp, IP address). The log is visible from the attendant's message list.
+* Multiple images in a single message are laid out so they do not split across pages.
+
+= Three-tier permission system =
+
+The plugin uses three access levels, each scoped to specific retreats:
+
+**Plugin Administrators** (WordPress users with the `manage_retreat_plugin` capability, automatically granted to WordPress Administrators):
+
+* Create and delete retreats.
+* Manage all attendants and all messages across all retreats.
+* Grant or revoke permissions for any retreat.
+* Access Global Settings and Privacy & Compliance pages.
+
+**Retreat Managers** (assigned per retreat):
+
+* Full control of their assigned retreat: edit retreat details, manage attendants, access all messages.
+* Invite and assign Message Managers to their retreat.
+* Cannot access other retreats or global settings.
+
+**Message Managers** (assigned per retreat):
+
+* Read-only access to attendant names for context.
+* Can open and print confidential messages for their retreat.
+* Cannot edit attendants, retreat details, or permissions.
+* All print actions are logged.
+
+= User invitations =
+
+* Invite any email address to become a Retreat Manager or Message Manager for a specific retreat directly from the retreat's **Access Management** tab.
+* The invitee receives an email with a secure, time-limited token link.
+* If the email address already belongs to a WordPress user, they are granted the role immediately on acceptance. If not, a new WordPress account is created for them.
+* Pending invitations can be cancelled at any time. Expired invitations are cleaned up automatically.
+
+= Encryption and data security =
+
+* All message content and file attachments are encrypted with **AES-256-CBC** and authenticated with HMAC-SHA256 before being written to the database or disk.
+* Encrypted files are stored **outside the web root**, so they cannot be accessed directly via a browser.
+* The encryption key is generated automatically on first activation and stored in the database. An admin notice prompts you to move it to `wp-config.php` by defining the constant `DFXPRL_ENCRYPTION_KEY` for better security. If the constant and the database key ever differ, the plugin detects the mismatch and offers a one-click resolution.
+* Every sensitive admin action (permission grants, revocations, invitation events) is written to a **permission audit log**.
+
+= GDPR and privacy compliance =
+
+* **Right to Erasure** (GDPR Article 17): delete all personal data for a specific email address or attendant in one action.
+* **Data Portability** (GDPR Article 20): export all personal data associated with an email address as a structured file.
+* **IP address anonymisation**: sender IP addresses are automatically anonymised after a configurable retention period (default 30 days). A daily WordPress cron job handles the cleanup.
+* **Configurable data retention**: set how long messages and audit log entries are kept before automatic deletion.
+* **Spanish privacy law (LOPD-GDD)**: the plugin was designed with Spanish data-protection requirements in mind, in addition to GDPR.
+* All settings are found under **Retreats > Privacy & Compliance**.
+
+= Global settings =
+
+Under **Retreats > Global Settings** you can configure:
+
+* Default header and footer blocks for the message submission form (overridable per retreat).
+* Default body CSS classes for the submission form page.
+* Encryption key management (including the option to remove a database-stored key in favour of the `wp-config.php` constant).
+
+= Internationalisation =
+
+* The plugin ships with a complete **Spanish (es_ES)** translation.
+* A `.pot` template file is included so you can add your own language.
+* The public submission form uses informal Spanish ("tú") for a friendlier tone.
+
+== Installation ==
+
+1. Upload the `dfx-parish-retreat-letters` folder to `/wp-content/plugins/`.
+2. Activate the plugin through the WordPress **Plugins** menu.
+3. The plugin automatically creates all required database tables on activation.
+4. Navigate to **Retreats** in the WordPress admin sidebar to get started.
+
+= Recommended post-installation steps =
+
+1. Go to **Retreats > Global Settings** and review the default header, footer, and body-class settings for the submission form.
+2. Go to **Retreats > Privacy & Compliance** and configure data-retention periods to match your local legal requirements.
+3. For production sites, add the following line to `wp-config.php` to store the encryption key outside the database:
+   `define( 'DFXPRL_ENCRYPTION_KEY', 'your-long-random-secret-here' );`
+   Replace the placeholder with a long, cryptographically random string — for example one generated by `wp_generate_password( 64, true, true )` in the WordPress shell, or by an equivalent secure random generator. The plugin will display a notice reminding you to do this if the key is still in the database.
+4. Verify that your site uses HTTPS. The submission form URLs contain sensitive tokens and must be served over a secure connection.
+
+== Frequently Asked Questions ==
+
+= Who can see the content of submitted messages? =
+
+Nobody can read message content by browsing the admin interface. Content is only revealed at print time, and only to users who have the Retreat Manager or Message Manager role for that retreat. Every print is logged.
+
+= How do writers submit messages without a WordPress account? =
+
+Each attendant has a unique, cryptographically secure URL. You share that URL (e.g. by email or WhatsApp) with the people who want to write to the attendant. They open the link in any browser, fill in the form, and submit — no login required.
+
+= What happens to the submission form URL after the retreat? =
+
+The URL remains valid until you delete the attendant or the retreat. If you want to stop accepting new messages, you can delete the attendant's token by deleting and re-adding the attendant, or by deleting the retreat entirely.
+
+= Does the plugin use WordPress Custom Post Types or pages? =
+
+No. All data is stored in custom database tables (prefixed `{prefix}dfxprl_*`, e.g. `wp_dfxprl_retreats`). The public submission form is served directly by the plugin using a rewrite rule — you do not need to create any WordPress page.
+
+= Can I customise the look of the submission form? =
+
+Yes. You can set a custom WordPress block as the header and footer of the form page — globally under **Retreats > Global Settings**, or per retreat on the retreat edit screen. You can also add custom CSS body classes per retreat.
+
+= What file types can writers attach? =
+
+Common image formats (JPG, PNG, GIF, WebP), PDF, DOCX, and other document types supported by your server. The maximum file size is determined by your PHP and server configuration and is shown on the form. If a message contains multiple files and at least one is not an image, a ZIP archive is generated for printing.
+
+= Is the plugin GDPR-compliant? =
+
+Yes. It implements GDPR Articles 17 (Right to Erasure) and 20 (Data Portability), anonymises sender IP addresses after a configurable period, and supports configurable data-retention policies with automatic deletion. All settings are under **Retreats > Privacy & Compliance**.
+
+= Where is the encryption key stored? =
+
+By default it is generated automatically and stored in the WordPress database (`wp_options`). The plugin will display an admin notice recommending that you move it to `wp-config.php` by defining the `DFXPRL_ENCRYPTION_KEY` constant. The wp-config.php approach is safer because the key is then separate from the encrypted data.
+
+= Can I add translations for my language? =
+
+Yes. A `.pot` translation template is included in the `languages/` directory. Create `.po` and `.mo` files for your language and place them in that folder following standard WordPress translation conventions.
 
 ## Changelog
 
