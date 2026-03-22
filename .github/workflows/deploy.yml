@@ -59,9 +59,18 @@ jobs:
             --exclude='.svn/' \
             --exclude-from="$GITHUB_WORKSPACE/.distignore" \
             "$GITHUB_WORKSPACE/" .
-          
+
+
+          echo "Trunk synced. Now adding files to subversion"
           svn add --force . --auto-props --parents --depth infinity
+
+          echo "Subversion status after adding files:"
+          svn status
+
+          echo "Maybe deleting no-longer existing files"
           svn status | grep '^\!' | awk '{print $2}' | xargs -I% svn rm % --force
+
+          echo "Committing changes in Subversion trunk"
           svn commit -m "Update trunk via GitHub Actions" --username "$SVN_USERNAME" --password "$SVN_PASSWORD" --non-interactive
 
           # 3. Handle Tag (Only if it DOES NOT exist)
