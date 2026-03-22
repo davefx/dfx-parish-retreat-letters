@@ -7,6 +7,7 @@ Stable tag: 26.03.22
 Requires PHP: 7.4
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
+
 Manage personal messages in parish retreats: attendants, confidential messages, permissions, and GDPR compliance — all in one place.
 
 == Description ==
