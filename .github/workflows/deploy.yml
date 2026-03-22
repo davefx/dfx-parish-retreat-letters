@@ -1,4 +1,37 @@
-- name: Deploy to SVN
+name: Deploy to WordPress SVN
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - "*"
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install Subversion and Rsync
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y subversion rsync
+
+      - name: Set up variables
+        id: vars
+        run: |
+          TAG_NAME=${GITHUB_REF#refs/tags/}
+          
+          if [[ "$TAG_NAME" == refs/heads/* ]] || [[ "$TAG_NAME" == "main" ]]; then
+            TAG_NAME=$(git describe --tags --abbrev=0)
+          fi
+          
+          echo "tag=$TAG_NAME" >> $GITHUB_OUTPUT
+          echo "slug=dfx-parish-retreat-letters" >> $GITHUB_OUTPUT 
+
+      - name: Deploy to SVN
         env:
           SVN_USERNAME: ${{ secrets.SVN_USERNAME }}
           SVN_PASSWORD: ${{ secrets.SVN_PASSWORD }}
