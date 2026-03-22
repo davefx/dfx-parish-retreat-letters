@@ -506,10 +506,13 @@ class DFXPRL_Admin {
 		}
 		.dfxprl-tab-content {
 			display: none;
-			padding-top: 12px;
 		}
 		.dfxprl-tab-content.active {
 			display: block;
+			border: 1px solid #ccc;
+			border-top: none;
+			padding: 16px;
+			background: #fff;
 		}
 	.dfxprl-stats-grid {
 		display: grid;
