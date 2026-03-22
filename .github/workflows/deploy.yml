@@ -42,20 +42,24 @@ jobs:
           SVN_DIR="/tmp/svn-checkout"
           mkdir -p $SVN_DIR
           
+
           # 1. Checkout Trunk
           echo "Checking out Trunk..."
-          svn checkout $SVN_URL/trunk $SVN_DIR/trunk --username "$SVN_USERNAME" --password "$SVN_PASSWORD" --non-interactive
+          svn checkout $SVN_URL $SVN_DIR --username "$SVN_USERNAME" --password "$SVN_PASSWORD" --non-interactive
           
+
           # 2. Sync and Commit Trunk (Always happens)
           echo "Syncing Trunk..."
+
+          cd $SVN_DIR/trunk
+
           rsync -avP --delete \
             --exclude='.git*' \
             --exclude='.github*' \
             --exclude='.svn/' \
             --exclude-from="$GITHUB_WORKSPACE/.distignore" \
-            "$GITHUB_WORKSPACE/" "$SVN_DIR/trunk/"
+            "$GITHUB_WORKSPACE/" .
           
-          cd $SVN_DIR/trunk
           svn add --force . --auto-props --parents --depth infinity
           svn status | grep '^\!' | awk '{print $2}' | xargs -I% svn rm % --force
           svn commit -m "Update trunk via GitHub Actions" --username "$SVN_USERNAME" --password "$SVN_PASSWORD" --non-interactive
