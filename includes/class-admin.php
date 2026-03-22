@@ -508,6 +508,34 @@ class DFXPRL_Admin {
 			border-color: #ffb900;
 			background: #fffbf0;
 		}
+		.dfxprl-tab-wrapper {
+			display: flex;
+			gap: 0;
+			margin-bottom: 0;
+			border-bottom: 1px solid #ccc;
+		}
+		.dfxprl-tab-button {
+			background: #f1f1f1;
+			border: 1px solid #ccc;
+			border-bottom: none;
+			padding: 6px 14px;
+			cursor: pointer;
+			margin-right: 2px;
+			border-radius: 3px 3px 0 0;
+		}
+		.dfxprl-tab-button.active {
+			background: #fff;
+			font-weight: 600;
+			border-bottom: 1px solid #fff;
+			margin-bottom: -1px;
+		}
+		.dfxprl-tab-content {
+			display: none;
+			padding-top: 12px;
+		}
+		.dfxprl-tab-content.active {
+			display: block;
+		}
 		';
 
 		wp_add_inline_style( 'dfxprl-admin-styles', $base_styles );
