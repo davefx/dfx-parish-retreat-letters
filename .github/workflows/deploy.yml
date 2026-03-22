@@ -20,7 +20,16 @@ jobs:
       - name: Configure variables
         id: vars
         run: |
-          echo "tag=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+          TAG_NAME=${GITHUB_REF#refs/tags/}
+
+          if [[ "$TAG_NAME" == refs/heads/* ]] || [[ "$TAG_NAME" == "main" ]] || [[ "$TAG_NAME" == "master" ]]; then
+            echo "Manual execution detected, or launched from a branch. Finding last tag at Git..."
+            git fetch --prune --unshallow --tags
+            TAG_NAME=$(git describe --tags --abbrev=0)
+          fi
+
+          echo "Last tag detected: $TAG_NAME"
+          echo "tag=$TAG_NAME" >> $GITHUB_OUTPUT
           echo "slug=dfx-parish-retreat-letters" >> $GITHUB_OUTPUT
 
       - name: Deploy to SVN
