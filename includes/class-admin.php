@@ -577,7 +577,7 @@ class DFXPRL_Admin {
 		}
 
 		// Enqueue GDPR tools script on privacy page
-		if ( isset( $_GET['page'] ) && sanitize_text_field( wp_unslash( $_GET['page'] ) ) === 'dfx-prl-privacy' ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- URL parameter check for asset loading
+		if ( isset( $_GET['page'] ) && sanitize_text_field( wp_unslash( $_GET['page'] ) ) === 'dfxprl-privacy' ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- URL parameter check for asset loading
 			wp_enqueue_script(
 				'dfx-prl-admin-gdpr',
 				DFXPRL_PLUGIN_URL . 'assets/js/admin-gdpr.js',
