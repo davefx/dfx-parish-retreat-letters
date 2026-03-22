@@ -544,7 +544,7 @@ class DFXPRL_Admin {
 
 		// Enqueue retreat edit script when editing a retreat
 		$retreat_id = absint( $_GET['edit'] ?? $_GET['retreat_id'] ?? 0 ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- URL parameter check for asset loading
-		if ( $retreat_id > 0 && isset( $_GET['page'] ) && sanitize_text_field( wp_unslash( $_GET['page'] ) ) === 'dfx-prl-retreats' ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- URL parameter check for asset loading
+		if ( $retreat_id > 0 && isset( $_GET['page'] ) && sanitize_text_field( wp_unslash( $_GET['page'] ) ) === 'dfxprl-retreats-add' ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- URL parameter check for asset loading
 			wp_enqueue_script(
 				'dfx-prl-retreat-edit',
 				DFXPRL_PLUGIN_URL . 'assets/js/admin-retreat-edit.js',
