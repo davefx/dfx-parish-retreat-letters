@@ -92,7 +92,6 @@ The plugin uses three access levels, each scoped to specific retreats:
 = Encryption and data security =
 
 * All message content and file attachments are encrypted with **AES-256-CBC** and authenticated with HMAC-SHA256 before being written to the database or disk.
-* Encrypted files are stored **outside the web root**, so they cannot be accessed directly via a browser.
 * The encryption key is generated automatically on first activation and stored in the database. An admin notice prompts you to move it to `wp-config.php` by defining the constant `DFXPRL_ENCRYPTION_KEY` for better security. If the constant and the database key ever differ, the plugin detects the mismatch and offers a one-click resolution.
 * Every sensitive admin action (permission grants, revocations, invitation events) is written to a **permission audit log**.
 
