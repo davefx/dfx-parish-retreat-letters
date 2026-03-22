@@ -21,7 +21,7 @@ jobs:
         id: vars
         run: |
           echo "tag=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
-          echo "slug=TU-SLUG-AQUI" >> $GITHUB_OUTPUT # <--- ¡PON TU SLUG AQUÍ!
+          echo "slug=dfx-parish-retreat-letters" >> $GITHUB_OUTPUT
 
       - name: Deploy to SVN
         env:
