@@ -357,6 +357,7 @@ Contributions are welcome! Please:
 - Fix: admin styles now load correctly on all plugin pages, including the add-retreat and privacy pages.
 - Fix: tab buttons in the Access Management section are now visually connected to their content panel.
 - Fix: the "Remove Database Key and Use wp-config.php Key" button now works. Script was never output because it was registered via wp_add_inline_script during the admin_notices hook, which fires after wp_print_scripts. Fixed by hooking to admin_enqueue_scripts with a proper inline-only script handle and wp_localize_script for the nonce.
+- Fix: the remove-database-key AJAX handler now also accepts the legacy DFX_PARISH_RETREAT_LETTERS_ENCRYPTION_KEY constant, matching the same backward-compatibility logic as the rest of the encryption layer.
 
 ### 26.03.21
 
