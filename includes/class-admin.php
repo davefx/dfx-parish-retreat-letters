@@ -410,38 +410,17 @@ class DFXPRL_Admin {
 	 * @param string $hook_suffix The current admin page.
 	 */
 	public function enqueue_admin_scripts( $hook_suffix ) {
-		// Check for our admin pages - be more flexible with the hook detection
-		$our_pages = array( 'dfxprl-retreats', 'dfxprl-messages', 'dfxprl-privacy', 'dfxprl-global-settings' );
-		$is_our_page = false;
+		$our_pages = array(
+			'dfxprl-retreats',
+			'dfxprl-retreats-add',
+			'dfxprl-messages',
+			'dfxprl-privacy',
+			'dfxprl-global-settings',
+		);
 
-		// Ensure hook_suffix is a string
-		$hook_suffix = (string) ( $hook_suffix ?? '' );
+		$page_param = isset( $_GET['page'] ) ? sanitize_text_field( wp_unslash( $_GET['page'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- URL parameter check for asset loading
 
-		foreach ( $our_pages as $page ) {
-			// Ensure page is a string
-			$page = (string) $page;
-			if ( strpos( $hook_suffix, $page ) !== false ) {
-				$is_our_page = true;
-				break;
-			}
-		}
-
-		// Also check for query parameters that indicate our pages
-		if ( ! $is_our_page && isset( $_GET['page'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- URL parameter check
-			$page_param = sanitize_text_field( wp_unslash( $_GET['page'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- URL parameter for page check
-			// Ensure page_param is a string
-			$page_param = (string) ( $page_param ?? '' );
-			foreach ( $our_pages as $page ) {
-				// Ensure page is a string
-				$page = (string) $page;
-				if ( strpos( $page_param, $page ) !== false ) {
-					$is_our_page = true;
-					break;
-				}
-			}
-		}
-
-		if ( ! $is_our_page ) {
+		if ( ! in_array( $page_param, $our_pages, true ) ) {
 			return;
 		}
 
