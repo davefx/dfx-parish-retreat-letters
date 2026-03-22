@@ -41,46 +41,61 @@ jobs:
           SVN_URL="https://plugins.svn.wordpress.org/$SLUG/"
           SVN_DIR="/tmp/svn-checkout"
           
-          # 1. Checkout with full depth for both trunk and the specific tag
-          # This is the only way to avoid "out of date" errors
           mkdir -p $SVN_DIR
+          
+          # 1. Checkout Trunk
+          echo "Checking out Trunk..."
           svn checkout $SVN_URL/trunk $SVN_DIR/trunk --username "$SVN_USERNAME" --password "$SVN_PASSWORD" --non-interactive
           
-          # Check if tag exists on server
+          # 2. Checkout Tag (if exists)
           if svn ls "$SVN_URL/tags/$TAG" >/dev/null 2>&1; then
             echo "Tag $TAG exists. Checking it out..."
-            svn checkout "$SVN_URL/tags/$TAG" "$SVN_DIR/tags/$TAG" --username "$SVN_USERNAME" --password "$SVN_PASSWORD" --non-interactive
+            svn checkout "$SVN_URL/tags/$TAG" $SVN_DIR/tags/$TAG --username "$SVN_USERNAME" --password "$SVN_PASSWORD" --non-interactive
           else
             echo "Tag $TAG is new. Creating directory..."
             mkdir -p "$SVN_DIR/tags/$TAG"
           fi
 
-          # 2. Sync Trunk
+          # 3. Sync Trunk (Crucial: Keep .svn folders!)
+          echo "Syncing Trunk..."
           rsync -avP --delete \
             --exclude='.git*' \
             --exclude='.github*' \
+            --exclude='.svn/' \
             --exclude-from="$GITHUB_WORKSPACE/.distignore" \
             "$GITHUB_WORKSPACE/" "$SVN_DIR/trunk/"
 
-          # 3. Sync Tag
+          # 4. Sync Tag (Crucial: Keep .svn folders!)
+          echo "Syncing Tag..."
           rsync -avP --delete \
             --exclude='.git*' \
             --exclude='.github*' \
+            --exclude='.svn/' \
             --exclude-from="$GITHUB_WORKSPACE/.distignore" \
             "$GITHUB_WORKSPACE/" "$SVN_DIR/tags/$TAG/"
 
-          # 4. Process changes for SVN
-          cd $SVN_DIR
-          
-          # Add new files and remove deleted ones
-          # This handles files already under version control correctly
+          # 5. Commit Trunk
+          echo "Committing Trunk..."
+          cd $SVN_DIR/trunk
           svn add --force . --auto-props --parents --depth infinity
           svn status | grep '^\!' | awk '{print $2}' | xargs -I% svn rm % --force
+          svn commit -m "Update trunk via GitHub Actions" --username "$SVN_USERNAME" --password "$SVN_PASSWORD" --non-interactive
 
-          # 5. Final Commit
-          svn commit -m "Updating version $TAG via GitHub Actions" \
-            --username "$SVN_USERNAME" \
-            --password "$SVN_PASSWORD" \
-            --non-interactive
+          # 6. Commit Tag
+          echo "Committing Tag $TAG..."
+          cd $SVN_DIR/tags/$TAG
+          
+          # If it's a new tag directory, we need to add it to the tags parent
+          if [ ! -d ".svn" ]; then
+             # This handles the case where the tag folder is brand new
+             cd $SVN_DIR
+             svn checkout --depth immediates $SVN_URL/tags tags --username "$SVN_USERNAME" --password "$SVN_PASSWORD" --non-interactive
+             cd tags
+             svn add $TAG
+          fi
+          
+          svn add --force . --auto-props --parents --depth infinity
+          svn status | grep '^\!' | awk '{print $2}' | xargs -I% svn rm % --force
+          svn commit -m "Update tag $TAG via GitHub Actions" --username "$SVN_USERNAME" --password "$SVN_PASSWORD" --non-interactive
 
 
