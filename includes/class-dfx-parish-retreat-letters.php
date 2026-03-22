@@ -805,7 +805,7 @@ class DFXPRL {
 
 			// Enqueue styles for message form from external CSS file
 			wp_enqueue_style(
-				'dfx-prl-message-form',
+				'dfxprl-message-form',
 				DFXPRL_PLUGIN_URL . 'assets/css/message-form.css',
 				array(),
 				DFXPRL_VERSION
@@ -814,7 +814,7 @@ class DFXPRL {
 
 			// Enqueue message form JavaScript
 			wp_enqueue_script(
-				'dfx-prl-message-form',
+				'dfxprl-message-form',
 				DFXPRL_PLUGIN_URL . 'assets/js/message-form.js',
 				array( 'jquery' ),
 				DFXPRL_VERSION,
@@ -823,7 +823,7 @@ class DFXPRL {
 
 			// Localize script with translatable strings and AJAX URL
 			wp_localize_script(
-				'dfx-prl-message-form',
+				'dfxprl-message-form',
 				'dfxprlMessageForm',
 				array(
 					'ajaxurl' => admin_url( 'admin-ajax.php' ),
@@ -1599,7 +1599,7 @@ class DFXPRL {
 	public function enqueue_print_page_assets() {
 		// Enqueue print page styles
 		wp_enqueue_style(
-			'dfx-prl-print-page',
+			'dfxprl-print-page',
 			DFXPRL_PLUGIN_URL . 'assets/css/print-page.css',
 			array(),
 			DFXPRL_VERSION
@@ -1607,7 +1607,7 @@ class DFXPRL {
 
 		// Enqueue print page script
 		wp_enqueue_script(
-			'dfx-prl-print-page',
+			'dfxprl-print-page',
 			DFXPRL_PLUGIN_URL . 'assets/js/print-page.js',
 			array(),
 			DFXPRL_VERSION,

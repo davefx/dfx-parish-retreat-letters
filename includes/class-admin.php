@@ -546,7 +546,7 @@ class DFXPRL_Admin {
 		$retreat_id = absint( $_GET['edit'] ?? $_GET['retreat_id'] ?? 0 ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- URL parameter check for asset loading
 		if ( $retreat_id > 0 && isset( $_GET['page'] ) && sanitize_text_field( wp_unslash( $_GET['page'] ) ) === 'dfxprl-retreats-add' ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- URL parameter check for asset loading
 			wp_enqueue_script(
-				'dfx-prl-retreat-edit',
+				'dfxprl-retreat-edit',
 				DFXPRL_PLUGIN_URL . 'assets/js/admin-retreat-edit.js',
 				array( 'jquery' ),
 				DFXPRL_VERSION,
@@ -554,7 +554,7 @@ class DFXPRL_Admin {
 			);
 
 			wp_localize_script(
-				'dfx-prl-retreat-edit',
+				'dfxprl-retreat-edit',
 				'dfxprlRetreatEdit',
 				array(
 					'nonce'     => wp_create_nonce( 'dfx_prl_retreats_nonce' ),
@@ -579,7 +579,7 @@ class DFXPRL_Admin {
 		// Enqueue GDPR tools script on privacy page
 		if ( isset( $_GET['page'] ) && sanitize_text_field( wp_unslash( $_GET['page'] ) ) === 'dfxprl-privacy' ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- URL parameter check for asset loading
 			wp_enqueue_script(
-				'dfx-prl-admin-gdpr',
+				'dfxprl-admin-gdpr',
 				DFXPRL_PLUGIN_URL . 'assets/js/admin-gdpr.js',
 				array( 'jquery' ),
 				DFXPRL_VERSION,
@@ -587,7 +587,7 @@ class DFXPRL_Admin {
 			);
 
 			wp_localize_script(
-				'dfx-prl-admin-gdpr',
+				'dfxprl-admin-gdpr',
 				'dfxprlGDPR',
 				array(
 					'ajaxurl' => admin_url( 'admin-ajax.php' ),
@@ -659,7 +659,7 @@ class DFXPRL_Admin {
 
 		// Enqueue admin footer positioning script
 		wp_enqueue_script(
-			'dfx-prl-admin-footer',
+			'dfxprl-admin-footer',
 			DFXPRL_PLUGIN_URL . 'assets/js/admin-footer.js',
 			array( 'jquery' ),
 			DFXPRL_VERSION,
@@ -1387,7 +1387,7 @@ class DFXPRL_Admin {
 
 		<?php
 		// Styles for permission management sidebar are properly enqueued via enqueue_admin_scripts()
-		// using wp_add_inline_style() to 'dfx-prl-admin-styles' handle
+		// using wp_add_inline_style() to 'dfxprl-admin-styles' handle
 		// JavaScript for permission management sidebar is now properly enqueued
 		// via enqueue_admin_scripts() and loaded from assets/js/admin-retreat-edit.js
 		?>
@@ -4091,7 +4091,7 @@ class DFXPRL_Admin {
 
 		<?php
 		// Styles for privacy compliance page are properly enqueued via enqueue_admin_scripts()
-		// using wp_add_inline_style() to 'dfx-prl-admin-styles' handle
+		// using wp_add_inline_style() to 'dfxprl-admin-styles' handle
 		// JavaScript for GDPR tools is now properly enqueued
 		// via enqueue_admin_scripts() and loaded from assets/js/admin-gdpr.js
 		?>

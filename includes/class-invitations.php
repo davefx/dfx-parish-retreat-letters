@@ -633,7 +633,7 @@ class DFXPRL_Invitations {
 	 */
 	public function output_invitation_styles() {
 		$styles = '
-		.dfx-prl-invitation-container {
+		.dfxprl-invitation-container {
 			max-width: 600px;
 			margin: 2rem auto;
 			padding: 2rem;
@@ -685,7 +685,7 @@ class DFXPRL_Invitations {
 			color: #d63384;
 		}
 
-		.dfx-prl-form-group input {
+		.dfxprl-form-group input {
 			width: 100%;
 			padding: 0.75rem;
 			border: 1px solid #ddd;
@@ -693,12 +693,12 @@ class DFXPRL_Invitations {
 			font-size: 1rem;
 		}
 
-		.dfx-prl-form-group input:focus {
+		.dfxprl-form-group input:focus {
 			outline: none;
 			border-color: #007cba;
 		}
 
-		.dfx-prl-submit-button {
+		.dfxprl-submit-button {
 			width: 100%;
 			padding: 1rem;
 			background: #007cba;
@@ -711,11 +711,11 @@ class DFXPRL_Invitations {
 			transition: background-color 0.3s;
 		}
 
-		.dfx-prl-submit-button:hover {
+		.dfxprl-submit-button:hover {
 			background: #005a87;
 		}
 
-		.dfx-prl-invitation-info {
+		.dfxprl-invitation-info {
 			background: #e7f3ff;
 			padding: 1.5rem;
 			border-radius: 4px;
@@ -728,7 +728,7 @@ class DFXPRL_Invitations {
 			color: #0073aa;
 		}
 
-		.dfx-prl-invitation-info ul {
+		.dfxprl-invitation-info ul {
 			margin: 0;
 			padding-left: 1.5rem;
 		}
@@ -739,9 +739,9 @@ class DFXPRL_Invitations {
 		';
 
 		// Register a dummy style handle and add inline styles
-		wp_register_style( 'dfx-prl-invitation', false ); // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion
-		wp_enqueue_style( 'dfx-prl-invitation' );
-		wp_add_inline_style( 'dfx-prl-invitation', $styles );
+		wp_register_style( 'dfxprl-invitation', false ); // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion
+		wp_enqueue_style( 'dfxprl-invitation' );
+		wp_add_inline_style( 'dfxprl-invitation', $styles );
 	}
 
 	/**
