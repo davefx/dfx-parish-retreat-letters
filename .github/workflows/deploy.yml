@@ -9,28 +9,27 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout my Git code
+      - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-      - name: Install Subversion
+      - name: Install Subversion and Rsync
         run: |
           sudo apt-get update
           sudo apt-get install -y subversion rsync
 
-      - name: Configure variables
+      - name: Set up variables
         id: vars
         run: |
           TAG_NAME=${GITHUB_REF#refs/tags/}
-
-          if [[ "$TAG_NAME" == refs/heads/* ]] || [[ "$TAG_NAME" == "main" ]] || [[ "$TAG_NAME" == "master" ]]; then
-            echo "Manual execution detected, or launched from a branch. Finding last tag at Git..."
-            git fetch --prune --unshallow --tags
+          
+          if [[ "$TAG_NAME" == refs/heads/* ]] || [[ "$TAG_NAME" == "main" ]]; then
             TAG_NAME=$(git describe --tags --abbrev=0)
           fi
-
-          echo "Last tag detected: $TAG_NAME"
+          
           echo "tag=$TAG_NAME" >> $GITHUB_OUTPUT
-          echo "slug=dfx-parish-retreat-letters" >> $GITHUB_OUTPUT
+          echo "slug=tu-slug-real" >> $GITHUB_OUTPUT 
 
       - name: Deploy to SVN
         env:
@@ -46,7 +45,12 @@ jobs:
           cd $SVN_DIR
           
           svn update --set-depth infinity trunk
-          mkdir -p tags/$TAG
+
+          if svn ls "tags/$TAG" >/dev/null 2>&1; then
+            svn update --set-depth infinity "tags/$TAG"
+          else
+            mkdir -p "tags/$TAG"
+          fi
 
           rsync -avP --delete \
             --exclude='.git*' \
@@ -61,15 +65,14 @@ jobs:
             "$GITHUB_WORKSPACE/" "$SVN_DIR/tags/$TAG/"
 
           svn add --force . --auto-props --parents --depth infinity
-          svn status | grep '^\!' | sed 's/! *//' | xargs -I% svn rm %
-
-          cd $SVN_DIR
+          
           svn status | grep '^\!' | awk '{print $2}' | xargs -I% svn rm % --force
 
-          svn commit -m "Versión $TAG desde GitHub Actions" \
+          svn commit -m "Update version $TAG via GitHub Actions" \
             --username "$SVN_USERNAME" \
             --password "$SVN_PASSWORD" \
             --non-interactive
+
 
 
 
