@@ -13,31 +13,16 @@ Manage parish retreat programs with confidentiality, GDPR compliance, and user m
 
 # DFX Parish Retreat Letters
 
-**Enterprise-Grade Retreat Management System for WordPress**
+**Enterprise-Grade Personal Messaging Management System for Parish-organized Retreats**
 
-A comprehensive, security-focused WordPress plugin designed for parishes and organizations to 
-manage retreat programs with complete confidentiality, GDPR compliance, and advanced user management capabilities.
+A comprehensive, security-focused WordPress plugin designed for parishes and organizations to manage personal messages in parish-organized retreats with complete confidentiality, GDPR compliance, and advanced user management capabilities.
 
 ## Description
 
-DFX Parish Retreat Letters is a professional-grade retreat management system that provides churches and organizations 
-with enterprise-level security and functionality for managing retreat programs. The plugin features a complete retreat 
-lifecycle management system, secure confidential messaging with military-grade encryption, and a sophisticated three-tier 
-authorization system designed to protect sensitive spiritual and personal communications.
+DFX Parish Retreat Letters is a professional-grade management system that provides churches and organizations with enterprise-level security and functionality for managing personal messages within spiritual retreats. 
+The plugin features a complete secure confidential messaging system with military-grade encryption, and a sophisticated three-tier authorization system designed to protect sensitive spiritual and personal communications.
 
 ## Core Features
-
-### Comprehensive Retreat Management System
-- **Complete Retreat Lifecycle Management**: Create, edit, organize, and track retreats from planning to completion
-- **Advanced Date Management**: Flexible scheduling system with date tracking and conflict resolution
-- **Retreat Status Tracking**: Monitor retreat progress through customizable status workflows
-- **Multi-Retreat Organization**: Handle multiple concurrent retreats with separate management streams
-
-### Advanced Attendant Management
-- **Complete Registration System**: Comprehensive attendant registration with personal information tracking
-- **Attendant-Retreat Associations**: Flexible assignment system linking attendants to multiple retreats
-- **Bulk Operations**: Import/export attendant data via CSV with data validation
-- **Personal Information Security**: Encrypted storage of sensitive personal data with GDPR compliance
 
 ### Secure Confidential Message System
 - **Privacy-Compliant Messaging**: Full adherence to Spanish privacy laws (LOPD-GDD) and European GDPR regulations
