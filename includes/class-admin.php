@@ -557,7 +557,7 @@ class DFXPRL_Admin {
 				'dfxprl-retreat-edit',
 				'dfxprlRetreatEdit',
 				array(
-					'nonce'     => wp_create_nonce( 'dfx_prl_retreats_nonce' ),
+					'nonce'     => wp_create_nonce( 'dfxprl_retreats_nonce' ),
 					'retreatId' => $retreat_id,
 					'i18n'      => array(
 						'searchFailed'             => __( 'Search failed. Please try again.', 'dfx-parish-retreat-letters' ),
@@ -591,7 +591,7 @@ class DFXPRL_Admin {
 				'dfxprlGDPR',
 				array(
 					'ajaxurl' => admin_url( 'admin-ajax.php' ),
-					'nonce'   => wp_create_nonce( 'dfx_prl_gdpr_nonce' ),
+					'nonce'   => wp_create_nonce( 'dfxprl_gdpr_nonce' ),
 					'i18n'    => array(
 						'pleaseEnterIdentifier' => __( 'Please enter a sender name or email.', 'dfx-parish-retreat-letters' ),
 						'confirmationText'      => __( 'ERASE ALL DATA', 'dfx-parish-retreat-letters' ),

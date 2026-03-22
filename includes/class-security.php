@@ -171,7 +171,7 @@ class DFXPRL_Security {
 			return;
 		}
 
-		$nonce = wp_create_nonce( 'dfx_prl_remove_db_encryption_key' );
+		$nonce = wp_create_nonce( 'dfxprl_remove_db_encryption_key' );
 		
 		// Enqueue jQuery and add inline script for the button handler
 		wp_enqueue_script( 'jquery' );
