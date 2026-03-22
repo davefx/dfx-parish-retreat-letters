@@ -1226,187 +1226,6 @@ class DFXPRL_Admin {
 		<?php
 	}
 
-	/**
-	 * Render the permission management section for a retreat.
-	 *
-	 * @since 1.3.0
-	 * @param object $retreat Retreat object.
-	 */
-	private function render_permission_management_section( $retreat ) {
-		$permissions = $this->permissions->get_retreat_permissions( $retreat->id );
-		$invitations = DFXPRL_Invitations::get_instance();
-		$pending_invitations = $invitations->get_retreat_invitations( $retreat->id, 'pending' );
-		?>
-		<div id="permission-management-section" class="card">
-			<h2><?php esc_html_e( 'Access Management', 'dfx-parish-retreat-letters' ); ?></h2>
-
-			<div id="permission-notices"></div>
-
-			<!-- Current Permissions -->
-			<div class="dfxprl-permissions-current">
-				<h3><?php esc_html_e( 'Current Permissions', 'dfx-parish-retreat-letters' ); ?></h3>
-				<?php if ( ! empty( $permissions ) ) : ?>
-					<table class="wp-list-table widefat fixed striped">
-						<thead>
-							<tr>
-								<th><?php esc_html_e( 'User', 'dfx-parish-retreat-letters' ); ?></th>
-								<th><?php esc_html_e( 'Role', 'dfx-parish-retreat-letters' ); ?></th>
-								<th><?php esc_html_e( 'Granted By', 'dfx-parish-retreat-letters' ); ?></th>
-								<th><?php esc_html_e( 'Date', 'dfx-parish-retreat-letters' ); ?></th>
-								<th><?php esc_html_e( 'Actions', 'dfx-parish-retreat-letters' ); ?></th>
-							</tr>
-						</thead>
-						<tbody>
-							<?php foreach ( $permissions as $permission ) : ?>
-								<tr data-user-id="<?php echo esc_attr( $permission->user_id ); ?>" data-permission="<?php echo esc_attr( $permission->permission_level ); ?>">
-									<td>
-										<strong><?php echo esc_html( $permission->display_name ); ?></strong><br>
-										<small><?php echo esc_html( $permission->user_email ); ?></small>
-									</td>
-									<td>
-										<span class="permission-badge permission-<?php echo esc_attr( $permission->permission_level ); ?>">
-											<?php
-											echo esc_html( $permission->permission_level === 'manager'
-												? __( 'Retreat Manager', 'dfx-parish-retreat-letters' )
-												: __( 'Message Manager', 'dfx-parish-retreat-letters' )
-											);
-											?>
-										</span>
-									</td>
-									<td><?php echo esc_html( $permission->granted_by_name ); ?></td>
-									<td><?php echo esc_html( date_i18n( get_option( 'date_format' ), strtotime( $permission->granted_at ) ) ); ?></td>
-									<td>
-										<?php if ( $permission->user_id !== get_current_user_id() ) : ?>
-											<button type="button" class="button button-small revoke-permission"
-													data-user-id="<?php echo esc_attr( $permission->user_id ); ?>"
-													data-permission="<?php echo esc_attr( $permission->permission_level ); ?>">
-												<?php esc_html_e( 'Revoke', 'dfx-parish-retreat-letters' ); ?>
-											</button>
-										<?php else : ?>
-											<em><?php esc_html_e( 'You cannot revoke your own permissions', 'dfx-parish-retreat-letters' ); ?></em>
-										<?php endif; ?>
-									</td>
-								</tr>
-							<?php endforeach; ?>
-						</tbody>
-					</table>
-				<?php else : ?>
-					<p><?php esc_html_e( 'No users have been granted permissions for this retreat yet.', 'dfx-parish-retreat-letters' ); ?></p>
-				<?php endif; ?>
-			</div>
-
-			<!-- Pending Invitations -->
-			<?php if ( ! empty( $pending_invitations ) ) : ?>
-				<div class="dfxprl-permissions-invitations">
-					<h3><?php esc_html_e( 'Pending Invitations', 'dfx-parish-retreat-letters' ); ?></h3>
-					<table class="wp-list-table widefat fixed striped">
-						<thead>
-							<tr>
-								<th><?php esc_html_e( 'Name', 'dfx-parish-retreat-letters' ); ?></th>
-								<th><?php esc_html_e( 'Email', 'dfx-parish-retreat-letters' ); ?></th>
-								<th><?php esc_html_e( 'Role', 'dfx-parish-retreat-letters' ); ?></th>
-								<th><?php esc_html_e( 'Invited', 'dfx-parish-retreat-letters' ); ?></th>
-								<th><?php esc_html_e( 'Expires', 'dfx-parish-retreat-letters' ); ?></th>
-								<th><?php esc_html_e( 'Actions', 'dfx-parish-retreat-letters' ); ?></th>
-							</tr>
-						</thead>
-						<tbody>
-							<?php foreach ( $pending_invitations as $invitation ) : ?>
-								<tr data-invitation-id="<?php echo esc_attr( $invitation->id ); ?>">
-									<td><?php echo esc_html( $invitation->name ); ?></td>
-									<td><?php echo esc_html( $invitation->email ); ?></td>
-									<td>
-										<span class="permission-badge permission-<?php echo esc_attr( $invitation->permission_level ); ?>">
-											<?php
-											echo esc_html( $invitation->permission_level === 'manager'
-												? __( 'Retreat Manager', 'dfx-parish-retreat-letters' )
-												: __( 'Message Manager', 'dfx-parish-retreat-letters' )
-											);
-											?>
-										</span>
-									</td>
-									<td><?php echo esc_html( date_i18n( get_option( 'date_format' ), strtotime( $invitation->invited_at ) ) ); ?></td>
-									<td><?php echo esc_html( date_i18n( get_option( 'date_format' ), strtotime( $invitation->expires_at ) ) ); ?></td>
-									<td>
-										<button type="button" class="button button-small cancel-invitation"
-												data-invitation-id="<?php echo esc_attr( $invitation->id ); ?>">
-											<?php esc_html_e( 'Cancel', 'dfx-parish-retreat-letters' ); ?>
-										</button>
-									</td>
-								</tr>
-							<?php endforeach; ?>
-						</tbody>
-					</table>
-				</div>
-			<?php endif; ?>
-
-			<!-- Add Permissions -->
-			<div class="dfxprl-permissions-add">
-				<h3><?php esc_html_e( 'Grant Access', 'dfx-parish-retreat-letters' ); ?></h3>
-
-				<!-- Tab Navigation -->
-				<div class="nav-tab-wrapper">
-					<a href="#existing-users" class="nav-tab nav-tab-active" data-tab="existing-users">
-						<?php esc_html_e( 'Existing Users', 'dfx-parish-retreat-letters' ); ?>
-					</a>
-					<a href="#invite-users" class="nav-tab" data-tab="invite-users">
-						<?php esc_html_e( 'Invite New Users', 'dfx-parish-retreat-letters' ); ?>
-					</a>
-				</div>
-
-				<!-- Existing Users Tab -->
-				<div id="existing-users" class="tab-content active">
-					<div class="dfxprl-user-search">
-						<h4><?php esc_html_e( 'Search and Grant Permission to Existing Users', 'dfx-parish-retreat-letters' ); ?></h4>
-						<div class="search-form">
-							<input type="text" id="user-search" placeholder="<?php esc_attr_e( 'Search by username, email, or name...', 'dfx-parish-retreat-letters' ); ?>" autocomplete="off">
-							<div id="user-search-results"></div>
-						</div>
-					</div>
-				</div>
-
-				<!-- Invite Users Tab -->
-				<div id="invite-users" class="tab-content">
-					<div class="dfxprl-invite-form">
-						<h4><?php esc_html_e( 'Send Invitation to New User', 'dfx-parish-retreat-letters' ); ?></h4>
-						<form id="invitation-form">
-							<div class="form-row">
-								<div class="form-field">
-									<label for="invite-name"><?php esc_html_e( 'Name', 'dfx-parish-retreat-letters' ); ?> <span class="required">*</span></label>
-									<input type="text" id="invite-name" name="name" required>
-								</div>
-								<div class="form-field">
-									<label for="invite-email"><?php esc_html_e( 'Email', 'dfx-parish-retreat-letters' ); ?> <span class="required">*</span></label>
-									<input type="email" id="invite-email" name="email" required>
-								</div>
-							</div>
-							<div class="form-row">
-								<div class="form-field">
-									<label for="invite-permission"><?php esc_html_e( 'Role', 'dfx-parish-retreat-letters' ); ?> <span class="required">*</span></label>
-									<select id="invite-permission" name="permission_level" required>
-										<option value=""><?php esc_html_e( 'Select role...', 'dfx-parish-retreat-letters' ); ?></option>
-										<option value="manager"><?php esc_html_e( 'Retreat Manager', 'dfx-parish-retreat-letters' ); ?></option>
-										<option value="message_manager"><?php esc_html_e( 'Message Manager', 'dfx-parish-retreat-letters' ); ?></option>
-									</select>
-								</div>
-							</div>
-							<button type="submit" class="button button-primary">
-								<?php esc_html_e( 'Send Invitation', 'dfx-parish-retreat-letters' ); ?>
-							</button>
-						</form>
-					</div>
-				</div>
-			</div>
-		</div>
-
-		<?php
-		// Styles for permission management are properly enqueued via enqueue_admin_scripts()
-		// using wp_add_inline_style() to 'dfx-prl-admin-styles' handle
-		// JavaScript for retreat editing (permissions, invitations) is now properly enqueued
-		// via enqueue_admin_scripts() and loaded from assets/js/admin-retreat-edit.js
-		?>
-		<?php
-	}
 
 	/**
 	 * Render the permission management section for the sidebar.
@@ -1455,9 +1274,10 @@ class DFXPRL_Admin {
 									</div>
 									<?php if ( $permission->user_id !== get_current_user_id() ) : ?>
 										<div class="dfxprl-permission-actions">
-											<button type="button" class="button button-small revoke-permission"
+											<button type="button" class="button button-small dfxprl-revoke-permission"
 													data-user-id="<?php echo esc_attr( $permission->user_id ); ?>"
-													data-permission="<?php echo esc_attr( $permission->permission_level ); ?>">
+													data-permission="<?php echo esc_attr( $permission->permission_level ); ?>"
+													data-confirm="<?php esc_attr_e( 'Are you sure you want to revoke this permission?', 'dfx-parish-retreat-letters' ); ?>">
 												<?php esc_html_e( 'Revoke', 'dfx-parish-retreat-letters' ); ?>
 											</button>
 										</div>
@@ -1497,8 +1317,9 @@ class DFXPRL_Admin {
 										printf( esc_html__( 'Expires %s', 'dfx-parish-retreat-letters' ), esc_html( date_i18n( get_option( 'date_format' ), strtotime( $invitation->expires_at ) ) ) ); ?></small>
 									</div>
 									<div class="dfxprl-invitation-actions">
-										<button type="button" class="button button-small cancel-invitation"
-												data-invitation-id="<?php echo esc_attr( $invitation->id ); ?>">
+										<button type="button" class="button button-small dfxprl-cancel-invitation"
+												data-invitation-id="<?php echo esc_attr( $invitation->id ); ?>"
+												data-confirm="<?php esc_attr_e( 'Are you sure you want to cancel this invitation?', 'dfx-parish-retreat-letters' ); ?>">
 											<?php esc_html_e( 'Cancel', 'dfx-parish-retreat-letters' ); ?>
 										</button>
 									</div>

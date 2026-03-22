@@ -1,9 +1,9 @@
 /**
  * Retreat Edit Page JavaScript
- * 
+ *
  * Handles retreat editing functionality including permissions and invitations management.
  * Requires jQuery and expects dfxprlRetreatEdit object to be localized.
- * 
+ *
  * @package DFXPRL
  * @since 25.12.10
  */
@@ -17,14 +17,14 @@ var retreatId = dfxprlRetreatEdit.retreatId;
 var searchTimeout;
 
 // Tab switching
-$('.nav-tab').on('click', function(e) {
+$('.dfxprl-tab-button').on('click', function(e) {
 e.preventDefault();
 var tabId = $(this).data('tab');
 
-$('.nav-tab').removeClass('nav-tab-active');
-$(this).addClass('nav-tab-active');
+$('.dfxprl-tab-button').removeClass('active');
+$(this).addClass('active');
 
-$('.tab-content').removeClass('active');
+$('.dfxprl-tab-content').removeClass('active');
 $('#' + tabId).addClass('active');
 });
 
@@ -63,7 +63,7 @@ search: searchTerm
 },
 success: function(response) {
 if (response.success) {
-displaySearchResults(response.data);
+displaySearchResults(response.data.users);
 } else {
 $('#user-search-results').html('<div class="dfxprl-search-error">' + dfxprlRetreatEdit.i18n.searchFailed + '</div>').show();
 }
@@ -84,7 +84,7 @@ results.html('<div class="dfxprl-no-results">' + dfxprlRetreatEdit.i18n.noUsersF
 var html = '<div class="dfxprl-search-results-list">';
 users.forEach(function(user) {
 html += '<div class="dfxprl-search-result-item" data-user-id="' + user.id + '">' +
-'<strong>' + user.display_name + '</strong> (' + user.user_login + ')' +
+'<strong>' + user.display_name + '</strong> (' + user.username + ')' +
 '<select class="dfxprl-role-select" data-user-id="' + user.id + '">' +
 '<option value="">' + dfxprlRetreatEdit.i18n.selectRole + '</option>' +
 '<option value="manager">' + dfxprlRetreatEdit.i18n.retreatManager + '</option>' +
@@ -103,17 +103,17 @@ results.show();
 // Grant permission
 $(document).on('click', '.dfxprl-grant-btn', function() {
 var userId = $(this).data('user-id');
-var role = $('.dfxprl-role-select[data-user-id="' + userId + '"]').val();
+var permissionLevel = $('.dfxprl-role-select[data-user-id="' + userId + '"]').val();
 
-if (!role) {
+if (!permissionLevel) {
 alert(dfxprlRetreatEdit.i18n.pleaseSelectRole);
 return;
 }
 
-grantPermission(userId, role);
+grantPermission(userId, permissionLevel);
 });
 
-function grantPermission(userId, role) {
+function grantPermission(userId, permissionLevel) {
 $.ajax({
 url: ajaxurl,
 type: 'POST',
@@ -122,7 +122,7 @@ action: 'dfxprl_grant_permission',
 nonce: nonce,
 retreat_id: retreatId,
 user_id: userId,
-role: role
+permission_level: permissionLevel
 },
 success: function(response) {
 if (response.success) {
@@ -140,14 +140,16 @@ alert(dfxprlRetreatEdit.i18n.failedToGrantPermission);
 // Revoke permission
 $(document).on('click', '.dfxprl-revoke-permission', function(e) {
 e.preventDefault();
-var permissionId = $(this).data('permission-id');
+var userId = $(this).data('user-id');
+var permissionLevel = $(this).data('permission');
+var confirmMessage = $(this).data('confirm');
 
-if (confirm($(this).data('confirm'))) {
-revokePermission(permissionId);
+if (confirm(confirmMessage)) {
+revokePermission(userId, permissionLevel);
 }
 });
 
-function revokePermission(permissionId) {
+function revokePermission(userId, permissionLevel) {
 $.ajax({
 url: ajaxurl,
 type: 'POST',
@@ -155,7 +157,8 @@ data: {
 action: 'dfxprl_revoke_permission',
 nonce: nonce,
 retreat_id: retreatId,
-permission_id: permissionId
+user_id: userId,
+permission_level: permissionLevel
 },
 success: function(response) {
 if (response.success) {
@@ -171,18 +174,17 @@ alert(dfxprlRetreatEdit.i18n.failedToRevokePermission);
 }
 
 // Send invitation
-$('#dfxprl-send-invitation-form').on('submit', function(e) {
+$('#invitation-form').on('submit', function(e) {
 e.preventDefault();
 
-var email = $('#invitation-email').val();
-var role = $('#invitation-role').val();
-var firstName = $('#invitation-first-name').val();
-var lastName = $('#invitation-last-name').val();
+var email = $('#invite-email').val();
+var permissionLevel = $('#invite-permission').val();
+var name = $('#invite-name').val();
 
-sendInvitation(email, role, firstName, lastName);
+sendInvitation(email, permissionLevel, name);
 });
 
-function sendInvitation(email, role, firstName, lastName) {
+function sendInvitation(email, permissionLevel, name) {
 $.ajax({
 url: ajaxurl,
 type: 'POST',
@@ -191,9 +193,8 @@ action: 'dfxprl_send_invitation',
 nonce: nonce,
 retreat_id: retreatId,
 email: email,
-role: role,
-first_name: firstName,
-last_name: lastName
+permission_level: permissionLevel,
+name: name
 },
 success: function(response) {
 if (response.success) {
@@ -212,8 +213,9 @@ alert(dfxprlRetreatEdit.i18n.failedToSendInvitation);
 $(document).on('click', '.dfxprl-cancel-invitation', function(e) {
 e.preventDefault();
 var invitationId = $(this).data('invitation-id');
+var confirmMessage = $(this).data('confirm');
 
-if (confirm($(this).data('confirm'))) {
+if (confirm(confirmMessage)) {
 cancelInvitation(invitationId);
 }
 });
@@ -225,6 +227,7 @@ type: 'POST',
 data: {
 action: 'dfxprl_cancel_invitation',
 nonce: nonce,
+retreat_id: retreatId,
 invitation_id: invitationId
 },
 success: function(response) {
