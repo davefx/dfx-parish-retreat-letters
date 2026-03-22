@@ -41,40 +41,46 @@ jobs:
           SVN_URL="https://plugins.svn.wordpress.org/$SLUG/"
           SVN_DIR="/tmp/svn-checkout"
           
-          # 1. Checkout metadata only
-          svn checkout --depth immediates $SVN_URL $SVN_DIR
-          cd $SVN_DIR
+          # 1. Checkout with full depth for both trunk and the specific tag
+          # This is the only way to avoid "out of date" errors
+          mkdir -p $SVN_DIR
+          svn checkout $SVN_URL/trunk $SVN_DIR/trunk --username "$SVN_USERNAME" --password "$SVN_PASSWORD" --non-interactive
           
-          # 2. Update trunk and tags folder metadata
-          svn update --set-depth infinity trunk
-          svn update --set-depth immediates tags
+          # Check if tag exists on server
+          if svn ls "$SVN_URL/tags/$TAG" >/dev/null 2>&1; then
+            echo "Tag $TAG exists. Checking it out..."
+            svn checkout "$SVN_URL/tags/$TAG" "$SVN_DIR/tags/$TAG" --username "$SVN_USERNAME" --password "$SVN_PASSWORD" --non-interactive
+          else
+            echo "Tag $TAG is new. Creating directory..."
+            mkdir -p "$SVN_DIR/tags/$TAG"
+          fi
 
-          # 3. Sync GitHub code to Trunk first
+          # 2. Sync Trunk
           rsync -avP --delete \
             --exclude='.git*' \
             --exclude='.github*' \
             --exclude-from="$GITHUB_WORKSPACE/.distignore" \
             "$GITHUB_WORKSPACE/" "$SVN_DIR/trunk/"
 
-          # 4. Handle Tag: Delete local copy and recreate from trunk
-          if [ -d "tags/$TAG" ]; then
-            echo "Tag $TAG exists locally, refreshing it..."
-            rm -rf "tags/$TAG"
-          fi
-          
-          # Copy trunk to tag locally
-          cp -r trunk "tags/$TAG"
+          # 3. Sync Tag
+          rsync -avP --delete \
+            --exclude='.git*' \
+            --exclude='.github*' \
+            --exclude-from="$GITHUB_WORKSPACE/.distignore" \
+            "$GITHUB_WORKSPACE/" "$SVN_DIR/tags/$TAG/"
 
-          # 5. Add all changes and handle deletions
-          svn add --force . --auto-props --parents --depth infinity
+          # 4. Process changes for SVN
+          cd $SVN_DIR
           
-          # Fix for "out of date" / "already exists" errors: 
-          # This ensures SVN recognizes the files correctly
+          # Add new files and remove deleted ones
+          # This handles files already under version control correctly
+          svn add --force . --auto-props --parents --depth infinity
           svn status | grep '^\!' | awk '{print $2}' | xargs -I% svn rm % --force
 
-          # 6. Commit
-          svn commit -m "Update version $TAG via GitHub Actions" \
+          # 5. Final Commit
+          svn commit -m "Updating version $TAG via GitHub Actions" \
             --username "$SVN_USERNAME" \
             --password "$SVN_PASSWORD" \
             --non-interactive
+
 
