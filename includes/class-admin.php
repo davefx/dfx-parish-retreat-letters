@@ -4233,8 +4233,9 @@ class DFXPRL_Admin {
 			wp_send_json_error( array( 'message' => __( 'You do not have permission to perform this action.', 'dfx-parish-retreat-letters' ) ) );
 		}
 
-		// Verify that a wp-config.php key is defined (otherwise we shouldn't remove the database key)
-		if ( ! defined( 'DFXPRL_ENCRYPTION_KEY' ) ) {
+		// Verify that a wp-config.php key is defined (otherwise we shouldn't remove the database key).
+		// Support both the current and legacy constant names, matching get_encryption_key() logic.
+		if ( ! defined( 'DFXPRL_ENCRYPTION_KEY' ) && ! defined( 'DFX_PARISH_RETREAT_LETTERS_ENCRYPTION_KEY' ) ) {
 			wp_send_json_error( array( 'message' => __( 'Cannot remove database key: no encryption key is defined in wp-config.php.', 'dfx-parish-retreat-letters' ) ) );
 		}
 
