@@ -24,8 +24,8 @@ var tabId = $(this).data('tab');
 $('.dfxprl-tab-button').removeClass('active');
 $(this).addClass('active');
 
-$('.dfxprl-tab-content').removeClass('active');
-$('#' + tabId).addClass('active');
+$('.dfxprl-tab-content').hide().removeClass('active');
+$('#' + tabId).show().addClass('active');
 });
 
 // User search

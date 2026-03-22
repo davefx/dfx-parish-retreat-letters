@@ -370,7 +370,7 @@ class DFXPRL_Admin {
 		);
 
 		// Hide the messages submenu item from displaying in the menu
-		add_action( 'admin_head', array( $this, 'hide_messages_submenu' ) );
+		add_action( 'admin_enqueue_scripts', array( $this, 'hide_messages_submenu' ) );
 	}
 
 	/**
@@ -448,12 +448,8 @@ class DFXPRL_Admin {
 		wp_enqueue_script( 'jquery' );
 
 		// Enqueue admin styles
-		wp_enqueue_style(
-			'dfxprl-admin-styles',
-			'', // No external file
-			array(),
-			DFXPRL_VERSION
-		);
+		wp_register_style( 'dfxprl-admin-styles', false );
+		wp_enqueue_style( 'dfxprl-admin-styles' );
 
 		// Add base admin styles
 		$base_styles = '
@@ -536,7 +532,91 @@ class DFXPRL_Admin {
 		.dfxprl-tab-content.active {
 			display: block;
 		}
-		';
+	.dfxprl-stats-grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+		gap: 20px;
+		margin-bottom: 30px;
+	}
+	.dfxprl-stat-item {
+		padding: 20px;
+		border: 1px solid #ddd;
+		border-radius: 8px;
+		background: #fff;
+		text-align: center;
+	}
+	.dfxprl-stat-number {
+		display: block;
+		font-size: 2em;
+		font-weight: 700;
+		color: #2271b1;
+	}
+	.dfxprl-stat-label {
+		display: block;
+		font-size: 0.9em;
+		color: #555;
+		margin-top: 4px;
+	}
+	.dfxprl-privacy-tools {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 20px;
+		margin-bottom: 30px;
+	}
+	.dfxprl-tool-section {
+		flex: 1 1 300px;
+		padding: 20px;
+		border: 1px solid #ddd;
+		border-radius: 8px;
+		background: #fff;
+	}
+	.dfxprl-tool-section h3 {
+		margin-top: 0;
+	}
+	.dfxprl-gdpr-tools {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 20px;
+		margin-top: 10px;
+	}
+	.dfxprl-gdpr-export, .dfxprl-gdpr-erase {
+		flex: 1 1 260px;
+		display: flex;
+		flex-direction: column;
+		gap: 8px;
+	}
+	.dfxprl-user-search {
+		position: relative;
+	}
+	#user-search-results {
+		position: absolute;
+		z-index: 100;
+		background: #fff;
+		border: 1px solid #ddd;
+		border-top: none;
+		width: 100%;
+		max-height: 200px;
+		overflow-y: auto;
+	}
+	.dfxprl-search-result-item {
+		padding: 8px;
+		border-bottom: 1px solid #eee;
+		display: flex;
+		align-items: center;
+		gap: 8px;
+		flex-wrap: wrap;
+	}
+	.dfxprl-search-result-item:hover {
+		background: #f0f0f0;
+	}
+	.dfxprl-search-error, .dfxprl-no-results {
+		padding: 8px;
+		color: #666;
+	}
+	.dfxprl-search-error {
+		color: #d63638;
+	}
+			';
 
 		wp_add_inline_style( 'dfxprl-admin-styles', $base_styles );
 
@@ -1383,7 +1463,7 @@ class DFXPRL_Admin {
 					</div>
 
 					<!-- Invite Users Tab -->
-					<div id="invite-users" class="dfxprl-tab-content">
+					<div id="invite-users" class="dfxprl-tab-content" style="display:none">
 						<div class="dfxprl-invite-form">
 							<h4><?php esc_html_e( 'Send Invitation to New User', 'dfx-parish-retreat-letters' ); ?></h4>
 							<form id="invitation-form">
