@@ -40,23 +40,13 @@ jobs:
         run: |
           SVN_URL="https://plugins.svn.wordpress.org/$SLUG/"
           SVN_DIR="/tmp/svn-checkout"
-          
           mkdir -p $SVN_DIR
           
           # 1. Checkout Trunk
           echo "Checking out Trunk..."
           svn checkout $SVN_URL/trunk $SVN_DIR/trunk --username "$SVN_USERNAME" --password "$SVN_PASSWORD" --non-interactive
           
-          # 2. Checkout Tag (if exists)
-          if svn ls "$SVN_URL/tags/$TAG" >/dev/null 2>&1; then
-            echo "Tag $TAG exists. Checking it out..."
-            svn checkout "$SVN_URL/tags/$TAG" $SVN_DIR/tags/$TAG --username "$SVN_USERNAME" --password "$SVN_PASSWORD" --non-interactive
-          else
-            echo "Tag $TAG is new. Creating directory..."
-            mkdir -p "$SVN_DIR/tags/$TAG"
-          fi
-
-          # 3. Sync Trunk (Crucial: Keep .svn folders!)
+          # 2. Sync and Commit Trunk (Always happens)
           echo "Syncing Trunk..."
           rsync -avP --delete \
             --exclude='.git*' \
@@ -64,38 +54,36 @@ jobs:
             --exclude='.svn/' \
             --exclude-from="$GITHUB_WORKSPACE/.distignore" \
             "$GITHUB_WORKSPACE/" "$SVN_DIR/trunk/"
-
-          # 4. Sync Tag (Crucial: Keep .svn folders!)
-          echo "Syncing Tag..."
-          rsync -avP --delete \
-            --exclude='.git*' \
-            --exclude='.github*' \
-            --exclude='.svn/' \
-            --exclude-from="$GITHUB_WORKSPACE/.distignore" \
-            "$GITHUB_WORKSPACE/" "$SVN_DIR/tags/$TAG/"
-
-          # 5. Commit Trunk
-          echo "Committing Trunk..."
+          
           cd $SVN_DIR/trunk
           svn add --force . --auto-props --parents --depth infinity
           svn status | grep '^\!' | awk '{print $2}' | xargs -I% svn rm % --force
           svn commit -m "Update trunk via GitHub Actions" --username "$SVN_USERNAME" --password "$SVN_PASSWORD" --non-interactive
 
-          # 6. Commit Tag
-          echo "Committing Tag $TAG..."
-          cd $SVN_DIR/tags/$TAG
-          
-          # If it's a new tag directory, we need to add it to the tags parent
-          if [ ! -d ".svn" ]; then
-             # This handles the case where the tag folder is brand new
-             cd $SVN_DIR
-             svn checkout --depth immediates $SVN_URL/tags tags --username "$SVN_USERNAME" --password "$SVN_PASSWORD" --non-interactive
-             cd tags
-             svn add $TAG
+          # 3. Handle Tag (Only if it DOES NOT exist)
+          cd $SVN_DIR
+          if svn ls "$SVN_URL/tags/$TAG" >/dev/null 2>&1; then
+            echo "Tag $TAG already exists in SVN. Skipping tag update to protect historical data."
+          else
+            echo "Tag $TAG is new. Creating and committing tag..."
+            
+            # Checkout tags parent (minimal depth)
+            svn checkout --depth immediates $SVN_URL/tags $SVN_DIR/tags --username "$SVN_USERNAME" --password "$SVN_PASSWORD" --non-interactive
+            mkdir -p "$SVN_DIR/tags/$TAG"
+            
+            # Sync code to the new tag folder
+            rsync -avP --delete \
+              --exclude='.git*' \
+              --exclude='.github*' \
+              --exclude='.svn/' \
+              --exclude-from="$GITHUB_WORKSPACE/.distignore" \
+              "$GITHUB_WORKSPACE/" "$SVN_DIR/tags/$TAG/"
+            
+            # Add and Commit the new tag
+            cd $SVN_DIR/tags
+            svn add $TAG
+            cd $TAG
+            svn commit -m "Tagging version $TAG" --username "$SVN_USERNAME" --password "$SVN_PASSWORD" --non-interactive
           fi
-          
-          svn add --force . --auto-props --parents --depth infinity
-          svn status | grep '^\!' | awk '{print $2}' | xargs -I% svn rm % --force
-          svn commit -m "Update tag $TAG via GitHub Actions" --username "$SVN_USERNAME" --password "$SVN_PASSWORD" --non-interactive
 
 
