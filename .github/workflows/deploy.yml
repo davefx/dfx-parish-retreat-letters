@@ -1,53 +1,54 @@
 name: Deploy to WordPress SVN
 on:
-  workflow_dispatch: # Botón manual
+  workflow_dispatch:
   push:
     tags:
-      - "*" # Se activa al crear un tag
+      - "*"
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout de tu código Git
+      - name: Checkout my Git code
         uses: actions/checkout@v4
 
-      - name: Configurar variables
+      - name: Install Subversion
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y subversion rsync
+
+      - name: Configure variables
         id: vars
         run: |
           echo "tag=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
-          echo "slug=TU-SLUG-AQUI" >> $GITHUB_OUTPUT # <--- ¡CAMBIA ESTO!
+          echo "slug=TU-SLUG-AQUI" >> $GITHUB_OUTPUT # <--- ¡PON TU SLUG AQUÍ!
 
-      - name: Despliegue directo a SVN
+      - name: Deploy to SVN
         env:
           SVN_USERNAME: ${{ secrets.SVN_USERNAME }}
           SVN_PASSWORD: ${{ secrets.SVN_PASSWORD }}
           SLUG: ${{ steps.vars.outputs.slug }}
           TAG: ${{ steps.vars.outputs.tag }}
         run: |
-          # 1. Preparar entorno
           SVN_URL="https://plugins.svn.wordpress.org/$SLUG/"
           SVN_DIR="/tmp/svn-checkout"
           
-          # 2. Checkout parcial del SVN (solo lo necesario para no tardar horas)
           svn checkout --depth immediates $SVN_URL $SVN_DIR
           cd $SVN_DIR
-          svn update --set-depth infinity trunk
-          svn update --set-depth infinity tags/$TAG || mkdir -p tags/$TAG
-
-          # 3. Limpiar el trunk de SVN y copiar lo nuevo de Git
-          # (Aquí usamos rsync para ignorar lo que no quieras)
-          rsync -rc --delete --exclude-from=$GITHUB_WORKSPACE/.distignore $GITHUB_WORKSPACE/ $SVN_DIR/trunk/
           
-          # 4. Copiar también al tag correspondiente
-          rsync -rc --delete --exclude-from=$GITHUB_WORKSPACE/.distignore $GITHUB_WORKSPACE/ $SVN_DIR/tags/$TAG/
+          svn update --set-depth infinity trunk
+          mkdir -p tags/$TAG
 
-          # 5. Commit al repositorio oficial
-          svn add --force .
-          svn status # Para que veas en el log qué se va a subir
+          rsync -avP --delete --exclude='.git*' --exclude='.github*' $GITHUB_WORKSPACE/ $SVN_DIR/trunk/
+          rsync -avP --delete --exclude='.git*' --exclude='.github*' $GITHUB_WORKSPACE/ $SVN_DIR/tags/$TAG/
+
+          svn add --force . --auto-props --parents --depth infinity
+          svn status | grep '^\!' | sed 's/! *//' | xargs -I% svn rm %
+
           svn commit -m "Versión $TAG desde GitHub Actions" \
             --username "$SVN_USERNAME" \
             --password "$SVN_PASSWORD" \
             --non-interactive
+
 
 
