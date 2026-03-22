@@ -3,7 +3,7 @@ Contributors: davefx
 Tags: parish, retreat, letters, confidential, GDPR
 Requires at least: 5.0
 Tested up to: 6.9
-Stable tag: 26.03.21
+Stable tag: 26.03.22
 Requires PHP: 7.4
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
@@ -346,6 +346,10 @@ Contributions are welcome! Please:
 5. Include appropriate tests and documentation
 
 ## Changelog
+
+### 26.03.22
+
+- Fix: solved JS not loading on the retreat edit page, which prevented the access management feature (user search, grant/revoke permissions, invitations) from working.
 
 ### 26.03.21
 
