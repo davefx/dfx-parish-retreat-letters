@@ -173,9 +173,6 @@ class DFXPRL_Security {
 
 		$nonce = wp_create_nonce( 'dfxprl_remove_db_encryption_key' );
 		
-		// Enqueue jQuery and add inline script for the button handler
-		wp_enqueue_script( 'jquery' );
-		$this->enqueue_encryption_key_mismatch_script( $nonce );
 		?>
 		<div class="notice notice-error" id="dfxprl-encryption-key-mismatch-notice">
 			<p>
@@ -202,21 +199,25 @@ class DFXPRL_Security {
 				<span id="dfxprl-remove-db-key-status" style="margin-left: 10px;"></span>
 			</p>
 		</div>
+		<script>
+		<?php echo $this->get_encryption_key_mismatch_script( $nonce ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- raw JS ?>
+		</script>
 		<?php
 	}
 
 	/**
-	 * Enqueue inline script for encryption key mismatch notice.
+	 * Return the inline script for the encryption key mismatch notice button.
 	 *
 	 * @since 25.12.10
 	 * @param string $nonce The nonce for the AJAX request.
+	 * @return string JavaScript code (no <script> tags).
 	 */
-	public function enqueue_encryption_key_mismatch_script( $nonce ) {
+	private function get_encryption_key_mismatch_script( $nonce ) {
 		$confirm_message = esc_js( __( 'Are you sure you want to remove the encryption key from the database? Any messages encrypted with the old key will become unreadable. This action cannot be undone.', 'dfx-parish-retreat-letters' ) );
 		$removing_text = esc_js( __( 'Removing...', 'dfx-parish-retreat-letters' ) );
 		$error_text = esc_js( __( 'An error occurred. Please try again.', 'dfx-parish-retreat-letters' ) );
-		
-		$script = sprintf(
+
+		return sprintf(
 			'jQuery(document).ready(function($) {
 	$("#dfxprl-remove-db-key-btn").on("click", function() {
 		var $button = $(this);
@@ -259,8 +260,6 @@ class DFXPRL_Security {
 			$removing_text,
 			$error_text
 		);
-		
-		wp_add_inline_script( 'jquery', $script );
 	}
 
 	/**
