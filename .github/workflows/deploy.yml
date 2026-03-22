@@ -3,6 +3,7 @@ on:
   push:
     tags:
       - "*" # Se activa cada vez que creas un tag (ej: v1.0.1)
+  workflow_dispatch: # This enables the manual button
 
 jobs:
   tag:
