@@ -350,6 +350,12 @@ Contributions are welcome! Please:
 ### 26.03.22
 
 - Fix: solved JS not loading on the retreat edit page, which prevented the access management feature (user search, grant/revoke permissions, invitations) from working.
+- Fix: corrected nonce mismatch that caused all Access Management AJAX calls to fail the security check.
+- Fix: normalized all internal identifiers from dfx-prl/dfx_prl to dfxprl for consistency with WordPress plugin repo policy.
+- Fix: removed dead code (render_permission_management_section method that was never called).
+- Fix: corrected CSS class mismatches between PHP templates and JavaScript event listeners in the Access Management section.
+- Fix: admin styles now load correctly on all plugin pages, including the add-retreat and privacy pages.
+- Fix: tab buttons in the Access Management section are now visually connected to their content panel.
 
 ### 26.03.21
 
