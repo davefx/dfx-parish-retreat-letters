@@ -39,11 +39,23 @@ jobs:
           svn update --set-depth infinity trunk
           mkdir -p tags/$TAG
 
-          rsync -avP --delete --exclude='.git*' --exclude='.github*' $GITHUB_WORKSPACE/ $SVN_DIR/trunk/
-          rsync -avP --delete --exclude='.git*' --exclude='.github*' $GITHUB_WORKSPACE/ $SVN_DIR/tags/$TAG/
+          rsync -avP --delete \
+            --exclude='.git*' \
+            --exclude='.github*' \
+            --exclude-from="$GITHUB_WORKSPACE/.distignore" \
+            "$GITHUB_WORKSPACE/" "$SVN_DIR/trunk/"
+
+          rsync -avP --delete \
+            --exclude='.git*' \
+            --exclude='.github*' \
+            --exclude-from="$GITHUB_WORKSPACE/.distignore" \
+            "$GITHUB_WORKSPACE/" "$SVN_DIR/tags/$TAG/"
 
           svn add --force . --auto-props --parents --depth infinity
           svn status | grep '^\!' | sed 's/! *//' | xargs -I% svn rm %
+
+          cd $SVN_DIR
+          svn status | grep '^\!' | awk '{print $2}' | xargs -I% svn rm % --force
 
           svn commit -m "Versión $TAG desde GitHub Actions" \
             --username "$SVN_USERNAME" \
