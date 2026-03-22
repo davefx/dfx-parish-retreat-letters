@@ -126,6 +126,7 @@ class DFXPRL_Security {
 					// If the option value does not match the defined constant, show a critical error
 					// message in the backend with an option to remove the database key
 					add_action( 'admin_notices', array( $this, 'display_encryption_key_mismatch_notice' ) );
+					add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_encryption_key_mismatch_script' ) );
 				} else {
 					// If they match, we can safely delete the option
 					delete_option( 'dfxprl_encryption_key' );
@@ -171,8 +172,6 @@ class DFXPRL_Security {
 			return;
 		}
 
-		$nonce = wp_create_nonce( 'dfxprl_remove_db_encryption_key' );
-		
 		?>
 		<div class="notice notice-error" id="dfxprl-encryption-key-mismatch-notice">
 			<p>
@@ -193,50 +192,55 @@ class DFXPRL_Security {
 				<li><?php esc_html_e( 'Remove the key from the database to use the wp-config.php key (click the button below)', 'dfx-parish-retreat-letters' ); ?></li>
 			</ul>
 			<p>
-				<button type="button" id="dfxprl-remove-db-key-btn" class="button button-primary" data-nonce="<?php echo esc_attr( $nonce ); ?>">
+				<button type="button" id="dfxprl-remove-db-key-btn" class="button button-primary">
 					<?php esc_html_e( 'Remove Database Key and Use wp-config.php Key', 'dfx-parish-retreat-letters' ); ?>
 				</button>
 				<span id="dfxprl-remove-db-key-status" style="margin-left: 10px;"></span>
 			</p>
 		</div>
-		<script>
-		<?php echo $this->get_encryption_key_mismatch_script( $nonce ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- raw JS ?>
-		</script>
 		<?php
 	}
 
 	/**
-	 * Return the inline script for the encryption key mismatch notice button.
+	 * Enqueue the script for the encryption key mismatch notice button.
+	 *
+	 * Hooked to admin_enqueue_scripts so scripts are registered before wp_print_scripts.
 	 *
 	 * @since 25.12.10
-	 * @param string $nonce The nonce for the AJAX request.
-	 * @return string JavaScript code (no <script> tags).
 	 */
-	private function get_encryption_key_mismatch_script( $nonce ) {
-		$confirm_message = esc_js( __( 'Are you sure you want to remove the encryption key from the database? Any messages encrypted with the old key will become unreadable. This action cannot be undone.', 'dfx-parish-retreat-letters' ) );
-		$removing_text = esc_js( __( 'Removing...', 'dfx-parish-retreat-letters' ) );
-		$error_text = esc_js( __( 'An error occurred. Please try again.', 'dfx-parish-retreat-letters' ) );
-
-		return sprintf(
+	public function enqueue_encryption_key_mismatch_script() {
+		wp_register_script( 'dfxprl-remove-db-key', false, array( 'jquery' ), null, true );
+		wp_enqueue_script( 'dfxprl-remove-db-key' );
+		wp_localize_script(
+			'dfxprl-remove-db-key',
+			'dfxprlRemoveDbKey',
+			array(
+				'nonce'          => wp_create_nonce( 'dfxprl_remove_db_encryption_key' ),
+				'confirmMessage' => __( 'Are you sure you want to remove the encryption key from the database? Any messages encrypted with the old key will become unreadable. This action cannot be undone.', 'dfx-parish-retreat-letters' ),
+				'removingText'   => __( 'Removing...', 'dfx-parish-retreat-letters' ),
+				'errorText'      => __( 'An error occurred. Please try again.', 'dfx-parish-retreat-letters' ),
+			)
+		);
+		wp_add_inline_script(
+			'dfxprl-remove-db-key',
 			'jQuery(document).ready(function($) {
 	$("#dfxprl-remove-db-key-btn").on("click", function() {
 		var $button = $(this);
 		var $status = $("#dfxprl-remove-db-key-status");
-		var nonce = $button.data("nonce");
 
-		if (!confirm("%1$s")) {
+		if (!confirm(dfxprlRemoveDbKey.confirmMessage)) {
 			return;
 		}
 
 		$button.prop("disabled", true);
-		$status.text("%2$s");
+		$status.text(dfxprlRemoveDbKey.removingText);
 
 		$.ajax({
 			url: ajaxurl,
 			type: "POST",
 			data: {
 				action: "dfxprl_remove_db_encryption_key",
-				nonce: nonce
+				nonce: dfxprlRemoveDbKey.nonce
 			},
 			success: function(response) {
 				if (response.success) {
@@ -250,15 +254,12 @@ class DFXPRL_Security {
 				}
 			},
 			error: function() {
-				$status.html(\'<span style="color: red;">%3$s</span>\');
+				$status.html(\'<span style="color: red;">\' + dfxprlRemoveDbKey.errorText + \'</span>\');
 				$button.prop("disabled", false);
 			}
 		});
 	});
-});',
-			$confirm_message,
-			$removing_text,
-			$error_text
+});'
 		);
 	}
 
