@@ -310,7 +310,7 @@ class DFXPRL_Retreat {
 			'disclaimer_acceptance_text' => sanitize_text_field( $data['disclaimer_acceptance_text'] ?? '' ),
 			'custom_header_block_id'     => $this->sanitize_block_selection( $data['custom_header_block_id'] ?? null ),
 			'custom_footer_block_id'     => $this->sanitize_block_selection( $data['custom_footer_block_id'] ?? null ),
-			'body_classes'               => $this->sanitize_css( $data['body_classes'] ?? '' ),
+			'body_classes'               => $this->sanitize_class_list( $data['body_classes'] ?? '' ),
 			'notes_enabled'              => isset( $data['notes_enabled'] ) ? (int) (bool) $data['notes_enabled'] : 0,
 			'internal_notes_enabled'     => isset( $data['internal_notes_enabled'] ) ? (int) (bool) $data['internal_notes_enabled'] : 0,
 			'message_request_template'   => sanitize_textarea_field( $data['message_request_template'] ?? '' ),
@@ -359,7 +359,7 @@ class DFXPRL_Retreat {
 	 * @param string $classes Space-separated CSS class names.
 	 * @return string Sanitized space-separated CSS class names.
 	 */
-	private function sanitize_css( $classes ) {
+	private function sanitize_class_list( $classes ) {
 		if ( empty( $classes ) ) {
 			return '';
 		}

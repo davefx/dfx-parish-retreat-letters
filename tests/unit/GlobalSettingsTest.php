@@ -52,15 +52,15 @@ class GlobalSettingsTest extends TestCase {
         $this->assertEquals('1.9.0', DFXPRL_Database::DB_VERSION);
     }
 
-    public function test_retreat_model_has_css_sanitization() {
+    public function test_retreat_model_has_class_list_sanitization() {
         if (!class_exists('DFXPRL_Retreat')) {
             $this->markTestSkipped('Retreat class not available');
         }
 
         $retreat = new DFXPRL_Retreat();
         
-        // Test that the retreat model can handle CSS data
-        // This is tested indirectly by checking that the sanitize methods exist in the class
+        // Test that the retreat model sanitizes the body_classes field as a list of CSS class names
+        // This is tested indirectly by checking that the sanitize method exists in the class
         $reflection = new ReflectionClass($retreat);
         $methods = $reflection->getMethods(ReflectionMethod::IS_PRIVATE);
         
@@ -68,7 +68,7 @@ class GlobalSettingsTest extends TestCase {
             return $method->getName();
         }, $methods);
         
-        $this->assertContains('sanitize_css', $method_names);
+        $this->assertContains('sanitize_class_list', $method_names);
     }
 
     public function test_admin_has_global_settings_methods() {
