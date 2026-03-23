@@ -310,7 +310,7 @@ class DFXPRL_Retreat {
 			'disclaimer_acceptance_text' => sanitize_text_field( $data['disclaimer_acceptance_text'] ?? '' ),
 			'custom_header_block_id'     => $this->sanitize_block_selection( $data['custom_header_block_id'] ?? null ),
 			'custom_footer_block_id'     => $this->sanitize_block_selection( $data['custom_footer_block_id'] ?? null ),
-			'body_classes'               => sanitize_text_field( $data['body_classes'] ?? '' ),
+			'body_classes'               => $this->sanitize_class_list( $data['body_classes'] ?? '' ),
 			'notes_enabled'              => isset( $data['notes_enabled'] ) ? (int) (bool) $data['notes_enabled'] : 0,
 			'internal_notes_enabled'     => isset( $data['internal_notes_enabled'] ) ? (int) (bool) $data['internal_notes_enabled'] : 0,
 			'message_request_template'   => sanitize_textarea_field( $data['message_request_template'] ?? '' ),
@@ -347,6 +347,37 @@ class DFXPRL_Retreat {
 		}
 
 		return null;
+	}
+
+	/**
+	 * Sanitize a space-separated list of CSS class names.
+	 *
+	 * Strips any characters that are not valid in a CSS class name
+	 * (only allows A-Z, a-z, 0-9, hyphens, and underscores per class token).
+	 *
+	 * @since 1.0.0
+	 * @param string $classes Space-separated CSS class names.
+	 * @return string Sanitized space-separated CSS class names.
+	 */
+	private function sanitize_class_list( $classes ) {
+		if ( empty( $classes ) ) {
+			return '';
+		}
+
+		$class_list = preg_split( '/\s+/', trim( (string) $classes ), -1, PREG_SPLIT_NO_EMPTY );
+		$sanitized  = array();
+
+		foreach ( $class_list as $class ) {
+			// Remove percent-encoded octets.
+			$class = preg_replace( '|%[a-fA-F0-9][a-fA-F0-9]|', '', $class );
+			// Only allow characters valid in CSS class names.
+			$class = preg_replace( '/[^A-Za-z0-9_-]/', '', $class );
+			if ( '' !== $class ) {
+				$sanitized[] = $class;
+			}
+		}
+
+		return implode( ' ', $sanitized );
 	}
 
 	/**
