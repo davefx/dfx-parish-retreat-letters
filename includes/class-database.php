@@ -38,7 +38,7 @@ class DFXPRL_Database {
 	 * @since 1.0.0
 	 * @var string
 	 */
-	const DB_VERSION = '1.9.0';
+	const DB_VERSION = '1.10.0';
 
 	/**
 	 * The database version option name.
