@@ -3,7 +3,7 @@ Contributors: davefx
 Tags: parish, retreat, letters, confidential, GDPR
 Requires at least: 5.0
 Tested up to: 6.9
-Stable tag: 26.03.23.1
+Stable tag: 26.03.24
 Requires PHP: 7.4
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
@@ -173,6 +173,13 @@ By default it is generated automatically and stored in the WordPress database (`
 Yes. A `.pot` translation template is included in the `languages/` directory. Create `.po` and `.mo` files for your language and place them in that folder following standard WordPress translation conventions.
 
 ## Changelog
+
+### 26.03.24
+
+- Improvement: added detailed translator comments for JSON-encoded CSV column header mappings used in attendant import, with format instructions and Spanish examples.
+- Fix: the "Remove Database Key and Use wp-config.php Key" button now works. Script was previously never output because it was registered during the admin_notices hook, which fires after wp_print_scripts. Now uses admin_enqueue_scripts with a proper inline-only script handle and wp_localize_script.
+- Fix: the remove-database-key AJAX handler now also accepts the legacy DFX_PARISH_RETREAT_LETTERS_ENCRYPTION_KEY constant, matching the backward-compatibility logic of the rest of the encryption layer.
+- Fix: tab buttons in the Access Management section are now visually connected to their content panel.
 
 ### 26.03.23.1
 

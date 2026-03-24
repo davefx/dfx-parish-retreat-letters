@@ -2004,27 +2004,49 @@ class DFXPRL_Admin {
 
 		// Define field mappings for English and Spanish
 		$field_mappings = array(
-			/* translators: JSON string with list of allowed headers for field name. */
+			/* translators: JSON array of CSV column headers that map to the "name" field when importing attendants.
+			   Translate each value to the equivalent column header in your language. Keep the JSON format: ["value1", "value2"].
+			   Example for Spanish: ["nombre", "nombre de pila"] */
 			'name' => json_decode( __('["name", "first name"]', 'dfx-parish-retreat-letters' ), true ),
-			/* translators: JSON string with list of allowed headers for field surname */
+			/* translators: JSON array of CSV column headers that map to the "surnames" field when importing attendants.
+			   Translate each value to the equivalent column header in your language. Keep the JSON format: ["value1", "value2"].
+			   Example for Spanish: ["apellido", "apellidos"] */
 			'surnames' => json_decode( __('["surname", "surnames", "last name"]', 'dfx-parish-retreat-letters' ), true ),
-			/* translators: JSON string with list of allowed headers for field date_of_birth */
+			/* translators: JSON array of CSV column headers that map to the "date of birth" field when importing attendants.
+			   Translate each value to the equivalent column header in your language. Keep the JSON format: ["value1", "value2"].
+			   Example for Spanish: ["fecha de nacimiento", "nacimiento"] */
 			'date_of_birth' => json_decode( __('["date of birth", "birth date", "dob", "birthdate"]', 'dfx-parish-retreat-letters' ), true ),
-			/* translators: JSON string with list of allowed headers for field emergency_contact_name */
+			/* translators: JSON array of CSV column headers that map to the "emergency contact name" field when importing attendants.
+			   Translate each value to the equivalent column header in your language. Keep the JSON format: ["value1", "value2"].
+			   Example for Spanish: ["nombre del contacto de emergencia", "nombre de emergencia", "nombre del contacto"] */
 			'emergency_contact_name' => json_decode( __('["emergency contact name", "emergency name", "contact name","emergency contact first name", "emergency first name", "contact first name"]', 'dfx-parish-retreat-letters' ), true ),
-			/* translators: JSON string with list of allowed headers for field emergency_contact_surname */
+			/* translators: JSON array of CSV column headers that map to the "emergency contact surname" field when importing attendants.
+			   Translate each value to the equivalent column header in your language. Keep the JSON format: ["value1", "value2"].
+			   Example for Spanish: ["apellido del contacto de emergencia", "apellido de emergencia", "apellido del contacto"] */
 			'emergency_contact_surname' => json_decode( __('["emergency contact surname", "emergency surname", "contact surname", "emergency contact last name", "emergency last name", "contact last name"]', 'dfx-parish-retreat-letters' ), true ),
-			/* translators: JSON string with list of allowed headers for field emergency_contact_phone */
+			/* translators: JSON array of CSV column headers that map to the "emergency contact phone" field when importing attendants.
+			   Translate each value to the equivalent column header in your language. Keep the JSON format: ["value1", "value2"].
+			   Example for Spanish: ["teléfono de emergencia", "teléfono del contacto", "teléfono"] */
 			'emergency_contact_phone' => json_decode( __('["emergency contact phone", "emergency phone", "contact phone", "phone"]', 'dfx-parish-retreat-letters' ), true ),
-			/* translators: JSON string with list of allowed headers for field emergency_contact_email */
+			/* translators: JSON array of CSV column headers that map to the "emergency contact email" field when importing attendants.
+			   Translate each value to the equivalent column header in your language. Keep the JSON format: ["value1", "value2"].
+			   Example for Spanish: ["email de emergencia", "email del contacto", "email"] */
 			'emergency_contact_email' => json_decode( __('["emergency contact email", "emergency email", "contact email", "email"]', 'dfx-parish-retreat-letters' ), true ),
-			/* translators: JSON string with list of allowed headers for field emergency_contact_relationship */
+			/* translators: JSON array of CSV column headers that map to the "emergency contact relationship" field when importing attendants.
+			   Translate each value to the equivalent column header in your language. Keep the JSON format: ["value1", "value2"].
+			   Example for Spanish: ["parentesco del contacto de emergencia", "parentesco", "relación"] */
 			'emergency_contact_relationship' => json_decode( __('["emergency contact relationship", "relationship", "contact relationship"]', 'dfx-parish-retreat-letters' ), true ),
-			/* translators: JSON string with list of allowed headers for field invited_by */
+			/* translators: JSON array of CSV column headers that map to the "invited by" field when importing attendants.
+			   Translate each value to the equivalent column header in your language. Keep the JSON format: ["value1", "value2"].
+			   Example for Spanish: ["invitado por", "invitador"] */
 			'invited_by' => json_decode( __('["invited by", "invited", "inviter"]', 'dfx-parish-retreat-letters' ), true ),
-			/* translators: JSON string with list of allowed headers for field incompatibilities */
+			/* translators: JSON array of CSV column headers that map to the "incompatibilities" field when importing attendants.
+			   Translate each value to the equivalent column header in your language. Keep the JSON format: ["value1", "value2"].
+			   Example for Spanish: ["incompatibilidades", "incompatibilidad", "no puede estar con"] */
 			'incompatibilities' => json_decode( __('["incompatibilities", "incompatibility", "cannot be placed with"]', 'dfx-parish-retreat-letters' ), true ),
-			/* translators: JSON string with list of allowed headers for field notes */
+			/* translators: JSON array of CSV column headers that map to the "notes" field when importing attendants.
+			   Translate each value to the equivalent column header in your language. Keep the JSON format: ["value1", "value2"].
+			   Example for Spanish: ["notas", "nota", "comentarios", "comentario"] */
 			'notes' => json_decode( __('["notes", "note", "comments", "comment"]', 'dfx-parish-retreat-letters' ), true ),
 		);
 
