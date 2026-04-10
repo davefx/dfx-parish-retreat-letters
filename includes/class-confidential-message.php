@@ -178,13 +178,15 @@ class DFXPRL_ConfidentialMessage {
 		}
 
 		// Sanitize orderby and order
-		$allowed_orderby = array( 'id', 'sender_name', 'message_type', 'submitted_at', 'attendant_name' );
+		$allowed_orderby = array( 'id', 'sender_name', 'message_type', 'submitted_at', 'attendant_name', 'print_count' );
 		$orderby = in_array( $args['orderby'], $allowed_orderby, true ) ? $args['orderby'] : 'submitted_at';
 		$order = in_array( strtoupper( $args['order'] ), array( 'ASC', 'DESC' ), true ) ? strtoupper( $args['order'] ) : 'DESC';
 
 		// Map orderby to actual column names
 		if ( $orderby === 'attendant_name' ) {
 			$orderby = 'a.name';
+		} elseif ( $orderby === 'print_count' ) {
+			$orderby = 'print_count';
 		} elseif ( $orderby !== 'id' ) {
 			$orderby = 'm.' . $orderby;
 		} else {
@@ -395,13 +397,15 @@ class DFXPRL_ConfidentialMessage {
 		}
 
 		// Sanitize orderby and order
-		$allowed_orderby = array( 'id', 'sender_name', 'message_type', 'submitted_at', 'attendant_name' );
+		$allowed_orderby = array( 'id', 'sender_name', 'message_type', 'submitted_at', 'attendant_name', 'print_count' );
 		$orderby = in_array( $args['orderby'], $allowed_orderby, true ) ? $args['orderby'] : 'submitted_at';
 		$order = in_array( strtoupper( $args['order'] ), array( 'ASC', 'DESC' ), true ) ? strtoupper( $args['order'] ) : 'DESC';
 
 		// Map orderby to actual column names
 		if ( $orderby === 'attendant_name' ) {
 			$orderby = 'a.name';
+		} elseif ( $orderby === 'print_count' ) {
+			$orderby = 'print_count';
 		} elseif ( $orderby !== 'id' ) {
 			$orderby = 'm.' . $orderby;
 		} else {

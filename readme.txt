@@ -3,7 +3,7 @@ Contributors: davefx
 Tags: parish, retreat, letters, confidential, GDPR
 Requires at least: 5.0
 Tested up to: 6.9
-Stable tag: 26.03.24
+Stable tag: 26.04.10
 Requires PHP: 7.4
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
@@ -173,6 +173,13 @@ By default it is generated automatically and stored in the WordPress database (`
 Yes. A `.pot` translation template is included in the `languages/` directory. Create `.po` and `.mo` files for your language and place them in that folder following standard WordPress translation conventions.
 
 ## Changelog
+
+### 26.04.10
+
+- Improvement: all admin tables are now responsive. On narrow screens and mobile, tables are displayed as card lists with labeled fields, and the permissions sidebar moves below the main content.
+- Improvement: attendants and messages lists now have a mobile-friendly "Sort by" dropdown for sorting on narrow screens.
+- Improvement: messages list columns (From, Type, Submitted, Print Status) are now sortable on desktop via clickable table headers.
+- Improvement: messages can now be sorted by print status (unprinted first, then ascending by print count).
 
 ### 26.03.24
 

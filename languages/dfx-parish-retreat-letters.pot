@@ -2,7 +2,7 @@
 # This file is distributed under the GPL v3.
 msgid ""
 msgstr ""
-"Project-Id-Version: DFX Parish Retreat Letters 26.03.24\n"
+"Project-Id-Version: DFX Parish Retreat Letters 26.04.10\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/dfx-parish-retreat-letters\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -2844,4 +2844,12 @@ msgstr ""
 
 #: includes/class-security.php:217
 msgid "An error occurred. Please try again."
+msgstr ""
+
+#: includes/class-admin.php
+msgid "Sort by:"
+msgstr ""
+
+#: includes/class-admin.php
+msgid "Select..."
 msgstr ""

@@ -598,6 +598,107 @@ class DFXPRL_Admin {
 	.dfxprl-search-error {
 		color: #d63638;
 	}
+
+	/* Mobile sort: hidden on desktop */
+	.dfxprl-mobile-sort {
+		display: none;
+	}
+
+	/* Responsive: convert data tables to card lists on narrow screens */
+	@media screen and (max-width: 782px) {
+		.dfxprl-mobile-sort {
+			display: block;
+			margin-bottom: 12px;
+			padding: 10px;
+			background: #fff;
+			border: 1px solid #ddd;
+			border-radius: 4px;
+		}
+		.dfxprl-mobile-sort label {
+			font-weight: 600;
+			margin-right: 8px;
+		}
+		.dfxprl-mobile-sort select {
+			max-width: 100%;
+		}
+		/* Two-column layout: stack sidebar below content */
+		#post-body.columns-2 {
+			display: flex;
+			flex-direction: column;
+		}
+		#post-body.columns-2 #postbox-container-1 {
+			width: 100% !important;
+			float: none !important;
+			margin-right: 0 !important;
+			order: 2;
+		}
+		#post-body.columns-2 #post-body-content {
+			width: 100% !important;
+			float: none !important;
+			margin-right: 0 !important;
+			order: 1;
+		}
+
+		/* form-table: stack label above input */
+		.form-table th,
+		.form-table td {
+			display: block;
+			width: 100%;
+			padding-left: 0;
+			padding-right: 0;
+		}
+		.form-table th {
+			padding-bottom: 4px;
+		}
+
+		/* wp-list-table card view */
+		.wp-list-table.widefat thead {
+			display: none;
+		}
+		.wp-list-table.widefat tbody tr {
+			display: block;
+			border: 1px solid #ddd;
+			border-radius: 6px;
+			margin-bottom: 12px;
+			padding: 12px;
+			background: #fff;
+		}
+		.wp-list-table.widefat tbody td {
+			display: block !important;
+			width: 100% !important;
+			padding: 6px 0 6px 0;
+			border: none;
+			text-align: left;
+			position: relative;
+		}
+		.wp-list-table.widefat tbody td[data-colname]::before {
+			position: static !important;
+			display: block !important;
+			float: none !important;
+			width: auto !important;
+			max-width: 100% !important;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+			font-weight: 600;
+			font-size: 11px;
+			text-transform: uppercase;
+			color: #555;
+			margin-bottom: 2px;
+		}
+		.wp-list-table.widefat tbody td:last-child {
+			padding-top: 8px;
+			margin-top: 4px;
+			border-top: 1px solid #eee;
+		}
+
+		/* Filters and pagination */
+		.tablenav .tablenav-pages,
+		.tablenav .alignleft.actions {
+			float: none;
+			width: 100%;
+		}
+	}
 			';
 
 		wp_add_inline_style( 'dfxprl-admin-styles', $base_styles );
@@ -1033,17 +1134,17 @@ class DFXPRL_Admin {
 						<?php if ( ! empty( $retreats ) ) : ?>
 							<?php foreach ( $retreats as $retreat ) : ?>
 								<tr>
-									<td>
+									<td data-colname="<?php esc_attr_e( 'Name', 'dfx-parish-retreat-letters' ); ?>">
 										<strong>
 											<a href="<?php echo esc_url( admin_url( 'admin.php?page=dfxprl-retreats-add&edit=' . $retreat->id ) ); ?>">
 												<?php echo esc_html( $retreat->name ); ?>
 											</a>
 										</strong>
 									</td>
-									<td><?php echo esc_html( $retreat->location ); ?></td>
-									<td><?php echo esc_html( date_i18n( get_option( 'date_format' ), strtotime( $retreat->start_date ) ) ); ?></td>
-									<td><?php echo esc_html( date_i18n( get_option( 'date_format' ), strtotime( $retreat->end_date ) ) ); ?></td>
-									<td>
+									<td data-colname="<?php esc_attr_e( 'Location', 'dfx-parish-retreat-letters' ); ?>"><?php echo esc_html( $retreat->location ); ?></td>
+									<td data-colname="<?php esc_attr_e( 'Start Date', 'dfx-parish-retreat-letters' ); ?>"><?php echo esc_html( date_i18n( get_option( 'date_format' ), strtotime( $retreat->start_date ) ) ); ?></td>
+									<td data-colname="<?php esc_attr_e( 'End Date', 'dfx-parish-retreat-letters' ); ?>"><?php echo esc_html( date_i18n( get_option( 'date_format' ), strtotime( $retreat->end_date ) ) ); ?></td>
+									<td data-colname="<?php esc_attr_e( 'Attendants', 'dfx-parish-retreat-letters' ); ?>">
 										<a href="<?php echo esc_url( admin_url( 'admin.php?page=dfxprl-retreats&action=attendants&retreat_id=' . $retreat->id ) ); ?>">
 											<?php
 											$count = $retreat->attendant_count ?? 0;
@@ -1055,7 +1156,7 @@ class DFXPRL_Admin {
 											?>
 										</a>
 									</td>
-									<td>
+									<td data-colname="<?php esc_attr_e( 'Actions', 'dfx-parish-retreat-letters' ); ?>">
 										<?php if ( $this->permissions->current_user_can_manage_retreat( $retreat->id ) ) : ?>
 											<a href="<?php echo esc_url( admin_url( 'admin.php?page=dfxprl-retreats-add&edit=' . $retreat->id ) ); ?>" class="button button-small">
 												<?php esc_html_e( 'Edit', 'dfx-parish-retreat-letters' ); ?>
@@ -2721,6 +2822,20 @@ class DFXPRL_Admin {
 					<?php endif; ?>
 				</div>
 
+				<div class="dfxprl-mobile-sort">
+					<label for="dfxprl-sort-select"><?php esc_html_e( 'Sort by:', 'dfx-parish-retreat-letters' ); ?></label>
+					<select id="dfxprl-sort-select" onchange="if(this.value) window.location=this.value;">
+						<option value=""><?php esc_html_e( 'Select...', 'dfx-parish-retreat-letters' ); ?></option>
+						<option value="<?php echo esc_url( $get_sort_url( 'name' ) ); ?>" <?php selected( $orderby, 'name' ); ?>><?php esc_html_e( 'Name', 'dfx-parish-retreat-letters' ); ?> <?php echo $orderby === 'name' ? esc_html( $order === 'ASC' ? '↑' : '↓' ) : ''; ?></option>
+						<option value="<?php echo esc_url( $get_sort_url( 'surnames' ) ); ?>" <?php selected( $orderby, 'surnames' ); ?>><?php esc_html_e( 'Surnames', 'dfx-parish-retreat-letters' ); ?> <?php echo $orderby === 'surnames' ? esc_html( $order === 'ASC' ? '↑' : '↓' ) : ''; ?></option>
+						<option value="<?php echo esc_url( $get_sort_url( 'date_of_birth' ) ); ?>" <?php selected( $orderby, 'date_of_birth' ); ?>><?php esc_html_e( 'Date of Birth', 'dfx-parish-retreat-letters' ); ?> <?php echo $orderby === 'date_of_birth' ? esc_html( $order === 'ASC' ? '↑' : '↓' ) : ''; ?></option>
+						<option value="<?php echo esc_url( $get_sort_url( 'emergency_contact_name' ) ); ?>" <?php selected( $orderby, 'emergency_contact_name' ); ?>><?php esc_html_e( 'Emergency Contact', 'dfx-parish-retreat-letters' ); ?> <?php echo $orderby === 'emergency_contact_name' ? esc_html( $order === 'ASC' ? '↑' : '↓' ) : ''; ?></option>
+						<option value="<?php echo esc_url( $get_sort_url( 'invited_by' ) ); ?>" <?php selected( $orderby, 'invited_by' ); ?>><?php esc_html_e( 'Invited By', 'dfx-parish-retreat-letters' ); ?> <?php echo $orderby === 'invited_by' ? esc_html( $order === 'ASC' ? '↑' : '↓' ) : ''; ?></option>
+						<option value="<?php echo esc_url( $get_sort_url( 'incompatibilities' ) ); ?>" <?php selected( $orderby, 'incompatibilities' ); ?>><?php esc_html_e( 'Incompatibilities', 'dfx-parish-retreat-letters' ); ?> <?php echo $orderby === 'incompatibilities' ? esc_html( $order === 'ASC' ? '↑' : '↓' ) : ''; ?></option>
+						<option value="<?php echo esc_url( $get_messages_sort_url() ); ?>" <?php selected( in_array( $orderby, array( 'message_count', 'non_printed_count' ), true ) ); ?>><?php esc_html_e( 'Messages', 'dfx-parish-retreat-letters' ); ?> <?php echo in_array( $orderby, array( 'message_count', 'non_printed_count' ), true ) ? esc_html( $order === 'ASC' ? '↑' : '↓' ) : ''; ?></option>
+					</select>
+				</div>
+
 				<table class="wp-list-table widefat fixed striped">
 					<thead>
 						<tr>
@@ -2812,17 +2927,17 @@ class DFXPRL_Admin {
 								}
 								?>
 								<tr>
-									<td>
+									<td data-colname="<?php esc_attr_e( 'Name', 'dfx-parish-retreat-letters' ); ?>">
 										<strong>
 											<a href="<?php echo esc_url( admin_url( 'admin.php?page=dfxprl-retreats&action=edit_attendant&retreat_id=' . $retreat->id . '&attendant_id=' . $attendant->id ) ); ?>">
 												<?php echo esc_html( $attendant->name ); ?>
 											</a>
 										</strong>
 									</td>
-									<td><?php echo esc_html( $attendant->surnames ); ?></td>
-									<td><?php echo esc_html( date_i18n( get_option( 'date_format' ), strtotime( $attendant->date_of_birth ) ) ); ?></td>
-									<td>
-										<?php 
+									<td data-colname="<?php esc_attr_e( 'Surnames', 'dfx-parish-retreat-letters' ); ?>"><?php echo esc_html( $attendant->surnames ); ?></td>
+									<td data-colname="<?php esc_attr_e( 'Date of Birth', 'dfx-parish-retreat-letters' ); ?>"><?php echo esc_html( date_i18n( get_option( 'date_format' ), strtotime( $attendant->date_of_birth ) ) ); ?></td>
+									<td data-colname="<?php esc_attr_e( 'Emergency Contact', 'dfx-parish-retreat-letters' ); ?>">
+										<?php
 										echo esc_html( $attendant->emergency_contact_name . ' ' . $attendant->emergency_contact_surname );
 										if ( ! empty( $attendant->emergency_contact_relationship ) ) {
 											echo ' (' . esc_html( $attendant->emergency_contact_relationship ) . ')';
@@ -2834,7 +2949,7 @@ class DFXPRL_Admin {
 											<br><small><?php echo esc_html( $attendant->emergency_contact_email ); ?></small>
 										<?php endif; ?>
 									</td>
-									<td>
+									<td data-colname="<?php esc_attr_e( 'Invited By', 'dfx-parish-retreat-letters' ); ?>">
 										<?php
 										if ( ! empty( $attendant->invited_by ) ) {
 											echo esc_html( $attendant->invited_by );
@@ -2843,7 +2958,7 @@ class DFXPRL_Admin {
 										}
 										?>
 									</td>
-									<td>
+									<td data-colname="<?php esc_attr_e( 'Incompatibilities', 'dfx-parish-retreat-letters' ); ?>">
 										<?php
 										if ( ! empty( $attendant->incompatibilities ) ) {
 											echo esc_html( $attendant->incompatibilities );
@@ -2853,7 +2968,7 @@ class DFXPRL_Admin {
 										?>
 									</td>
 									<?php if ( ! empty( $retreat->notes_enabled ) ) : ?>
-									<td>
+									<td data-colname="<?php esc_attr_e( 'Notes', 'dfx-parish-retreat-letters' ); ?>">
 										<?php
 										if ( ! empty( $attendant->notes ) ) {
 											echo wp_kses_post( wpautop( $attendant->notes ) );
@@ -2864,7 +2979,7 @@ class DFXPRL_Admin {
 									</td>
 									<?php endif; ?>
 									<?php if ( ! empty( $retreat->internal_notes_enabled ) ) : ?>
-									<td>
+									<td data-colname="<?php esc_attr_e( 'Internal Notes', 'dfx-parish-retreat-letters' ); ?>">
 										<?php
 										if ( ! empty( $attendant->internal_notes ) ) {
 											echo wp_kses_post( wpautop( $attendant->internal_notes ) );
@@ -2874,7 +2989,7 @@ class DFXPRL_Admin {
 										?>
 									</td>
 									<?php endif; ?>
-									<td>
+									<td data-colname="<?php esc_attr_e( 'Messages', 'dfx-parish-retreat-letters' ); ?>">
 										<?php if ( $message_count > 0 ) : ?>
 											<a href="<?php echo esc_url( admin_url( 'admin.php?page=dfxprl-messages&attendant_id=' . $attendant->id ) ); ?>">
 												<?php
@@ -2897,7 +3012,7 @@ class DFXPRL_Admin {
 											<span class="description"><?php esc_html_e( 'No messages', 'dfx-parish-retreat-letters' ); ?></span>
 										<?php endif; ?>
 									</td>
-									<td>
+									<td data-colname="<?php esc_attr_e( 'Actions', 'dfx-parish-retreat-letters' ); ?>">
 										<?php if ( $this->permissions->current_user_can_manage_retreat( $retreat->id ) ) : ?>
 											<a href="<?php echo esc_url( admin_url( 'admin.php?page=dfxprl-retreats&action=edit_attendant&retreat_id=' . $retreat->id . '&attendant_id=' . $attendant->id ) ); ?>" class="button button-small">
 												<?php esc_html_e( 'Edit', 'dfx-parish-retreat-letters' ); ?>
@@ -3347,6 +3462,8 @@ class DFXPRL_Admin {
 		$attendant_id = absint( $_GET['attendant_id'] ?? 0 );
 		$message_type = sanitize_text_field( wp_unslash( $_GET['message_type'] ?? '' ) );
 		$page_num = max( 1, absint( $_GET['paged'] ?? 1 ) );
+		$orderby = sanitize_text_field( wp_unslash( $_GET['orderby'] ?? 'submitted_at' ) );
+		$order   = sanitize_text_field( wp_unslash( $_GET['order'] ?? 'DESC' ) );
 		// phpcs:enable WordPress.Security.NonceVerification.Recommended
 		$per_page = 100;
 
@@ -3369,13 +3486,15 @@ class DFXPRL_Admin {
 			'message_type' => $message_type,
 			'per_page'     => $per_page,
 			'page'         => $page_num,
+			'orderby'      => $orderby,
+			'order'        => $order,
 		);
 
 		$messages = $this->message_model->get_by_attendant( $attendant_id, $args );
 		$total_items = $this->message_model->get_count_by_attendant( $attendant_id, $args );
 		$total_pages = ceil( $total_items / $per_page );
 
-		$this->render_messages_list_page( $messages, array(), $search, 0, $attendant_id, $message_type, $page_num, $total_pages, $total_items, $attendant );
+		$this->render_messages_list_page( $messages, array(), $search, 0, $attendant_id, $message_type, $page_num, $total_pages, $total_items, $attendant, $orderby, $order );
 	}
 
 	/**
@@ -3392,8 +3511,10 @@ class DFXPRL_Admin {
 	 * @param int    $total_pages  Total number of pages.
 	 * @param int    $total_items  Total number of items.
 	 * @param object $attendant    Attendant object if filtering by attendant.
+	 * @param string $orderby      Column to order by.
+	 * @param string $order        Sort direction (ASC or DESC).
 	 */
-	private function render_messages_list_page( $messages, $retreats, $search, $retreat_id, $attendant_id, $message_type, $page_num, $total_pages, $total_items, $attendant = null ) {
+	private function render_messages_list_page( $messages, $retreats, $search, $retreat_id, $attendant_id, $message_type, $page_num, $total_pages, $total_items, $attendant = null, $orderby = 'submitted_at', $order = 'DESC' ) {
 		?>
 		<div class="wrap">
 			<h1 class="wp-heading-inline">
@@ -3479,13 +3600,62 @@ class DFXPRL_Admin {
 					<?php endif; ?>
 				</div>
 
+				<?php
+				$msg_sort_url = function( $column ) use ( $attendant_id, $message_type, $search, $orderby, $order ) {
+					$new_order = ( $orderby === $column && $order === 'ASC' ) ? 'DESC' : 'ASC';
+					$params = array(
+						'page'         => 'dfxprl-messages',
+						'attendant_id' => $attendant_id,
+						'orderby'      => $column,
+						'order'        => $new_order,
+					);
+					if ( ! empty( $search ) ) {
+						$params['s'] = $search;
+					}
+					if ( ! empty( $message_type ) ) {
+						$params['message_type'] = $message_type;
+					}
+					return add_query_arg( $params, admin_url( 'admin.php' ) );
+				};
+				?>
+				<div class="dfxprl-mobile-sort">
+					<label for="dfxprl-msg-sort-select"><?php esc_html_e( 'Sort by:', 'dfx-parish-retreat-letters' ); ?></label>
+					<select id="dfxprl-msg-sort-select" onchange="if(this.value) window.location=this.value;">
+						<option value=""><?php esc_html_e( 'Select...', 'dfx-parish-retreat-letters' ); ?></option>
+						<option value="<?php echo esc_url( $msg_sort_url( 'sender_name' ) ); ?>" <?php selected( $orderby, 'sender_name' ); ?>><?php esc_html_e( 'From', 'dfx-parish-retreat-letters' ); ?> <?php echo $orderby === 'sender_name' ? esc_html( $order === 'ASC' ? '↑' : '↓' ) : ''; ?></option>
+						<option value="<?php echo esc_url( $msg_sort_url( 'message_type' ) ); ?>" <?php selected( $orderby, 'message_type' ); ?>><?php esc_html_e( 'Type', 'dfx-parish-retreat-letters' ); ?> <?php echo $orderby === 'message_type' ? esc_html( $order === 'ASC' ? '↑' : '↓' ) : ''; ?></option>
+						<option value="<?php echo esc_url( $msg_sort_url( 'submitted_at' ) ); ?>" <?php selected( $orderby, 'submitted_at' ); ?>><?php esc_html_e( 'Submitted', 'dfx-parish-retreat-letters' ); ?> <?php echo $orderby === 'submitted_at' ? esc_html( $order === 'ASC' ? '↑' : '↓' ) : ''; ?></option>
+						<option value="<?php echo esc_url( $msg_sort_url( 'print_count' ) ); ?>" <?php selected( $orderby, 'print_count' ); ?>><?php esc_html_e( 'Print Status', 'dfx-parish-retreat-letters' ); ?> <?php echo $orderby === 'print_count' ? esc_html( $order === 'ASC' ? '↑' : '↓' ) : ''; ?></option>
+					</select>
+				</div>
+
 				<table class="wp-list-table widefat fixed striped">
 					<thead>
 						<tr>
-							<th scope="col" class="manage-column"><?php esc_html_e( 'From', 'dfx-parish-retreat-letters' ); ?></th>
-							<th scope="col" class="manage-column"><?php esc_html_e( 'Type', 'dfx-parish-retreat-letters' ); ?></th>
-							<th scope="col" class="manage-column"><?php esc_html_e( 'Submitted', 'dfx-parish-retreat-letters' ); ?></th>
-							<th scope="col" class="manage-column"><?php esc_html_e( 'Print Status', 'dfx-parish-retreat-letters' ); ?></th>
+							<th scope="col" class="manage-column <?php echo $orderby === 'sender_name' ? 'sorted' : 'sortable'; ?> <?php echo $orderby === 'sender_name' ? esc_attr( strtolower( $order ) ) : 'desc'; ?>">
+								<a href="<?php echo esc_url( $msg_sort_url( 'sender_name' ) ); ?>">
+									<span><?php esc_html_e( 'From', 'dfx-parish-retreat-letters' ); ?></span>
+									<span class="sorting-indicators"><span class="sorting-indicator asc" aria-hidden="true"></span><span class="sorting-indicator desc" aria-hidden="true"></span></span>
+								</a>
+							</th>
+							<th scope="col" class="manage-column <?php echo $orderby === 'message_type' ? 'sorted' : 'sortable'; ?> <?php echo $orderby === 'message_type' ? esc_attr( strtolower( $order ) ) : 'desc'; ?>">
+								<a href="<?php echo esc_url( $msg_sort_url( 'message_type' ) ); ?>">
+									<span><?php esc_html_e( 'Type', 'dfx-parish-retreat-letters' ); ?></span>
+									<span class="sorting-indicators"><span class="sorting-indicator asc" aria-hidden="true"></span><span class="sorting-indicator desc" aria-hidden="true"></span></span>
+								</a>
+							</th>
+							<th scope="col" class="manage-column <?php echo $orderby === 'submitted_at' ? 'sorted' : 'sortable'; ?> <?php echo $orderby === 'submitted_at' ? esc_attr( strtolower( $order ) ) : 'desc'; ?>">
+								<a href="<?php echo esc_url( $msg_sort_url( 'submitted_at' ) ); ?>">
+									<span><?php esc_html_e( 'Submitted', 'dfx-parish-retreat-letters' ); ?></span>
+									<span class="sorting-indicators"><span class="sorting-indicator asc" aria-hidden="true"></span><span class="sorting-indicator desc" aria-hidden="true"></span></span>
+								</a>
+							</th>
+							<th scope="col" class="manage-column <?php echo $orderby === 'print_count' ? 'sorted' : 'sortable'; ?> <?php echo $orderby === 'print_count' ? esc_attr( strtolower( $order ) ) : 'asc'; ?>">
+								<a href="<?php echo esc_url( $msg_sort_url( 'print_count' ) ); ?>">
+									<span><?php esc_html_e( 'Print Status', 'dfx-parish-retreat-letters' ); ?></span>
+									<span class="sorting-indicators"><span class="sorting-indicator asc" aria-hidden="true"></span><span class="sorting-indicator desc" aria-hidden="true"></span></span>
+								</a>
+							</th>
 							<th scope="col" class="manage-column"><?php esc_html_e( 'Actions', 'dfx-parish-retreat-letters' ); ?></th>
 						</tr>
 					</thead>
@@ -3493,8 +3663,8 @@ class DFXPRL_Admin {
 						<?php if ( ! empty( $messages ) ) : ?>
 							<?php foreach ( $messages as $message ) : ?>
 								<tr>
-									<td><?php echo esc_html( $message->sender_name ?: __( 'Anonymous', 'dfx-parish-retreat-letters' ) ); ?></td>
-									<td>
+									<td data-colname="<?php esc_attr_e( 'From', 'dfx-parish-retreat-letters' ); ?>"><?php echo esc_html( $message->sender_name ?: __( 'Anonymous', 'dfx-parish-retreat-letters' ) ); ?></td>
+									<td data-colname="<?php esc_attr_e( 'Type', 'dfx-parish-retreat-letters' ); ?>">
 										<?php if ( $message->message_type === 'text' ) : ?>
 											<span class="dashicons dashicons-text" title="<?php esc_attr_e( 'Text Message', 'dfx-parish-retreat-letters' ); ?>"></span>
 											<?php esc_html_e( 'Text', 'dfx-parish-retreat-letters' ); ?>
@@ -3506,10 +3676,10 @@ class DFXPRL_Admin {
 											<?php endif; ?>
 										<?php endif; ?>
 									</td>
-									<td>
+									<td data-colname="<?php esc_attr_e( 'Submitted', 'dfx-parish-retreat-letters' ); ?>">
 										<?php echo esc_html( date_i18n( get_option( 'date_format' ) . ' ' . get_option( 'time_format' ), strtotime( $message->submitted_at ) ) ); ?>
 									</td>
-									<td>
+									<td data-colname="<?php esc_attr_e( 'Print Status', 'dfx-parish-retreat-letters' ); ?>">
 										<?php if ( $message->print_count > 0 ) : ?>
 											<span class="dashicons dashicons-yes-alt" style="color: #46b450;" title="<?php esc_attr_e( 'Printed', 'dfx-parish-retreat-letters' ); ?>"></span>
 											<a href="#" class="dfxprl-view-print-log" data-message-id="<?php echo esc_attr( $message->id ); ?>" style="text-decoration: none;">
@@ -3538,7 +3708,7 @@ class DFXPRL_Admin {
 											<?php esc_html_e( 'Not printed', 'dfx-parish-retreat-letters' ); ?>
 										<?php endif; ?>
 									</td>
-									<td>
+									<td data-colname="<?php esc_attr_e( 'Actions', 'dfx-parish-retreat-letters' ); ?>">
 										<button type="button" class="button button-small button-primary dfxprl-print-message" data-message-id="<?php echo esc_attr( $message->id ); ?>">
 											<?php esc_html_e( 'Print', 'dfx-parish-retreat-letters' ); ?>
 										</button>
@@ -4167,9 +4337,9 @@ class DFXPRL_Admin {
 					<?php if ( ! empty( $recent_audit_logs ) ) : ?>
 						<?php foreach ( $recent_audit_logs as $log ) : ?>
 							<tr>
-								<td><?php echo esc_html( date_i18n( get_option( 'date_format' ) . ' ' . get_option( 'time_format' ), $log['timestamp'] ) ); ?></td>
-								<td><?php echo esc_html( ucwords( str_replace( '_', ' ', (string) ( $log['event_type'] ?? '' ) ) ) ); ?></td>
-								<td>
+								<td data-colname="<?php esc_attr_e( 'Date/Time', 'dfx-parish-retreat-letters' ); ?>"><?php echo esc_html( date_i18n( get_option( 'date_format' ) . ' ' . get_option( 'time_format' ), $log['timestamp'] ) ); ?></td>
+								<td data-colname="<?php esc_attr_e( 'Event Type', 'dfx-parish-retreat-letters' ); ?>"><?php echo esc_html( ucwords( str_replace( '_', ' ', (string) ( $log['event_type'] ?? '' ) ) ) ); ?></td>
+								<td data-colname="<?php esc_attr_e( 'User', 'dfx-parish-retreat-letters' ); ?>">
 									<?php
 									if ( $log['user_id'] ) {
 										$user = get_user_by( 'id', $log['user_id'] );
@@ -4179,7 +4349,7 @@ class DFXPRL_Admin {
 									}
 									?>
 								</td>
-								<td>
+								<td data-colname="<?php esc_attr_e( 'Details', 'dfx-parish-retreat-letters' ); ?>">
 									<?php
 									if ( ! empty( $log['data'] ) ) {
 										echo esc_html( wp_json_encode( $log['data'] ) );
@@ -4766,10 +4936,10 @@ class DFXPRL_Admin {
 				<tbody>
 					<?php foreach ( $global_managers as $manager ) : ?>
 					<tr>
-						<td><strong><?php echo esc_html( $manager->display_name ); ?></strong></td>
-						<td><?php echo esc_html( $manager->user_email ); ?></td>
-						<td><?php echo esc_html( implode( ', ', $manager->roles ) ); ?></td>
-						<td>
+						<td data-colname="<?php esc_attr_e( 'User', 'dfx-parish-retreat-letters' ); ?>"><strong><?php echo esc_html( $manager->display_name ); ?></strong></td>
+						<td data-colname="<?php esc_attr_e( 'Email', 'dfx-parish-retreat-letters' ); ?>"><?php echo esc_html( $manager->user_email ); ?></td>
+						<td data-colname="<?php esc_attr_e( 'Role', 'dfx-parish-retreat-letters' ); ?>"><?php echo esc_html( implode( ', ', $manager->roles ) ); ?></td>
+						<td data-colname="<?php esc_attr_e( 'Actions', 'dfx-parish-retreat-letters' ); ?>">
 							<form method="post" style="display: inline-block;">
 								<?php wp_nonce_field( 'dfxprl_user_management_nonce' ); ?>
 								<input type="hidden" name="user_management_action" value="revoke">

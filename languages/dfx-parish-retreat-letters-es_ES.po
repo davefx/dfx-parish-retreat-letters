@@ -3063,3 +3063,11 @@ msgstr "Ha ocurrido un error. Inténtalo de nuevo."
 #~ msgstr ""
 #~ "Estilos CSS que se aplicarán a todas las páginas de formularios de "
 #~ "mensajes de retiro. No incluyas etiquetas &lt;style&gt;."
+
+#: includes/class-admin.php
+msgid "Sort by:"
+msgstr "Ordenar por:"
+
+#: includes/class-admin.php
+msgid "Select..."
+msgstr "Seleccionar..."
