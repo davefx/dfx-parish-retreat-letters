@@ -3,7 +3,7 @@ Contributors: davefx
 Tags: parish, retreat, letters, confidential, GDPR
 Requires at least: 5.0
 Tested up to: 6.9
-Stable tag: 26.04.10
+Stable tag: 26.04.28
 Requires PHP: 7.4
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
@@ -173,6 +173,10 @@ By default it is generated automatically and stored in the WordPress database (`
 Yes. A `.pot` translation template is included in the `languages/` directory. Create `.po` and `.mo` files for your language and place them in that folder following standard WordPress translation conventions.
 
 ## Changelog
+
+### 26.04.28
+
+- Fix: raised rate limits from 10/20 per hour to 30/hour for both form access and message submission. The form access limit was lower than the submission limit, causing users to be locked out of the form before reaching the submission limit.
 
 ### 26.04.10
 
