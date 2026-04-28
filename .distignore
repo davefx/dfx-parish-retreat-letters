@@ -9,8 +9,24 @@
 
 # Development and testing files
 /tests
-/vendor
 /node_modules
+
+# Vendor: exclude dev dependencies, keep production ones (setasign/fpdf, setasign/fpdi)
+/vendor/bin
+/vendor/antecedent
+/vendor/brain
+/vendor/doctrine
+/vendor/hamcrest
+/vendor/mockery
+/vendor/myclabs
+/vendor/nikic
+/vendor/phar-io
+/vendor/phpunit
+/vendor/sebastian
+/vendor/theseer
+/vendor/yoast
+/vendor/tecnickcom/tcpdf/examples
+/vendor/tecnickcom/tcpdf/tools
 phpunit.xml
 phpunit-basic.xml
 phpunit-advanced.xml
