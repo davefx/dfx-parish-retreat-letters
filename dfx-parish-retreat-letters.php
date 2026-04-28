@@ -22,6 +22,12 @@ if ( ! defined( 'WPINC' ) ) {
 	die;
 }
 
+// Load Composer autoloader for bundled libraries (FPDF, FPDI).
+$dfxprl_autoloader = __DIR__ . '/vendor/autoload.php';
+if ( file_exists( $dfxprl_autoloader ) ) {
+	require_once $dfxprl_autoloader;
+}
+
 /**
  * Currently plugin version.
  * Rename this for your plugin and update it as you release new versions.
