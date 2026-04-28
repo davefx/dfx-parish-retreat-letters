@@ -1284,9 +1284,25 @@ class DFXPRL {
 		// Get attached files if any
 		$files = $file_model->get_by_message( $message_id );
 
-		// For file messages with a single file, serve the file directly
+		// For file messages with a single file, serve directly (or with header for PDFs).
+		// Use ?fallback=header to force the HTML header-only page (for testing).
+		// Use ?fallback=raw to serve the raw PDF without any header processing.
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- URL parameter for debug/testing
+		$fallback_mode = isset( $_GET['fallback'] ) ? sanitize_text_field( wp_unslash( $_GET['fallback'] ) ) : '';
+
 		if ( $message->message_type === 'file' && count( $files ) === 1 ) {
-			$this->serve_file_directly( $files[0], $file_model );
+			if ( $fallback_mode === 'raw' ) {
+				// Serve the raw PDF embedded in a minimal HTML page with print and close.
+				$this->serve_pdf_printable( $files[0], $file_model );
+			} elseif ( $files[0]->file_type === 'application/pdf' ) {
+				if ( $fallback_mode === 'header' ) {
+					$this->render_print_header_only( $message, $files[0], $file_model );
+				} else {
+					$this->serve_pdf_with_header( $files[0], $file_model, $message );
+				}
+			} else {
+				$this->serve_file_directly( $files[0], $file_model );
+			}
 			return;
 		}
 
@@ -1339,6 +1355,540 @@ class DFXPRL {
 		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Binary file content for download
 		echo $decrypted_file['content'];
 		exit;
+	}
+
+	/**
+	 * Serve a PDF embedded in an HTML page with auto-print and auto-close.
+	 *
+	 * @since 26.04.10
+	 * @param object             $file       File object.
+	 * @param DFXPRL_MessageFile $file_model File model instance.
+	 */
+	private function serve_pdf_printable( $file, $file_model ) {
+		$decrypted_file = $file_model->get_decrypted_file( $file->id );
+		if ( ! $decrypted_file ) {
+			wp_die( esc_html__( 'File not found.', 'dfx-parish-retreat-letters' ) );
+		}
+
+		$pdf_data = base64_encode( $decrypted_file['content'] );
+		unset( $decrypted_file['content'] );
+		?>
+		<!DOCTYPE html>
+		<html>
+		<head>
+			<meta charset="utf-8">
+			<title><?php esc_html_e( 'Print PDF', 'dfx-parish-retreat-letters' ); ?></title>
+			<style>
+				html, body, iframe { margin: 0; padding: 0; width: 100%; height: 100%; border: none; }
+			</style>
+		</head>
+		<body>
+			<embed src="data:application/pdf;base64,<?php echo $pdf_data; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Base64 PDF data ?>" type="application/pdf" width="100%" height="100%" style="position:fixed;top:0;left:0;">
+			<script>
+				(function() {
+					var printTime = 0;
+
+					function closeIfOurPrint() {
+						// Only close if enough time passed since our window.print() call.
+						if (printTime > 0 && (Date.now() - printTime) > 300) {
+							window.close();
+						}
+					}
+
+					window.addEventListener('load', function() {
+						setTimeout(function() {
+							printTime = Date.now();
+							window.print();
+						}, 1500);
+					});
+
+					window.addEventListener('afterprint', function() {
+						setTimeout(closeIfOurPrint, 100);
+					});
+
+					// Focus fallback for browsers that don't fire afterprint.
+					window.addEventListener('focus', function() {
+						if (printTime > 0) {
+							setTimeout(closeIfOurPrint, 500);
+						}
+					});
+				})();
+			</script>
+		</body>
+		</html>
+		<?php
+		exit;
+	}
+
+	/**
+	 * Serve a PDF file with a From/To header on the first page.
+	 *
+	 * Uses FPDI to import the original PDF pages and FPDF to add a header
+	 * strip at the top of the first page, scaling down the original content
+	 * to make room.
+	 *
+	 * @since 26.04.10
+	 * @param object             $file       File object.
+	 * @param DFXPRL_MessageFile $file_model File model instance.
+	 * @param object             $message    Message object (with attendant_name, sender_name, etc.).
+	 */
+	private function serve_pdf_with_header( $file, $file_model, $message ) {
+		// Reserve memory so the catch block can execute after an out-of-memory error.
+		$memory_reserve = str_repeat( 'x', 1024 * 1024 ); // 1 MB reserve.
+
+		// Build header: To and From lines (cheap, do before any heavy work).
+		$to_text = '';
+		if ( ! empty( $message->attendant_name ) ) {
+			$to_text = $message->attendant_name;
+			if ( ! empty( $message->attendant_surnames ) ) {
+				$to_text .= ' ' . $message->attendant_surnames;
+			}
+		}
+		$from_text = ! empty( $message->sender_name ) ? $message->sender_name : '';
+
+		// If no header info available, serve the raw PDF.
+		if ( empty( $to_text ) && empty( $from_text ) ) {
+			unset( $memory_reserve );
+			$this->serve_file_directly( $file, $file_model );
+			return;
+		}
+
+		// If FPDI/TCPDF is not available, fall back.
+		if ( ! class_exists( '\setasign\Fpdi\TcpdfFpdi' ) ) {
+			unset( $memory_reserve );
+			$this->serve_pdf_with_cover_page( $file, $file_model, $message, $to_text, $from_text );
+			return;
+		}
+
+		// Buffer output so partial/corrupt data can be discarded on error.
+		ob_start();
+
+		try {
+			// TCPDF is memory-intensive; raise the limit before decrypting the file.
+			wp_raise_memory_limit( 'admin' );
+
+			$decrypted_file = $file_model->get_decrypted_file( $file->id );
+			if ( ! $decrypted_file ) {
+				ob_end_clean();
+				unset( $memory_reserve );
+				wp_die( esc_html__( 'File not found.', 'dfx-parish-retreat-letters' ) );
+			}
+
+			// Write decrypted PDF to a temp file (FPDI needs a file path).
+			$tmp_file = tempnam( sys_get_temp_dir(), 'dfxprl_pdf_' );
+			// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_file_put_contents
+			file_put_contents( $tmp_file, $decrypted_file['content'] );
+
+			// Free the in-memory copy now that it's on disk.
+			unset( $decrypted_file['content'] );
+
+			$pdf = new \setasign\Fpdi\TcpdfFpdi();
+			$pdf->setPrintHeader( false );
+			$pdf->setPrintFooter( false );
+			$pdf->SetMargins( 0, 0, 0 );
+			$pdf->SetAutoPageBreak( false );
+
+			$page_count = $pdf->setSourceFile( $tmp_file );
+
+			// Header dimensions (mm).
+			$header_height   = 16; // Height of header strip.
+			$header_margin   = 4;  // Top/left margin for header text.
+			$line_height     = 5;  // Line height for header text.
+			$bottom_margin   = 10; // Bottom margin below scaled content.
+
+			for ( $page_no = 1; $page_no <= $page_count; $page_no++ ) {
+				$tpl_id = $pdf->importPage( $page_no );
+				$size   = $pdf->getTemplateSize( $tpl_id );
+
+				if ( $page_no === 1 ) {
+					// First page: keep original page size, scale content down to fit below header.
+					$page_width  = $size['width'];
+					$page_height = $size['height'];
+					$available_height = $page_height - $header_height - $bottom_margin;
+					$scale = $available_height / $size['height'];
+					$scaled_width  = $size['width'] * $scale;
+					$x_offset = ( $page_width - $scaled_width ) / 2; // Center horizontally.
+
+					$pdf->AddPage( $size['width'] > $size['height'] ? 'L' : 'P', array( $page_width, $page_height ) );
+
+					// Write header text (TCPDF handles UTF-8 natively).
+					$pdf->SetFont( 'helvetica', 'B', 10 );
+					$pdf->SetTextColor( 51, 51, 51 );
+
+					// Use a fixed-width label column so "To:" and "From:" align.
+					$label_width = max(
+						$pdf->GetStringWidth( __( 'From', 'dfx-parish-retreat-letters' ) . ': ' ),
+						$pdf->GetStringWidth( __( 'To', 'dfx-parish-retreat-letters' ) . ': ' )
+					) + 1; // 1mm extra padding.
+
+					$y_pos = $header_margin;
+					if ( ! empty( $to_text ) ) {
+						$pdf->SetXY( $header_margin, $y_pos );
+						$pdf->Cell( $label_width, $line_height, __( 'To', 'dfx-parish-retreat-letters' ) . ': ', 0, 0, 'L' );
+						$pdf->Cell( $page_width - $header_margin - $label_width - $header_margin, $line_height, $to_text, 0, 1, 'L' );
+						$y_pos += $line_height;
+					}
+					if ( ! empty( $from_text ) ) {
+						$pdf->SetXY( $header_margin, $y_pos );
+						$pdf->Cell( $label_width, $line_height, __( 'From', 'dfx-parish-retreat-letters' ) . ': ', 0, 0, 'L' );
+						$pdf->Cell( $page_width - $header_margin - $label_width - $header_margin, $line_height, $from_text, 0, 1, 'L' );
+					}
+
+					// Place the original page content scaled down below the header.
+					// Only pass width — FPDI calculates height preserving aspect ratio.
+					$actual_size = $pdf->useTemplate( $tpl_id, $x_offset, $header_height, $scaled_width );
+
+					// Draw a border around the scaled-down original page.
+					$pdf->SetDrawColor( 180, 180, 180 );
+					$pdf->Rect( $x_offset, $header_height, $actual_size['width'], $actual_size['height'], 'D' );
+				} else {
+					// Subsequent pages: import as-is.
+					$pdf->AddPage( $size['width'] > $size['height'] ? 'L' : 'P', array( $size['width'], $size['height'] ) );
+					$pdf->useTemplate( $tpl_id, 0, 0, $size['width'], $size['height'] );
+				}
+			}
+
+			// Clean up temp file.
+			wp_delete_file( $tmp_file );
+
+			// Generate the full PDF into a string before sending anything.
+			// TCPDF Output('S') may write to the buffer instead of returning.
+			$pdf_output = $pdf->Output( 'S' );
+			$buffered = ob_get_clean();
+			unset( $pdf );
+
+			if ( empty( $pdf_output ) && ! empty( $buffered ) ) {
+				$pdf_output = $buffered;
+			}
+			unset( $buffered );
+
+			$safe_filename = sanitize_file_name( $decrypted_file['filename'] );
+			header( 'Content-Type: application/pdf' );
+			header( 'Content-Disposition: inline; filename="' . $safe_filename . '"' );
+			header( 'Content-Length: ' . strlen( $pdf_output ) );
+			header( 'Cache-Control: private, no-cache, no-store, must-revalidate' );
+			header( 'Pragma: no-cache' );
+			header( 'Expires: 0' );
+
+			// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Binary PDF output
+			echo $pdf_output;
+			exit;
+
+		} catch ( \Exception $e ) {
+			// Discard any partial output, free memory, clean up.
+			ob_end_clean();
+			unset( $memory_reserve );
+			if ( isset( $tmp_file ) && file_exists( $tmp_file ) ) {
+				wp_delete_file( $tmp_file );
+			}
+			$this->serve_pdf_with_cover_page( $file, $file_model, $message, $to_text, $from_text );
+			return;
+		} catch ( \Error $e ) {
+			// Discard any partial output, free reserved memory so the fallback can execute.
+			ob_end_clean();
+			unset( $memory_reserve );
+			if ( isset( $tmp_file ) && file_exists( $tmp_file ) ) {
+				wp_delete_file( $tmp_file );
+			}
+			$this->serve_pdf_with_cover_page( $file, $file_model, $message, $to_text, $from_text );
+			return;
+		}
+	}
+
+	/**
+	 * Serve a PDF with a prepended cover page showing From/To info.
+	 *
+	 * Lightweight fallback when full PDF re-rendering runs out of memory.
+	 * Tries external tools first (Ghostscript, pdfunite), then falls back
+	 * to the HTML print page.
+	 *
+	 * @since 26.04.10
+	 * @param object             $file       File object.
+	 * @param DFXPRL_MessageFile $file_model File model instance.
+	 * @param object             $message    Message object.
+	 * @param string             $to_text    Recipient name.
+	 * @param string             $from_text  Sender name.
+	 */
+	private function serve_pdf_with_cover_page( $file, $file_model, $message, $to_text, $from_text ) {
+		// Try using external tools to concatenate a cover page with the original PDF.
+		if ( $this->serve_pdf_with_cover_page_external( $file, $file_model, $to_text, $from_text ) ) {
+			return;
+		}
+
+		// Final fallback: render a simple HTML page with From/To header.
+		// Don't attempt to embed the PDF (memory-heavy and won't print via window.print()).
+		$this->render_print_header_only( $message, $file, $file_model );
+	}
+
+	/**
+	 * Render a minimal HTML print page with only the From/To header.
+	 *
+	 * Used as a last-resort fallback when PDF manipulation is not possible.
+	 * The user prints this page for the header info, then prints the PDF separately.
+	 *
+	 * @since 26.04.10
+	 * @param object $message Message object.
+	 */
+	private function render_print_header_only( $message, $file = null, $file_model = null ) {
+		// Generate a new one-time token so the user can open the raw PDF for printing.
+		$raw_pdf_url = '';
+		if ( $message->id ) {
+			$raw_token = wp_generate_password( 32, false );
+			set_transient( 'dfxprl_print_token_' . $raw_token, $message->id, 5 * MINUTE_IN_SECONDS );
+			// The raw URL uses &fallback=raw to serve the file directly without header processing.
+			$raw_pdf_url = home_url( '/print/' . $raw_token . '?fallback=raw' );
+		}
+		// Try to get PDF page count from the file (skip if memory is tight).
+		$page_count = 0;
+		if ( $file && $file_model ) {
+			try {
+				$decrypted_file = $file_model->get_decrypted_file( $file->id );
+				if ( $decrypted_file && ! empty( $decrypted_file['content'] ) ) {
+					// Count pages by looking for /Type /Page (not /Pages) in the raw PDF.
+					preg_match_all( '/\/Type\s*\/Page[^s]/i', $decrypted_file['content'], $matches );
+					$page_count = count( $matches[0] );
+					unset( $matches, $decrypted_file );
+				}
+			} catch ( \Error $e ) {
+				// Memory exhaustion — just skip the page count.
+				$page_count = 0;
+			}
+		}
+
+		?>
+		<!DOCTYPE html>
+		<html <?php language_attributes(); ?>>
+		<head>
+			<meta charset="<?php bloginfo( 'charset' ); ?>">
+			<meta name="viewport" content="width=device-width, initial-scale=1">
+			<title><?php esc_html_e( 'Print Message', 'dfx-parish-retreat-letters' ); ?></title>
+			<script>
+			(function() {
+				var pdfHref = null;
+				var done = false;
+
+				function onPrintDone() {
+					if (done) return;
+					done = true;
+					if (pdfHref) {
+						window.location.href = pdfHref;
+					} else {
+						window.close();
+					}
+				}
+
+				window.addEventListener('load', function() {
+					var pdfLink = document.getElementById('dfxprl-open-pdf-btn');
+					pdfHref = pdfLink ? pdfLink.href : null;
+
+					setTimeout(function() {
+						window.print();
+						// Fallback: 3 seconds if afterprint doesn't fire.
+						setTimeout(onPrintDone, 3000);
+					}, 100);
+				});
+
+				window.addEventListener('afterprint', function() {
+					setTimeout(onPrintDone, 100);
+				});
+			})();
+			</script>
+			<style>
+				body { font-family: sans-serif; margin: 40px; }
+				.message-header { margin-bottom: 20px; font-size: 16px; }
+				.message-header strong { display: inline-block; width: 60px; }
+				.message-notice { margin-top: 30px; padding: 15px; border: 1px solid #ddd; background: #f9f9f9; font-size: 14px; color: #555; }
+				@media print { .message-notice, .message-actions { display: none; } }
+			</style>
+		</head>
+		<body>
+			<div class="message-header">
+				<?php if ( ! empty( $message->attendant_name ) ) : ?>
+					<p><strong><?php echo esc_html__( 'To', 'dfx-parish-retreat-letters' ) . ':'; ?></strong> <?php echo esc_html( $message->attendant_name . ( ! empty( $message->attendant_surnames ) ? ' ' . $message->attendant_surnames : '' ) ); ?></p>
+				<?php endif; ?>
+				<?php if ( ! empty( $message->sender_name ) ) : ?>
+					<p><strong><?php echo esc_html__( 'From', 'dfx-parish-retreat-letters' ) . ':'; ?></strong> <?php echo esc_html( $message->sender_name ); ?></p>
+				<?php endif; ?>
+			</div>
+			<?php if ( $page_count > 0 ) : ?>
+				<p style="font-size: 14px; color: #555;">
+					<?php
+					printf(
+						/* translators: %d: number of pages in the attached PDF */
+						esc_html( _n( 'Attached document: %d page', 'Attached document: %d pages', $page_count, 'dfx-parish-retreat-letters' ) ),
+						$page_count
+					);
+					?>
+				</p>
+			<?php endif; ?>
+			<?php if ( ! empty( $raw_pdf_url ) ) : ?>
+				<a id="dfxprl-open-pdf-btn" href="<?php echo esc_url( $raw_pdf_url ); ?>" style="display:none;"></a>
+			<?php endif; ?>
+		</body>
+		</html>
+		<?php
+		exit;
+	}
+
+	/**
+	 * Try to prepend a cover page using external tools (Ghostscript or pdfunite).
+	 *
+	 * Creates a one-page cover PDF with TCPDF (lightweight, no imports), writes
+	 * the original PDF to a temp file, and uses an external tool to merge them.
+	 *
+	 * @since 26.04.10
+	 * @param object             $file       File object.
+	 * @param DFXPRL_MessageFile $file_model File model instance.
+	 * @param string             $to_text    Recipient name.
+	 * @param string             $from_text  Sender name.
+	 * @return bool True if the merged PDF was served, false if external tools unavailable.
+	 */
+	private function serve_pdf_with_cover_page_external( $file, $file_model, $to_text, $from_text ) {
+		// Detect available merge tool.
+		$gs_path      = $this->find_executable( 'gs' );
+		$pdfunite_path = $this->find_executable( 'pdfunite' );
+
+		if ( ! $gs_path && ! $pdfunite_path ) {
+			return false;
+		}
+
+		try {
+			// Create a lightweight cover page PDF with TCPDF (no FPDI imports).
+			$cover_pdf = new \TCPDF();
+			$cover_pdf->setPrintHeader( false );
+			$cover_pdf->setPrintFooter( false );
+			$cover_pdf->SetMargins( 20, 20, 20 );
+			$cover_pdf->SetAutoPageBreak( false );
+
+			$cover_pdf->AddPage();
+			$cover_pdf->SetFont( 'helvetica', 'B', 14 );
+			$cover_pdf->SetTextColor( 51, 51, 51 );
+
+			$line_height = 8;
+			$label_width = max(
+				$cover_pdf->GetStringWidth( __( 'From', 'dfx-parish-retreat-letters' ) . ': ' ),
+				$cover_pdf->GetStringWidth( __( 'To', 'dfx-parish-retreat-letters' ) . ': ' )
+			) + 2;
+
+			$cover_pdf->SetY( 40 );
+			if ( ! empty( $to_text ) ) {
+				$cover_pdf->SetX( 20 );
+				$cover_pdf->Cell( $label_width, $line_height, __( 'To', 'dfx-parish-retreat-letters' ) . ': ', 0, 0, 'L' );
+				$cover_pdf->Cell( 0, $line_height, $to_text, 0, 1, 'L' );
+			}
+			if ( ! empty( $from_text ) ) {
+				$cover_pdf->SetX( 20 );
+				$cover_pdf->Cell( $label_width, $line_height, __( 'From', 'dfx-parish-retreat-letters' ) . ': ', 0, 0, 'L' );
+				$cover_pdf->Cell( 0, $line_height, $from_text, 0, 1, 'L' );
+			}
+
+			// Write cover page to temp file.
+			// TCPDF Output('S') may write to stdout instead of returning cleanly.
+			// Capture from the buffer to be safe.
+			ob_start();
+			$cover_content = $cover_pdf->Output( 'S' );
+			$buffered = ob_get_clean();
+			unset( $cover_pdf );
+
+			// Use whichever has content: return value or captured buffer.
+			if ( empty( $cover_content ) && ! empty( $buffered ) ) {
+				$cover_content = $buffered;
+			}
+			unset( $buffered );
+
+			$cover_file = tempnam( sys_get_temp_dir(), 'dfxprl_cover_' );
+			// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_file_put_contents
+			file_put_contents( $cover_file, $cover_content );
+			unset( $cover_content );
+
+			// Write original PDF to temp file.
+			$decrypted_file = $file_model->get_decrypted_file( $file->id );
+			if ( ! $decrypted_file ) {
+				wp_delete_file( $cover_file );
+				return false;
+			}
+			$original_file = tempnam( sys_get_temp_dir(), 'dfxprl_orig_' );
+			// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_file_put_contents
+			file_put_contents( $original_file, $decrypted_file['content'] );
+			unset( $decrypted_file['content'] );
+
+			$output_file = tempnam( sys_get_temp_dir(), 'dfxprl_merged_' );
+
+			// Merge using available tool.
+			// Prefer pdfunite — it does a simple concatenation that preserves
+			// the original PDF structure (forms, fonts, encoding).
+			// Ghostscript re-encodes everything, which can mangle form fields.
+			$success = false;
+			if ( $pdfunite_path ) {
+				$cmd = sprintf(
+					'%s %s %s %s 2>/dev/null',
+					escapeshellarg( $pdfunite_path ),
+					escapeshellarg( $cover_file ),
+					escapeshellarg( $original_file ),
+					escapeshellarg( $output_file )
+				);
+				// phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.system_calls_exec
+				exec( $cmd, $output, $return_code );
+				$success = ( $return_code === 0 && file_exists( $output_file ) && filesize( $output_file ) > 0 );
+			}
+
+			if ( ! $success && $gs_path ) {
+				$cmd = sprintf(
+					'%s -dBATCH -dNOPAUSE -q -sDEVICE=pdfwrite -sOutputFile=%s %s %s 2>/dev/null',
+					escapeshellarg( $gs_path ),
+					escapeshellarg( $output_file ),
+					escapeshellarg( $cover_file ),
+					escapeshellarg( $original_file )
+				);
+				// phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.system_calls_exec
+				exec( $cmd, $output, $return_code );
+				$success = ( $return_code === 0 && file_exists( $output_file ) && filesize( $output_file ) > 0 );
+			}
+
+			// Clean up input temp files.
+			wp_delete_file( $cover_file );
+			wp_delete_file( $original_file );
+
+			if ( ! $success ) {
+				wp_delete_file( $output_file );
+				return false;
+			}
+
+			// Serve the merged PDF.
+			$safe_filename = sanitize_file_name( $decrypted_file['filename'] );
+			header( 'Content-Type: application/pdf' );
+			header( 'Content-Disposition: inline; filename="' . $safe_filename . '"' );
+			header( 'Content-Length: ' . filesize( $output_file ) );
+			header( 'Cache-Control: private, no-cache, no-store, must-revalidate' );
+			header( 'Pragma: no-cache' );
+			header( 'Expires: 0' );
+
+			// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_readfile
+			readfile( $output_file );
+			wp_delete_file( $output_file );
+			exit;
+
+		} catch ( \Exception $e ) {
+			return false;
+		} catch ( \Error $e ) {
+			return false;
+		}
+	}
+
+	/**
+	 * Find an executable in the system PATH.
+	 *
+	 * @since 26.04.10
+	 * @param string $name Executable name (e.g. 'gs', 'pdfunite').
+	 * @return string|false Full path to the executable, or false if not found.
+	 */
+	private function find_executable( $name ) {
+		// phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.system_calls_exec
+		exec( 'which ' . escapeshellarg( $name ) . ' 2>/dev/null', $output, $return_code );
+		if ( $return_code === 0 && ! empty( $output[0] ) ) {
+			return $output[0];
+		}
+		return false;
 	}
 
 	/**
