@@ -518,8 +518,22 @@
                 },
                 success: function(response) {
                     if (response.success) {
-                        // Open print URL in new tab
-                        window.open(response.data.print_url, '_blank');
+                        // Open print URL in new tab, forwarding any extra query params
+                        var printUrl = response.data.print_url;
+                        var params = new URLSearchParams(window.location.search);
+                        // Remove admin page params — only forward dfxprl-specific extras
+                        params.delete('page');
+                        params.delete('attendant_id');
+                        params.delete('paged');
+                        params.delete('s');
+                        params.delete('message_type');
+                        params.delete('orderby');
+                        params.delete('order');
+                        var extra = params.toString();
+                        if (extra) {
+                            printUrl += (printUrl.indexOf('?') !== -1 ? '&' : '?') + extra;
+                        }
+                        window.open(printUrl, '_blank');
                     } else {
                         alert(response.data.message || printErrorText);
                     }
