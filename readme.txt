@@ -3,7 +3,7 @@ Contributors: davefx
 Tags: parish, retreat, letters, confidential, GDPR
 Requires at least: 5.0
 Tested up to: 6.9
-Stable tag: 26.04.28
+Stable tag: 26.05.12
 Requires PHP: 7.4
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
@@ -173,6 +173,12 @@ By default it is generated automatically and stored in the WordPress database (`
 Yes. A `.pot` translation template is included in the `languages/` directory. Create `.po` and `.mo` files for your language and place them in that folder following standard WordPress translation conventions.
 
 ## Changelog
+
+### 26.05.12
+
+- New: when printing a single PDF attachment, a From/To header is now added so the recipient knows who sent it. Three fallback methods are used depending on what is available on the server (TCPDF+FPDI scale-down, external pdfunite/Ghostscript merge, or HTML header-only page).
+- New: expanded audit log to record retreat, attendant and letter operations (added, edited, removed, printed). Entries only contain IDs and anonymized initials -- no personal data.
+- New: plugin icon and logo assets.
 
 ### 26.04.28
 
