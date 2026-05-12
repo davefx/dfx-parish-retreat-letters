@@ -75,7 +75,20 @@ class DFXPRL_Retreat {
 			array( '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%d', '%d', '%s' )
 		);
 
-		return $result ? $wpdb->insert_id : false;
+		if ( ! $result ) {
+			return false;
+		}
+
+		$retreat_id = $wpdb->insert_id;
+
+		if ( class_exists( 'DFXPRL_GDPR' ) ) {
+			DFXPRL_GDPR::get_instance()->log_audit_event( 'retreat_added', array(
+				'retreat_id'   => (int) $retreat_id,
+				'retreat_name' => $sanitized_data['name'],
+			) );
+		}
+
+		return $retreat_id;
 	}
 
 	/**
@@ -156,6 +169,9 @@ class DFXPRL_Retreat {
 	public function delete( $id ) {
 		global $wpdb;
 
+		// Capture retreat name before any deletion for audit logging
+		$retreat = $this->get( $id );
+
 		// Delete all attendants for this retreat (which will cascade delete messages)
 		$attendant_model = new DFXPRL_Attendant();
 		$attendant_model->delete_by_retreat( $id );
@@ -174,6 +190,13 @@ class DFXPRL_Retreat {
 			array( 'id' => $id ),
 			array( '%d' )
 		);
+
+		if ( $result !== false && class_exists( 'DFXPRL_GDPR' ) ) {
+			DFXPRL_GDPR::get_instance()->log_audit_event( 'retreat_removed', array(
+				'retreat_id'   => (int) $id,
+				'retreat_name' => $retreat ? $retreat->name : '',
+			) );
+		}
 
 		return $result !== false;
 	}

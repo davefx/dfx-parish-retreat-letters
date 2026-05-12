@@ -2504,6 +2504,14 @@ class DFXPRL_Admin {
 
 		// Perform the deletion
 		if ( $this->attendant_model->delete_by_retreat( $retreat_id ) ) {
+			if ( class_exists( 'DFXPRL_GDPR' ) ) {
+				DFXPRL_GDPR::get_instance()->log_audit_event( 'attendants_all_removed', array(
+					'retreat_id'       => (int) $retreat_id,
+					'retreat_name'     => $retreat->name,
+					'attendants_count' => (int) $attendant_count,
+				) );
+			}
+
 			wp_send_json_success( array(
 				'message' => sprintf(
 					/* translators: %d: Number of attendants deleted */

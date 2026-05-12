@@ -340,6 +340,35 @@ class DFXPRL_GDPR {
 	}
 
 	/**
+	 * Anonymize a name and surnames into bare initials (e.g., "John Doe" -> "J. D.").
+	 *
+	 * Used by audit logging so that personally identifying names are never
+	 * persisted into the audit trail.
+	 *
+	 * @since 1.10.0
+	 * @param string $name     Given name.
+	 * @param string $surnames Surnames (optional).
+	 * @return string Initials with trailing dots, separated by spaces.
+	 */
+	public function anonymize_name( $name, $surnames = '' ) {
+		$combined = trim( (string) $name . ' ' . (string) $surnames );
+		if ( $combined === '' ) {
+			return '';
+		}
+
+		$parts = preg_split( '/\s+/u', $combined, -1, PREG_SPLIT_NO_EMPTY );
+		$initials = array();
+		foreach ( (array) $parts as $part ) {
+			$first = mb_substr( $part, 0, 1 );
+			if ( $first !== '' && $first !== false ) {
+				$initials[] = mb_strtoupper( $first ) . '.';
+			}
+		}
+
+		return implode( ' ', $initials );
+	}
+
+	/**
 	 * Get audit logs with filtering.
 	 *
 	 * @since 1.2.0

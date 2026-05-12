@@ -86,7 +86,47 @@ class DFXPRL_ConfidentialMessage {
 			array( '%d', '%s', '%s', '%s', '%s', '%s' )
 		); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
 
-		return $result ? $wpdb->insert_id : false;
+		if ( ! $result ) {
+			return false;
+		}
+
+		$message_id = $wpdb->insert_id;
+
+		$this->log_message_audit_event( 'letter_added', $message_id, $sanitized_data['attendant_id'] );
+
+		return $message_id;
+	}
+
+	/**
+	 * Log a privacy-safe audit event for a message.
+	 *
+	 * Persists only the message id, attendant id and anonymized attendant
+	 * initials -- never the message content, sender name, encrypted blobs
+	 * or any other PII.
+	 *
+	 * @since 1.10.0
+	 * @param string $event_type   Event type slug (e.g., 'letter_added').
+	 * @param int    $message_id   Message ID.
+	 * @param int    $attendant_id Attendant ID.
+	 */
+	private function log_message_audit_event( $event_type, $message_id, $attendant_id ) {
+		if ( ! class_exists( 'DFXPRL_GDPR' ) ) {
+			return;
+		}
+
+		$gdpr = DFXPRL_GDPR::get_instance();
+		$initials = '';
+		$attendant_model = new DFXPRL_Attendant();
+		$attendant = $attendant_model->get( $attendant_id );
+		if ( $attendant ) {
+			$initials = $gdpr->anonymize_name( $attendant->name, $attendant->surnames );
+		}
+
+		$gdpr->log_audit_event( $event_type, array(
+			'message_id'         => (int) $message_id,
+			'attendant_id'       => (int) $attendant_id,
+			'attendant_initials' => $initials,
+		) );
 	}
 
 	/**
@@ -495,6 +535,10 @@ class DFXPRL_ConfidentialMessage {
 	public function delete( $id ) {
 		global $wpdb;
 
+		// Capture attendant id before deletion for audit logging
+		$message_for_audit = $this->get( $id );
+		$attendant_id_for_audit = $message_for_audit ? (int) $message_for_audit->attendant_id : 0;
+
 		// First delete associated files from filesystem
 		$file_model = new DFXPRL_MessageFile();
 		$files = $file_model->get_by_message( $id );
@@ -508,6 +552,10 @@ class DFXPRL_ConfidentialMessage {
 			array( 'id' => $id ),
 			array( '%d' )
 		); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
+
+		if ( $result !== false ) {
+			$this->log_message_audit_event( 'letter_removed', $id, $attendant_id_for_audit );
+		}
 
 		return $result !== false;
 	}

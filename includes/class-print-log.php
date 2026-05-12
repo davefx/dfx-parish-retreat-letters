@@ -84,7 +84,32 @@ class DFXPRL_PrintLog {
 			array( '%d', '%d', '%s', '%s' )
 		);
 
-		return $result ? $wpdb->insert_id : false;
+		if ( ! $result ) {
+			return false;
+		}
+
+		$log_id = $wpdb->insert_id;
+
+		if ( class_exists( 'DFXPRL_GDPR' ) ) {
+			$gdpr = DFXPRL_GDPR::get_instance();
+			$attendant_id = 0;
+			$initials = '';
+
+			$message_model = new DFXPRL_ConfidentialMessage();
+			$message = $message_model->get( $sanitized_data['message_id'] );
+			if ( $message ) {
+				$attendant_id = (int) $message->attendant_id;
+				$initials = $gdpr->anonymize_name( $message->attendant_name ?? '', $message->attendant_surnames ?? '' );
+			}
+
+			$gdpr->log_audit_event( 'letter_printed', array(
+				'message_id'         => (int) $sanitized_data['message_id'],
+				'attendant_id'       => $attendant_id,
+				'attendant_initials' => $initials,
+			) );
+		}
+
+		return $log_id;
 	}
 
 	/**

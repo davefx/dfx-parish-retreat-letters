@@ -80,7 +80,22 @@ class DFXPRL_Attendant {
 			array( '%d', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s' )
 		);
 
-		return $result ? $wpdb->insert_id : false;
+		if ( ! $result ) {
+			return false;
+		}
+
+		$attendant_id = $wpdb->insert_id;
+
+		if ( class_exists( 'DFXPRL_GDPR' ) ) {
+			$gdpr = DFXPRL_GDPR::get_instance();
+			$gdpr->log_audit_event( 'attendant_added', array(
+				'attendant_id'       => (int) $attendant_id,
+				'retreat_id'         => (int) $sanitized_data['retreat_id'],
+				'attendant_initials' => $gdpr->anonymize_name( $sanitized_data['name'], $sanitized_data['surnames'] ),
+			) );
+		}
+
+		return $attendant_id;
 	}
 
 	/**
@@ -160,6 +175,15 @@ class DFXPRL_Attendant {
 			array( '%d' )
 		); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
 
+		if ( $result !== false && class_exists( 'DFXPRL_GDPR' ) ) {
+			$gdpr = DFXPRL_GDPR::get_instance();
+			$gdpr->log_audit_event( 'attendant_edited', array(
+				'attendant_id'       => (int) $id,
+				'retreat_id'         => (int) $sanitized_data['retreat_id'],
+				'attendant_initials' => $gdpr->anonymize_name( $sanitized_data['name'], $sanitized_data['surnames'] ),
+			) );
+		}
+
 		return $result !== false;
 	}
 
@@ -174,6 +198,9 @@ class DFXPRL_Attendant {
 	public function delete( $id ) {
 		global $wpdb;
 
+		// Capture attendant info before deletion for audit logging
+		$attendant = $this->get( $id );
+
 		// First delete all messages for this attendant (cascade delete)
 		$message_model = new DFXPRL_ConfidentialMessage();
 		$message_model->delete_by_attendant( $id );
@@ -184,6 +211,15 @@ class DFXPRL_Attendant {
 			array( 'id' => $id ),
 			array( '%d' )
 		); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
+
+		if ( $result !== false && class_exists( 'DFXPRL_GDPR' ) ) {
+			$gdpr = DFXPRL_GDPR::get_instance();
+			$gdpr->log_audit_event( 'attendant_removed', array(
+				'attendant_id'       => (int) $id,
+				'retreat_id'         => $attendant ? (int) $attendant->retreat_id : 0,
+				'attendant_initials' => $attendant ? $gdpr->anonymize_name( $attendant->name, $attendant->surnames ) : '',
+			) );
+		}
 
 		return $result !== false;
 	}
@@ -717,6 +753,16 @@ class DFXPRL_Attendant {
 			array( '%s', '%s', '%s', '%s' ),
 			array( '%d' )
 		); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
+
+		if ( $result !== false && class_exists( 'DFXPRL_GDPR' ) ) {
+			$gdpr = DFXPRL_GDPR::get_instance();
+			$attendant = $this->get( $id );
+			$gdpr->log_audit_event( 'attendant_edited', array(
+				'attendant_id'       => (int) $id,
+				'retreat_id'         => $attendant ? (int) $attendant->retreat_id : 0,
+				'attendant_initials' => $attendant ? $gdpr->anonymize_name( $attendant->name, $attendant->surnames ) : '',
+			) );
+		}
 
 		return $result !== false;
 	}
