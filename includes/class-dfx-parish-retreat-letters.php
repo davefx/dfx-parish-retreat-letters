@@ -2027,12 +2027,12 @@ class DFXPRL {
 			return; // render_unsupported_browser_page() exits.
 		}
 
-		// Enqueue print page assets using WordPress functions
-		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_print_page_assets' ) );
+		// Register our print page assets directly. We deliberately do NOT fire
+		// do_action( 'wp_enqueue_scripts' ): triggering the global action drags
+		// in every other plugin's enqueue callbacks (notably reCAPTCHA plugins,
+		// which then auto-render their badge over the printed letter).
+		$this->enqueue_print_page_assets();
 
-		// Trigger the enqueue action to register our assets
-		do_action( 'wp_enqueue_scripts' );
-		
 		// Output clean HTML for printing
 		?>
 		<!DOCTYPE html>
@@ -2042,8 +2042,9 @@ class DFXPRL {
 			<meta name="viewport" content="width=device-width, initial-scale=1">
 			<title><?php esc_html_e( 'Print Message', 'dfx-parish-retreat-letters' ); ?></title>
 			<?php
-			// Output only the enqueued styles (no other wp_head content)
-			wp_print_styles();
+			// Only print our own stylesheet — never the full global queue, which
+			// other plugins may have enqueued into.
+			wp_print_styles( array( 'dfxprl-print-page' ) );
 			?>
 		</head>
 		<body>
@@ -2138,8 +2139,9 @@ class DFXPRL {
 			?>
 
 			<?php
-			// Output only the enqueued scripts (no other wp_footer content)
-			wp_print_scripts();
+			// Only print our own script — never the full global queue, which
+			// other plugins (e.g. reCAPTCHA) may have enqueued into.
+			wp_print_scripts( array( 'dfxprl-print-page' ) );
 			?>
 		</body>
 		</html>
