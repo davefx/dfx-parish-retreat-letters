@@ -3,7 +3,7 @@ Contributors: davefx
 Tags: parish, retreat, letters, confidential, GDPR
 Requires at least: 5.0
 Tested up to: 6.9
-Stable tag: 26.05.12
+Stable tag: 26.05.18
 Requires PHP: 7.4
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
@@ -173,6 +173,11 @@ By default it is generated automatically and stored in the WordPress database (`
 Yes. A `.pot` translation template is included in the `languages/` directory. Create `.po` and `.mo` files for your language and place them in that folder following standard WordPress translation conventions.
 
 ## Changelog
+
+### 26.05.18
+
+- New: the "Print Status" cell for a message now refreshes in place right after printing, so the print count and first-print date update without reloading the page.
+- New: Internet Explorer is now explicitly unsupported. The print view no longer decrypts or sends letter content to IE clients (a clean "browser not supported" page is shown instead), and a warning notice appears across all plugin admin screens when an IE browser is detected.
 
 ### 26.05.12
 
