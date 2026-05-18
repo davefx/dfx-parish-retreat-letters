@@ -38,7 +38,7 @@ class PluginIntegrationTest extends PHPUnit\Framework\TestCase {
             
             // Define plugin constants if not defined
             if (!defined('DFXPRL_VERSION')) {
-                define('DFXPRL_VERSION', '26.05.18');
+                define('DFXPRL_VERSION', '26.05.18.1');
             }
             if (!defined('DFXPRL_PLUGIN_DIR')) {
                 define('DFXPRL_PLUGIN_DIR', $plugin_dir . '/');
@@ -200,7 +200,7 @@ class PluginIntegrationTest extends PHPUnit\Framework\TestCase {
         
         // Test that version follows semantic versioning pattern (PHPUnit 9+ compatible)
         $version = DFXPRL_VERSION;
-        $this->assertMatchesRegularExpression('/^\d+\.\d+\.\d+$/', $version, 'Plugin version should follow semantic versioning');
+        $this->assertMatchesRegularExpression('/^\d+\.\d+\.\d+(\.\d+)?$/', $version, 'Plugin version should follow semantic versioning (optional 4th component allowed for same-day re-releases)');
     }
 
     /**

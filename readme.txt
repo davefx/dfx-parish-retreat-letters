@@ -3,7 +3,7 @@ Contributors: davefx
 Tags: parish, retreat, letters, confidential, GDPR
 Requires at least: 5.0
 Tested up to: 6.9
-Stable tag: 26.05.18
+Stable tag: 26.05.18.1
 Requires PHP: 7.4
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
@@ -173,6 +173,10 @@ By default it is generated automatically and stored in the WordPress database (`
 Yes. A `.pot` translation template is included in the `languages/` directory. Create `.po` and `.mo` files for your language and place them in that folder following standard WordPress translation conventions.
 
 ## Changelog
+
+### 26.05.18.1
+
+- Fix: prevent third-party widgets (notably Google reCAPTCHA badges) from appearing in the letter print preview on sites with security/anti-spam plugins active. The print page no longer fires the global `wp_enqueue_scripts` action and only prints its own stylesheet and script.
 
 ### 26.05.18
 
