@@ -518,6 +518,10 @@
                 },
                 success: function(response) {
                     if (response.success) {
+                        // Refresh the Print Status cell in the row so the new count is reflected.
+                        if (response.data && response.data.print_status_html) {
+                            $button.closest('tr').find('.dfxprl-print-status-cell').html(response.data.print_status_html);
+                        }
                         // Open print URL in new tab, forwarding any extra query params
                         var printUrl = response.data.print_url;
                         var params = new URLSearchParams(window.location.search);
@@ -614,8 +618,8 @@
             });
         });
 
-        // Handle view print log clicks
-        $('.dfxprl-view-print-log').on('click', function(e) {
+        // Handle view print log clicks (delegated so re-rendered cells still respond)
+        $(document).on('click', '.dfxprl-view-print-log', function(e) {
             e.preventDefault();
 
             var messageId = $(this).data('message-id');

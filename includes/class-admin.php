@@ -144,6 +144,7 @@ class DFXPRL_Admin {
 		add_action( 'admin_menu', array( $this, 'add_admin_menu' ) );
 		add_action( 'admin_init', array( $this, 'handle_admin_form_submissions' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_scripts' ) );
+		add_action( 'admin_notices', array( $this, 'maybe_render_ie_unsupported_notice' ) );
 		add_action( 'wp_ajax_dfxprl_delete_retreat', array( $this, 'ajax_delete_retreat' ) );
 		add_action( 'wp_ajax_dfxprl_delete_attendant', array( $this, 'ajax_delete_attendant' ) );
 		add_action( 'wp_ajax_dfxprl_delete_all_attendants', array( $this, 'ajax_delete_all_attendants' ) );
@@ -180,7 +181,7 @@ class DFXPRL_Admin {
 
 		// Check for our plugin pages
 		$page = sanitize_text_field( wp_unslash( $_GET['page'] ?? '' ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- URL parameter for page routing
-		$allowed_pages = array( 'dfxprl-retreats', 'dfxprl-retreats-add', 'dfxprl-messages', 'dfxprl-privacy', 'dfxprl-global-settings' );
+		$allowed_pages = self::get_plugin_admin_page_slugs();
 
 		if ( ! in_array( $page, $allowed_pages, true ) ) {
 			return;
@@ -404,19 +405,62 @@ class DFXPRL_Admin {
 	}
 
 	/**
-	 * Enqueue admin scripts and styles.
+	 * Return the list of admin page slugs registered by this plugin.
 	 *
-	 * @since 1.0.0
-	 * @param string $hook_suffix The current admin page.
+	 * Used to scope admin assets and notices to the plugin's own screens.
+	 *
+	 * @since 26.05.13
+	 * @return array<int, string>
 	 */
-	public function enqueue_admin_scripts( $hook_suffix ) {
-		$our_pages = array(
+	public static function get_plugin_admin_page_slugs() {
+		return array(
 			'dfxprl-retreats',
 			'dfxprl-retreats-add',
 			'dfxprl-messages',
 			'dfxprl-privacy',
 			'dfxprl-global-settings',
 		);
+	}
+
+	/**
+	 * Render a warning notice on the plugin's admin pages when the user is on Internet Explorer.
+	 *
+	 * @since 26.05.13
+	 */
+	public function maybe_render_ie_unsupported_notice() {
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only URL parameter for page scoping
+		$page_param = isset( $_GET['page'] ) ? sanitize_text_field( wp_unslash( $_GET['page'] ) ) : '';
+		if ( ! in_array( $page_param, self::get_plugin_admin_page_slugs(), true ) ) {
+			return;
+		}
+
+		if ( empty( $_SERVER['HTTP_USER_AGENT'] ) ) {
+			return;
+		}
+		$ua = sanitize_text_field( wp_unslash( $_SERVER['HTTP_USER_AGENT'] ) );
+		$is_ie = ( strpos( $ua, 'MSIE ' ) !== false ) || ( strpos( $ua, 'Trident/' ) !== false );
+		if ( ! $is_ie ) {
+			return;
+		}
+
+		?>
+		<div class="notice notice-warning">
+			<p>
+				<strong><?php esc_html_e( 'Internet Explorer is not supported.', 'dfx-parish-retreat-letters' ); ?></strong>
+				<?php esc_html_e( 'This plugin (including the letter print view) requires a modern browser. Please use Microsoft Edge, Google Chrome, Mozilla Firefox or Safari.', 'dfx-parish-retreat-letters' ); ?>
+			</p>
+		</div>
+		<?php
+	}
+
+	/**
+	 * Enqueue admin scripts and styles.
+	 *
+	 * @since 1.0.0
+	 * @param string $hook_suffix The current admin page.
+	 */
+	public function enqueue_admin_scripts( $hook_suffix ) {
+		$our_pages = self::get_plugin_admin_page_slugs();
 
 		$page_param = isset( $_GET['page'] ) ? sanitize_text_field( wp_unslash( $_GET['page'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- URL parameter check for asset loading
 
@@ -3687,34 +3731,14 @@ class DFXPRL_Admin {
 									<td data-colname="<?php esc_attr_e( 'Submitted', 'dfx-parish-retreat-letters' ); ?>">
 										<?php echo esc_html( date_i18n( get_option( 'date_format' ) . ' ' . get_option( 'time_format' ), strtotime( $message->submitted_at ) ) ); ?>
 									</td>
-									<td data-colname="<?php esc_attr_e( 'Print Status', 'dfx-parish-retreat-letters' ); ?>">
-										<?php if ( $message->print_count > 0 ) : ?>
-											<span class="dashicons dashicons-yes-alt" style="color: #46b450;" title="<?php esc_attr_e( 'Printed', 'dfx-parish-retreat-letters' ); ?>"></span>
-											<a href="#" class="dfxprl-view-print-log" data-message-id="<?php echo esc_attr( $message->id ); ?>" style="text-decoration: none;">
-												<?php
-												printf(
-													/* translators: %1$d: Print count, %2$s: First print date */
-													esc_html( _n(
-														'Printed %1$d time, first: %2$s.',
-														'Printed %1$d times, first: %2$s.',
-														$message->print_count,
-														'dfx-parish-retreat-letters'
-													) ),
-													esc_html( $message->print_count ),
-													esc_html( date_i18n(
-														get_option( 'date_format' ) . ' ' . get_option( 'time_format' ),
-														strtotime( $message->first_printed_at )
-													) )
-												);
-												?>
-											</a>
-											<small style="display: block; margin-top: 2px; color: #666;">
-												<?php esc_html_e( 'Click to view print history', 'dfx-parish-retreat-letters' ); ?>
-											</small>
-										<?php else : ?>
-											<span class="dashicons dashicons-warning" style="color: #dba617;" title="<?php esc_attr_e( 'Not Printed', 'dfx-parish-retreat-letters' ); ?>"></span>
-											<?php esc_html_e( 'Not printed', 'dfx-parish-retreat-letters' ); ?>
-										<?php endif; ?>
+									<td data-colname="<?php esc_attr_e( 'Print Status', 'dfx-parish-retreat-letters' ); ?>" class="dfxprl-print-status-cell">
+										<?php
+										echo $this->render_print_status_cell( // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+											(int) $message->id,
+											(int) $message->print_count,
+											$message->first_printed_at
+										);
+										?>
 									</td>
 									<td data-colname="<?php esc_attr_e( 'Actions', 'dfx-parish-retreat-letters' ); ?>">
 										<button type="button" class="button button-small button-primary dfxprl-print-message" data-message-id="<?php echo esc_attr( $message->id ); ?>">
@@ -3825,9 +3849,67 @@ class DFXPRL_Admin {
 		// Log the print operation
 		$this->print_log_model->log_print( $message_id, get_current_user_id() );
 
+		// Build refreshed print-status cell so the UI reflects this print without a reload.
+		$print_count       = $this->print_log_model->get_print_count( $message_id );
+		$first_printed_at  = $this->print_log_model->get_first_print_date( $message_id );
+		$print_status_html = $this->render_print_status_cell( $message_id, $print_count, $first_printed_at );
+
 		// Return the print URL - use clean URL instead of admin interface
 		$print_url = home_url( '/print/' . $print_token );
-		wp_send_json_success( array( 'print_url' => $print_url ) );
+		wp_send_json_success( array(
+			'print_url'         => $print_url,
+			'message_id'        => $message_id,
+			'print_status_html' => $print_status_html,
+			'print_count'       => $print_count,
+		) );
+	}
+
+	/**
+	 * Render the print-status table cell content for a message.
+	 *
+	 * @since 26.05.13
+	 * @param int         $message_id       Message ID (used for the print-log link).
+	 * @param int         $print_count      How many times the message has been printed.
+	 * @param string|null $first_printed_at Date of the first print, or null if never printed.
+	 * @return string Rendered HTML for the cell content (without the wrapping <td>).
+	 */
+	private function render_print_status_cell( $message_id, $print_count, $first_printed_at ) {
+		$message_id  = (int) $message_id;
+		$print_count = (int) $print_count;
+
+		ob_start();
+		if ( $print_count > 0 ) :
+			?>
+			<span class="dashicons dashicons-yes-alt" style="color: #46b450;" title="<?php esc_attr_e( 'Printed', 'dfx-parish-retreat-letters' ); ?>"></span>
+			<a href="#" class="dfxprl-view-print-log" data-message-id="<?php echo esc_attr( $message_id ); ?>" style="text-decoration: none;">
+				<?php
+				printf(
+					/* translators: %1$d: Print count, %2$s: First print date */
+					esc_html( _n(
+						'Printed %1$d time, first: %2$s.',
+						'Printed %1$d times, first: %2$s.',
+						$print_count,
+						'dfx-parish-retreat-letters'
+					) ),
+					esc_html( $print_count ),
+					esc_html( date_i18n(
+						get_option( 'date_format' ) . ' ' . get_option( 'time_format' ),
+						strtotime( $first_printed_at )
+					) )
+				);
+				?>
+			</a>
+			<small style="display: block; margin-top: 2px; color: #666;">
+				<?php esc_html_e( 'Click to view print history', 'dfx-parish-retreat-letters' ); ?>
+			</small>
+			<?php
+		else :
+			?>
+			<span class="dashicons dashicons-warning" style="color: #dba617;" title="<?php esc_attr_e( 'Not Printed', 'dfx-parish-retreat-letters' ); ?>"></span>
+			<?php esc_html_e( 'Not printed', 'dfx-parish-retreat-letters' ); ?>
+			<?php
+		endif;
+		return ob_get_clean();
 	}
 
 	/**

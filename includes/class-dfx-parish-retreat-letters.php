@@ -2021,9 +2021,15 @@ class DFXPRL {
 	 * @param array  $files   Array of file objects.
 	 */
 	private function render_print_page( $message, $files ) {
+		// Internet Explorer is unsupported — abort before decrypting/serving the letter.
+		if ( $this->is_internet_explorer() ) {
+			$this->render_unsupported_browser_page();
+			return; // render_unsupported_browser_page() exits.
+		}
+
 		// Enqueue print page assets using WordPress functions
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_print_page_assets' ) );
-		
+
 		// Trigger the enqueue action to register our assets
 		do_action( 'wp_enqueue_scripts' );
 		
@@ -2139,6 +2145,70 @@ class DFXPRL {
 		</html>
 		<?php
 		exit; // Important: exit after rendering to prevent WordPress from adding headers/footers
+	}
+
+	/**
+	 * Detect whether the current request comes from Internet Explorer (any version, including IE 11).
+	 *
+	 * Matches the legacy "MSIE " token (IE 6-10) and the "Trident/" token (IE 11),
+	 * while deliberately ignoring modern Edge ("Edg/") and other Trident-free browsers.
+	 *
+	 * @since 26.05.13
+	 * @return bool True if the User-Agent identifies as Internet Explorer.
+	 */
+	private function is_internet_explorer() {
+		if ( empty( $_SERVER['HTTP_USER_AGENT'] ) ) {
+			return false;
+		}
+		$ua = sanitize_text_field( wp_unslash( $_SERVER['HTTP_USER_AGENT'] ) );
+		return ( strpos( $ua, 'MSIE ' ) !== false ) || ( strpos( $ua, 'Trident/' ) !== false );
+	}
+
+	/**
+	 * Render a localized "browser not supported" page in place of the print view.
+	 *
+	 * Avoids decrypting or sending letter content to Internet Explorer clients.
+	 *
+	 * @since 26.05.13
+	 */
+	private function render_unsupported_browser_page() {
+		status_header( 200 );
+		nocache_headers();
+		?>
+		<!DOCTYPE html>
+		<html <?php language_attributes(); ?>>
+		<head>
+			<meta charset="<?php bloginfo( 'charset' ); ?>">
+			<meta name="viewport" content="width=device-width, initial-scale=1">
+			<title><?php esc_html_e( 'Browser not supported', 'dfx-parish-retreat-letters' ); ?></title>
+			<style>
+				body { font-family: Arial, sans-serif; background: #f5f5f5; margin: 0; padding: 40px 20px; color: #222; }
+				.dfxprl-unsupported { max-width: 560px; margin: 40px auto; background: #fff; border: 1px solid #ddd; border-radius: 6px; padding: 32px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+				.dfxprl-unsupported h1 { margin-top: 0; font-size: 22px; color: #b32d2e; }
+				.dfxprl-unsupported p { line-height: 1.5; font-size: 15px; }
+				.dfxprl-unsupported ul { line-height: 1.6; padding-left: 20px; }
+			</style>
+		</head>
+		<body>
+			<div class="dfxprl-unsupported">
+				<h1><?php esc_html_e( 'Internet Explorer is not supported', 'dfx-parish-retreat-letters' ); ?></h1>
+				<p>
+					<?php esc_html_e( 'The print view cannot be displayed in Internet Explorer. Microsoft retired Internet Explorer in June 2022 and it no longer receives security updates.', 'dfx-parish-retreat-letters' ); ?>
+				</p>
+				<p>
+					<?php esc_html_e( 'Please reopen this page in one of the following modern browsers:', 'dfx-parish-retreat-letters' ); ?>
+				</p>
+				<ul>
+					<li>Microsoft Edge</li>
+					<li>Google Chrome</li>
+					<li>Mozilla Firefox</li>
+					<li>Safari</li>
+				</ul>
+			</div>
+		</body>
+		</html>
+		<?php
+		exit;
 	}
 
 	/**
