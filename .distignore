@@ -11,22 +11,9 @@
 /tests
 /node_modules
 
-# Vendor: exclude dev dependencies, keep production ones (setasign/fpdf, setasign/fpdi)
-/vendor/bin
-/vendor/antecedent
-/vendor/brain
-/vendor/doctrine
-/vendor/hamcrest
-/vendor/mockery
-/vendor/myclabs
-/vendor/nikic
-/vendor/phar-io
-/vendor/phpunit
-/vendor/sebastian
-/vendor/theseer
-/vendor/yoast
-/vendor/tecnickcom/tcpdf/examples
-/vendor/tecnickcom/tcpdf/tools
+# Vendor: PDF manipulation is now client-side via assets/vendor/pdf-lib.min.js,
+# so no PHP runtime composer dependencies are required. Only dev deps live here.
+/vendor
 phpunit.xml
 phpunit-basic.xml
 phpunit-advanced.xml

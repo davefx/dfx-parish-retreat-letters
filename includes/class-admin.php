@@ -4997,12 +4997,12 @@ class DFXPRL_Admin {
 
 						<tr>
 							<th scope="row">
-								<label for="enable_pdf_header"><?php esc_html_e( 'PDF Header Page', 'dfx-parish-retreat-letters' ); ?></label>
+								<label for="enable_pdf_header"><?php esc_html_e( 'Add PDF Header', 'dfx-parish-retreat-letters' ); ?></label>
 							</th>
 							<td>
 								<input type="checkbox" id="enable_pdf_header" name="enable_pdf_header" value="1" <?php checked( $pdf_header_enabled ); ?>>
-								<label for="enable_pdf_header"><?php esc_html_e( 'Add a From/To header page to PDF letters when printing', 'dfx-parish-retreat-letters' ); ?></label>
-								<p class="description"><?php esc_html_e( 'Disabled by default. PDF header generation uses FPDI/TCPDF and may exceed the PHP memory limit on shared hosts. Leave off if you see blank or failed PDF prints.', 'dfx-parish-retreat-letters' ); ?></p>
+								<label for="enable_pdf_header"><?php esc_html_e( 'Add a From/To header to PDF letters when printing', 'dfx-parish-retreat-letters' ); ?></label>
+								<p class="description"><?php esc_html_e( 'Disabled by default. When enabled, the From/To header is added on the recipient&#8217;s browser (no server memory cost). If the browser cannot do it, the unmodified PDF is printed.', 'dfx-parish-retreat-letters' ); ?></p>
 							</td>
 						</tr>
 					</tbody>

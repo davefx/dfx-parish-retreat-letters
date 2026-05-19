@@ -176,7 +176,7 @@ Yes. A `.pot` translation template is included in the `languages/` directory. Cr
 
 ### 26.05.19
 
-- New: the PDF From/To header page added when printing single-PDF letters is now an opt-in setting in **Global Settings → PDF Header Page**, and is **disabled by default**. The previous behaviour relied on FPDI/TCPDF, which is memory-intensive and could fail to print on shared hosts. When disabled, PDF letters are served via a lightweight auto-print page.
+- New: the PDF From/To header page added when printing single-PDF letters is now an opt-in setting in **Global Settings → Add PDF Header**, and is **disabled by default**. The previous behaviour relied on FPDI/TCPDF, which is memory-intensive and could fail to print on shared hosts. When disabled, PDF letters are served via a lightweight auto-print page.
 
 ### 26.05.18.1
 

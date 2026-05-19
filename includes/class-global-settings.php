@@ -189,10 +189,10 @@ class DFXPRL_GlobalSettings {
 	}
 
 	/**
-	 * Check if PDF header (From/To header / cover page) generation is enabled.
+	 * Check if PDF header (From/To header on the first page) generation is enabled.
 	 *
-	 * Disabled by default: PDF header generation uses FPDI/TCPDF which is
-	 * memory-intensive and may exceed the PHP memory limit on shared hosts.
+	 * Disabled by default. When enabled, the header is built client-side via
+	 * pdf-lib so no server memory is spent on PDF manipulation.
 	 *
 	 * @since 26.05.19
 	 * @return bool

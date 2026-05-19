@@ -22,7 +22,7 @@ if ( ! defined( 'WPINC' ) ) {
 	die;
 }
 
-// Load Composer autoloader for bundled libraries (FPDF, FPDI).
+// Load Composer autoloader if available (dev/test dependencies only at runtime).
 $dfxprl_autoloader = __DIR__ . '/vendor/autoload.php';
 if ( file_exists( $dfxprl_autoloader ) ) {
 	require_once $dfxprl_autoloader;
