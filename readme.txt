@@ -3,7 +3,7 @@ Contributors: davefx
 Tags: parish, retreat, letters, confidential, GDPR
 Requires at least: 5.0
 Tested up to: 6.9
-Stable tag: 26.05.19
+Stable tag: 26.05.19.1
 Requires PHP: 7.4
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
@@ -173,6 +173,12 @@ By default it is generated automatically and stored in the WordPress database (`
 Yes. A `.pot` translation template is included in the `languages/` directory. Create `.po` and `.mo` files for your language and place them in that folder following standard WordPress translation conventions.
 
 ## Changelog
+
+### 26.05.19.1
+
+- Change: when **Add PDF Header** is enabled, the From/To header is now generated in the recipient's browser using pdf-lib instead of server-side TCPDF/FPDI. This removes the server memory cost entirely.
+- Fix: when printing a multi-page PDF letter, all pages are now sent to the printer (previously only the first page printed, regardless of whether the header was enabled).
+- Fix: the print tab now closes reliably after the print dialog is dismissed.
 
 ### 26.05.19
 
