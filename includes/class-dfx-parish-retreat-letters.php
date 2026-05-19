@@ -1297,8 +1297,12 @@ class DFXPRL {
 			} elseif ( $files[0]->file_type === 'application/pdf' ) {
 				if ( $fallback_mode === 'header' ) {
 					$this->render_print_header_only( $message, $files[0], $file_model );
-				} else {
+				} elseif ( DFXPRL_GlobalSettings::get_instance()->is_pdf_header_enabled() ) {
 					$this->serve_pdf_with_header( $files[0], $file_model, $message );
+				} else {
+					// PDF header feature disabled — serve raw PDF in a minimal auto-print page.
+					// Avoids the memory-heavy FPDI/TCPDF path on constrained hosts.
+					$this->serve_pdf_printable( $files[0], $file_model );
 				}
 			} else {
 				$this->serve_file_directly( $files[0], $file_model );

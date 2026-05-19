@@ -187,4 +187,28 @@ class DFXPRL_GlobalSettings {
 	public function set_per_retreat_customization_enabled( $enabled ) {
 		return $this->set( 'enable_per_retreat_customization', $enabled ? 'yes' : 'no' );
 	}
+
+	/**
+	 * Check if PDF header (From/To header / cover page) generation is enabled.
+	 *
+	 * Disabled by default: PDF header generation uses FPDI/TCPDF which is
+	 * memory-intensive and may exceed the PHP memory limit on shared hosts.
+	 *
+	 * @since 26.05.19
+	 * @return bool
+	 */
+	public function is_pdf_header_enabled() {
+		return $this->get( 'enable_pdf_header', 'no' ) === 'yes';
+	}
+
+	/**
+	 * Enable or disable PDF header generation.
+	 *
+	 * @since 26.05.19
+	 * @param bool $enabled Whether to enable PDF header generation.
+	 * @return bool
+	 */
+	public function set_pdf_header_enabled( $enabled ) {
+		return $this->set( 'enable_pdf_header', $enabled ? 'yes' : 'no' );
+	}
 }

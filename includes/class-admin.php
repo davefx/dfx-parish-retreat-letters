@@ -4939,6 +4939,7 @@ class DFXPRL_Admin {
 		$default_footer = $this->global_settings->get_default_footer();
 		$body_classes = $this->global_settings->get_body_classes();
 		$per_retreat_customization_enabled = $this->global_settings->is_per_retreat_customization_enabled();
+		$pdf_header_enabled = $this->global_settings->is_pdf_header_enabled();
 
 		?>
 		<div class="wrap">
@@ -4991,6 +4992,17 @@ class DFXPRL_Admin {
 							<td>
 								<input type="text" id="body_classes" name="body_classes" class="regular-text" value="<?php echo esc_attr( $body_classes ); ?>">
 								<p class="description"><?php esc_html_e( 'Space-separated CSS class names to add to the &lt;body&gt; tag on all retreat message form pages.', 'dfx-parish-retreat-letters' ); ?></p>
+							</td>
+						</tr>
+
+						<tr>
+							<th scope="row">
+								<label for="enable_pdf_header"><?php esc_html_e( 'PDF Header Page', 'dfx-parish-retreat-letters' ); ?></label>
+							</th>
+							<td>
+								<input type="checkbox" id="enable_pdf_header" name="enable_pdf_header" value="1" <?php checked( $pdf_header_enabled ); ?>>
+								<label for="enable_pdf_header"><?php esc_html_e( 'Add a From/To header page to PDF letters when printing', 'dfx-parish-retreat-letters' ); ?></label>
+								<p class="description"><?php esc_html_e( 'Disabled by default. PDF header generation uses FPDI/TCPDF and may exceed the PHP memory limit on shared hosts. Leave off if you see blank or failed PDF prints.', 'dfx-parish-retreat-letters' ); ?></p>
 							</td>
 						</tr>
 					</tbody>
@@ -5124,6 +5136,7 @@ class DFXPRL_Admin {
 
 		// Process form submission
 		$per_retreat_customization = isset( $_POST['enable_per_retreat_customization'] ) ? 1 : 0;
+		$pdf_header_enabled = isset( $_POST['enable_pdf_header'] ) ? 1 : 0;
 		$default_header = $this->parse_block_selection( sanitize_text_field( wp_unslash( $_POST['default_header_block_id'] ?? '' ) ) );
 		$default_footer = $this->parse_block_selection( sanitize_text_field( wp_unslash( $_POST['default_footer_block_id'] ?? '' ) ) );
 		$body_classes = sanitize_text_field( wp_unslash( $_POST['body_classes'] ?? '' ) );
@@ -5131,6 +5144,7 @@ class DFXPRL_Admin {
 		// Save settings
 		$success = true;
 		$success = $this->global_settings->set_per_retreat_customization_enabled( $per_retreat_customization ) && $success;
+		$success = $this->global_settings->set_pdf_header_enabled( $pdf_header_enabled ) && $success;
 		$success = $this->global_settings->set_default_header( $default_header ) && $success;
 		$success = $this->global_settings->set_default_footer( $default_footer ) && $success;
 		$success = $this->global_settings->set_body_classes( $body_classes ) && $success;
