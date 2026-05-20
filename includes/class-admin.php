@@ -5002,7 +5002,7 @@ class DFXPRL_Admin {
 							<td>
 								<input type="checkbox" id="enable_pdf_header" name="enable_pdf_header" value="1" <?php checked( $pdf_header_enabled ); ?>>
 								<label for="enable_pdf_header"><?php esc_html_e( 'Add a From/To header to PDF letters when printing', 'dfx-parish-retreat-letters' ); ?></label>
-								<p class="description"><?php esc_html_e( 'Disabled by default. When enabled, the From/To header is added on the recipient&#8217;s browser (no server memory cost). If the browser cannot do it, the unmodified PDF is printed.', 'dfx-parish-retreat-letters' ); ?></p>
+								<p class="description"><?php esc_html_e( 'Enabled by default. The From/To header is added on the recipient&#8217;s browser (no server memory cost). If the browser cannot do it, the unmodified PDF is printed.', 'dfx-parish-retreat-letters' ); ?></p>
 							</td>
 						</tr>
 					</tbody>

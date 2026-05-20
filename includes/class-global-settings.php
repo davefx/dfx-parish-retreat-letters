@@ -191,14 +191,14 @@ class DFXPRL_GlobalSettings {
 	/**
 	 * Check if PDF header (From/To header on the first page) generation is enabled.
 	 *
-	 * Disabled by default. When enabled, the header is built client-side via
-	 * pdf-lib so no server memory is spent on PDF manipulation.
+	 * Enabled by default. The header is built client-side via pdf-lib so no
+	 * server memory is spent on PDF manipulation.
 	 *
 	 * @since 26.05.19
 	 * @return bool
 	 */
 	public function is_pdf_header_enabled() {
-		return $this->get( 'enable_pdf_header', 'no' ) === 'yes';
+		return $this->get( 'enable_pdf_header', 'yes' ) === 'yes';
 	}
 
 	/**
