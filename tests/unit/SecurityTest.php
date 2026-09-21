@@ -15,21 +15,34 @@ use Brain\Monkey\Functions;
 class SecurityTest extends TestCase {
 
     /**
+     * In-memory option store used by the mocked get/add/update_option functions.
+     *
+     * @var array
+     */
+    private $options = array();
+
+    /**
      * Set up test environment
      */
     protected function setUp(): void {
         parent::setUp();
         Monkey\setUp();
         
-        // Mock WordPress functions
+        // Mock WordPress functions with a small in-memory option store so a key generated on
+        // first access persists for later reads. Persisting the key is required for the
+        // encrypt/decrypt round-trip to use the same key.
+        $this->options = array();
         Functions\when('get_option')->alias(function($option, $default = false) {
-            if ($option === 'dfxprl_encryption_key') {
-                return false; // Force key generation
-            }
-            return $default;
+            return array_key_exists($option, $this->options) ? $this->options[$option] : $default;
         });
-        Functions\when('add_option')->justReturn(true);
-        Functions\when('update_option')->justReturn(true);
+        Functions\when('add_option')->alias(function($option, $value = '') {
+            $this->options[$option] = $value;
+            return true;
+        });
+        Functions\when('update_option')->alias(function($option, $value) {
+            $this->options[$option] = $value;
+            return true;
+        });
         Functions\when('add_action')->justReturn(true);
         Functions\when('esc_html_e')->alias(function($text) {
             echo $text;
@@ -78,7 +91,9 @@ class SecurityTest extends TestCase {
             $key = $method->invoke($security, true);
             
             $this->assertIsString($key);
-            $this->assertEquals(64, strlen($key)); // 32 bytes in hex = 64 chars
+            // The key is a base64-encoded 32-byte value; assert the decoded length is 32 bytes
+            // rather than assuming a hex encoding.
+            $this->assertEquals(32, strlen(base64_decode($key, true)));
         } else {
             $this->markTestSkipped('get_encryption_key method not found');
         }
@@ -99,7 +114,9 @@ class SecurityTest extends TestCase {
             $this->assertEquals(64, strlen($token1));
             $this->assertEquals(64, strlen($token2));
             $this->assertNotEquals($token1, $token2); // Should be unique
-            $this->assertRegExp('/^[a-f0-9]+$/', $token1); // Should be hex
+            // Tokens are generated via wp_generate_password() without special chars, so they are
+            // alphanumeric rather than hexadecimal.
+            $this->assertMatchesRegularExpression('/^[a-zA-Z0-9]+$/', $token1);
         } else {
             $this->markTestSkipped('generate_secure_token method not found');
         }

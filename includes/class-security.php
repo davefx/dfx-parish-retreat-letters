@@ -370,6 +370,12 @@ class DFXPRL_Security {
 			return false;
 		}
 
+		// There is nothing meaningful to encrypt for empty content; treat it as a failure so
+		// callers do not store empty ciphertext. Note '0' is intentionally still encryptable.
+		if ( '' === $data || null === $data ) {
+			return false;
+		}
+
 		if ( empty( $salt ) ) {
 			$salt = $this->generate_salt();
 		}

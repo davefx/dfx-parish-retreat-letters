@@ -151,12 +151,15 @@ class RetreatTest extends TestCase {
         $database_property->setAccessible(true);
         $database_property->setValue($retreat, $database_mock);
         
+        // update() re-validates the whole record, so required fields (including dates) must be set.
         $update_data = [
             'name' => 'Updated Retreat Name',
             'location' => 'Updated Location',
+            'start_date' => '2024-06-01',
+            'end_date' => '2024-06-03',
             'custom_message' => 'Updated message'
         ];
-        
+
         $result = $retreat->update(1, $update_data);
         $this->assertTrue($result);
     }
@@ -173,42 +176,27 @@ class RetreatTest extends TestCase {
         $database_mock = $this->createMock('DFXPRL_Database');
         $database_mock->method('get_retreats_table')->willReturn('wp_dfx_retreats');
         
-        // Mock global wpdb
+        // Mock global wpdb. delete() cascades through attendants, permissions and invitations
+        // before deleting the retreat, so several queries run and delete() is called multiple
+        // times. Return empty result sets so the cascade loops are no-ops.
         global $wpdb;
         $wpdb = $this->createMock('wpdb');
-        $wpdb->expects($this->once())
-             ->method('delete')
-             ->with('wp_dfx_retreats', ['id' => 1], ['%d'])
-             ->willReturn(1);
-        
-        // Mock singleton instances - these should be called via get_instance()
-        $permissions_mock = $this->createMock('DFXPRL_Permissions');
-        $permissions_mock->expects($this->once())
-                        ->method('delete_by_retreat')
-                        ->with(1);
-                        
-        $invitations_mock = $this->createMock('DFXPRL_Invitations');
-        $invitations_mock->expects($this->once())
-                        ->method('delete_by_retreat')
-                        ->with(1);
-        
-        // Mock attendant model (this one doesn't use singleton pattern)
-        $attendant_mock = $this->createMock('DFXPRL_Attendant');
-        $attendant_mock->expects($this->once())
-                      ->method('delete_by_retreat')
-                      ->with(1);
-        
+        $wpdb->method('prepare')->willReturnArgument(0);
+        $wpdb->method('get_col')->willReturn(array());
+        $wpdb->method('get_results')->willReturn(array());
+        $wpdb->method('get_row')->willReturn(null);
+        $wpdb->method('delete')->willReturn(1);
+
         // Create retreat instance and inject mocked database
         $retreat = new DFXPRL_Retreat();
-        
+
         $reflection = new ReflectionClass($retreat);
         $database_property = $reflection->getProperty('database');
         $database_property->setAccessible(true);
         $database_property->setValue($retreat, $database_mock);
-        
-        // Use reflection to test the method behavior
-        // In a real scenario, we'd need to mock the singleton instances, but for this test
-        // we're primarily checking that the method can execute without the constructor error
+
+        // The key regression this guards against: delete() must obtain Permissions and
+        // Invitations via get_instance() (private constructors) without a fatal error.
         $result = $retreat->delete(1);
         $this->assertTrue($result);
     }
@@ -221,21 +209,25 @@ class RetreatTest extends TestCase {
         $database_mock = $this->createMock('DFXPRL_Database');
         $database_mock->method('get_retreats_table')->willReturn('wp_dfx_retreats');
         
-        // Mock global wpdb to return false (deletion failed)
+        // Mock global wpdb so the final retreat deletion fails. The cascade runs first, so
+        // provide empty result sets; delete() returns false for every call, including the
+        // retreat delete, which makes delete() report failure.
         global $wpdb;
         $wpdb = $this->createMock('wpdb');
-        $wpdb->expects($this->once())
-             ->method('delete')
-             ->willReturn(false);
-        
+        $wpdb->method('prepare')->willReturnArgument(0);
+        $wpdb->method('get_col')->willReturn(array());
+        $wpdb->method('get_results')->willReturn(array());
+        $wpdb->method('get_row')->willReturn(null);
+        $wpdb->method('delete')->willReturn(false);
+
         // Create retreat instance and inject mocked database
         $retreat = new DFXPRL_Retreat();
-        
+
         $reflection = new ReflectionClass($retreat);
         $database_property = $reflection->getProperty('database');
         $database_property->setAccessible(true);
         $database_property->setValue($retreat, $database_mock);
-        
+
         $result = $retreat->delete(1);
         $this->assertFalse($result);
     }
@@ -351,7 +343,7 @@ class RetreatTest extends TestCase {
             
             $this->assertIsArray($results);
             $this->assertCount(1, $results);
-            $this->assertStringContains('Summer', $results[0]->name);
+            $this->assertStringContainsString('Summer', $results[0]->name);
         } else {
             $this->markTestSkipped('search method not found');
         }
@@ -429,7 +421,7 @@ class RetreatTest extends TestCase {
                             $data['disclaimer_text'] === 'Legal disclaimer text' &&
                             $data['disclaimer_acceptance_text'] === 'I accept the terms';
                  }),
-                 ['%s', '%s', '%s', '%s', '%s', '%s', '%s']
+                 ['%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%d', '%d', '%s']
              )
              ->willReturn(true);
         
@@ -534,7 +526,7 @@ class RetreatTest extends TestCase {
                             $data['disclaimer_text'] === '' &&
                             $data['disclaimer_acceptance_text'] === '';
                  }),
-                 ['%s', '%s', '%s', '%s', '%s', '%s', '%s']
+                 ['%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%d', '%d', '%s']
              )
              ->willReturn(true);
         

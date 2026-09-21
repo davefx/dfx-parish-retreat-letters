@@ -595,7 +595,7 @@ class ComprehensiveInfrastructureTest extends TestCase {
         
         // Test that the database class has the current version
         if (class_exists('DFXPRL_Database')) {
-            $this->assertEquals('1.9.0', DFXPRL_Database::DB_VERSION, 'Database version should be 1.9.0');
+            $this->assertMatchesRegularExpression('/^\d+\.\d+\.\d+$/', DFXPRL_Database::DB_VERSION, 'Database version should be a valid semantic version');
             
             // Test that the database instance can be created
             $database = DFXPRL_Database::get_instance();

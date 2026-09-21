@@ -54,19 +54,18 @@ class GDPRTest extends TestCase {
      * Test personal data export
      */
     public function testPersonalDataExport() {
+        // export_personal_data() runs several queries; return empty result sets so the loops
+        // over attendants/messages are no-ops.
+        global $wpdb;
+        $wpdb = $this->createMock('wpdb');
+        $wpdb->method('prepare')->willReturnArgument(0);
+        $wpdb->method('esc_like')->willReturnArgument(0);
+        $wpdb->method('get_results')->willReturn(array());
+        $wpdb->method('get_var')->willReturn(0);
+
         $gdpr = DFXPRL_GDPR::get_instance();
-        
+
         if (method_exists($gdpr, 'export_personal_data')) {
-            // Mock database results
-            $attendant_data = (object) [
-                'id' => 1,
-                'name' => 'John',
-                'surnames' => 'Doe',
-                'date_of_birth' => '1980-01-01',
-                'emergency_contact_name' => 'Jane',
-                'emergency_contact_phone' => '+1234567890'
-            ];
-            
             $result = $gdpr->export_personal_data('john.doe@example.com');
             
             // Verify method is callable
@@ -80,8 +79,18 @@ class GDPRTest extends TestCase {
      * Test personal data erasure
      */
     public function testPersonalDataErasure() {
+        // erase_personal_data() runs several queries; return empty result sets so the loops
+        // over attendants/messages are no-ops.
+        global $wpdb;
+        $wpdb = $this->createMock('wpdb');
+        $wpdb->method('prepare')->willReturnArgument(0);
+        $wpdb->method('esc_like')->willReturnArgument(0);
+        $wpdb->method('get_results')->willReturn(array());
+        $wpdb->method('get_col')->willReturn(array());
+        $wpdb->method('get_var')->willReturn(0);
+
         $gdpr = DFXPRL_GDPR::get_instance();
-        
+
         if (method_exists($gdpr, 'erase_personal_data')) {
             $result = $gdpr->erase_personal_data('john.doe@example.com');
             

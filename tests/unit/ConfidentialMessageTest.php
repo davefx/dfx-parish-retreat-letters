@@ -21,14 +21,20 @@ class ConfidentialMessageTest extends TestCase {
         parent::setUp();
         Monkey\setUp();
         
-        // Mock WordPress functions
+        // Mock WordPress functions. sanitize_text_field mirrors WordPress: it removes
+        // <script>/<style> blocks including their contents before stripping remaining tags.
         Functions\when('sanitize_text_field')->alias(function($text) {
-            return trim(strip_tags($text));
+            $text = preg_replace('@<(script|style)[^>]*?>.*?</\\1>@si', '', (string) $text);
+            return trim(preg_replace('/[\r\n\t ]+/', ' ', strip_tags($text)));
         });
         Functions\when('sanitize_textarea_field')->alias(function($text) {
+            $text = preg_replace('@<(script|style)[^>]*?>.*?</\\1>@si', '', (string) $text);
             return trim(strip_tags($text));
         });
         Functions\when('wp_kses_post')->alias(function($text) {
+            // Remove <script>/<style> blocks including their contents (as wp_kses_post does),
+            // then keep only a small set of formatting tags.
+            $text = preg_replace('@<(script|style)[^>]*?>.*?</\\1>@si', '', (string) $text);
             return strip_tags($text, '<p><br><strong><em><ul><ol><li>');
         });
         Functions\when('current_user_can')->justReturn(true);
@@ -64,10 +70,13 @@ class ConfidentialMessageTest extends TestCase {
         global $wpdb;
         $wpdb = $this->createMock('wpdb');
         $wpdb->insert_id = 789;
+        $wpdb->method('prepare')->willReturnArgument(0);
+        // validate_message_data() verifies the attendant exists (COUNT > 0).
+        $wpdb->method('get_var')->willReturn(1);
         $wpdb->expects($this->once())
              ->method('insert')
              ->willReturn(true);
-        
+
         // Create message instance
         $message = new DFXPRL_ConfidentialMessage();
         
@@ -85,9 +94,9 @@ class ConfidentialMessageTest extends TestCase {
             'attendant_id' => 1,
             'sender_name' => 'Father John',
             'content' => 'This is a confidential message for the retreat attendant.',
-            'message_type' => 'personal'
+            'message_type' => 'text'
         ];
-        
+
         $result = $message->create($valid_data);
         $this->assertEquals(789, $result);
     }
@@ -181,11 +190,13 @@ class ConfidentialMessageTest extends TestCase {
         $security_property->setAccessible(true);
         $security_property->setValue($message, $security_mock);
         
-        $result = $message->get(1);
-        
+        // Decryption happens in get_with_decrypted_content(), which exposes the plaintext on
+        // the decrypted_content property (get() intentionally returns only the encrypted row).
+        $result = $message->get_with_decrypted_content(1);
+
         $this->assertNotNull($result);
         $this->assertEquals(1, $result->id);
-        $this->assertEquals('Decrypted message content', $result->content);
+        $this->assertEquals('Decrypted message content', $result->decrypted_content);
     }
 
     /**
@@ -256,50 +267,9 @@ class ConfidentialMessageTest extends TestCase {
         }
     }
 
-    /**
-     * Test update message
-     */
-    public function testUpdateMessage() {
-        // Mock the database instance
-        $database_mock = $this->createMock('DFXPRL_Database');
-        $database_mock->method('get_messages_table')->willReturn('wp_dfx_messages');
-        
-        // Mock the security instance
-        $security_mock = $this->createMock('DFXPRL_Security');
-        $security_mock->method('encrypt_data')
-                     ->willReturn([
-                         'encrypted' => 'new_encrypted_content',
-                         'salt' => 'new_salt_123456'
-                     ]);
-        
-        // Mock global wpdb
-        global $wpdb;
-        $wpdb = $this->createMock('wpdb');
-        $wpdb->expects($this->once())
-             ->method('update')
-             ->willReturn(1);
-        
-        // Create message instance and inject mocked dependencies
-        $message = new DFXPRL_ConfidentialMessage();
-        
-        $reflection = new ReflectionClass($message);
-        $database_property = $reflection->getProperty('database');
-        $database_property->setAccessible(true);
-        $database_property->setValue($message, $database_mock);
-        
-        $security_property = $reflection->getProperty('security');
-        $security_property->setAccessible(true);
-        $security_property->setValue($message, $security_mock);
-        
-        $update_data = [
-            'sender_name' => 'Father Updated',
-            'content' => 'Updated message content',
-            'message_type' => 'urgent'
-        ];
-        
-        $result = $message->update(1, $update_data);
-        $this->assertTrue($result);
-    }
+    // Note: there is intentionally no test for updating a confidential message. Confidential
+    // messages are immutable, one-way submissions (no edit UI or DFXPRL_ConfidentialMessage::update()
+    // exists), so a message-update test would assert behaviour the plugin does not provide.
 
     /**
      * Test delete message
@@ -332,20 +302,26 @@ class ConfidentialMessageTest extends TestCase {
      * Test message data validation
      */
     public function testMessageDataValidation() {
+        // validate_message_data() verifies the attendant exists via $wpdb.
+        global $wpdb;
+        $wpdb = $this->createMock('wpdb');
+        $wpdb->method('prepare')->willReturnArgument(0);
+        $wpdb->method('get_var')->willReturn(1);
+
         $message = new DFXPRL_ConfidentialMessage();
-        
+
         $reflection = new ReflectionClass($message);
-        
+
         if ($reflection->hasMethod('validate_message_data')) {
             $method = $reflection->getMethod('validate_message_data');
             $method->setAccessible(true);
-            
-            // Test valid data
+
+            // Test valid data. Valid message types are 'text' and 'file'.
             $valid_data = [
                 'attendant_id' => 1,
                 'sender_name' => 'Father John',
                 'content' => 'This is a valid message.',
-                'message_type' => 'personal'
+                'message_type' => 'text'
             ];
             
             $this->assertTrue($method->invoke($message, $valid_data));
@@ -395,8 +371,8 @@ class ConfidentialMessageTest extends TestCase {
             
             $this->assertEquals(1, $sanitized['attendant_id']);
             $this->assertEquals('Father John', $sanitized['sender_name']); // Script tags removed
-            $this->assertStringContains('<p>', $sanitized['content']); // Allowed HTML preserved
-            $this->assertStringNotContains('<script>', $sanitized['content']); // Script tags removed
+            $this->assertStringContainsString('<p>', $sanitized['content']); // Allowed HTML preserved
+            $this->assertStringNotContainsString('<script>', $sanitized['content']); // Script tags removed
             $this->assertEquals('personal', $sanitized['message_type']); // Trimmed
             
             // Test that MSO style definitions are properly handled by wp_kses_post
@@ -412,9 +388,9 @@ class ConfidentialMessageTest extends TestCase {
             $sanitized_mso = $method->invoke($message, $mso_data);
             
             // wp_kses_post should remove style tags and their content
-            $this->assertStringNotContains('<style>', $sanitized_mso['content']);
-            $this->assertStringNotContains('MsoNormalTable', $sanitized_mso['content']);
-            $this->assertStringContains('<p>Normal message</p>', $sanitized_mso['content']);
+            $this->assertStringNotContainsString('<style>', $sanitized_mso['content']);
+            $this->assertStringNotContainsString('MsoNormalTable', $sanitized_mso['content']);
+            $this->assertStringContainsString('<p>Normal message</p>', $sanitized_mso['content']);
         } else {
             $this->markTestSkipped('sanitize_message_data method not found');
         }

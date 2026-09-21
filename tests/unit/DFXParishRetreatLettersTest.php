@@ -21,8 +21,10 @@ class DFXParishRetreatLettersTest extends TestCase {
         parent::setUp();
         Monkey\setUp();
         
-        // Mock WordPress functions
-        Functions\when('plugin_dir_path')->justReturn('/path/to/plugin/');
+        // Mock WordPress functions. plugin_dir_path points at the real plugin root so the
+        // unconditional require_once calls in load_dependencies() resolve to the class files
+        // already loaded by the bootstrap (require_once then becomes a no-op).
+        Functions\when('plugin_dir_path')->justReturn(dirname(__DIR__, 2) . '/');
         Functions\when('plugin_dir_url')->justReturn('http://example.com/wp-content/plugins/dfx-parish-retreat-letters/');
         Functions\when('plugin_basename')->justReturn('dfx-parish-retreat-letters/dfx-parish-retreat-letters.php');
         Functions\when('get_locale')->justReturn('en_US');
@@ -68,8 +70,10 @@ class DFXParishRetreatLettersTest extends TestCase {
         $version_property = $reflection->getProperty('version');
         $version_property->setAccessible(true);
         $version = $version_property->getValue($plugin);
-        
-        $this->assertEquals('26.05.20', $version);
+
+        // The plugin copies DFXPRL_VERSION into its version property; assert against the
+        // constant rather than a hardcoded number so version bumps do not break this test.
+        $this->assertEquals(DFXPRL_VERSION, $version);
     }
 
     /**
@@ -116,20 +120,30 @@ class DFXParishRetreatLettersTest extends TestCase {
     public function test_maybe_load_plugin_textdomain_method_exists() {
         $plugin = DFXPRL::get_instance();
         
-        $this->assertTrue(method_exists($plugin, 'maybe_load_plugin_textdomain'));
-        $this->assertTrue(is_callable([$plugin, 'maybe_load_plugin_textdomain']));
+        $this->assertTrue(method_exists($plugin, 'load_plugin_textdomain'));
+        $this->assertTrue(is_callable([$plugin, 'load_plugin_textdomain']));
     }
 
     /**
      * Test translation loading is properly hooked
      */
     public function test_translation_loading_hooked() {
-        // Mock add_action to capture the hook registration
-        Functions\expect('add_action')
-            ->once()
-            ->with('plugins_loaded', \Mockery::type('array'));
-        
+        // Capture add_action calls. Using an alias (rather than expect()) keeps this robust
+        // against the singleton constructor's own add_action calls and the setUp when() stub.
+        $hooked = array();
+        Functions\when('add_action')->alias(function ($hook, $callback = null) use (&$hooked) {
+            $hooked[$hook][] = $callback;
+            return true;
+        });
+
         $plugin = DFXPRL::get_instance();
+
+        // Reset so we only assert on what run() registers.
+        $hooked = array();
         $plugin->run();
+
+        // run() registers the textdomain loader on the 'init' hook (WordPress 6.7+ convention).
+        $this->assertArrayHasKey('init', $hooked);
+        $this->assertSame(array($plugin, 'load_plugin_textdomain'), $hooked['init'][0]);
     }
 }

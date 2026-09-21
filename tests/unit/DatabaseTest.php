@@ -55,7 +55,9 @@ class DatabaseTest extends TestCase {
      * Test database version constant
      */
     public function test_database_version_constant() {
-        $this->assertEquals('1.6.2', DFXPRL_Database::DB_VERSION);
+        // Assert a valid semantic version rather than pinning a number, so DB version
+        // bumps do not break this test.
+        $this->assertMatchesRegularExpression('/^\d+\.\d+\.\d+$/', DFXPRL_Database::DB_VERSION);
     }
 
     /**
@@ -75,7 +77,7 @@ class DatabaseTest extends TestCase {
             $method->setAccessible(true);
             $table_name = $method->invoke($database);
             $this->assertIsString($table_name);
-            $this->assertStringContains('wp_', $table_name);
+            $this->assertStringContainsString('wp_', $table_name);
         } else {
             $this->markTestSkipped('get_retreats_table_name method not found');
         }
@@ -129,19 +131,19 @@ class DatabaseTest extends TestCase {
         if (method_exists($database, 'get_retreats_table')) {
             $retreats_table = $database->get_retreats_table();
             $this->assertIsString($retreats_table);
-            $this->assertStringContains('wp_', $retreats_table);
+            $this->assertStringContainsString('wp_', $retreats_table);
         }
         
         if (method_exists($database, 'get_attendants_table')) {
             $attendants_table = $database->get_attendants_table();
             $this->assertIsString($attendants_table);
-            $this->assertStringContains('wp_', $attendants_table);
+            $this->assertStringContainsString('wp_', $attendants_table);
         }
         
         if (method_exists($database, 'get_messages_table')) {
             $messages_table = $database->get_messages_table();
             $this->assertIsString($messages_table);
-            $this->assertStringContains('wp_', $messages_table);
+            $this->assertStringContainsString('wp_', $messages_table);
         }
     }
 

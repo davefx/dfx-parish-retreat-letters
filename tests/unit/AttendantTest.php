@@ -21,9 +21,12 @@ class AttendantTest extends TestCase {
         parent::setUp();
         Monkey\setUp();
         
-        // Mock WordPress functions
+        // Mock WordPress functions. sanitize_text_field mirrors WordPress: it removes
+        // <script>/<style> blocks including their contents, strips remaining tags, and
+        // collapses whitespace (a plain strip_tags would leave the script's inner text).
         Functions\when('sanitize_text_field')->alias(function($text) {
-            return trim(strip_tags($text));
+            $text = preg_replace('@<(script|style)[^>]*?>.*?</\\1>@si', '', (string) $text);
+            return trim(preg_replace('/[\r\n\t ]+/', ' ', strip_tags($text)));
         });
         Functions\when('sanitize_email')->alias(function($email) {
             return filter_var($email, FILTER_SANITIZE_EMAIL);
@@ -57,10 +60,16 @@ class AttendantTest extends TestCase {
         global $wpdb;
         $wpdb = $this->createMock('wpdb');
         $wpdb->insert_id = 456;
+        $wpdb->method('prepare')->willReturnArgument(0);
+        // validate_attendant_data() checks the retreat exists (COUNT > 0) while the message
+        // token generator checks the token is unused (COUNT == 0); return values accordingly.
+        $wpdb->method('get_var')->willReturnCallback(function ($query) {
+            return (strpos((string) $query, 'message_url_token') !== false) ? 0 : 1;
+        });
         $wpdb->expects($this->once())
              ->method('insert')
              ->willReturn(true);
-        
+
         // Create attendant instance
         $attendant = new DFXPRL_Attendant();
         
@@ -184,24 +193,32 @@ class AttendantTest extends TestCase {
         // Mock global wpdb
         global $wpdb;
         $wpdb = $this->createMock('wpdb');
+        $wpdb->method('prepare')->willReturnArgument(0);
+        // update() re-validates the full record, which checks the retreat exists (COUNT > 0).
+        $wpdb->method('get_var')->willReturn(1);
         $wpdb->expects($this->once())
              ->method('update')
              ->willReturn(1);
-        
+
         // Create attendant instance and inject mocked database
         $attendant = new DFXPRL_Attendant();
-        
+
         $reflection = new ReflectionClass($attendant);
         $database_property = $reflection->getProperty('database');
         $database_property->setAccessible(true);
         $database_property->setValue($attendant, $database_mock);
-        
+
+        // update() validates the complete record, so all required fields must be present.
         $update_data = [
+            'retreat_id' => 1,
             'name' => 'Jane',
             'surnames' => 'Smith',
+            'date_of_birth' => '1980-01-01',
+            'emergency_contact_name' => 'John',
+            'emergency_contact_surname' => 'Smith',
             'emergency_contact_phone' => '+0987654321'
         ];
-        
+
         $result = $attendant->update(1, $update_data);
         $this->assertTrue($result);
     }
@@ -217,18 +234,21 @@ class AttendantTest extends TestCase {
         // Mock global wpdb
         global $wpdb;
         $wpdb = $this->createMock('wpdb');
+        $wpdb->method('prepare')->willReturnArgument(0);
+        // delete() cascades to delete this attendant's messages first; no messages exist here.
+        $wpdb->method('get_col')->willReturn(array());
         $wpdb->expects($this->once())
              ->method('delete')
              ->willReturn(1);
-        
+
         // Create attendant instance and inject mocked database
         $attendant = new DFXPRL_Attendant();
-        
+
         $reflection = new ReflectionClass($attendant);
         $database_property = $reflection->getProperty('database');
         $database_property->setAccessible(true);
         $database_property->setValue($attendant, $database_mock);
-        
+
         $result = $attendant->delete(1);
         $this->assertTrue($result);
     }
@@ -289,10 +309,16 @@ class AttendantTest extends TestCase {
      * Test attendant data validation
      */
     public function testAttendantDataValidation() {
+        // validate_attendant_data() checks that the referenced retreat exists via $wpdb.
+        global $wpdb;
+        $wpdb = $this->createMock('wpdb');
+        $wpdb->method('prepare')->willReturnArgument(0);
+        $wpdb->method('get_var')->willReturn(1);
+
         $attendant = new DFXPRL_Attendant();
-        
+
         $reflection = new ReflectionClass($attendant);
-        
+
         if ($reflection->hasMethod('validate_attendant_data')) {
             $method = $reflection->getMethod('validate_attendant_data');
             $method->setAccessible(true);
@@ -695,6 +721,9 @@ class AttendantTest extends TestCase {
         
         $wpdb->method('get_results')->willReturn($mock_attendants);
         $wpdb->method('prepare')->willReturn('SELECT * FROM wp_dfx_attendants');
+        // export_csv_data() instantiates DFXPRL_Retreat and calls get(), which reads the retreat
+        // row via $wpdb->get_row; return the mock retreat so notes_enabled is honoured.
+        $wpdb->method('get_row')->willReturn($mock_retreat);
         
         // Mock home_url
         Functions\when('home_url')->alias(function($path) {

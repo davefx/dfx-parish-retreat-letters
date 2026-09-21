@@ -2332,6 +2332,36 @@ class DFXPRL_Admin {
 	}
 
 	/**
+	 * Create a DateTime from a format, accepting single-digit day/month while rejecting overflow.
+	 *
+	 * A plain round-trip comparison ($date->format($format) === $date_string) rejects valid
+	 * dates whose day or month is written without a leading zero (e.g. "19/6/1946"), because
+	 * DateTime::format() always emits two digits. Instead we validate through getLastErrors(),
+	 * which still catches out-of-range parts such as "32/13/2020".
+	 *
+	 * @since 1.0.0
+	 * @param string $format      DateTime format specifier (e.g. "d/m/Y").
+	 * @param string $date_string Date string to parse.
+	 * @return DateTime|false Parsed date on success, false on failure.
+	 */
+	private function create_date_from_format( $format, $date_string ) {
+		// The "!" resets all fields not present in the format to the Unix epoch,
+		// keeping the parsed date free of the current time of day.
+		$date = DateTime::createFromFormat( '!' . $format, $date_string );
+
+		if ( false === $date ) {
+			return false;
+		}
+
+		$errors = DateTime::getLastErrors();
+		if ( is_array( $errors ) && ( $errors['warning_count'] > 0 || $errors['error_count'] > 0 ) ) {
+			return false;
+		}
+
+		return $date;
+	}
+
+	/**
 	 * Parse date in various formats and return standardized format.
 	 *
 	 * @since 1.0.0
@@ -2355,11 +2385,9 @@ class DFXPRL_Admin {
 		// Try to auto-detect format based on unambiguous dates first
 		$detected_format = $this->detect_date_format( $date_string );
 		if ( $detected_format ) {
-			$date = DateTime::createFromFormat( $detected_format, $date_string );
-			if ( $date && $date->format( $detected_format ) === $date_string ) {
-				if ( $this->is_reasonable_date( $date ) ) {
-					return $date->format( 'Y-m-d' );
-				}
+			$date = $this->create_date_from_format( $detected_format, $date_string );
+			if ( $date && $this->is_reasonable_date( $date ) ) {
+				return $date->format( 'Y-m-d' );
 			}
 		}
 
@@ -2367,11 +2395,9 @@ class DFXPRL_Admin {
 		$formats = $this->get_date_formats_by_preference( $preferred_format );
 
 		foreach ( $formats as $format ) {
-			$date = DateTime::createFromFormat( $format, $date_string );
-			if ( $date && $date->format( $format ) === $date_string ) {
-				if ( $this->is_reasonable_date( $date ) ) {
-					return $date->format( 'Y-m-d' );
-				}
+			$date = $this->create_date_from_format( $format, $date_string );
+			if ( $date && $this->is_reasonable_date( $date ) ) {
+				return $date->format( 'Y-m-d' );
 			}
 		}
 

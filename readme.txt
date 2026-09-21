@@ -3,7 +3,7 @@ Contributors: davefx
 Tags: parish, retreat, letters, confidential, GDPR
 Requires at least: 5.0
 Tested up to: 6.9
-Stable tag: 26.05.20
+Stable tag: 26.09.21
 Requires PHP: 7.4
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
@@ -173,6 +173,10 @@ By default it is generated automatically and stored in the WordPress database (`
 Yes. A `.pot` translation template is included in the `languages/` directory. Create `.po` and `.mo` files for your language and place them in that folder following standard WordPress translation conventions.
 
 ## Changelog
+
+### 26.09.21
+
+- Fix: importing an attendants CSV no longer fails on rows whose date of birth is written with a single-digit day or month (e.g. `19/6/1946`). Such dates are now parsed correctly while genuinely invalid dates are still rejected.
 
 ### 26.05.20
 

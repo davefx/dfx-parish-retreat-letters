@@ -117,8 +117,8 @@ class AdminTest extends TestCase {
         if (method_exists($admin, 'enqueue_admin_scripts')) {
             $this->assertTrue(is_callable([$admin, 'enqueue_admin_scripts']));
             
-            // Test script enqueuing
-            $admin->enqueue_admin_scripts();
+            // Test script enqueuing (WordPress passes the current admin page hook suffix)
+            $admin->enqueue_admin_scripts( 'toplevel_page_dfxprl' );
             
             // Verify functions were called (mocked to return true)
             $this->assertTrue(function_exists('wp_enqueue_script'));
@@ -487,7 +487,7 @@ class AdminTest extends TestCase {
                 $method->invoke($admin, 'Test error message');
             } catch (Exception $e) {
                 // Expected behavior when wp_die is called
-                $this->assertStringContains('Test error message', $e->getMessage());
+                $this->assertStringContainsString('Test error message', $e->getMessage());
             }
             $output = ob_get_clean();
         } else {

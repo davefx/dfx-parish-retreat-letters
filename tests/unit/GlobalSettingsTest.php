@@ -49,7 +49,9 @@ class GlobalSettingsTest extends TestCase {
             $this->markTestSkipped('Database class not available');
         }
 
-        $this->assertEquals('1.9.0', DFXPRL_Database::DB_VERSION);
+        // Assert the constant is defined as a valid semantic version rather than pinning a
+        // specific number, so routine DB version bumps do not break this test.
+        $this->assertMatchesRegularExpression('/^\d+\.\d+\.\d+$/', DFXPRL_Database::DB_VERSION);
     }
 
     public function test_retreat_model_has_class_list_sanitization() {

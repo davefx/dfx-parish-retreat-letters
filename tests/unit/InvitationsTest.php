@@ -54,7 +54,7 @@ class InvitationsTest extends TestCase {
      * Test invitation creation
      */
     public function testCreateInvitation() {
-        $invitations = new DFXPRL_Invitations();
+        $invitations = DFXPRL_Invitations::get_instance();
         
         if (method_exists($invitations, 'create_invitation')) {
             $invitation_data = [
@@ -75,18 +75,29 @@ class InvitationsTest extends TestCase {
      * Test send invitation email
      */
     public function testSendInvitationEmail() {
-        $invitations = new DFXPRL_Invitations();
-        
-        if (method_exists($invitations, 'send_invitation_email')) {
-            $email_data = [
-                'to' => 'john.doe@example.com',
-                'subject' => 'Retreat Invitation',
-                'message' => 'You are invited to our retreat',
-                'retreat_name' => 'Summer Retreat 2024'
-            ];
-            
-            $result = $invitations->send_invitation_email($email_data);
-            $this->assertTrue(is_callable([$invitations, 'send_invitation_email']));
+        // send_invitation_email() is a private helper that loads the retreat and calls wp_mail().
+        global $wpdb;
+        $wpdb = $this->createMock('wpdb');
+        $wpdb->method('prepare')->willReturnArgument(0);
+        $wpdb->method('get_row')->willReturn((object) [
+            'name'       => 'Summer Retreat 2024',
+            'location'   => 'Test Church',
+            'start_date' => '2024-06-01',
+            'end_date'   => '2024-06-03',
+        ]);
+
+        $invitations = DFXPRL_Invitations::get_instance();
+
+        $reflection = new ReflectionClass($invitations);
+        if ($reflection->hasMethod('send_invitation_email')) {
+            $method = $reflection->getMethod('send_invitation_email');
+            $method->setAccessible(true);
+
+            // Signature: ($invitation_id, $retreat_id, $email, $name, $permission_level, $token)
+            $result = $method->invoke($invitations, 1, 1, 'john.doe@example.com', 'John Doe', 'manager', 'token123');
+
+            // wp_mail() is stubbed to return true.
+            $this->assertTrue($result);
         } else {
             $this->markTestSkipped('send_invitation_email method not found');
         }
@@ -96,7 +107,7 @@ class InvitationsTest extends TestCase {
      * Test bulk invitation sending
      */
     public function testBulkInvitationSending() {
-        $invitations = new DFXPRL_Invitations();
+        $invitations = DFXPRL_Invitations::get_instance();
         
         if (method_exists($invitations, 'send_bulk_invitations')) {
             $attendant_ids = [1, 2, 3];
@@ -113,7 +124,7 @@ class InvitationsTest extends TestCase {
      * Test invitation template generation
      */
     public function testInvitationTemplateGeneration() {
-        $invitations = new DFXPRL_Invitations();
+        $invitations = DFXPRL_Invitations::get_instance();
         
         if (method_exists($invitations, 'generate_invitation_template')) {
             $template_data = [
@@ -134,7 +145,7 @@ class InvitationsTest extends TestCase {
      * Test invitation tracking
      */
     public function testInvitationTracking() {
-        $invitations = new DFXPRL_Invitations();
+        $invitations = DFXPRL_Invitations::get_instance();
         
         if (method_exists($invitations, 'track_invitation')) {
             $invitation_id = 1;
@@ -151,7 +162,7 @@ class InvitationsTest extends TestCase {
      * Test RSVP functionality
      */
     public function testRSVPFunctionality() {
-        $invitations = new DFXPRL_Invitations();
+        $invitations = DFXPRL_Invitations::get_instance();
         
         if (method_exists($invitations, 'process_rsvp')) {
             $rsvp_data = [
