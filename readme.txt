@@ -3,7 +3,7 @@ Contributors: davefx
 Tags: parish, retreat, letters, confidential, GDPR
 Requires at least: 5.0
 Tested up to: 6.9
-Stable tag: 26.09.21
+Stable tag: 26.09.24
 Requires PHP: 7.4
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
@@ -173,6 +173,11 @@ By default it is generated automatically and stored in the WordPress database (`
 Yes. A `.pot` translation template is included in the `languages/` directory. Create `.po` and `.mo` files for your language and place them in that folder following standard WordPress translation conventions.
 
 ## Changelog
+
+### 26.09.24
+
+- Change: message managers can now use the **Invitation Message**, **Generate Message URL** and **Copy Message URL** buttons in the attendants list, not only retreat managers.
+- Security: generating a message URL now checks that the current user has message permissions on the attendant's retreat.
 
 ### 26.09.21
 

@@ -37,7 +37,7 @@ class DFXParishRetreatLettersTest extends TestCase {
         
         // Define constants if not already defined
         if (!defined('DFXPRL_VERSION')) {
-            define('DFXPRL_VERSION', '26.05.20');
+            define('DFXPRL_VERSION', '26.09.24');
         }
     }
 

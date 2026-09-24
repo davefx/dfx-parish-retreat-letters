@@ -3103,7 +3103,7 @@ class DFXPRL_Admin {
 											</a>
 										<?php endif; ?>
 
-										<?php if ( $this->permissions->current_user_can_manage_retreat( $retreat->id ) ) : ?>
+										<?php if ( $this->permissions->current_user_can_manage_messages( $retreat->id ) ) : ?>
 											<?php if ( ! empty( $retreat->message_request_template ) ) : ?>
 												<button type="button" class="button button-small dfxprl-show-invitation-message" data-attendant-id="<?php echo esc_attr( $attendant->id ); ?>" data-retreat-id="<?php echo esc_attr( $retreat->id ); ?>">
 													<?php esc_html_e( 'Invitation Message', 'dfx-parish-retreat-letters' ); ?>
@@ -3494,6 +3494,11 @@ class DFXPRL_Admin {
 		$attendant = $this->attendant_model->get( $attendant_id );
 		if ( ! $attendant ) {
 			wp_send_json_error( array( 'message' => __( 'Attendant not found.', 'dfx-parish-retreat-letters' ) ) );
+		}
+
+		// Check permissions
+		if ( ! $this->permissions->current_user_can_manage_messages( $attendant->retreat_id ) ) {
+			wp_send_json_error( array( 'message' => __( 'You do not have permission to access this retreat.', 'dfx-parish-retreat-letters' ) ) );
 		}
 
 		// Generate unique token
@@ -4577,7 +4582,7 @@ class DFXPRL_Admin {
 		}
 
 		// Check permissions
-		if ( ! $this->permissions->current_user_can_manage_retreat( $retreat_id ) ) {
+		if ( ! $this->permissions->current_user_can_manage_messages( $retreat_id ) ) {
 			wp_send_json_error( array( 'message' => __( 'You do not have permission to access this retreat.', 'dfx-parish-retreat-letters' ) ) );
 		}
 
