@@ -591,7 +591,9 @@ class ComprehensiveInfrastructureTest extends TestCase {
         if (!$wpdb) {
             $wpdb = new stdClass();
         }
-        $wpdb->prefix = 'wp_';
+        if (empty($wpdb->prefix)) {
+            $wpdb->prefix = 'wp_';
+        }
         
         // Test that the database class has the current version
         if (class_exists('DFXPRL_Database')) {
@@ -615,7 +617,7 @@ class ComprehensiveInfrastructureTest extends TestCase {
             // Test that the audit log table name is properly constructed
             $audit_log_table = $database->get_audit_log_table();
             $this->assertIsString($audit_log_table);
-            $this->assertTrue(strpos($audit_log_table, 'wp_') === 0, 'Table name should start with wp_');
+            $this->assertTrue(strpos($audit_log_table, $wpdb->prefix) === 0, 'Table name should start with the $wpdb prefix');
             $this->assertTrue(strpos($audit_log_table, 'audit_log') !== false, 'Table name should contain audit_log');
             
             // Test the foreign key removal method exists (even if private)
@@ -641,7 +643,9 @@ class ComprehensiveInfrastructureTest extends TestCase {
             if (!$wpdb) {
                 $wpdb = new stdClass();
             }
-            $wpdb->prefix = 'wp_';
+            if (empty($wpdb->prefix)) {
+                $wpdb->prefix = 'wp_';
+            }
             
             // Mock the insert method to return success
             $wpdb->insert = function() { return 1; };
