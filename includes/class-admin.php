@@ -3053,6 +3053,7 @@ class DFXPRL_Admin {
 			$available_columns[] = 'internal_notes';
 		}
 		$available_columns[] = 'messages';
+		$available_columns[] = 'physical_letters';
 		$available_columns[] = 'total_letters';
 		$available_columns[] = 'contact_log';
 		$list_fields_by_key = array();
@@ -3063,9 +3064,9 @@ class DFXPRL_Admin {
 
 		$log_summaries = $this->log_model->get_summaries_for_attendants( wp_list_pluck( $attendants, 'id' ) );
 
-		// Apply the order saved by the retreat managers; columns it does not mention keep their default place at the end
+		// Apply the order saved by the retreat managers
 		$saved_column_order = $this->retreat_model->get_list_column_order( $retreat );
-		$column_order = array_values( array_unique( array_merge( array_intersect( $saved_column_order, $available_columns ), $available_columns ) ) );
+		$column_order = $this->merge_list_column_order( $saved_column_order, $available_columns );
 
 		// Helper function to generate sortable column header URL
 		$get_sort_url = function( $column ) use ( $retreat, $search, $orderby, $order, $filters ) {
@@ -3314,6 +3315,7 @@ class DFXPRL_Admin {
 						<option value="<?php echo esc_url( $get_sort_url( 'invited_by' ) ); ?>" <?php selected( $orderby, 'invited_by' ); ?>><?php esc_html_e( 'Invited By', 'dfx-parish-retreat-letters' ); ?> <?php echo $orderby === 'invited_by' ? esc_html( $order === 'ASC' ? '↑' : '↓' ) : ''; ?></option>
 						<option value="<?php echo esc_url( $get_sort_url( 'incompatibilities' ) ); ?>" <?php selected( $orderby, 'incompatibilities' ); ?>><?php esc_html_e( 'Incompatibilities', 'dfx-parish-retreat-letters' ); ?> <?php echo $orderby === 'incompatibilities' ? esc_html( $order === 'ASC' ? '↑' : '↓' ) : ''; ?></option>
 						<option value="<?php echo esc_url( $get_messages_sort_url() ); ?>" <?php selected( in_array( $orderby, array( 'message_count', 'non_printed_count' ), true ) ); ?>><?php esc_html_e( 'Messages', 'dfx-parish-retreat-letters' ); ?> <?php echo in_array( $orderby, array( 'message_count', 'non_printed_count' ), true ) ? esc_html( $order === 'ASC' ? '↑' : '↓' ) : ''; ?></option>
+						<option value="<?php echo esc_url( $get_sort_url( 'physical_letters' ) ); ?>" <?php selected( $orderby, 'physical_letters' ); ?>><?php esc_html_e( 'Physical Letters', 'dfx-parish-retreat-letters' ); ?> <?php echo $orderby === 'physical_letters' ? esc_html( $order === 'ASC' ? '↑' : '↓' ) : ''; ?></option>
 						<option value="<?php echo esc_url( $get_sort_url( 'total_letters' ) ); ?>" <?php selected( $orderby, 'total_letters' ); ?>><?php esc_html_e( 'Total Letters', 'dfx-parish-retreat-letters' ); ?> <?php echo $orderby === 'total_letters' ? esc_html( $order === 'ASC' ? '↑' : '↓' ) : ''; ?></option>
 						<?php foreach ( $list_fields as $field ) : ?>
 							<?php if ( $field->sortable ) : ?>
@@ -3425,6 +3427,14 @@ class DFXPRL_Admin {
 								</a>
 							</th>
 							<?php $column_headers[ 'messages' ] = ob_get_clean(); ?>
+							<?php ob_start(); ?>
+							<th scope="col" class="manage-column sortable <?php echo $orderby === 'physical_letters' ? 'sorted' : 'sortable'; ?> <?php echo $orderby === 'physical_letters' ? esc_attr( strtolower( $order ) ) : 'desc'; ?>">
+								<a href="<?php echo esc_url( $get_sort_url( 'physical_letters' ) ); ?>">
+									<span><?php esc_html_e( 'Physical Letters', 'dfx-parish-retreat-letters' ); ?></span>
+									<span class="sorting-indicator"><?php echo esc_html( $get_sort_indicator( 'physical_letters' ) ); ?></span>
+								</a>
+							</th>
+							<?php $column_headers[ 'physical_letters' ] = ob_get_clean(); ?>
 							<?php ob_start(); ?>
 							<th scope="col" class="manage-column sortable <?php echo $orderby === 'total_letters' ? 'sorted' : 'sortable'; ?> <?php echo $orderby === 'total_letters' ? esc_attr( strtolower( $order ) ) : 'desc'; ?>">
 								<a href="<?php echo esc_url( $get_sort_url( 'total_letters' ) ); ?>">
@@ -3793,6 +3803,39 @@ class DFXPRL_Admin {
 	}
 
 	/**
+	 * Merge a saved column order with the columns currently available.
+	 *
+	 * Saved columns that no longer exist are dropped. Columns the saved order does not
+	 * mention (new ones, such as a recently added custom field) are placed right after
+	 * the column that precedes them in the default order.
+	 *
+	 * @since 1.12.0
+	 * @param array $saved_order       Saved column keys.
+	 * @param array $available_columns Available column keys, in default order.
+	 * @return array
+	 */
+	private function merge_list_column_order( $saved_order, $available_columns ) {
+		$order = array_values( array_unique( array_intersect( $saved_order, $available_columns ) ) );
+
+		foreach ( $available_columns as $index => $key ) {
+			if ( in_array( $key, $order, true ) ) {
+				continue;
+			}
+			$position = 0;
+			for ( $previous = $index - 1; $previous >= 0; $previous-- ) {
+				$found = array_search( $available_columns[ $previous ], $order, true );
+				if ( false !== $found ) {
+					$position = $found + 1;
+					break;
+				}
+			}
+			array_splice( $order, $position, 0, array( $key ) );
+		}
+
+		return $order;
+	}
+
+	/**
 	 * Tag a captured list header or cell with its column key.
 	 *
 	 * Adds a data-column attribute to the opening <th>/<td> tag and, for draggable
@@ -3953,23 +3996,14 @@ class DFXPRL_Admin {
 				endif;
 				break;
 
+			case 'physical_letters':
+				$label = __( 'Physical Letters', 'dfx-parish-retreat-letters' );
+				echo esc_html( (int) $attendant->physical_letters );
+				break;
+
 			case 'total_letters':
 				$label = __( 'Total Letters', 'dfx-parish-retreat-letters' );
-				?>
-				<strong><?php echo esc_html( (int) $message_count + (int) $attendant->physical_letters ); ?></strong>
-				<?php if ( (int) $attendant->physical_letters > 0 ) : ?>
-					<br><small>
-						<?php
-						printf(
-							/* translators: 1: letters received through the app, 2: physical letters count */
-							esc_html__( '%1$d via app, %2$d physical', 'dfx-parish-retreat-letters' ),
-							esc_html( $message_count ),
-							esc_html( $attendant->physical_letters )
-						);
-						?>
-					</small>
-				<?php endif; ?>
-				<?php
+				echo '<strong>' . esc_html( (int) $message_count + (int) $attendant->physical_letters ) . '</strong>';
 				break;
 
 			case 'contact_log':
@@ -4085,14 +4119,14 @@ class DFXPRL_Admin {
 			);
 		}
 
-		if ( 'total_letters' === $key ) {
+		if ( 'physical_letters' === $key ) {
 			if ( ! $this->permissions->current_user_can_manage_messages( $retreat->id ) ) {
 				return null;
 			}
 			return array(
 				'type'  => 'number',
 				'value' => (string) (int) $attendant->physical_letters,
-				'title' => __( 'Click to edit the physical letters received', 'dfx-parish-retreat-letters' ),
+				'title' => $title,
 			);
 		}
 
@@ -4159,7 +4193,7 @@ class DFXPRL_Admin {
 				wp_send_json_error( array( 'message' => $value->get_error_message() ) );
 			}
 			$saved = $this->custom_field_model->set_value( $field->id, $attendant->id, $value );
-		} elseif ( 'total_letters' === $key ) {
+		} elseif ( 'physical_letters' === $key ) {
 			if ( ! preg_match( '/^\d+$/', trim( $raw_value ) ) ) {
 				wp_send_json_error( array( 'message' => __( 'The number of physical letters must be a whole number, zero or greater.', 'dfx-parish-retreat-letters' ) ) );
 			}
@@ -4177,24 +4211,24 @@ class DFXPRL_Admin {
 
 		// Render the updated cell with fresh data
 		$attendant = $this->attendant_model->get( $attendant->id );
-		$response = array();
-		if ( 'total_letters' === $key ) {
+		$message_count = $this->message_model->get_count_by_attendant( $attendant->id );
+		$non_printed_count = $this->message_model->get_non_printed_count_by_attendant( $attendant->id );
+		$custom_values = $this->custom_field_model->get_values( $attendant->id );
+
+		$response = array(
+			'html' => $this->render_attendant_list_cell( $key, $retreat, $attendant, $message_count, $non_printed_count, $custom_values, $list_fields ),
+		);
+		if ( 'physical_letters' === $key ) {
+			// Other cells of the row and the retreat summary that depend on the physical letters
+			$response['related_cells'] = array(
+				$this->render_attendant_list_cell( 'total_letters', $retreat, $attendant, $message_count, $non_printed_count, $custom_values, $list_fields ),
+			);
 			$response['letters_summary'] = $this->render_letters_summary(
 				$this->message_model->get_count_by_retreat( $retreat->id ),
 				$this->attendant_model->get_physical_letters_count_by_retreat( $retreat->id )
 			);
 		}
-		wp_send_json_success( $response + array(
-			'html' => $this->render_attendant_list_cell(
-				$key,
-				$retreat,
-				$attendant,
-				$this->message_model->get_count_by_attendant( $attendant->id ),
-				$this->message_model->get_non_printed_count_by_attendant( $attendant->id ),
-				$this->custom_field_model->get_values( $attendant->id ),
-				$list_fields
-			),
-		) );
+		wp_send_json_success( $response );
 	}
 
 	/**

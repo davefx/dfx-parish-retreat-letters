@@ -2,7 +2,7 @@
 # This file is distributed under the GPL v3.
 msgid ""
 msgstr ""
-"Project-Id-Version: DFX Parish Retreat Letters 26.09.26.1\n"
+"Project-Id-Version: DFX Parish Retreat Letters 26.09.26.2\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/dfx-parish-retreat-letters\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -3258,4 +3258,10 @@ msgstr ""
 
 #: includes/class-attendant.php:780
 msgid "This field cannot be edited."
+msgstr ""
+
+#: includes/class-admin.php:3318
+#: includes/class-admin.php:3433
+#: includes/class-admin.php:4000
+msgid "Physical Letters"
 msgstr ""

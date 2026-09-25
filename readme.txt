@@ -3,7 +3,7 @@ Contributors: davefx
 Tags: parish, retreat, letters, confidential, GDPR
 Requires at least: 5.0
 Tested up to: 6.9
-Stable tag: 26.09.26.1
+Stable tag: 26.09.26.2
 Requires PHP: 7.4
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
@@ -173,6 +173,11 @@ By default it is generated automatically and stored in the WordPress database (`
 Yes. A `.pot` translation template is included in the `languages/` directory. Create `.po` and `.mo` files for your language and place them in that folder following standard WordPress translation conventions.
 
 ## Changelog
+
+### 26.09.26.2
+
+- New: **Physical letters** column in the attendants list. It can be sorted, reordered and edited inline by retreat managers and message managers; editing it also updates the row's total letters and the retreat summary. The Total letters column now shows only the total.
+- Change: when a retreat has a saved column order, new columns (such as a newly created custom field) appear next to the column that precedes them by default instead of at the end.
 
 ### 26.09.26.1
 

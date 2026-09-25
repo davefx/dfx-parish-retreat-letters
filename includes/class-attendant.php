@@ -356,6 +356,8 @@ class DFXPRL_Attendant {
 			$order_clause = "(cfv.value IS NULL OR cfv.value = '') ASC, {$sort_expression} {$order}, a.name ASC";
 		} elseif ( $orderby === 'total_letters' ) {
 			$order_clause = "total_letters {$order}, a.name ASC";
+		} elseif ( $orderby === 'physical_letters' ) {
+			$order_clause = "a.physical_letters {$order}, a.name ASC";
 		} elseif ( $orderby === 'message_count' || $orderby === 'non_printed_count' ) {
 			// When sorting by non_printed_count, add message_count as secondary sort
 			if ( $orderby === 'non_printed_count' ) {

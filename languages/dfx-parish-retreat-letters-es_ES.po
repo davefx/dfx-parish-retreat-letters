@@ -3474,3 +3474,9 @@ msgstr "El número de cartas físicas debe ser un número entero, cero o mayor."
 #: includes/class-attendant.php:780
 msgid "This field cannot be edited."
 msgstr "Este campo no se puede editar."
+
+#: includes/class-admin.php:3318
+#: includes/class-admin.php:3433
+#: includes/class-admin.php:4000
+msgid "Physical Letters"
+msgstr "Cartas físicas"

@@ -1149,7 +1149,7 @@
                     break;
                 case 'number':
                     $input = $('<input type="number" step="any" class="dfxprl-inline-input">').val(value);
-                    if ($cell.attr('data-column') === 'total_letters') {
+                    if ($cell.attr('data-column') === 'physical_letters') {
                         $input.attr({ min: 0, step: 1 });
                     }
                     break;
@@ -1208,7 +1208,12 @@
                 value: value
             }).done(function(response) {
                 if (response.success) {
+                    var $row = $cell.closest('tr');
                     $cell.replaceWith(response.data.html);
+                    $.each(response.data.related_cells || [], function(i, html) {
+                        var $related = $(html);
+                        $row.children('td[data-column="' + $related.attr('data-column') + '"]').replaceWith($related);
+                    });
                     if (response.data.letters_summary) {
                         $('.dfxprl-letters-summary').html(response.data.letters_summary);
                     }
