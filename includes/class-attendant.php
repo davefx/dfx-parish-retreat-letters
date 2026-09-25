@@ -746,6 +746,66 @@ class DFXPRL_Attendant {
 	}
 
 	/**
+	 * Update a single field of an attendant (used by inline editing in the attendants list).
+	 *
+	 * @since 1.12.0
+	 * @param int    $id    Attendant ID.
+	 * @param string $field Field name.
+	 * @param string $value Raw value.
+	 * @return bool|WP_Error True on success, false on database failure, WP_Error when the value is not valid.
+	 */
+	public function update_field( $id, $field, $value ) {
+		global $wpdb;
+
+		$value = trim( (string) $value );
+
+		switch ( $field ) {
+			case 'name':
+			case 'surnames':
+			case 'invited_by':
+				$value = sanitize_text_field( $value );
+				break;
+			case 'incompatibilities':
+			case 'notes':
+			case 'internal_notes':
+				$value = sanitize_textarea_field( $value );
+				break;
+			case 'date_of_birth':
+				$date = DateTime::createFromFormat( '!Y-m-d', $value );
+				if ( ! $date || $date->format( 'Y-m-d' ) !== $value ) {
+					return new WP_Error( 'dfxprl_invalid_date', __( 'Invalid date of birth format. Please use YYYY-MM-DD.', 'dfx-parish-retreat-letters' ) );
+				}
+				break;
+			default:
+				return new WP_Error( 'dfxprl_invalid_field', __( 'This field cannot be edited.', 'dfx-parish-retreat-letters' ) );
+		}
+
+		if ( '' === $value && in_array( $field, array( 'name', 'surnames', 'date_of_birth' ), true ) ) {
+			return new WP_Error( 'dfxprl_required_field', __( 'This field is required.', 'dfx-parish-retreat-letters' ) );
+		}
+
+		$result = $wpdb->update(
+			$this->database->get_attendants_table(),
+			array( $field => $value ),
+			array( 'id' => $id ),
+			array( '%s' ),
+			array( '%d' )
+		); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
+
+		if ( $result !== false && class_exists( 'DFXPRL_GDPR' ) ) {
+			$gdpr = DFXPRL_GDPR::get_instance();
+			$attendant = $this->get( $id );
+			$gdpr->log_audit_event( 'attendant_edited', array(
+				'attendant_id'       => (int) $id,
+				'retreat_id'         => $attendant ? (int) $attendant->retreat_id : 0,
+				'attendant_initials' => $attendant ? $gdpr->anonymize_name( $attendant->name, $attendant->surnames ) : '',
+			) );
+		}
+
+		return $result !== false;
+	}
+
+	/**
 	 * Get the total number of physical letters received by the attendants of a retreat.
 	 *
 	 * @since 1.11.0

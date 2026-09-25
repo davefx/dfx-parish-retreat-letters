@@ -152,6 +152,42 @@ class DFXPRL_Retreat {
 	}
 
 	/**
+	 * Get the saved column order of the attendants list of a retreat.
+	 *
+	 * @since 1.12.0
+	 * @param object $retreat Retreat object.
+	 * @return array Column keys, or an empty array when the default order is used.
+	 */
+	public function get_list_column_order( $retreat ) {
+		$order = json_decode( (string) ( $retreat->list_column_order ?? '' ), true );
+		return is_array( $order ) ? array_values( array_filter( $order, 'is_string' ) ) : array();
+	}
+
+	/**
+	 * Save the column order of the attendants list of a retreat.
+	 *
+	 * @since 1.12.0
+	 * @param int   $id    Retreat ID.
+	 * @param array $order Column keys in display order; an empty array restores the default order.
+	 * @return bool True on success, false on failure.
+	 */
+	public function update_list_column_order( $id, $order ) {
+		global $wpdb;
+
+		$order = array_values( array_unique( array_filter( array_map( 'sanitize_key', (array) $order ) ) ) );
+
+		$result = $wpdb->update( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
+			$this->database->get_retreats_table(),
+			array( 'list_column_order' => $order ? wp_json_encode( $order ) : null ),
+			array( 'id' => $id ),
+			array( '%s' ),
+			array( '%d' )
+		);
+
+		return $result !== false;
+	}
+
+	/**
 	 * Delete a retreat with cascade delete for all related data.
 	 * This method implements cascade delete functionality to replace database foreign key constraints.
 	 * 

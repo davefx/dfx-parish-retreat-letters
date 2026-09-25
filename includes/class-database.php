@@ -38,7 +38,7 @@ class DFXPRL_Database {
 	 * @since 1.0.0
 	 * @var string
 	 */
-	const DB_VERSION = '1.11.0';
+	const DB_VERSION = '1.12.0';
 
 	/**
 	 * The database version option name.
@@ -226,6 +226,7 @@ class DFXPRL_Database {
 			notes_enabled tinyint(1) NOT NULL DEFAULT 0,
 			internal_notes_enabled tinyint(1) NOT NULL DEFAULT 0,
 			message_request_template text NULL DEFAULT NULL,
+			list_column_order text NULL DEFAULT NULL,
 			created_at datetime DEFAULT CURRENT_TIMESTAMP,
 			updated_at datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 			PRIMARY KEY (id),

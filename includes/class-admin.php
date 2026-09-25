@@ -144,7 +144,7 @@ class DFXPRL_Admin {
 		$this->message_model = new DFXPRL_ConfidentialMessage();
 		$this->custom_field_model = new DFXPRL_Custom_Field();
 		$this->log_model = new DFXPRL_Attendant_Log();
-		$this->file_model= new DFXPRL_MessageFile();
+		$this->file_model = new DFXPRL_MessageFile();
 		$this->print_log_model = new DFXPRL_PrintLog();
 		$this->security = DFXPRL_Security::get_instance();
 		$this->gdpr = DFXPRL_GDPR::get_instance();
@@ -175,6 +175,9 @@ class DFXPRL_Admin {
 		add_action( 'wp_ajax_dfxprl_log_add', array( $this, 'ajax_log_add' ) );
 		add_action( 'wp_ajax_dfxprl_log_update', array( $this, 'ajax_log_update' ) );
 		add_action( 'wp_ajax_dfxprl_log_delete', array( $this, 'ajax_log_delete' ) );
+		add_action( 'wp_ajax_dfxprl_save_column_order', array( $this, 'ajax_save_column_order' ) );
+		add_action( 'wp_ajax_dfxprl_inline_update', array( $this, 'ajax_inline_update' ) );
+		add_action( 'wp_ajax_dfxprl_log_get', array( $this, 'ajax_log_get' ) );
 
 		// Add new AJAX handlers for permission system
 		add_action( 'wp_ajax_dfxprl_search_users', array( $this, 'ajax_search_users' ) );
@@ -694,6 +697,69 @@ class DFXPRL_Admin {
 	.dfxprl-remove-custom-field {
 		margin-left: auto !important;
 	}
+	/* Attendants list column reordering */
+	.dfxprl-column-order-help {
+		clear: both;
+		padding-top: 6px;
+	}
+	.dfxprl-attendants-table[data-retreat-id] th[data-column] {
+		position: relative;
+		padding-left: 22px;
+	}
+	.dfxprl-column-handle {
+		position: absolute;
+		left: 3px;
+		top: 50%;
+		margin-top: -8px;
+		cursor: move;
+		color: #8c8f94;
+		font-size: 16px;
+		width: 16px;
+		height: 16px;
+	}
+	.dfxprl-column-handle:hover {
+		color: #2271b1;
+	}
+	.dfxprl-attendants-table th.dfxprl-column-placeholder {
+		background: #f0f6fc;
+		border: 1px dashed #2271b1;
+	}
+	.dfxprl-attendants-table th.ui-sortable-helper {
+		background: #fff;
+		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+	}
+	/* Inline editing in the attendants list */
+	.dfxprl-attendants-table td.dfxprl-inline-editable {
+		cursor: pointer;
+	}
+	.dfxprl-attendants-table td.dfxprl-inline-editable:not(.dfxprl-inline-editing):hover {
+		background: #f0f6fc;
+		box-shadow: inset 0 0 0 1px #72aee6;
+	}
+	.dfxprl-inline-editor .dfxprl-inline-input {
+		width: 100%;
+		max-width: 100%;
+		box-sizing: border-box;
+	}
+	.dfxprl-inline-buttons {
+		margin-top: 4px;
+		white-space: nowrap;
+	}
+	/* Contact log modal */
+	#dfxprl-log-modal .dfxprl-modal-dialog {
+		max-width: 720px;
+	}
+	#dfxprl-log-modal .dfxprl-modal-header h3 {
+		color: inherit;
+		padding-right: 30px;
+	}
+	#dfxprl-log-modal .dfxprl-modal-body {
+		max-height: 70vh;
+		overflow-y: auto;
+	}
+	.dfxprl-log-latest {
+		color: #50575e;
+	}
 	/* Attendant contact log */
 	.dfxprl-log-entry {
 		border-left: 3px solid #2271b1;
@@ -855,7 +921,7 @@ class DFXPRL_Admin {
 		wp_enqueue_script(
 			'dfxprl-retreats-admin',
 			DFXPRL_PLUGIN_URL . 'includes/admin.js',
-			array( 'jquery' ),
+			array( 'jquery', 'jquery-ui-sortable' ),
 			DFXPRL_VERSION,
 			true
 		);
@@ -975,7 +1041,12 @@ class DFXPRL_Admin {
 					'logEmpty' => __( 'Please enter a description.', 'dfx-parish-retreat-letters' ),
 					'confirmDeleteLogEntry' => __( 'Are you sure you want to delete this contact log entry?', 'dfx-parish-retreat-letters' ),
 					'save' => __( 'Save', 'dfx-parish-retreat-letters' ),
-					'confirmRemoveCustomField' => __( 'Removing this field will permanently delete its values for all attendants when the retreat is saved. Continue?', 'dfx-parish-retreat-letters' ),
+					'columnOrderError' => __( 'Error saving the column order. Please try again.', 'dfx-parish-retreat-letters' ),
+					'contactLogTitle' => __( 'Contact Log', 'dfx-parish-retreat-letters' ),
+					'yes' => __( 'Yes', 'dfx-parish-retreat-letters' ),
+					'fieldRequired' => __( 'This field is required.', 'dfx-parish-retreat-letters' ),
+					'inlineError' => __( 'Error saving the field. Please try again.', 'dfx-parish-retreat-letters' ),
+'confirmRemoveCustomField' => __( 'Removing this field will permanently delete its values for all attendants when the retreat is saved. Continue?', 'dfx-parish-retreat-letters' ),
 				),
 			)
 		);
@@ -2973,6 +3044,29 @@ class DFXPRL_Admin {
 		} );
 		$custom_values = $list_fields ? $this->custom_field_model->get_values_for_attendants( wp_list_pluck( $attendants, 'id' ) ) : array();
 
+		// Columns available in this list, in their default order (the Actions column always goes last)
+		$available_columns = array( 'name', 'surnames', 'date_of_birth', 'emergency_contact', 'invited_by', 'incompatibilities' );
+		if ( ! empty( $retreat->notes_enabled ) ) {
+			$available_columns[] = 'notes';
+		}
+		if ( ! empty( $retreat->internal_notes_enabled ) ) {
+			$available_columns[] = 'internal_notes';
+		}
+		$available_columns[] = 'messages';
+		$available_columns[] = 'total_letters';
+		$available_columns[] = 'contact_log';
+		$list_fields_by_key = array();
+		foreach ( $list_fields as $field ) {
+			$available_columns[] = 'cf_' . $field->slug;
+			$list_fields_by_key[ 'cf_' . $field->slug ] = $field;
+		}
+
+		$log_summaries = $this->log_model->get_summaries_for_attendants( wp_list_pluck( $attendants, 'id' ) );
+
+		// Apply the order saved by the retreat managers; columns it does not mention keep their default place at the end
+		$saved_column_order = $this->retreat_model->get_list_column_order( $retreat );
+		$column_order = array_values( array_unique( array_merge( array_intersect( $saved_column_order, $available_columns ), $available_columns ) ) );
+
 		// Helper function to generate sortable column header URL
 		$get_sort_url = function( $column ) use ( $retreat, $search, $orderby, $order, $filters ) {
 			$new_order = ( $orderby === $column && $order === 'ASC' ) ? 'DESC' : 'ASC';
@@ -3170,17 +3264,8 @@ class DFXPRL_Admin {
 							);
 							?>
 						</p>
-						<p style="margin-top: 5px;">
-							<strong><?php esc_html_e( 'Letters:', 'dfx-parish-retreat-letters' ); ?></strong>
-							<?php
-							printf(
-								/* translators: 1: total letters count, 2: letters received through the app, 3: physical letters count */
-								esc_html__( '%1$d in total (%2$d via app, %3$d physical)', 'dfx-parish-retreat-letters' ),
-								esc_html( $total_messages + $physical_letters ),
-								esc_html( $total_messages ),
-								esc_html( $physical_letters )
-							);
-							?>
+						<p style="margin-top: 5px;" class="dfxprl-letters-summary">
+							<?php echo $this->render_letters_summary( $total_messages, $physical_letters ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Escaped while building the HTML ?>
 						</p>
 						<?php if ( $can_manage_retreat ) : ?>
 							<button type="submit" name="action" value="export_csv" class="button">
@@ -3239,61 +3324,88 @@ class DFXPRL_Admin {
 					</select>
 				</div>
 
-				<table class="wp-list-table widefat fixed striped">
+				<?php if ( $can_manage_retreat ) : ?>
+					<p class="description dfxprl-column-order-help">
+						<?php esc_html_e( 'Drag the column headers by their handle to reorder the columns. The order is saved for everyone who uses this retreat.', 'dfx-parish-retreat-letters' ); ?>
+						<button type="button" class="button-link dfxprl-reset-column-order" data-retreat-id="<?php echo esc_attr( $retreat->id ); ?>"<?php echo empty( $saved_column_order ) ? ' style="display: none;"' : ''; ?>>
+							<?php esc_html_e( 'Restore default order', 'dfx-parish-retreat-letters' ); ?>
+						</button>
+					</p>
+				<?php endif; ?>
+
+				<table class="wp-list-table widefat fixed striped dfxprl-attendants-table"<?php echo $can_manage_retreat ? ' data-retreat-id="' . esc_attr( $retreat->id ) . '"' : ''; ?>>
 					<thead>
+						<?php $column_headers = array(); ?>
 						<tr>
+							<?php ob_start(); ?>
 							<th scope="col" class="manage-column sortable <?php echo $orderby === 'name' ? 'sorted' : 'sortable'; ?> <?php echo $orderby === 'name' ? esc_attr( strtolower( $order ) ) : 'desc'; ?>">
 								<a href="<?php echo esc_url( $get_sort_url( 'name' ) ); ?>">
 									<span><?php esc_html_e( 'Name', 'dfx-parish-retreat-letters' ); ?></span>
 									<span class="sorting-indicator"><?php echo esc_html( $get_sort_indicator( 'name' ) ); ?></span>
 								</a>
 							</th>
+							<?php $column_headers[ 'name' ] = ob_get_clean(); ?>
+							<?php ob_start(); ?>
 							<th scope="col" class="manage-column sortable <?php echo $orderby === 'surnames' ? 'sorted' : 'sortable'; ?> <?php echo $orderby === 'surnames' ? esc_attr( strtolower( $order ) ) : 'desc'; ?>">
 								<a href="<?php echo esc_url( $get_sort_url( 'surnames' ) ); ?>">
 									<span><?php esc_html_e( 'Surnames', 'dfx-parish-retreat-letters' ); ?></span>
 									<span class="sorting-indicator"><?php echo esc_html( $get_sort_indicator( 'surnames' ) ); ?></span>
 								</a>
 							</th>
+							<?php $column_headers[ 'surnames' ] = ob_get_clean(); ?>
+							<?php ob_start(); ?>
 							<th scope="col" class="manage-column sortable <?php echo $orderby === 'date_of_birth' ? 'sorted' : 'sortable'; ?> <?php echo $orderby === 'date_of_birth' ? esc_attr( strtolower( $order ) ) : 'desc'; ?>">
 								<a href="<?php echo esc_url( $get_sort_url( 'date_of_birth' ) ); ?>">
 									<span><?php esc_html_e( 'Date of Birth', 'dfx-parish-retreat-letters' ); ?></span>
 									<span class="sorting-indicator"><?php echo esc_html( $get_sort_indicator( 'date_of_birth' ) ); ?></span>
 								</a>
 							</th>
+							<?php $column_headers[ 'date_of_birth' ] = ob_get_clean(); ?>
+							<?php ob_start(); ?>
 							<th scope="col" class="manage-column sortable <?php echo $orderby === 'emergency_contact_name' ? 'sorted' : 'sortable'; ?> <?php echo $orderby === 'emergency_contact_name' ? esc_attr( strtolower( $order ) ) : 'desc'; ?>">
 								<a href="<?php echo esc_url( $get_sort_url( 'emergency_contact_name' ) ); ?>">
 									<span><?php esc_html_e( 'Emergency Contact', 'dfx-parish-retreat-letters' ); ?></span>
 									<span class="sorting-indicator"><?php echo esc_html( $get_sort_indicator( 'emergency_contact_name' ) ); ?></span>
 								</a>
 							</th>
+							<?php $column_headers[ 'emergency_contact' ] = ob_get_clean(); ?>
+							<?php ob_start(); ?>
 							<th scope="col" class="manage-column sortable <?php echo $orderby === 'invited_by' ? 'sorted' : 'sortable'; ?> <?php echo $orderby === 'invited_by' ? esc_attr( strtolower( $order ) ) : 'desc'; ?>">
 								<a href="<?php echo esc_url( $get_sort_url( 'invited_by' ) ); ?>">
 									<span><?php esc_html_e( 'Invited By', 'dfx-parish-retreat-letters' ); ?></span>
 									<span class="sorting-indicator"><?php echo esc_html( $get_sort_indicator( 'invited_by' ) ); ?></span>
 								</a>
 							</th>
+							<?php $column_headers[ 'invited_by' ] = ob_get_clean(); ?>
+							<?php ob_start(); ?>
 							<th scope="col" class="manage-column sortable <?php echo $orderby === 'incompatibilities' ? 'sorted' : 'sortable'; ?> <?php echo $orderby === 'incompatibilities' ? esc_attr( strtolower( $order ) ) : 'desc'; ?>">
 								<a href="<?php echo esc_url( $get_sort_url( 'incompatibilities' ) ); ?>">
 									<span><?php esc_html_e( 'Incompatibilities', 'dfx-parish-retreat-letters' ); ?></span>
 									<span class="sorting-indicator"><?php echo esc_html( $get_sort_indicator( 'incompatibilities' ) ); ?></span>
 								</a>
 							</th>
+							<?php $column_headers[ 'incompatibilities' ] = ob_get_clean(); ?>
 							<?php if ( ! empty( $retreat->notes_enabled ) ) : ?>
+							<?php ob_start(); ?>
 							<th scope="col" class="manage-column sortable <?php echo $orderby === 'notes' ? 'sorted' : 'sortable'; ?> <?php echo $orderby === 'notes' ? esc_attr( strtolower( $order ) ) : 'desc'; ?>">
 								<a href="<?php echo esc_url( $get_sort_url( 'notes' ) ); ?>">
 									<span><?php esc_html_e( 'Notes', 'dfx-parish-retreat-letters' ); ?></span>
 									<span class="sorting-indicator"><?php echo esc_html( $get_sort_indicator( 'notes' ) ); ?></span>
 								</a>
 							</th>
+							<?php $column_headers[ 'notes' ] = ob_get_clean(); ?>
 							<?php endif; ?>
 							<?php if ( ! empty( $retreat->internal_notes_enabled ) ) : ?>
+							<?php ob_start(); ?>
 							<th scope="col" class="manage-column sortable <?php echo $orderby === 'internal_notes' ? 'sorted' : 'sortable'; ?> <?php echo $orderby === 'internal_notes' ? esc_attr( strtolower( $order ) ) : 'desc'; ?>">
 								<a href="<?php echo esc_url( $get_sort_url( 'internal_notes' ) ); ?>">
 									<span><?php esc_html_e( 'Internal Notes', 'dfx-parish-retreat-letters' ); ?></span>
 									<span class="sorting-indicator"><?php echo esc_html( $get_sort_indicator( 'internal_notes' ) ); ?></span>
 								</a>
 							</th>
+							<?php $column_headers[ 'internal_notes' ] = ob_get_clean(); ?>
 							<?php endif; ?>
+							<?php ob_start(); ?>
 							<th scope="col" class="manage-column sortable <?php echo ( $orderby === 'message_count' || $orderby === 'non_printed_count' ) ? 'sorted' : 'sortable'; ?> <?php echo ( $orderby === 'message_count' || $orderby === 'non_printed_count' ) ? esc_attr( strtolower( $order ) ) : 'desc'; ?>">
 								<a href="<?php echo esc_url( $get_messages_sort_url() ); ?>">
 									<?php
@@ -3312,25 +3424,38 @@ class DFXPRL_Admin {
 									?></span>
 								</a>
 							</th>
+							<?php $column_headers[ 'messages' ] = ob_get_clean(); ?>
+							<?php ob_start(); ?>
 							<th scope="col" class="manage-column sortable <?php echo $orderby === 'total_letters' ? 'sorted' : 'sortable'; ?> <?php echo $orderby === 'total_letters' ? esc_attr( strtolower( $order ) ) : 'desc'; ?>">
 								<a href="<?php echo esc_url( $get_sort_url( 'total_letters' ) ); ?>">
 									<span><?php esc_html_e( 'Total Letters', 'dfx-parish-retreat-letters' ); ?></span>
 									<span class="sorting-indicator"><?php echo esc_html( $get_sort_indicator( 'total_letters' ) ); ?></span>
 								</a>
 							</th>
+							<?php $column_headers[ 'total_letters' ] = ob_get_clean(); ?>
+							<?php $column_headers[ 'contact_log' ] = '<th scope="col" class="manage-column">' . esc_html__( 'Contact Log', 'dfx-parish-retreat-letters' ) . '</th>'; ?>
 							<?php foreach ( $list_fields as $field ) : ?>
 								<?php if ( $field->sortable ) : ?>
 									<?php $sort_key = 'cf_' . $field->slug; ?>
+									<?php ob_start(); ?>
 									<th scope="col" class="manage-column sortable <?php echo $orderby === $sort_key ? 'sorted' : 'sortable'; ?> <?php echo $orderby === $sort_key ? esc_attr( strtolower( $order ) ) : 'desc'; ?>">
 										<a href="<?php echo esc_url( $get_sort_url( $sort_key ) ); ?>">
 											<span><?php echo esc_html( $field->name ); ?></span>
 											<span class="sorting-indicator"><?php echo esc_html( $get_sort_indicator( $sort_key ) ); ?></span>
 										</a>
 									</th>
+									<?php $column_headers[ 'cf_' . $field->slug ] = ob_get_clean(); ?>
 								<?php else : ?>
+									<?php ob_start(); ?>
 									<th scope="col" class="manage-column"><?php echo esc_html( $field->name ); ?></th>
+									<?php $column_headers[ 'cf_' . $field->slug ] = ob_get_clean(); ?>
 								<?php endif; ?>
 							<?php endforeach; ?>
+							<?php
+							foreach ( $column_order as $column_key ) {
+								echo $this->tag_list_column( $column_headers[ $column_key ], $column_key, $can_manage_retreat ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Escaped when captured
+							}
+							?>
 							<th scope="col" class="manage-column"><?php esc_html_e( 'Actions', 'dfx-parish-retreat-letters' ); ?></th>
 						</tr>
 					</thead>
@@ -3349,116 +3474,11 @@ class DFXPRL_Admin {
 								}
 								?>
 								<tr>
-									<td data-colname="<?php esc_attr_e( 'Name', 'dfx-parish-retreat-letters' ); ?>">
-										<strong>
-											<a href="<?php echo esc_url( admin_url( 'admin.php?page=dfxprl-retreats&action=edit_attendant&retreat_id=' . $retreat->id . '&attendant_id=' . $attendant->id ) ); ?>">
-												<?php echo esc_html( $attendant->name ); ?>
-											</a>
-										</strong>
-									</td>
-									<td data-colname="<?php esc_attr_e( 'Surnames', 'dfx-parish-retreat-letters' ); ?>"><?php echo esc_html( $attendant->surnames ); ?></td>
-									<td data-colname="<?php esc_attr_e( 'Date of Birth', 'dfx-parish-retreat-letters' ); ?>"><?php echo esc_html( date_i18n( get_option( 'date_format' ), strtotime( $attendant->date_of_birth ) ) ); ?></td>
-									<td data-colname="<?php esc_attr_e( 'Emergency Contact', 'dfx-parish-retreat-letters' ); ?>">
-										<?php
-										echo esc_html( $attendant->emergency_contact_name . ' ' . $attendant->emergency_contact_surname );
-										if ( ! empty( $attendant->emergency_contact_relationship ) ) {
-											echo ' (' . esc_html( $attendant->emergency_contact_relationship ) . ')';
-										}
-										?>
-										<br>
-										<small><?php echo esc_html( $attendant->emergency_contact_phone ); ?></small>
-										<?php if ( ! empty( $attendant->emergency_contact_email ) ) : ?>
-											<br><small><?php echo esc_html( $attendant->emergency_contact_email ); ?></small>
-										<?php endif; ?>
-									</td>
-									<td data-colname="<?php esc_attr_e( 'Invited By', 'dfx-parish-retreat-letters' ); ?>">
-										<?php
-										if ( ! empty( $attendant->invited_by ) ) {
-											echo esc_html( $attendant->invited_by );
-										} else {
-											echo '<span class="description">' . esc_html__( 'N/A', 'dfx-parish-retreat-letters' ) . '</span>';
-										}
-										?>
-									</td>
-									<td data-colname="<?php esc_attr_e( 'Incompatibilities', 'dfx-parish-retreat-letters' ); ?>">
-										<?php
-										if ( ! empty( $attendant->incompatibilities ) ) {
-											echo esc_html( $attendant->incompatibilities );
-										} else {
-											echo '<span class="description">' . esc_html__( 'N/A', 'dfx-parish-retreat-letters' ) . '</span>';
-										}
-										?>
-									</td>
-									<?php if ( ! empty( $retreat->notes_enabled ) ) : ?>
-									<td data-colname="<?php esc_attr_e( 'Notes', 'dfx-parish-retreat-letters' ); ?>">
-										<?php
-										if ( ! empty( $attendant->notes ) ) {
-											echo wp_kses_post( wpautop( $attendant->notes ) );
-										} else {
-											echo '<span class="description">' . esc_html__( 'No notes', 'dfx-parish-retreat-letters' ) . '</span>';
-										}
-										?>
-									</td>
-									<?php endif; ?>
-									<?php if ( ! empty( $retreat->internal_notes_enabled ) ) : ?>
-									<td data-colname="<?php esc_attr_e( 'Internal Notes', 'dfx-parish-retreat-letters' ); ?>">
-										<?php
-										if ( ! empty( $attendant->internal_notes ) ) {
-											echo wp_kses_post( wpautop( $attendant->internal_notes ) );
-										} else {
-											echo '<span class="description">' . esc_html__( 'No notes', 'dfx-parish-retreat-letters' ) . '</span>';
-										}
-										?>
-									</td>
-									<?php endif; ?>
-									<td data-colname="<?php esc_attr_e( 'Messages', 'dfx-parish-retreat-letters' ); ?>">
-										<?php if ( $message_count > 0 ) : ?>
-											<a href="<?php echo esc_url( admin_url( 'admin.php?page=dfxprl-messages&attendant_id=' . $attendant->id ) ); ?>">
-												<?php
-												printf(
-													/* translators: %d: Number of messages */
-													esc_html( _n( '%d message', '%d messages', $message_count, 'dfx-parish-retreat-letters' ) ),
-													esc_html( $message_count )
-												);
-												// Show non-printed count if there are any non-printed messages
-												if ( $non_printed_count > 0 ) {
-													printf(
-														/* translators: %d: Number of non-printed messages */
-														esc_html__( ' (%d non-printed)', 'dfx-parish-retreat-letters' ),
-														esc_html( $non_printed_count )
-													);
-												}
-												?>
-											</a>
-										<?php else : ?>
-											<span class="description"><?php esc_html_e( 'No messages', 'dfx-parish-retreat-letters' ); ?></span>
-										<?php endif; ?>
-									</td>
-									<td data-colname="<?php esc_attr_e( 'Total Letters', 'dfx-parish-retreat-letters' ); ?>">
-										<strong><?php echo esc_html( (int) $message_count + (int) $attendant->physical_letters ); ?></strong>
-										<?php if ( (int) $attendant->physical_letters > 0 ) : ?>
-											<br><small>
-												<?php
-												printf(
-													/* translators: 1: letters received through the app, 2: physical letters count */
-													esc_html__( '%1$d via app, %2$d physical', 'dfx-parish-retreat-letters' ),
-													esc_html( $message_count ),
-													esc_html( $attendant->physical_letters )
-												);
-												?>
-											</small>
-										<?php endif; ?>
-									</td>
-									<?php foreach ( $list_fields as $field ) : ?>
-										<?php $field_value = $custom_values[ (int) $attendant->id ][ $field->id ] ?? ''; ?>
-										<td data-colname="<?php echo esc_attr( $field->name ); ?>">
-											<?php if ( '' !== (string) $field_value || 'checkbox' === $field->field_type ) : ?>
-												<?php echo 'textarea' === $field->field_type ? wp_kses_post( wpautop( esc_html( $field_value ) ) ) : esc_html( $this->custom_field_model->format_value( $field, $field_value ) ); ?>
-											<?php else : ?>
-												<span class="description"><?php esc_html_e( 'N/A', 'dfx-parish-retreat-letters' ); ?></span>
-											<?php endif; ?>
-										</td>
-									<?php endforeach; ?>
+									<?php
+									foreach ( $column_order as $column_key ) {
+										echo $this->render_attendant_list_cell( $column_key, $retreat, $attendant, $message_count, $non_printed_count, $custom_values[ (int) $attendant->id ] ?? array(), $list_fields_by_key, $log_summaries[ (int) $attendant->id ] ?? null ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Escaped while building the cell
+									}
+									?>
 									<td data-colname="<?php esc_attr_e( 'Actions', 'dfx-parish-retreat-letters' ); ?>">
 										<?php if ( $this->permissions->current_user_can_manage_messages( $retreat->id ) ) : ?>
 											<a href="<?php echo esc_url( admin_url( 'admin.php?page=dfxprl-retreats&action=edit_attendant&retreat_id=' . $retreat->id . '&attendant_id=' . $attendant->id ) ); ?>" class="button button-small">
@@ -3500,7 +3520,7 @@ class DFXPRL_Admin {
 							<?php endforeach; ?>
 						<?php else : ?>
 							<tr>
-								<td colspan="10">
+								<td colspan="<?php echo esc_attr( count( $column_order ) + 1 ); ?>">
 									<?php if ( $search || ! empty( array_filter( $filters ) ) ) : ?>
 										<?php esc_html_e( 'No attendants found matching your criteria.', 'dfx-parish-retreat-letters' ); ?>
 									<?php else : ?>
@@ -3773,6 +3793,411 @@ class DFXPRL_Admin {
 	}
 
 	/**
+	 * Tag a captured list header or cell with its column key.
+	 *
+	 * Adds a data-column attribute to the opening <th>/<td> tag and, for draggable
+	 * headers, a drag handle used to reorder the columns.
+	 *
+	 * @since 1.12.0
+	 * @param string $html      Captured header or cell HTML.
+	 * @param string $key       Column key.
+	 * @param bool   $draggable Whether to add the drag handle (headers only).
+	 * @return string
+	 */
+	private function tag_list_column( $html, $key, $draggable = false ) {
+		$handle = '';
+		if ( $draggable ) {
+			$handle = '<span class="dfxprl-column-handle dashicons dashicons-move" title="' . esc_attr__( 'Drag to reorder', 'dfx-parish-retreat-letters' ) . '" aria-hidden="true"></span>';
+		}
+
+		return preg_replace_callback(
+			'/<(th|td)\b([^>]*)>/',
+			function( $matches ) use ( $key, $handle ) {
+				return '<' . $matches[1] . ' data-column="' . esc_attr( $key ) . '"' . $matches[2] . '>' . ( 'th' === $matches[1] ? $handle : '' );
+			},
+			$html,
+			1
+		);
+	}
+
+	/**
+	 * AJAX handler for saving the column order of a retreat's attendants list.
+	 *
+	 * @since 1.12.0
+	 */
+	public function ajax_save_column_order() {
+		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ?? '' ) ), 'dfxprl_retreats_nonce' ) ) {
+			wp_send_json_error( array( 'message' => __( 'Security check failed.', 'dfx-parish-retreat-letters' ) ) );
+		}
+
+		$retreat_id = absint( $_POST['retreat_id'] ?? 0 );
+		if ( ! $retreat_id || ! $this->retreat_model->get( $retreat_id ) ) {
+			wp_send_json_error( array( 'message' => __( 'Retreat not found.', 'dfx-parish-retreat-letters' ) ) );
+		}
+
+		if ( ! $this->permissions->current_user_can_manage_retreat( $retreat_id ) ) {
+			wp_send_json_error( array( 'message' => __( 'You do not have permission to perform this action.', 'dfx-parish-retreat-letters' ) ) );
+		}
+
+		$order = isset( $_POST['order'] ) && is_array( $_POST['order'] ) ? array_map( 'sanitize_key', wp_unslash( $_POST['order'] ) ) : array();
+
+		if ( ! $this->retreat_model->update_list_column_order( $retreat_id, $order ) ) {
+			wp_send_json_error( array( 'message' => __( 'Error saving the column order.', 'dfx-parish-retreat-letters' ) ) );
+		}
+
+		wp_send_json_success();
+	}
+
+	/**
+	 * Build a cell of the attendants list.
+	 *
+	 * The cell is tagged with its column key and, when the current user can edit
+	 * that column, with the data needed for inline editing.
+	 *
+	 * @since 1.12.0
+	 * @param string $key               Column key.
+	 * @param object $retreat           Retreat object.
+	 * @param object $attendant         Attendant object.
+	 * @param int    $message_count     Messages received through the application.
+	 * @param int    $non_printed_count Messages not printed yet.
+	 * @param array  $custom_values     The attendant's custom field values (field_id => value).
+	 * @param array  $list_fields       Custom fields shown in the list, keyed by column key.
+	 * @param object $log_summary       Contact log summary { count, latest }, or null when there are no entries.
+	 * @return string
+	 */
+	private function render_attendant_list_cell( $key, $retreat, $attendant, $message_count, $non_printed_count, $custom_values, $list_fields, $log_summary = null ) {
+		$field = $list_fields[ $key ] ?? null;
+		$not_available = '<span class="description">' . esc_html__( 'N/A', 'dfx-parish-retreat-letters' ) . '</span>';
+		$no_notes = '<span class="description">' . esc_html__( 'No notes', 'dfx-parish-retreat-letters' ) . '</span>';
+
+		ob_start();
+		switch ( $key ) {
+			case 'name':
+				$label = __( 'Name', 'dfx-parish-retreat-letters' );
+				?>
+				<strong>
+					<a href="<?php echo esc_url( admin_url( 'admin.php?page=dfxprl-retreats&action=edit_attendant&retreat_id=' . $retreat->id . '&attendant_id=' . $attendant->id ) ); ?>">
+						<?php echo esc_html( $attendant->name ); ?>
+					</a>
+				</strong>
+				<?php
+				break;
+
+			case 'surnames':
+				$label = __( 'Surnames', 'dfx-parish-retreat-letters' );
+				echo esc_html( $attendant->surnames );
+				break;
+
+			case 'date_of_birth':
+				$label = __( 'Date of Birth', 'dfx-parish-retreat-letters' );
+				echo esc_html( date_i18n( get_option( 'date_format' ), strtotime( $attendant->date_of_birth ) ) );
+				break;
+
+			case 'emergency_contact':
+				$label = __( 'Emergency Contact', 'dfx-parish-retreat-letters' );
+				echo esc_html( $attendant->emergency_contact_name . ' ' . $attendant->emergency_contact_surname );
+				if ( ! empty( $attendant->emergency_contact_relationship ) ) {
+					echo ' (' . esc_html( $attendant->emergency_contact_relationship ) . ')';
+				}
+				?>
+				<br>
+				<small><?php echo esc_html( $attendant->emergency_contact_phone ); ?></small>
+				<?php if ( ! empty( $attendant->emergency_contact_email ) ) : ?>
+					<br><small><?php echo esc_html( $attendant->emergency_contact_email ); ?></small>
+				<?php endif; ?>
+				<?php
+				break;
+
+			case 'invited_by':
+				$label = __( 'Invited By', 'dfx-parish-retreat-letters' );
+				echo ! empty( $attendant->invited_by ) ? esc_html( $attendant->invited_by ) : $not_available; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Escaped above
+				break;
+
+			case 'incompatibilities':
+				$label = __( 'Incompatibilities', 'dfx-parish-retreat-letters' );
+				echo ! empty( $attendant->incompatibilities ) ? esc_html( $attendant->incompatibilities ) : $not_available; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Escaped above
+				break;
+
+			case 'notes':
+			case 'internal_notes':
+				$label = 'notes' === $key ? __( 'Notes', 'dfx-parish-retreat-letters' ) : __( 'Internal Notes', 'dfx-parish-retreat-letters' );
+				echo ! empty( $attendant->$key ) ? wp_kses_post( wpautop( $attendant->$key ) ) : $no_notes; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Escaped above
+				break;
+
+			case 'messages':
+				$label = __( 'Messages', 'dfx-parish-retreat-letters' );
+				if ( $message_count > 0 ) :
+					?>
+					<a href="<?php echo esc_url( admin_url( 'admin.php?page=dfxprl-messages&attendant_id=' . $attendant->id ) ); ?>">
+						<?php
+						printf(
+							/* translators: %d: Number of messages */
+							esc_html( _n( '%d message', '%d messages', $message_count, 'dfx-parish-retreat-letters' ) ),
+							esc_html( $message_count )
+						);
+						// Show non-printed count if there are any non-printed messages
+						if ( $non_printed_count > 0 ) {
+							printf(
+								/* translators: %d: Number of non-printed messages */
+								esc_html__( ' (%d non-printed)', 'dfx-parish-retreat-letters' ),
+								esc_html( $non_printed_count )
+							);
+						}
+						?>
+					</a>
+					<?php
+				else :
+					?>
+					<span class="description"><?php esc_html_e( 'No messages', 'dfx-parish-retreat-letters' ); ?></span>
+					<?php
+				endif;
+				break;
+
+			case 'total_letters':
+				$label = __( 'Total Letters', 'dfx-parish-retreat-letters' );
+				?>
+				<strong><?php echo esc_html( (int) $message_count + (int) $attendant->physical_letters ); ?></strong>
+				<?php if ( (int) $attendant->physical_letters > 0 ) : ?>
+					<br><small>
+						<?php
+						printf(
+							/* translators: 1: letters received through the app, 2: physical letters count */
+							esc_html__( '%1$d via app, %2$d physical', 'dfx-parish-retreat-letters' ),
+							esc_html( $message_count ),
+							esc_html( $attendant->physical_letters )
+						);
+						?>
+					</small>
+				<?php endif; ?>
+				<?php
+				break;
+
+			case 'contact_log':
+				$label = __( 'Contact Log', 'dfx-parish-retreat-letters' );
+				$count = $log_summary ? (int) $log_summary->count : 0;
+				?>
+				<button type="button" class="button-link dfxprl-open-log" data-attendant-id="<?php echo esc_attr( $attendant->id ); ?>" data-attendant-name="<?php echo esc_attr( trim( $attendant->name . ' ' . $attendant->surnames ) ); ?>">
+					<?php
+					if ( $count ) {
+						printf(
+							/* translators: %d: number of contact log entries */
+							esc_html( _n( '%d entry', '%d entries', $count, 'dfx-parish-retreat-letters' ) ),
+							esc_html( $count )
+						);
+					} else {
+						esc_html_e( 'Add entry', 'dfx-parish-retreat-letters' );
+					}
+					?>
+				</button>
+				<?php if ( $count ) : ?>
+					<br><small class="dfxprl-log-latest">
+						<strong><?php echo esc_html( date_i18n( get_option( 'date_format' ), strtotime( $log_summary->latest->entry_date ) ) ); ?>:</strong>
+						<?php echo esc_html( wp_trim_words( $log_summary->latest->content, 12 ) ); ?>
+					</small>
+				<?php endif; ?>
+				<?php
+				break;
+
+			default:
+				if ( ! $field ) {
+					ob_end_clean();
+					return '';
+				}
+				$label = $field->name;
+				$field_value = (string) ( $custom_values[ $field->id ] ?? '' );
+				if ( '' !== $field_value || 'checkbox' === $field->field_type ) {
+					echo 'textarea' === $field->field_type ? wp_kses_post( wpautop( esc_html( $field_value ) ) ) : esc_html( $this->custom_field_model->format_value( $field, $field_value ) );
+				} else {
+					echo $not_available; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Static markup
+				}
+				break;
+		}
+		$content = ob_get_clean();
+
+		$attributes = array(
+			'data-column'  => $key,
+			'data-colname' => $label,
+		);
+
+		$editor = $this->get_list_cell_editor( $key, $retreat, $attendant, $field, $custom_values );
+		if ( $editor ) {
+			$attributes['class'] = 'dfxprl-inline-editable';
+			$attributes['data-attendant-id'] = $attendant->id;
+			$attributes['data-edit-type'] = $editor['type'];
+			$attributes['data-value'] = $editor['value'];
+			$attributes['title'] = $editor['title'];
+			if ( ! empty( $editor['options'] ) ) {
+				$attributes['data-options'] = wp_json_encode( $editor['options'] );
+			}
+			if ( ! empty( $editor['required'] ) ) {
+				$attributes['data-required'] = '1';
+			}
+		}
+
+		$html = '<td';
+		foreach ( $attributes as $name => $value ) {
+			$html .= ' ' . $name . '="' . esc_attr( $value ) . '"';
+		}
+		return $html . '>' . $content . '</td>';
+	}
+
+	/**
+	 * Build the retreat letters summary shown above the attendants list.
+	 *
+	 * @since 1.12.0
+	 * @param int $total_messages   Messages received through the application.
+	 * @param int $physical_letters Physical letters received.
+	 * @return string
+	 */
+	private function render_letters_summary( $total_messages, $physical_letters ) {
+		return '<strong>' . esc_html__( 'Letters:', 'dfx-parish-retreat-letters' ) . '</strong> ' . esc_html( sprintf(
+			/* translators: 1: total letters count, 2: letters received through the app, 3: physical letters count */
+			__( '%1$d in total (%2$d via app, %3$d physical)', 'dfx-parish-retreat-letters' ),
+			$total_messages + $physical_letters,
+			$total_messages,
+			$physical_letters
+		) );
+	}
+
+	/**
+	 * Describe how the current user can edit a list cell inline, if at all.
+	 *
+	 * @since 1.12.0
+	 * @param string      $key           Column key.
+	 * @param object      $retreat       Retreat object.
+	 * @param object      $attendant     Attendant object.
+	 * @param object|null $field         Custom field for custom field columns.
+	 * @param array       $custom_values The attendant's custom field values (field_id => value).
+	 * @return array|null { type, value, title, options?, required? } or null when not editable.
+	 */
+	private function get_list_cell_editor( $key, $retreat, $attendant, $field, $custom_values ) {
+		$title = __( 'Click to edit', 'dfx-parish-retreat-letters' );
+
+		if ( $field ) {
+			if ( ! $this->custom_field_model->current_user_can_edit( $field, $retreat->id ) ) {
+				return null;
+			}
+			return array(
+				'type'    => $field->field_type,
+				'value'   => (string) ( $custom_values[ $field->id ] ?? '' ),
+				'title'   => $title,
+				'options' => 'select' === $field->field_type ? $field->options : array(),
+			);
+		}
+
+		if ( 'total_letters' === $key ) {
+			if ( ! $this->permissions->current_user_can_manage_messages( $retreat->id ) ) {
+				return null;
+			}
+			return array(
+				'type'  => 'number',
+				'value' => (string) (int) $attendant->physical_letters,
+				'title' => __( 'Click to edit the physical letters received', 'dfx-parish-retreat-letters' ),
+			);
+		}
+
+		$core_editors = array(
+			'name'              => array( 'text', true ),
+			'surnames'          => array( 'text', true ),
+			'date_of_birth'     => array( 'date', true ),
+			'invited_by'        => array( 'text', false ),
+			'incompatibilities' => array( 'textarea', false ),
+			'notes'             => array( 'textarea', false ),
+			'internal_notes'    => array( 'textarea', false ),
+		);
+		if ( ! isset( $core_editors[ $key ] ) || ! $this->permissions->current_user_can_manage_retreat( $retreat->id ) ) {
+			return null;
+		}
+
+		// Notes columns only exist while they are enabled for the retreat
+		if ( ( 'notes' === $key && empty( $retreat->notes_enabled ) ) || ( 'internal_notes' === $key && empty( $retreat->internal_notes_enabled ) ) ) {
+			return null;
+		}
+
+		return array(
+			'type'     => $core_editors[ $key ][0],
+			'value'    => (string) ( $attendant->$key ?? '' ),
+			'title'    => $title,
+			'required' => $core_editors[ $key ][1],
+		);
+	}
+
+	/**
+	 * AJAX handler for editing a single attendant field from the list.
+	 *
+	 * @since 1.12.0
+	 */
+	public function ajax_inline_update() {
+		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ?? '' ) ), 'dfxprl_retreats_nonce' ) ) {
+			wp_send_json_error( array( 'message' => __( 'Security check failed.', 'dfx-parish-retreat-letters' ) ) );
+		}
+
+		$attendant = $this->attendant_model->get( absint( $_POST['attendant_id'] ?? 0 ) );
+		$retreat = $attendant ? $this->retreat_model->get( $attendant->retreat_id ) : null;
+		if ( ! $attendant || ! $retreat ) {
+			wp_send_json_error( array( 'message' => __( 'Attendant not found.', 'dfx-parish-retreat-letters' ) ) );
+		}
+
+		$key = sanitize_key( wp_unslash( $_POST['column'] ?? '' ) );
+		$raw_value = is_scalar( $_POST['value'] ?? null ) ? wp_unslash( $_POST['value'] ) : ''; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Sanitized per field below
+
+		$list_fields = array();
+		foreach ( $this->custom_field_model->get_viewable_by_retreat( $retreat->id ) as $field ) {
+			$list_fields[ 'cf_' . $field->slug ] = $field;
+		}
+		$field = $list_fields[ $key ] ?? null;
+		$custom_values = $this->custom_field_model->get_values( $attendant->id );
+
+		// The same rules that decide whether the cell shows an editor decide whether it can be saved
+		if ( ! $this->get_list_cell_editor( $key, $retreat, $attendant, $field, $custom_values ) ) {
+			wp_send_json_error( array( 'message' => __( 'You do not have permission to edit this field.', 'dfx-parish-retreat-letters' ) ) );
+		}
+
+		if ( $field ) {
+			$value = $this->custom_field_model->normalize_value( $field, $raw_value );
+			if ( is_wp_error( $value ) ) {
+				wp_send_json_error( array( 'message' => $value->get_error_message() ) );
+			}
+			$saved = $this->custom_field_model->set_value( $field->id, $attendant->id, $value );
+		} elseif ( 'total_letters' === $key ) {
+			if ( ! preg_match( '/^\d+$/', trim( $raw_value ) ) ) {
+				wp_send_json_error( array( 'message' => __( 'The number of physical letters must be a whole number, zero or greater.', 'dfx-parish-retreat-letters' ) ) );
+			}
+			$saved = $this->attendant_model->update_physical_letters( $attendant->id, (int) $raw_value );
+		} else {
+			$saved = $this->attendant_model->update_field( $attendant->id, $key, $raw_value );
+			if ( is_wp_error( $saved ) ) {
+				wp_send_json_error( array( 'message' => $saved->get_error_message() ) );
+			}
+		}
+
+		if ( ! $saved ) {
+			wp_send_json_error( array( 'message' => __( 'Error saving the field. Please try again.', 'dfx-parish-retreat-letters' ) ) );
+		}
+
+		// Render the updated cell with fresh data
+		$attendant = $this->attendant_model->get( $attendant->id );
+		$response = array();
+		if ( 'total_letters' === $key ) {
+			$response['letters_summary'] = $this->render_letters_summary(
+				$this->message_model->get_count_by_retreat( $retreat->id ),
+				$this->attendant_model->get_physical_letters_count_by_retreat( $retreat->id )
+			);
+		}
+		wp_send_json_success( $response + array(
+			'html' => $this->render_attendant_list_cell(
+				$key,
+				$retreat,
+				$attendant,
+				$this->message_model->get_count_by_attendant( $attendant->id ),
+				$this->message_model->get_non_printed_count_by_attendant( $attendant->id ),
+				$this->custom_field_model->get_values( $attendant->id ),
+				$list_fields
+			),
+		) );
+	}
+
+	/**
 	 * Render a custom field row in the attendant add/edit form.
 	 *
 	 * @since 1.11.0
@@ -3971,18 +4396,36 @@ class DFXPRL_Admin {
 	private function render_attendant_log_section( $retreat, $attendant ) {
 		?>
 		<hr>
-		<div id="dfxprl-attendant-log" data-attendant-id="<?php echo esc_attr( $attendant->id ); ?>">
-			<h2><?php esc_html_e( 'Contact Log', 'dfx-parish-retreat-letters' ); ?></h2>
-			<p class="description"><?php esc_html_e( 'Record the contacts and conversations held with this attendant\'s contact person.', 'dfx-parish-retreat-letters' ); ?></p>
+		<h2><?php esc_html_e( 'Contact Log', 'dfx-parish-retreat-letters' ); ?></h2>
+		<p class="description"><?php esc_html_e( 'Record the contacts and conversations held with this attendant\'s contact person.', 'dfx-parish-retreat-letters' ); ?></p>
+		<?php
+		echo $this->render_attendant_log_panel( $retreat, $attendant ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Escaped while building the HTML
+	}
 
+	/**
+	 * Build the contact log panel (new entry form and entries), shared by the attendant page and the list modal.
+	 *
+	 * @since 1.12.0
+	 * @param object $retreat   Retreat object.
+	 * @param object $attendant Attendant object.
+	 * @return string
+	 */
+	private function render_attendant_log_panel( $retreat, $attendant ) {
+		ob_start();
+		?>
+		<div class="dfxprl-attendant-log" data-attendant-id="<?php echo esc_attr( $attendant->id ); ?>">
 			<div class="dfxprl-log-new">
 				<p>
-					<label for="dfxprl-log-new-date"><?php esc_html_e( 'Date', 'dfx-parish-retreat-letters' ); ?></label><br>
-					<input type="date" id="dfxprl-log-new-date" class="dfxprl-log-date" value="<?php echo esc_attr( current_time( 'Y-m-d' ) ); ?>">
+					<label>
+						<?php esc_html_e( 'Date', 'dfx-parish-retreat-letters' ); ?><br>
+						<input type="date" class="dfxprl-log-date" value="<?php echo esc_attr( current_time( 'Y-m-d' ) ); ?>">
+					</label>
 				</p>
 				<p>
-					<label for="dfxprl-log-new-content"><?php esc_html_e( 'Description', 'dfx-parish-retreat-letters' ); ?></label><br>
-					<textarea id="dfxprl-log-new-content" class="large-text dfxprl-log-content" rows="3"></textarea>
+					<label>
+						<?php esc_html_e( 'Description', 'dfx-parish-retreat-letters' ); ?><br>
+						<textarea class="large-text dfxprl-log-content" rows="3"></textarea>
+					</label>
 				</p>
 				<p>
 					<button type="button" class="button button-secondary dfxprl-log-add"><?php esc_html_e( 'Add Entry', 'dfx-parish-retreat-letters' ); ?></button>
@@ -3994,6 +4437,36 @@ class DFXPRL_Admin {
 			</div>
 		</div>
 		<?php
+		return ob_get_clean();
+	}
+
+	/**
+	 * Build the JSON response of the contact log AJAX handlers: the entries and the updated list cell.
+	 *
+	 * @since 1.12.0
+	 * @param object $attendant Attendant object.
+	 * @return array
+	 */
+	private function get_log_response( $attendant ) {
+		$retreat = $this->retreat_model->get( $attendant->retreat_id );
+		$summaries = $this->log_model->get_summaries_for_attendants( array( $attendant->id ) );
+
+		return array(
+			'html' => $this->render_attendant_log_entries( $attendant->retreat_id, $attendant->id ),
+			'cell' => $this->render_attendant_list_cell( 'contact_log', $retreat, $attendant, 0, 0, array(), array(), $summaries[ (int) $attendant->id ] ?? null ),
+		);
+	}
+
+	/**
+	 * AJAX handler returning the contact log panel of an attendant (for the list modal).
+	 *
+	 * @since 1.12.0
+	 */
+	public function ajax_log_get() {
+		$attendant = $this->get_log_request_attendant( absint( $_POST['attendant_id'] ?? 0 ) ); // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce verified in get_log_request_attendant()
+		$retreat = $this->retreat_model->get( $attendant->retreat_id );
+
+		wp_send_json_success( array( 'html' => $this->render_attendant_log_panel( $retreat, $attendant ) ) );
 	}
 
 	/**
@@ -4233,7 +4706,7 @@ class DFXPRL_Admin {
 			wp_send_json_error( array( 'message' => __( 'Error saving the contact log entry.', 'dfx-parish-retreat-letters' ) ) );
 		}
 
-		wp_send_json_success( array( 'html' => $this->render_attendant_log_entries( $attendant->retreat_id, $attendant->id ) ) );
+		wp_send_json_success( $this->get_log_response( $attendant ) );
 	}
 
 	/**
@@ -4254,7 +4727,7 @@ class DFXPRL_Admin {
 			wp_send_json_error( array( 'message' => __( 'Error saving the contact log entry.', 'dfx-parish-retreat-letters' ) ) );
 		}
 
-		wp_send_json_success( array( 'html' => $this->render_attendant_log_entries( $attendant->retreat_id, $attendant->id ) ) );
+		wp_send_json_success( $this->get_log_response( $attendant ) );
 	}
 
 	/**
@@ -4274,7 +4747,7 @@ class DFXPRL_Admin {
 			wp_send_json_error( array( 'message' => __( 'Error deleting the contact log entry.', 'dfx-parish-retreat-letters' ) ) );
 		}
 
-		wp_send_json_success( array( 'html' => $this->render_attendant_log_entries( $attendant->retreat_id, $attendant->id ) ) );
+		wp_send_json_success( $this->get_log_response( $attendant ) );
 	}
 
 	/**

@@ -3412,3 +3412,65 @@ msgstr "La vista de impresión no puede mostrarse en Internet Explorer. Microsof
 #: includes/class-dfx-parish-retreat-letters.php:1992
 msgid "Please reopen this page in one of the following modern browsers:"
 msgstr "Vuelve a abrir esta página en uno de estos navegadores modernos:"
+
+#: includes/class-admin.php:1010
+msgid "Error saving the column order. Please try again."
+msgstr "Error al guardar el orden de las columnas. Inténtalo de nuevo."
+
+#: includes/class-admin.php:3295
+msgid "Drag the column headers by their handle to reorder the columns. The order is saved for everyone who uses this retreat."
+msgstr "Arrastra las cabeceras de las columnas por su asa para reordenarlas. El orden se guarda para todos los que usan este retiro."
+
+#: includes/class-admin.php:3297
+msgid "Restore default order"
+msgstr "Restaurar el orden por defecto"
+
+#: includes/class-admin.php:3908
+msgid "Drag to reorder"
+msgstr "Arrastra para reordenar"
+
+#: includes/class-admin.php:3943
+msgid "Error saving the column order."
+msgstr "Error al guardar el orden de las columnas."
+
+#: includes/class-admin.php:1047
+#: includes/class-attendant.php:784
+msgid "This field is required."
+msgstr "Este campo es obligatorio."
+
+#: includes/class-admin.php:1048
+#: includes/class-admin.php:4175
+msgid "Error saving the field. Please try again."
+msgstr "Error al guardar el campo. Inténtalo de nuevo."
+
+#. translators: %d: number of contact log entries
+#: includes/class-admin.php:3984
+#, php-format
+msgid "%d entry"
+msgid_plural "%d entries"
+msgstr[0] "%d entrada"
+msgstr[1] "%d entradas"
+
+#: includes/class-admin.php:3988
+msgid "Add entry"
+msgstr "Añadir entrada"
+
+#: includes/class-admin.php:4074
+msgid "Click to edit"
+msgstr "Haz clic para editar"
+
+#: includes/class-admin.php:4095
+msgid "Click to edit the physical letters received"
+msgstr "Haz clic para editar las cartas físicas recibidas"
+
+#: includes/class-admin.php:4153
+msgid "You do not have permission to edit this field."
+msgstr "No tienes permiso para editar este campo."
+
+#: includes/class-admin.php:4164
+msgid "The number of physical letters must be a whole number, zero or greater."
+msgstr "El número de cartas físicas debe ser un número entero, cero o mayor."
+
+#: includes/class-attendant.php:780
+msgid "This field cannot be edited."
+msgstr "Este campo no se puede editar."

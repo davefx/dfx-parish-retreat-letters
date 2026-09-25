@@ -2,7 +2,7 @@
 # This file is distributed under the GPL v3.
 msgid ""
 msgstr ""
-"Project-Id-Version: DFX Parish Retreat Letters 26.09.26\n"
+"Project-Id-Version: DFX Parish Retreat Letters 26.09.26.1\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/dfx-parish-retreat-letters\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -3196,4 +3196,66 @@ msgstr ""
 
 #: includes/class-dfx-parish-retreat-letters.php:1992
 msgid "Please reopen this page in one of the following modern browsers:"
+msgstr ""
+
+#: includes/class-admin.php:1010
+msgid "Error saving the column order. Please try again."
+msgstr ""
+
+#: includes/class-admin.php:3295
+msgid "Drag the column headers by their handle to reorder the columns. The order is saved for everyone who uses this retreat."
+msgstr ""
+
+#: includes/class-admin.php:3297
+msgid "Restore default order"
+msgstr ""
+
+#: includes/class-admin.php:3908
+msgid "Drag to reorder"
+msgstr ""
+
+#: includes/class-admin.php:3943
+msgid "Error saving the column order."
+msgstr ""
+
+#: includes/class-admin.php:1047
+#: includes/class-attendant.php:784
+msgid "This field is required."
+msgstr ""
+
+#: includes/class-admin.php:1048
+#: includes/class-admin.php:4175
+msgid "Error saving the field. Please try again."
+msgstr ""
+
+#. translators: %d: number of contact log entries
+#: includes/class-admin.php:3984
+#, php-format
+msgid "%d entry"
+msgid_plural "%d entries"
+msgstr[0] ""
+msgstr[1] ""
+
+#: includes/class-admin.php:3988
+msgid "Add entry"
+msgstr ""
+
+#: includes/class-admin.php:4074
+msgid "Click to edit"
+msgstr ""
+
+#: includes/class-admin.php:4095
+msgid "Click to edit the physical letters received"
+msgstr ""
+
+#: includes/class-admin.php:4153
+msgid "You do not have permission to edit this field."
+msgstr ""
+
+#: includes/class-admin.php:4164
+msgid "The number of physical letters must be a whole number, zero or greater."
+msgstr ""
+
+#: includes/class-attendant.php:780
+msgid "This field cannot be edited."
 msgstr ""

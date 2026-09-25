@@ -212,6 +212,41 @@ class DFXPRL_Attendant_Log {
 	}
 
 	/**
+	 * Summarize the contact log of several attendants: number of entries and the most recent one.
+	 *
+	 * @since 1.12.0
+	 * @param array $attendant_ids Attendant IDs.
+	 * @return array attendant_id => object { count, latest }.
+	 */
+	public function get_summaries_for_attendants( $attendant_ids ) {
+		global $wpdb;
+
+		$attendant_ids = array_filter( array_map( 'absint', (array) $attendant_ids ) );
+		if ( empty( $attendant_ids ) ) {
+			return array();
+		}
+
+		$table = $this->database->get_attendant_log_table();
+		$placeholders = implode( ', ', array_fill( 0, count( $attendant_ids ), '%d' ) );
+		$entries = $wpdb->get_results( $wpdb->prepare(
+			"SELECT * FROM {$table} WHERE attendant_id IN ($placeholders) AND deleted_at IS NULL ORDER BY entry_date DESC, created_at DESC, id DESC", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			$attendant_ids
+		) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching,WordPress.DB.PreparedSQL.NotPrepared
+
+		$summaries = array();
+		foreach ( (array) $entries as $entry ) {
+			$attendant_id = (int) $entry->attendant_id;
+			if ( ! isset( $summaries[ $attendant_id ] ) ) {
+				// Entries come newest first, so the first one seen is the latest
+				$summaries[ $attendant_id ] = (object) array( 'count' => 0, 'latest' => $entry );
+			}
+			$summaries[ $attendant_id ]->count++;
+		}
+
+		return $summaries;
+	}
+
+	/**
 	 * Get the revisions of several entries, oldest first.
 	 *
 	 * @since 1.11.0

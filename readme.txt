@@ -3,7 +3,7 @@ Contributors: davefx
 Tags: parish, retreat, letters, confidential, GDPR
 Requires at least: 5.0
 Tested up to: 6.9
-Stable tag: 26.09.26
+Stable tag: 26.09.26.1
 Requires PHP: 7.4
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
@@ -173,6 +173,13 @@ By default it is generated automatically and stored in the WordPress database (`
 Yes. A `.pot` translation template is included in the `languages/` directory. Create `.po` and `.mo` files for your language and place them in that folder following standard WordPress translation conventions.
 
 ## Changelog
+
+### 26.09.26.1
+
+- New: **inline editing** in the attendants list. Click a cell to edit it; Enter saves and Escape cancels (Ctrl+Enter saves long texts). Retreat managers can edit name, surnames, date of birth, invited by, incompatibilities and notes; retreat and message managers can edit the physical letters from the Total letters column; custom fields follow their edit permission.
+- New: **Contact log** column in the attendants list, showing the number of entries and the latest one. It opens a window to read, add and edit entries without leaving the list.
+- New: retreat managers can **reorder the columns** of the attendants list by dragging their headers. The order is saved per retreat and applies to everyone; it can be restored to the default at any time.
+- Spanish translations updated.
 
 ### 26.09.26
 

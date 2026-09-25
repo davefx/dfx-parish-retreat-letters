@@ -987,19 +987,20 @@
         });
     });
 
-    // Attendant contact log (attendant edit page)
+    // Attendant contact log (attendant edit page and list modal)
     $(function() {
-        var $log = $('#dfxprl-attendant-log');
-        if (!$log.length) {
-            return;
-        }
-
-        function request(data, $button) {
+        function request($log, data, $button) {
             $button.prop('disabled', true);
             data.nonce = dfxprlAdmin.nonce;
             return $.post(dfxprlAdmin.ajaxurl, data).done(function(response) {
                 if (response.success) {
                     $log.find('.dfxprl-log-entries').html(response.data.html);
+                    // Keep the Contact Log column of the attendants list in sync
+                    if (response.data.cell) {
+                        $('.dfxprl-attendants-table td[data-column="contact_log"]').filter(function() {
+                            return String($(this).find('.dfxprl-open-log').data('attendant-id')) === String($log.data('attendant-id'));
+                        }).replaceWith(response.data.cell);
+                    }
                 } else {
                     alert((response.data && response.data.message) || dfxprlAdmin.messages.logError);
                 }
@@ -1010,16 +1011,17 @@
             });
         }
 
-        $log.on('click', '.dfxprl-log-add', function() {
-            var $content = $('#dfxprl-log-new-content');
+        $(document).on('click', '.dfxprl-attendant-log .dfxprl-log-add', function() {
+            var $log = $(this).closest('.dfxprl-attendant-log');
+            var $content = $log.find('.dfxprl-log-new .dfxprl-log-content');
             if (!$content.val().trim()) {
                 alert(dfxprlAdmin.messages.logEmpty);
                 return;
             }
-            request({
+            request($log, {
                 action: 'dfxprl_log_add',
                 attendant_id: $log.data('attendant-id'),
-                entry_date: $('#dfxprl-log-new-date').val(),
+                entry_date: $log.find('.dfxprl-log-new .dfxprl-log-date').val(),
                 content: $content.val()
             }, $(this)).done(function(response) {
                 if (response.success) {
@@ -1028,7 +1030,7 @@
             });
         });
 
-        $log.on('click', '.dfxprl-log-edit', function() {
+        $(document).on('click', '.dfxprl-attendant-log .dfxprl-log-edit', function() {
             var $entry = $(this).closest('.dfxprl-log-entry');
             var $form = $('<div class="dfxprl-log-edit-form">' +
                 '<p><input type="date" class="dfxprl-log-date"></p>' +
@@ -1044,20 +1046,20 @@
             $entry.children('.dfxprl-log-entry-meta').after($form);
         });
 
-        $log.on('click', '.dfxprl-log-cancel', function() {
+        $(document).on('click', '.dfxprl-attendant-log .dfxprl-log-cancel', function() {
             var $entry = $(this).closest('.dfxprl-log-entry');
             $entry.find('.dfxprl-log-edit-form').remove();
             $entry.children('.dfxprl-log-entry-content, .dfxprl-log-entry-actions').show();
         });
 
-        $log.on('click', '.dfxprl-log-save', function() {
+        $(document).on('click', '.dfxprl-attendant-log .dfxprl-log-save', function() {
             var $entry = $(this).closest('.dfxprl-log-entry');
             var content = $entry.find('.dfxprl-log-edit-form .dfxprl-log-content').val();
             if (!content.trim()) {
                 alert(dfxprlAdmin.messages.logEmpty);
                 return;
             }
-            request({
+            request($(this).closest('.dfxprl-attendant-log'), {
                 action: 'dfxprl_log_update',
                 entry_id: $entry.data('entry-id'),
                 entry_date: $entry.find('.dfxprl-log-edit-form .dfxprl-log-date').val(),
@@ -1065,14 +1067,279 @@
             }, $(this));
         });
 
-        $log.on('click', '.dfxprl-log-delete', function() {
+        $(document).on('click', '.dfxprl-attendant-log .dfxprl-log-delete', function() {
             if (!confirm(dfxprlAdmin.messages.confirmDeleteLogEntry)) {
                 return;
             }
-            request({
+            request($(this).closest('.dfxprl-attendant-log'), {
                 action: 'dfxprl_log_delete',
                 entry_id: $(this).closest('.dfxprl-log-entry').data('entry-id')
             }, $(this));
+        });
+
+        // Contact log modal from the attendants list
+        function closeLogModal() {
+            $('#dfxprl-log-modal').fadeOut(150, function() {
+                $(this).remove();
+            });
+        }
+
+        $(document).on('click', '.dfxprl-open-log', function() {
+            var attendantId = $(this).data('attendant-id');
+            var $modal = $('<div id="dfxprl-log-modal" class="dfxprl-modal-overlay">' +
+                '<div class="dfxprl-modal-dialog">' +
+                    '<div class="dfxprl-modal-header"><h3></h3>' +
+                    '<button type="button" class="dfxprl-modal-close" aria-label="Close">&times;</button></div>' +
+                    '<div class="dfxprl-modal-body"><p class="description"></p></div>' +
+                '</div></div>');
+            $modal.find('h3').text(dfxprlAdmin.messages.contactLogTitle + ' — ' + $(this).data('attendant-name'));
+            $modal.find('.dfxprl-modal-close').attr('aria-label', dfxprlAdmin.messages.cancelButton);
+            $modal.find('.dfxprl-modal-body .description').text(dfxprlAdmin.messages.loadingMessage);
+            $('#dfxprl-log-modal').remove();
+            $('body').append($modal);
+            $modal.fadeIn(150);
+
+            $.post(dfxprlAdmin.ajaxurl, {
+                action: 'dfxprl_log_get',
+                nonce: dfxprlAdmin.nonce,
+                attendant_id: attendantId
+            }).done(function(response) {
+                if (response.success) {
+                    $modal.find('.dfxprl-modal-body').html(response.data.html);
+                    $modal.find('.dfxprl-log-new .dfxprl-log-content').trigger('focus');
+                } else {
+                    $modal.find('.dfxprl-modal-body').text((response.data && response.data.message) || dfxprlAdmin.messages.logError);
+                }
+            }).fail(function() {
+                $modal.find('.dfxprl-modal-body').text(dfxprlAdmin.messages.logError);
+            });
+        });
+
+        $(document).on('click', '#dfxprl-log-modal .dfxprl-modal-close', closeLogModal);
+        $(document).on('click', '#dfxprl-log-modal', function(e) {
+            if (e.target === this) {
+                closeLogModal();
+            }
+        });
+        $(document).on('keydown', function(e) {
+            if (e.key === 'Escape' && $('#dfxprl-log-modal').length && !$(e.target).closest('.dfxprl-log-edit-form').length) {
+                closeLogModal();
+            }
+        });
+    });
+
+    // Inline editing of attendant fields in the attendants list
+    $(function() {
+        var $table = $('.dfxprl-attendants-table');
+        if (!$table.length) {
+            return;
+        }
+
+        function buildEditor($cell) {
+            var type = $cell.attr('data-edit-type');
+            var value = $cell.attr('data-value') || '';
+            var $input;
+
+            switch (type) {
+                case 'textarea':
+                    $input = $('<textarea rows="3" class="dfxprl-inline-input"></textarea>').val(value);
+                    break;
+                case 'date':
+                    $input = $('<input type="date" class="dfxprl-inline-input">').val(value);
+                    break;
+                case 'number':
+                    $input = $('<input type="number" step="any" class="dfxprl-inline-input">').val(value);
+                    if ($cell.attr('data-column') === 'total_letters') {
+                        $input.attr({ min: 0, step: 1 });
+                    }
+                    break;
+                case 'checkbox':
+                    $input = $('<label class="dfxprl-inline-input"><input type="checkbox" value="1"> ' + $('<span>').text(dfxprlAdmin.messages.yes).html() + '</label>');
+                    $input.find('input').prop('checked', value === '1');
+                    break;
+                case 'select':
+                    $input = $('<select class="dfxprl-inline-input"></select>');
+                    $input.append($('<option value="">').text('—'));
+                    var options = JSON.parse($cell.attr('data-options') || '[]');
+                    if (value && options.indexOf(value) === -1) {
+                        options.push(value);
+                    }
+                    $.each(options, function(i, option) {
+                        $input.append($('<option>').val(option).text(option));
+                    });
+                    $input.val(value);
+                    break;
+                default:
+                    $input = $('<input type="text" class="dfxprl-inline-input">').val(value);
+            }
+
+            return $('<div class="dfxprl-inline-editor"></div>').append($input).append(
+                '<div class="dfxprl-inline-buttons">' +
+                '<button type="button" class="button button-primary button-small dfxprl-inline-save"></button> ' +
+                '<button type="button" class="button button-small dfxprl-inline-cancel"></button>' +
+                '</div>'
+            );
+        }
+
+        function editorValue($cell) {
+            var $editor = $cell.find('.dfxprl-inline-editor');
+            if ($cell.attr('data-edit-type') === 'checkbox') {
+                return $editor.find('input[type=checkbox]').is(':checked') ? '1' : '';
+            }
+            return $editor.find('.dfxprl-inline-input').val();
+        }
+
+        function cancel($cell) {
+            $cell.html($cell.data('original-html')).removeClass('dfxprl-inline-editing');
+        }
+
+        function save($cell) {
+            var value = editorValue($cell);
+            if ($cell.attr('data-required') && !String(value).trim()) {
+                alert(dfxprlAdmin.messages.fieldRequired);
+                return;
+            }
+            var $buttons = $cell.find('.dfxprl-inline-buttons button').prop('disabled', true);
+            $.post(dfxprlAdmin.ajaxurl, {
+                action: 'dfxprl_inline_update',
+                nonce: dfxprlAdmin.nonce,
+                attendant_id: $cell.attr('data-attendant-id'),
+                column: $cell.attr('data-column'),
+                value: value
+            }).done(function(response) {
+                if (response.success) {
+                    $cell.replaceWith(response.data.html);
+                    if (response.data.letters_summary) {
+                        $('.dfxprl-letters-summary').html(response.data.letters_summary);
+                    }
+                } else {
+                    alert((response.data && response.data.message) || dfxprlAdmin.messages.inlineError);
+                    $buttons.prop('disabled', false);
+                }
+            }).fail(function() {
+                alert(dfxprlAdmin.messages.inlineError);
+                $buttons.prop('disabled', false);
+            });
+        }
+
+        $table.on('click', 'td.dfxprl-inline-editable', function(e) {
+            var $cell = $(this);
+            // Links and buttons inside the cell keep working, and a cell being edited stays as is
+            if ($cell.hasClass('dfxprl-inline-editing') || $(e.target).closest('a, button, .dfxprl-inline-editor').length) {
+                return;
+            }
+            // Only one cell is edited at a time
+            $table.find('td.dfxprl-inline-editing').each(function() {
+                cancel($(this));
+            });
+            $cell.data('original-html', $cell.html()).addClass('dfxprl-inline-editing');
+            var $editor = buildEditor($cell);
+            $editor.find('.dfxprl-inline-save').text(dfxprlAdmin.messages.save);
+            $editor.find('.dfxprl-inline-cancel').text(dfxprlAdmin.messages.cancelButton);
+            $cell.empty().append($editor);
+            $editor.find('input:not([type=checkbox]), select, textarea').first().trigger('focus').trigger('select');
+        });
+
+        $table.on('click', '.dfxprl-inline-save', function() {
+            save($(this).closest('td'));
+        });
+        $table.on('click', '.dfxprl-inline-cancel', function() {
+            cancel($(this).closest('td'));
+        });
+        $table.on('keydown', '.dfxprl-inline-editor', function(e) {
+            var $cell = $(this).closest('td');
+            if (e.key === 'Escape') {
+                e.preventDefault();
+                cancel($cell);
+            } else if (e.key === 'Enter' && (!$(e.target).is('textarea') || e.ctrlKey || e.metaKey)) {
+                // Enter saves; in long texts Enter adds a new line and Ctrl+Enter saves
+                e.preventDefault();
+                save($cell);
+            }
+        });
+    });
+
+    // Attendants list column reordering (retreat managers only)
+    $(function() {
+        var $table = $('.dfxprl-attendants-table[data-retreat-id]');
+        if (!$table.length || !$.fn.sortable) {
+            return;
+        }
+        var retreatId = $table.data('retreat-id');
+        var $headerRow = $table.find('thead tr');
+        var $reset = $('.dfxprl-reset-column-order');
+
+        function currentOrder() {
+            return $headerRow.children('th[data-column]').map(function() {
+                return $(this).attr('data-column');
+            }).get();
+        }
+
+        // Move every row's cells to match the header order (Actions stays last)
+        function applyOrderToRows(order) {
+            $table.find('tbody tr').each(function() {
+                var $row = $(this);
+                var $actions = $row.children('td:not([data-column])').last();
+                $.each(order, function(i, key) {
+                    var $cell = $row.children('td[data-column="' + key + '"]');
+                    if ($cell.length) {
+                        if ($actions.length) {
+                            $cell.insertBefore($actions);
+                        } else {
+                            $row.append($cell);
+                        }
+                    }
+                });
+            });
+        }
+
+        function saveOrder(order) {
+            $.post(dfxprlAdmin.ajaxurl, {
+                action: 'dfxprl_save_column_order',
+                nonce: dfxprlAdmin.nonce,
+                retreat_id: retreatId,
+                order: order
+            }).done(function(response) {
+                if (!response.success) {
+                    alert((response.data && response.data.message) || dfxprlAdmin.messages.columnOrderError);
+                }
+            }).fail(function() {
+                alert(dfxprlAdmin.messages.columnOrderError);
+            });
+        }
+
+        $headerRow.sortable({
+            items: '> th[data-column]',
+            handle: '.dfxprl-column-handle',
+            axis: 'x',
+            tolerance: 'pointer',
+            placeholder: 'dfxprl-column-placeholder',
+            helper: 'clone',
+            start: function(e, ui) {
+                ui.placeholder.width(ui.item.width()).html('&nbsp;');
+            },
+            update: function() {
+                var order = currentOrder();
+                applyOrderToRows(order);
+                saveOrder(order);
+                $reset.show();
+            }
+        });
+
+        $reset.on('click', function() {
+            $.post(dfxprlAdmin.ajaxurl, {
+                action: 'dfxprl_save_column_order',
+                nonce: dfxprlAdmin.nonce,
+                retreat_id: retreatId
+            }).done(function(response) {
+                if (response.success) {
+                    window.location.reload();
+                } else {
+                    alert((response.data && response.data.message) || dfxprlAdmin.messages.columnOrderError);
+                }
+            }).fail(function() {
+                alert(dfxprlAdmin.messages.columnOrderError);
+            });
         });
     });
 

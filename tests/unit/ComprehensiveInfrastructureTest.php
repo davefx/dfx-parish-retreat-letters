@@ -511,12 +511,13 @@ class ComprehensiveInfrastructureTest extends TestCase {
         if (defined('DFXPRL_VERSION')) {
             $version = DFXPRL_VERSION;
             
-            // Test version format (should be semantic versioning)
-            $this->assertTrue(preg_match('/^\d+\.\d+\.\d+$/', $version) === 1, 'Version should follow semantic versioning');
+            // Test version format: YY.MM.DD, optionally followed by a fourth part for
+            // additional releases on the same day (e.g. 26.05.19.1)
+            $this->assertTrue(preg_match('/^\d+\.\d+\.\d+(\.\d+)?$/', $version) === 1, 'Version should have 3 or 4 numeric parts');
             
             // Test version components
             $version_parts = explode('.', $version);
-            $this->assertCount(3, $version_parts, 'Version should have 3 parts');
+            $this->assertContains(count($version_parts), [3, 4], 'Version should have 3 or 4 parts');
             
             foreach ($version_parts as $part) {
                 $this->assertTrue(is_numeric($part), 'Version parts should be numeric');
