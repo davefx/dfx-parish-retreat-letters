@@ -38,7 +38,7 @@ class DFXPRL_Database {
 	 * @since 1.0.0
 	 * @var string
 	 */
-	const DB_VERSION = '1.10.0';
+	const DB_VERSION = '1.11.0';
 
 	/**
 	 * The database version option name.
@@ -113,6 +113,38 @@ class DFXPRL_Database {
 	private $audit_log_table;
 
 	/**
+	 * The table name for attendant contact log entries.
+	 *
+	 * @since 1.11.0
+	 * @var string
+	 */
+	private $attendant_log_table;
+
+	/**
+	 * The table name for attendant contact log entry revisions.
+	 *
+	 * @since 1.11.0
+	 * @var string
+	 */
+	private $attendant_log_revisions_table;
+
+	/**
+	 * The table name for custom attendant field definitions.
+	 *
+	 * @since 1.11.0
+	 * @var string
+	 */
+	private $custom_fields_table;
+
+	/**
+	 * The table name for custom attendant field values.
+	 *
+	 * @since 1.11.0
+	 * @var string
+	 */
+	private $custom_field_values_table;
+
+	/**
 	 * Get the single instance of the class.
 	 *
 	 * @since 1.0.0
@@ -144,6 +176,10 @@ class DFXPRL_Database {
 		$this->permissions_table = $prefix . 'dfxprl_retreat_permissions';
 		$this->invitations_table = $prefix . 'dfxprl_retreat_invitations';
 		$this->audit_log_table = $prefix . 'dfxprl_permission_audit_log';
+		$this->attendant_log_table = $prefix . 'dfxprl_attendant_log';
+		$this->attendant_log_revisions_table = $prefix . 'dfxprl_attendant_log_revisions';
+		$this->custom_fields_table = $prefix . 'dfxprl_custom_fields';
+		$this->custom_field_values_table = $prefix . 'dfxprl_custom_field_values';
 		
 		// Only check for database upgrades if WordPress is fully loaded
 		if ( did_action( 'init' ) || current_action() === 'init' ) {
@@ -218,6 +254,7 @@ class DFXPRL_Database {
 			message_url_token VARCHAR(255) NULL DEFAULT NULL,
 			notes text NULL DEFAULT NULL,
 			internal_notes text NULL DEFAULT NULL,
+			physical_letters int(10) unsigned NOT NULL DEFAULT 0,
 			created_at datetime DEFAULT CURRENT_TIMESTAMP,
 			updated_at datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 			PRIMARY KEY (id),
@@ -359,6 +396,76 @@ class DFXPRL_Database {
 
 		dbDelta( $audit_log_sql );
 
+		// Create attendant contact log table (from v1.11.0)
+		$attendant_log_sql = "CREATE TABLE {$this->attendant_log_table} (
+			id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+			attendant_id mediumint(9) NOT NULL,
+			user_id bigint(20) unsigned NOT NULL,
+			entry_date date NOT NULL,
+			content text NOT NULL,
+			created_at datetime NOT NULL,
+			updated_at datetime DEFAULT NULL,
+			updated_by bigint(20) unsigned DEFAULT NULL,
+			deleted_at datetime DEFAULT NULL,
+			deleted_by bigint(20) unsigned DEFAULT NULL,
+			PRIMARY KEY (id),
+			INDEX idx_attendant_id (attendant_id),
+			INDEX idx_user_id (user_id),
+			INDEX idx_entry_date (entry_date)
+		) $charset_collate;";
+
+		dbDelta( $attendant_log_sql );
+
+		// Create attendant contact log revisions table (from v1.11.0)
+		$attendant_log_revisions_sql = "CREATE TABLE {$this->attendant_log_revisions_table} (
+			id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+			log_id bigint(20) unsigned NOT NULL,
+			action enum('created','edited','deleted') NOT NULL,
+			entry_date date NOT NULL,
+			content text NOT NULL,
+			user_id bigint(20) unsigned NOT NULL,
+			changed_at datetime NOT NULL,
+			PRIMARY KEY (id),
+			INDEX idx_log_id (log_id)
+		) $charset_collate;";
+
+		dbDelta( $attendant_log_revisions_sql );
+
+		// Create custom attendant fields table (from v1.11.0)
+		$custom_fields_sql = "CREATE TABLE {$this->custom_fields_table} (
+			id mediumint(9) NOT NULL AUTO_INCREMENT,
+			retreat_id mediumint(9) NOT NULL,
+			name varchar(255) NOT NULL,
+			slug varchar(64) NOT NULL,
+			field_type varchar(20) NOT NULL DEFAULT 'text',
+			options text NULL DEFAULT NULL,
+			show_in_list tinyint(1) NOT NULL DEFAULT 0,
+			sortable tinyint(1) NOT NULL DEFAULT 0,
+			view_permission varchar(20) NOT NULL DEFAULT 'message_manager',
+			edit_permission varchar(20) NOT NULL DEFAULT 'manager',
+			importable tinyint(1) NOT NULL DEFAULT 1,
+			exportable tinyint(1) NOT NULL DEFAULT 1,
+			sort_order int(11) NOT NULL DEFAULT 0,
+			PRIMARY KEY (id),
+			UNIQUE KEY unique_retreat_slug (retreat_id, slug),
+			INDEX idx_retreat_id (retreat_id)
+		) $charset_collate;";
+
+		dbDelta( $custom_fields_sql );
+
+		// Create custom attendant field values table (from v1.11.0)
+		$custom_field_values_sql = "CREATE TABLE {$this->custom_field_values_table} (
+			id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+			field_id mediumint(9) NOT NULL,
+			attendant_id mediumint(9) NOT NULL,
+			value text NULL DEFAULT NULL,
+			PRIMARY KEY (id),
+			UNIQUE KEY unique_field_attendant (field_id, attendant_id),
+			INDEX idx_attendant_id (attendant_id)
+		) $charset_collate;";
+
+		dbDelta( $custom_field_values_sql );
+
 		// Add the manage_retreat_plugin capability to administrator role (from v1.3.0)
 		$admin_role = get_role( 'administrator' );
 		if ( $admin_role ) {
@@ -387,6 +494,10 @@ class DFXPRL_Database {
 	public function drop_tables() {
 		global $wpdb;
 		// Drop tables in reverse order due to foreign key constraints
+		$wpdb->query( "DROP TABLE IF EXISTS {$this->custom_field_values_table}" ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		$wpdb->query( "DROP TABLE IF EXISTS {$this->custom_fields_table}" ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		$wpdb->query( "DROP TABLE IF EXISTS {$this->attendant_log_revisions_table}" ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		$wpdb->query( "DROP TABLE IF EXISTS {$this->attendant_log_table}" ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 		$wpdb->query( "DROP TABLE IF EXISTS {$this->audit_log_table}" ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 		$wpdb->query( "DROP TABLE IF EXISTS {$this->invitations_table}" ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 		$wpdb->query( "DROP TABLE IF EXISTS {$this->permissions_table}" ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
@@ -483,6 +594,46 @@ class DFXPRL_Database {
 	 */
 	public function get_audit_log_table() {
 		return $this->audit_log_table;
+	}
+
+	/**
+	 * Get the attendant contact log table name.
+	 *
+	 * @since 1.11.0
+	 * @return string
+	 */
+	public function get_attendant_log_table() {
+		return $this->attendant_log_table;
+	}
+
+	/**
+	 * Get the attendant contact log revisions table name.
+	 *
+	 * @since 1.11.0
+	 * @return string
+	 */
+	public function get_attendant_log_revisions_table() {
+		return $this->attendant_log_revisions_table;
+	}
+
+	/**
+	 * Get the custom attendant fields table name.
+	 *
+	 * @since 1.11.0
+	 * @return string
+	 */
+	public function get_custom_fields_table() {
+		return $this->custom_fields_table;
+	}
+
+	/**
+	 * Get the custom attendant field values table name.
+	 *
+	 * @since 1.11.0
+	 * @return string
+	 */
+	public function get_custom_field_values_table() {
+		return $this->custom_field_values_table;
 	}
 
 	/**

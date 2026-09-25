@@ -148,6 +148,11 @@ class DFXPRL_Security {
 		// and with instructions to move it to wp-config.php
 		if ( $show_message && is_admin() && ! defined( 'DFXPRL_ENCRYPTION_KEY' ) && ! defined( 'DFX_PARISH_RETREAT_LETTERS_ENCRYPTION_KEY' ) ) {
 			add_action( 'admin_notices', function() use ( $key ) {
+				// The notice reveals the key, so only site administrators may see it
+				if ( ! current_user_can( 'manage_options' ) ) {
+					return;
+				}
+
 				echo '<div class="notice notice-warning"><p>';
 				esc_html_e( 'DFX Parish Retreat Letters: The encryption key is stored in the database. For better security, please define DFXPRL_ENCRYPTION_KEY in wp-config.php.', 'dfx-parish-retreat-letters' );
 				echo '<br>';

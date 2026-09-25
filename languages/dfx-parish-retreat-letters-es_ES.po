@@ -3040,9 +3040,6 @@ msgstr "Eliminando..."
 msgid "An error occurred. Please try again."
 msgstr "Ha ocurrido un error. Inténtalo de nuevo."
 
-#~ msgid "https://github.com/davefx/dfx-parish-retreat-letters"
-#~ msgstr "https://github.com/davefx/dfx-parish-retreat-letters"
-
 #~ msgid "Custom CSS Styles"
 #~ msgstr "Estilos CSS personalizados"
 
@@ -3071,3 +3068,347 @@ msgstr "Ordenar por:"
 #: includes/class-admin.php
 msgid "Select..."
 msgstr "Seleccionar..."
+
+#. Plugin URI of the plugin
+#: dfx-parish-retreat-letters.php
+msgid "https://github.com/davefx/dfx-parish-retreat-letters"
+msgstr "https://github.com/davefx/dfx-parish-retreat-letters"
+
+#: includes/class-admin.php:470
+msgid "Internet Explorer is not supported."
+msgstr "Internet Explorer no es compatible."
+
+#: includes/class-admin.php:471
+msgid "This plugin (including the letter print view) requires a modern browser. Please use Microsoft Edge, Google Chrome, Mozilla Firefox or Safari."
+msgstr "Este plugin (incluida la vista de impresión de cartas) necesita un navegador moderno. Usa Microsoft Edge, Google Chrome, Mozilla Firefox o Safari."
+
+#: includes/class-admin.php:974
+msgid "Error saving the contact log entry. Please try again."
+msgstr "Error al guardar la entrada de la bitácora. Inténtalo de nuevo."
+
+#: includes/class-admin.php:975
+#: includes/class-admin.php:4214
+msgid "Please enter a description."
+msgstr "Escribe una descripción."
+
+#: includes/class-admin.php:976
+msgid "Are you sure you want to delete this contact log entry?"
+msgstr "¿Seguro que quieres eliminar esta entrada de la bitácora?"
+
+#: includes/class-admin.php:977
+msgid "Save"
+msgstr "Guardar"
+
+#: includes/class-admin.php:978
+msgid "Removing this field will permanently delete its values for all attendants when the retreat is saved. Continue?"
+msgstr "Al quitar este campo se eliminarán definitivamente sus valores en todos los asistentes cuando se guarde el retiro. ¿Continuar?"
+
+#: includes/class-admin.php:1502
+msgid "Custom fields:"
+msgstr "Campos personalizados:"
+
+#: includes/class-admin.php:1638
+msgid "Are you sure you want to revoke this permission?"
+msgstr "¿Seguro que quieres revocar este permiso?"
+
+#: includes/class-admin.php:1680
+msgid "Are you sure you want to cancel this invitation?"
+msgstr "¿Seguro que quieres cancelar esta invitación?"
+
+#. translators: %d: Number of custom field values that could not be imported
+#: includes/class-admin.php:2322
+#, php-format
+msgid "%d custom field values were not valid and were left unchanged."
+msgstr "%d valores de campos personalizados no eran válidos y no se han modificado."
+
+#. translators: 1: line number, 2: error message
+#: includes/class-admin.php:2518
+#, php-format
+msgid "Line %1$d: %2$s"
+msgstr "Línea %1$d: %2$s"
+
+#: includes/class-admin.php:3174
+msgid "Letters:"
+msgstr "Cartas:"
+
+#. translators: 1: total letters count, 2: letters received through the app, 3: physical letters count
+#: includes/class-admin.php:3178
+#, php-format
+msgid "%1$d in total (%2$d via app, %3$d physical)"
+msgstr "%1$d en total (%2$d por la aplicación, %3$d físicas)"
+
+#: includes/class-admin.php:3232
+#: includes/class-admin.php:3317
+#: includes/class-admin.php:3437
+msgid "Total Letters"
+msgstr "Cartas totales"
+
+#. translators: 1: letters received through the app, 2: physical letters count
+#: includes/class-admin.php:3444
+#, php-format
+msgid "%1$d via app, %2$d physical"
+msgstr "%1$d por la aplicación, %2$d físicas"
+
+#: includes/class-admin.php:3575
+msgid "As a message manager you can update the physical letters received, the custom fields you are allowed to edit and the contact log. The rest of the data is read-only."
+msgstr "Como gestor de mensajes puedes actualizar las cartas físicas recibidas, los campos personalizados que tengas permitidos y la bitácora. El resto de datos es de solo lectura."
+
+#: includes/class-admin.php:3692
+msgid "Physical Letters Received"
+msgstr "Cartas físicas recibidas"
+
+#: includes/class-admin.php:3696
+msgid "Number of paper letters received for this attendant outside the application. They are added to the messages received to compute the total letters."
+msgstr "Número de cartas en papel recibidas para este asistente fuera de la aplicación. Se suman a los mensajes recibidos para calcular las cartas totales."
+
+#: includes/class-admin.php:3817
+#: includes/class-custom-field.php:416
+#: includes/class-custom-field.php:472
+msgid "Yes"
+msgstr "Sí"
+
+#: includes/class-admin.php:3830
+msgid "— Select —"
+msgstr "— Selecciona —"
+
+#: includes/class-admin.php:3859
+msgid "Custom Attendant Fields"
+msgstr "Campos personalizados de asistentes"
+
+#: includes/class-admin.php:3861
+msgid "Define additional fields for the attendants of this retreat. The slug identifies the field in CSV files and can be used as a placeholder in the message request template, e.g. [my_field]."
+msgstr "Define campos adicionales para los asistentes de este retiro. El slug identifica el campo en los archivos CSV y puede usarse como marcador en la plantilla de solicitud de mensajes, p. ej. [mi_campo]."
+
+#: includes/class-admin.php:3871
+msgid "Add Field"
+msgstr "Añadir campo"
+
+#: includes/class-admin.php:3892
+msgid "Retreat managers only"
+msgstr "Solo gestores del retiro"
+
+#: includes/class-admin.php:3893
+msgid "Retreat managers and message managers"
+msgstr "Gestores del retiro y gestores de mensajes"
+
+#: includes/class-admin.php:3905
+msgid "Slug"
+msgstr "Slug"
+
+#: includes/class-admin.php:3919
+msgid "Options (one per line)"
+msgstr "Opciones (una por línea)"
+
+#: includes/class-admin.php:3925
+msgid "Visible to"
+msgstr "Visible para"
+
+#: includes/class-admin.php:3933
+msgid "Editable by"
+msgstr "Editable por"
+
+#: includes/class-admin.php:3944
+msgid "Show in attendants list"
+msgstr "Mostrar en el listado de asistentes"
+
+#: includes/class-admin.php:3948
+msgid "Sortable"
+msgstr "Ordenable"
+
+#: includes/class-admin.php:3952
+msgid "Import from CSV"
+msgstr "Importar desde CSV"
+
+#: includes/class-admin.php:3956
+msgid "Export to CSV"
+msgstr "Exportar a CSV"
+
+#: includes/class-admin.php:3958
+msgid "Remove field"
+msgstr "Quitar campo"
+
+#: includes/class-admin.php:3975
+msgid "Contact Log"
+msgstr "Bitácora"
+
+#: includes/class-admin.php:3976
+msgid "Record the contacts and conversations held with this attendant's contact person."
+msgstr "Registra los contactos y conversaciones mantenidos con la persona de contacto de este asistente."
+
+#: includes/class-admin.php:3984
+msgid "Description"
+msgstr "Descripción"
+
+#: includes/class-admin.php:3988
+msgid "Add Entry"
+msgstr "Añadir entrada"
+
+#: includes/class-admin.php:4022
+msgid "No contact log entries yet."
+msgstr "Todavía no hay entradas en la bitácora."
+
+#. translators: %d: number of deleted contact log entries
+#: includes/class-admin.php:4036
+#, php-format
+msgid "Deleted entries (%d)"
+msgstr "Entradas eliminadas (%d)"
+
+#: includes/class-admin.php:4071
+msgid "Written on"
+msgstr "Escrita el"
+
+#. translators: 1: date and time of the last edit, 2: user who made it
+#: includes/class-admin.php:4076
+#, php-format
+msgid "Last edited on %1$s by %2$s"
+msgstr "Editada por última vez el %1$s por %2$s"
+
+#: includes/class-admin.php:4081
+msgid "(edited)"
+msgstr "(editada)"
+
+#. translators: 1: date and time of the deletion, 2: user who deleted the entry
+#: includes/class-admin.php:4088
+#, php-format
+msgid "Deleted on %1$s by %2$s"
+msgstr "Eliminada el %1$s por %2$s"
+
+#. translators: %d: minutes left to edit the entry
+#: includes/class-admin.php:4107
+#, php-format
+msgid "(editable for %d more minute)"
+msgid_plural "(editable for %d more minutes)"
+msgstr[0] "(editable durante %d minuto más)"
+msgstr[1] "(editable durante %d minutos más)"
+
+#: includes/class-admin.php:4121
+msgid "Change history"
+msgstr "Historial de cambios"
+
+#: includes/class-admin.php:4128
+msgid "Created"
+msgstr "Creada"
+
+#: includes/class-admin.php:4129
+msgid "Edited"
+msgstr "Editada"
+
+#: includes/class-admin.php:4130
+msgid "Deleted"
+msgstr "Eliminada"
+
+#: includes/class-admin.php:4210
+msgid "Please enter a valid date."
+msgstr "Introduce una fecha válida."
+
+#: includes/class-admin.php:4233
+#: includes/class-admin.php:4254
+msgid "Error saving the contact log entry."
+msgstr "Error al guardar la entrada de la bitácora."
+
+#: includes/class-admin.php:4250
+msgid "You cannot edit this entry."
+msgstr "No puedes editar esta entrada."
+
+#: includes/class-admin.php:4270
+msgid "You cannot delete this entry."
+msgstr "No puedes eliminar esta entrada."
+
+#: includes/class-admin.php:4274
+msgid "Error deleting the contact log entry."
+msgstr "Error al eliminar la entrada de la bitácora."
+
+#: includes/class-admin.php:5942
+msgid "Add PDF Header"
+msgstr "Añadir cabecera al PDF"
+
+#: includes/class-admin.php:5946
+msgid "Add a From/To header to PDF letters when printing"
+msgstr "Añadir una cabecera De/Para a las cartas en PDF al imprimir"
+
+#: includes/class-admin.php:5947
+msgid "Enabled by default. The From/To header is added on the recipient&#8217;s browser (no server memory cost). If the browser cannot do it, the unmodified PDF is printed."
+msgstr "Activado por defecto. La cabecera De/Para se añade en el navegador de quien imprime (sin coste de memoria en el servidor). Si el navegador no puede hacerlo, se imprime el PDF sin modificar."
+
+#: includes/class-custom-field.php:93
+msgid "Long text"
+msgstr "Texto largo"
+
+#: includes/class-custom-field.php:94
+msgid "Number"
+msgstr "Número"
+
+#: includes/class-custom-field.php:96
+msgid "Yes/No"
+msgstr "Sí/No"
+
+#: includes/class-custom-field.php:97
+msgid "Options list"
+msgstr "Lista de opciones"
+
+#: includes/class-custom-field.php:202
+msgid "Custom field names cannot be empty."
+msgstr "El nombre de un campo personalizado no puede estar vacío."
+
+#. translators: %s: custom field slug
+#: includes/class-custom-field.php:216
+#, php-format
+msgid "The slug \"%s\" is reserved. Please choose a different one."
+msgstr "El slug \"%s\" está reservado. Elige otro."
+
+#. translators: %s: custom field slug
+#: includes/class-custom-field.php:225
+#, php-format
+msgid "The slug \"%s\" is already used by another field of this retreat."
+msgstr "El slug \"%s\" ya lo usa otro campo de este retiro."
+
+#. translators: %s: custom field name
+#: includes/class-custom-field.php:234
+#, php-format
+msgid "The options list field \"%s\" needs at least one option."
+msgstr "El campo de lista de opciones \"%s\" necesita al menos una opción."
+
+#. translators: %s: custom field name
+#: includes/class-custom-field.php:266
+#, php-format
+msgid "Error saving the custom field \"%s\"."
+msgstr "Error al guardar el campo personalizado \"%s\"."
+
+#: includes/class-custom-field.php:472
+msgid "No"
+msgstr "No"
+
+#. translators: 1: invalid value, 2: custom field name
+#: includes/class-custom-field.php:661
+#, php-format
+msgid "Invalid value \"%1$s\" for field \"%2$s\"."
+msgstr "Valor \"%1$s\" no válido para el campo \"%2$s\"."
+
+#: includes/class-dfx-parish-retreat-letters.php:1389
+#: includes/class-dfx-parish-retreat-letters.php:1556
+msgid "Print PDF"
+msgstr "Imprimir PDF"
+
+#. translators: %d: number of pages in the attached PDF
+#: includes/class-dfx-parish-retreat-letters.php:1670
+#, php-format
+msgid "Attached document: %d page"
+msgid_plural "Attached document: %d pages"
+msgstr[0] "Documento adjunto: %d página"
+msgstr[1] "Documento adjunto: %d páginas"
+
+#: includes/class-dfx-parish-retreat-letters.php:1976
+msgid "Browser not supported"
+msgstr "Navegador no compatible"
+
+#: includes/class-dfx-parish-retreat-letters.php:1987
+msgid "Internet Explorer is not supported"
+msgstr "Internet Explorer no es compatible"
+
+#: includes/class-dfx-parish-retreat-letters.php:1989
+msgid "The print view cannot be displayed in Internet Explorer. Microsoft retired Internet Explorer in June 2022 and it no longer receives security updates."
+msgstr "La vista de impresión no puede mostrarse en Internet Explorer. Microsoft retiró Internet Explorer en junio de 2022 y ya no recibe actualizaciones de seguridad."
+
+#: includes/class-dfx-parish-retreat-letters.php:1992
+msgid "Please reopen this page in one of the following modern browsers:"
+msgstr "Vuelve a abrir esta página en uno de estos navegadores modernos:"

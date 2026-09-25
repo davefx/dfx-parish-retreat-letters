@@ -3,7 +3,7 @@ Contributors: davefx
 Tags: parish, retreat, letters, confidential, GDPR
 Requires at least: 5.0
 Tested up to: 6.9
-Stable tag: 26.09.25
+Stable tag: 26.09.26
 Requires PHP: 7.4
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
@@ -173,6 +173,18 @@ By default it is generated automatically and stored in the WordPress database (`
 Yes. A `.pot` translation template is included in the `languages/` directory. Create `.po` and `.mo` files for your language and place them in that folder following standard WordPress translation conventions.
 
 ## Changelog
+
+### 26.09.26
+
+- New: **physical letters received** per attendant, editable by retreat managers and message managers.
+- New: **Total letters** column in the attendants list (messages received through the app plus physical letters), sortable.
+- New: **contact log** per attendant, where retreat and message managers record their contacts and conversations. Authors can edit their entries for 15 minutes and delete them at any time; retreat managers can edit or delete any entry and see the full change history, including deleted entries. Edited entries are marked as such.
+- New: **custom attendant fields** per retreat, defined in the retreat edit page: name, slug, type (text, long text, number, date, yes/no, options list), whether they are shown and sortable in the list, who can view and edit them, and whether they are imported from / exported to CSV. They can be used as `[slug]` placeholders in the message request template.
+- Change: message managers can now open the attendant page in a restricted mode, where they can only update physical letters, the custom fields they are allowed to edit and the contact log.
+- Change: CSV import and export buttons are hidden for message managers.
+- Security: the notice showing the database-stored encryption key is now only displayed to site administrators.
+- Security: saving a retreat, adding or editing an attendant and importing attendants now check the user's permissions on the server.
+- Spanish translations updated.
 
 ### 26.09.25
 

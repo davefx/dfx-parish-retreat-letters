@@ -916,4 +916,164 @@
         }
     });
 
+
+    // Custom attendant fields editor (retreat add/edit page)
+    $(function() {
+        var $container = $('#dfxprl-custom-fields');
+        if (!$container.length) {
+            return;
+        }
+
+        function slugify(text) {
+            return text.normalize('NFD').replace(/[̀-ͯ]/g, '')
+                .toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_+|_+$/g, '').substring(0, 64);
+        }
+
+        function syncCard($card) {
+            $card.find('.dfxprl-cf-options').toggle($card.find('.dfxprl-cf-type').val() === 'select');
+
+            var showInList = $card.find('.dfxprl-cf-show-in-list').is(':checked');
+            var $sortable = $card.find('.dfxprl-cf-sortable').prop('disabled', !showInList);
+            if (!showInList) {
+                $sortable.prop('checked', false);
+            }
+
+            // Editing can never be broader than viewing
+            var managersOnly = $card.find('.dfxprl-cf-view').val() === 'manager';
+            var $edit = $card.find('.dfxprl-cf-edit');
+            $edit.find('option[value="message_manager"]').prop('disabled', managersOnly);
+            if (managersOnly) {
+                $edit.val('manager');
+            }
+        }
+
+        $container.find('.dfxprl-cf-card').each(function() {
+            syncCard($(this));
+        });
+
+        $container.on('change', '.dfxprl-cf-type, .dfxprl-cf-show-in-list, .dfxprl-cf-view', function() {
+            syncCard($(this).closest('.dfxprl-cf-card'));
+        });
+
+        // Suggest a slug for new fields until the user types one
+        $container.on('input', '.dfxprl-cf-new .dfxprl-cf-name', function() {
+            var $slug = $(this).closest('.dfxprl-cf-card').find('.dfxprl-cf-slug');
+            if (!$slug.data('touched')) {
+                $slug.val(slugify($(this).val()));
+            }
+        });
+        $container.on('input', '.dfxprl-cf-slug', function() {
+            $(this).data('touched', true);
+        });
+
+        $('.dfxprl-add-custom-field').on('click', function() {
+            var html = $('#dfxprl-custom-field-template').html().replace(/__INDEX__/g, 'new' + Date.now());
+            var $card = $(html);
+            $container.append($card);
+            syncCard($card);
+            $card.find('.dfxprl-cf-name').trigger('focus');
+        });
+
+        $container.on('click', '.dfxprl-remove-custom-field', function() {
+            var $card = $(this).closest('.dfxprl-cf-card');
+            if ($card.hasClass('dfxprl-cf-new')) {
+                $card.remove();
+                return;
+            }
+            if (confirm(dfxprlAdmin.messages.confirmRemoveCustomField)) {
+                $card.find('.dfxprl-cf-delete').val('1');
+                $card.hide();
+            }
+        });
+    });
+
+    // Attendant contact log (attendant edit page)
+    $(function() {
+        var $log = $('#dfxprl-attendant-log');
+        if (!$log.length) {
+            return;
+        }
+
+        function request(data, $button) {
+            $button.prop('disabled', true);
+            data.nonce = dfxprlAdmin.nonce;
+            return $.post(dfxprlAdmin.ajaxurl, data).done(function(response) {
+                if (response.success) {
+                    $log.find('.dfxprl-log-entries').html(response.data.html);
+                } else {
+                    alert((response.data && response.data.message) || dfxprlAdmin.messages.logError);
+                }
+            }).fail(function() {
+                alert(dfxprlAdmin.messages.logError);
+            }).always(function() {
+                $button.prop('disabled', false);
+            });
+        }
+
+        $log.on('click', '.dfxprl-log-add', function() {
+            var $content = $('#dfxprl-log-new-content');
+            if (!$content.val().trim()) {
+                alert(dfxprlAdmin.messages.logEmpty);
+                return;
+            }
+            request({
+                action: 'dfxprl_log_add',
+                attendant_id: $log.data('attendant-id'),
+                entry_date: $('#dfxprl-log-new-date').val(),
+                content: $content.val()
+            }, $(this)).done(function(response) {
+                if (response.success) {
+                    $content.val('');
+                }
+            });
+        });
+
+        $log.on('click', '.dfxprl-log-edit', function() {
+            var $entry = $(this).closest('.dfxprl-log-entry');
+            var $form = $('<div class="dfxprl-log-edit-form">' +
+                '<p><input type="date" class="dfxprl-log-date"></p>' +
+                '<p><textarea class="large-text dfxprl-log-content" rows="3"></textarea></p>' +
+                '<p><button type="button" class="button button-primary button-small dfxprl-log-save"></button> ' +
+                '<button type="button" class="button button-small dfxprl-log-cancel"></button></p>' +
+                '</div>');
+            $form.find('.dfxprl-log-date').val($entry.attr('data-entry-date'));
+            $form.find('.dfxprl-log-content').val($entry.attr('data-content'));
+            $form.find('.dfxprl-log-save').text(dfxprlAdmin.messages.save);
+            $form.find('.dfxprl-log-cancel').text(dfxprlAdmin.messages.cancelButton);
+            $entry.children('.dfxprl-log-entry-content, .dfxprl-log-entry-actions').hide();
+            $entry.children('.dfxprl-log-entry-meta').after($form);
+        });
+
+        $log.on('click', '.dfxprl-log-cancel', function() {
+            var $entry = $(this).closest('.dfxprl-log-entry');
+            $entry.find('.dfxprl-log-edit-form').remove();
+            $entry.children('.dfxprl-log-entry-content, .dfxprl-log-entry-actions').show();
+        });
+
+        $log.on('click', '.dfxprl-log-save', function() {
+            var $entry = $(this).closest('.dfxprl-log-entry');
+            var content = $entry.find('.dfxprl-log-edit-form .dfxprl-log-content').val();
+            if (!content.trim()) {
+                alert(dfxprlAdmin.messages.logEmpty);
+                return;
+            }
+            request({
+                action: 'dfxprl_log_update',
+                entry_id: $entry.data('entry-id'),
+                entry_date: $entry.find('.dfxprl-log-edit-form .dfxprl-log-date').val(),
+                content: content
+            }, $(this));
+        });
+
+        $log.on('click', '.dfxprl-log-delete', function() {
+            if (!confirm(dfxprlAdmin.messages.confirmDeleteLogEntry)) {
+                return;
+            }
+            request({
+                action: 'dfxprl_log_delete',
+                entry_id: $(this).closest('.dfxprl-log-entry').data('entry-id')
+            }, $(this));
+        });
+    });
+
 })(jQuery);

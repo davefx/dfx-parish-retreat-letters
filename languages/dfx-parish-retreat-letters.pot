@@ -2,7 +2,7 @@
 # This file is distributed under the GPL v3.
 msgid ""
 msgstr ""
-"Project-Id-Version: DFX Parish Retreat Letters 26.09.25\n"
+"Project-Id-Version: DFX Parish Retreat Letters 26.09.26\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/dfx-parish-retreat-letters\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -2852,4 +2852,348 @@ msgstr ""
 
 #: includes/class-admin.php
 msgid "Select..."
+msgstr ""
+
+#. Plugin URI of the plugin
+#: dfx-parish-retreat-letters.php
+msgid "https://github.com/davefx/dfx-parish-retreat-letters"
+msgstr ""
+
+#: includes/class-admin.php:470
+msgid "Internet Explorer is not supported."
+msgstr ""
+
+#: includes/class-admin.php:471
+msgid "This plugin (including the letter print view) requires a modern browser. Please use Microsoft Edge, Google Chrome, Mozilla Firefox or Safari."
+msgstr ""
+
+#: includes/class-admin.php:974
+msgid "Error saving the contact log entry. Please try again."
+msgstr ""
+
+#: includes/class-admin.php:975
+#: includes/class-admin.php:4214
+msgid "Please enter a description."
+msgstr ""
+
+#: includes/class-admin.php:976
+msgid "Are you sure you want to delete this contact log entry?"
+msgstr ""
+
+#: includes/class-admin.php:977
+msgid "Save"
+msgstr ""
+
+#: includes/class-admin.php:978
+msgid "Removing this field will permanently delete its values for all attendants when the retreat is saved. Continue?"
+msgstr ""
+
+#: includes/class-admin.php:1502
+msgid "Custom fields:"
+msgstr ""
+
+#: includes/class-admin.php:1638
+msgid "Are you sure you want to revoke this permission?"
+msgstr ""
+
+#: includes/class-admin.php:1680
+msgid "Are you sure you want to cancel this invitation?"
+msgstr ""
+
+#. translators: %d: Number of custom field values that could not be imported
+#: includes/class-admin.php:2322
+#, php-format
+msgid "%d custom field values were not valid and were left unchanged."
+msgstr ""
+
+#. translators: 1: line number, 2: error message
+#: includes/class-admin.php:2518
+#, php-format
+msgid "Line %1$d: %2$s"
+msgstr ""
+
+#: includes/class-admin.php:3174
+msgid "Letters:"
+msgstr ""
+
+#. translators: 1: total letters count, 2: letters received through the app, 3: physical letters count
+#: includes/class-admin.php:3178
+#, php-format
+msgid "%1$d in total (%2$d via app, %3$d physical)"
+msgstr ""
+
+#: includes/class-admin.php:3232
+#: includes/class-admin.php:3317
+#: includes/class-admin.php:3437
+msgid "Total Letters"
+msgstr ""
+
+#. translators: 1: letters received through the app, 2: physical letters count
+#: includes/class-admin.php:3444
+#, php-format
+msgid "%1$d via app, %2$d physical"
+msgstr ""
+
+#: includes/class-admin.php:3575
+msgid "As a message manager you can update the physical letters received, the custom fields you are allowed to edit and the contact log. The rest of the data is read-only."
+msgstr ""
+
+#: includes/class-admin.php:3692
+msgid "Physical Letters Received"
+msgstr ""
+
+#: includes/class-admin.php:3696
+msgid "Number of paper letters received for this attendant outside the application. They are added to the messages received to compute the total letters."
+msgstr ""
+
+#: includes/class-admin.php:3817
+#: includes/class-custom-field.php:416
+#: includes/class-custom-field.php:472
+msgid "Yes"
+msgstr ""
+
+#: includes/class-admin.php:3830
+msgid "— Select —"
+msgstr ""
+
+#: includes/class-admin.php:3859
+msgid "Custom Attendant Fields"
+msgstr ""
+
+#: includes/class-admin.php:3861
+msgid "Define additional fields for the attendants of this retreat. The slug identifies the field in CSV files and can be used as a placeholder in the message request template, e.g. [my_field]."
+msgstr ""
+
+#: includes/class-admin.php:3871
+msgid "Add Field"
+msgstr ""
+
+#: includes/class-admin.php:3892
+msgid "Retreat managers only"
+msgstr ""
+
+#: includes/class-admin.php:3893
+msgid "Retreat managers and message managers"
+msgstr ""
+
+#: includes/class-admin.php:3905
+msgid "Slug"
+msgstr ""
+
+#: includes/class-admin.php:3919
+msgid "Options (one per line)"
+msgstr ""
+
+#: includes/class-admin.php:3925
+msgid "Visible to"
+msgstr ""
+
+#: includes/class-admin.php:3933
+msgid "Editable by"
+msgstr ""
+
+#: includes/class-admin.php:3944
+msgid "Show in attendants list"
+msgstr ""
+
+#: includes/class-admin.php:3948
+msgid "Sortable"
+msgstr ""
+
+#: includes/class-admin.php:3952
+msgid "Import from CSV"
+msgstr ""
+
+#: includes/class-admin.php:3956
+msgid "Export to CSV"
+msgstr ""
+
+#: includes/class-admin.php:3958
+msgid "Remove field"
+msgstr ""
+
+#: includes/class-admin.php:3975
+msgid "Contact Log"
+msgstr ""
+
+#: includes/class-admin.php:3976
+msgid "Record the contacts and conversations held with this attendant's contact person."
+msgstr ""
+
+#: includes/class-admin.php:3984
+msgid "Description"
+msgstr ""
+
+#: includes/class-admin.php:3988
+msgid "Add Entry"
+msgstr ""
+
+#: includes/class-admin.php:4022
+msgid "No contact log entries yet."
+msgstr ""
+
+#. translators: %d: number of deleted contact log entries
+#: includes/class-admin.php:4036
+#, php-format
+msgid "Deleted entries (%d)"
+msgstr ""
+
+#: includes/class-admin.php:4071
+msgid "Written on"
+msgstr ""
+
+#. translators: 1: date and time of the last edit, 2: user who made it
+#: includes/class-admin.php:4076
+#, php-format
+msgid "Last edited on %1$s by %2$s"
+msgstr ""
+
+#: includes/class-admin.php:4081
+msgid "(edited)"
+msgstr ""
+
+#. translators: 1: date and time of the deletion, 2: user who deleted the entry
+#: includes/class-admin.php:4088
+#, php-format
+msgid "Deleted on %1$s by %2$s"
+msgstr ""
+
+#. translators: %d: minutes left to edit the entry
+#: includes/class-admin.php:4107
+#, php-format
+msgid "(editable for %d more minute)"
+msgid_plural "(editable for %d more minutes)"
+msgstr[0] ""
+msgstr[1] ""
+
+#: includes/class-admin.php:4121
+msgid "Change history"
+msgstr ""
+
+#: includes/class-admin.php:4128
+msgid "Created"
+msgstr ""
+
+#: includes/class-admin.php:4129
+msgid "Edited"
+msgstr ""
+
+#: includes/class-admin.php:4130
+msgid "Deleted"
+msgstr ""
+
+#: includes/class-admin.php:4210
+msgid "Please enter a valid date."
+msgstr ""
+
+#: includes/class-admin.php:4233
+#: includes/class-admin.php:4254
+msgid "Error saving the contact log entry."
+msgstr ""
+
+#: includes/class-admin.php:4250
+msgid "You cannot edit this entry."
+msgstr ""
+
+#: includes/class-admin.php:4270
+msgid "You cannot delete this entry."
+msgstr ""
+
+#: includes/class-admin.php:4274
+msgid "Error deleting the contact log entry."
+msgstr ""
+
+#: includes/class-admin.php:5942
+msgid "Add PDF Header"
+msgstr ""
+
+#: includes/class-admin.php:5946
+msgid "Add a From/To header to PDF letters when printing"
+msgstr ""
+
+#: includes/class-admin.php:5947
+msgid "Enabled by default. The From/To header is added on the recipient&#8217;s browser (no server memory cost). If the browser cannot do it, the unmodified PDF is printed."
+msgstr ""
+
+#: includes/class-custom-field.php:93
+msgid "Long text"
+msgstr ""
+
+#: includes/class-custom-field.php:94
+msgid "Number"
+msgstr ""
+
+#: includes/class-custom-field.php:96
+msgid "Yes/No"
+msgstr ""
+
+#: includes/class-custom-field.php:97
+msgid "Options list"
+msgstr ""
+
+#: includes/class-custom-field.php:202
+msgid "Custom field names cannot be empty."
+msgstr ""
+
+#. translators: %s: custom field slug
+#: includes/class-custom-field.php:216
+#, php-format
+msgid "The slug \"%s\" is reserved. Please choose a different one."
+msgstr ""
+
+#. translators: %s: custom field slug
+#: includes/class-custom-field.php:225
+#, php-format
+msgid "The slug \"%s\" is already used by another field of this retreat."
+msgstr ""
+
+#. translators: %s: custom field name
+#: includes/class-custom-field.php:234
+#, php-format
+msgid "The options list field \"%s\" needs at least one option."
+msgstr ""
+
+#. translators: %s: custom field name
+#: includes/class-custom-field.php:266
+#, php-format
+msgid "Error saving the custom field \"%s\"."
+msgstr ""
+
+#: includes/class-custom-field.php:472
+msgid "No"
+msgstr ""
+
+#. translators: 1: invalid value, 2: custom field name
+#: includes/class-custom-field.php:661
+#, php-format
+msgid "Invalid value \"%1$s\" for field \"%2$s\"."
+msgstr ""
+
+#: includes/class-dfx-parish-retreat-letters.php:1389
+#: includes/class-dfx-parish-retreat-letters.php:1556
+msgid "Print PDF"
+msgstr ""
+
+#. translators: %d: number of pages in the attached PDF
+#: includes/class-dfx-parish-retreat-letters.php:1670
+#, php-format
+msgid "Attached document: %d page"
+msgid_plural "Attached document: %d pages"
+msgstr[0] ""
+msgstr[1] ""
+
+#: includes/class-dfx-parish-retreat-letters.php:1976
+msgid "Browser not supported"
+msgstr ""
+
+#: includes/class-dfx-parish-retreat-letters.php:1987
+msgid "Internet Explorer is not supported"
+msgstr ""
+
+#: includes/class-dfx-parish-retreat-letters.php:1989
+msgid "The print view cannot be displayed in Internet Explorer. Microsoft retired Internet Explorer in June 2022 and it no longer receives security updates."
+msgstr ""
+
+#: includes/class-dfx-parish-retreat-letters.php:1992
+msgid "Please reopen this page in one of the following modern browsers:"
 msgstr ""

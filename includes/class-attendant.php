@@ -76,8 +76,9 @@ class DFXPRL_Attendant {
 				'message_url_token'               => $message_url_token,
 				'notes'                           => $sanitized_data['notes'],
 				'internal_notes'                  => $sanitized_data['internal_notes'],
+				'physical_letters'                => $sanitized_data['physical_letters'],
 			),
-			array( '%d', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s' )
+			array( '%d', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%d' )
 		);
 
 		if ( ! $result ) {
@@ -158,6 +159,11 @@ class DFXPRL_Attendant {
 			$update_fields['internal_notes'] = $sanitized_data['internal_notes'];
 		}
 
+		// Only include physical_letters if it was provided in the input data
+		if ( array_key_exists( 'physical_letters', $data ) ) {
+			$update_fields['physical_letters'] = $sanitized_data['physical_letters'];
+		}
+
 		// Build format array based on fields being updated
 		$formats = array( '%d', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s' );
 		if ( array_key_exists( 'notes', $data ) ) {
@@ -165,6 +171,9 @@ class DFXPRL_Attendant {
 		}
 		if ( array_key_exists( 'internal_notes', $data ) ) {
 			$formats[] = '%s';
+		}
+		if ( array_key_exists( 'physical_letters', $data ) ) {
+			$formats[] = '%d';
 		}
 
 		$result = $wpdb->update(
@@ -204,6 +213,8 @@ class DFXPRL_Attendant {
 		// First delete all messages for this attendant (cascade delete)
 		$message_model = new DFXPRL_ConfidentialMessage();
 		$message_model->delete_by_attendant( $id );
+
+		$this->delete_related_data( array( $id ) );
 
 		// Then delete the attendant
 		$result = $wpdb->delete(
@@ -310,26 +321,42 @@ class DFXPRL_Attendant {
 			'id', 'name', 'surnames', 'date_of_birth', 'emergency_contact_name', 
 			'emergency_contact_surname', 'created_at', 'invited_by', 'incompatibilities',
 			'notes', 'internal_notes',
-			'message_count', 'non_printed_count'
+			'message_count', 'non_printed_count', 'total_letters', 'physical_letters'
 		);
-		$orderby = in_array( $args['orderby'], $allowed_orderby, true ) ? $args['orderby'] : 'name';
+		// Sorting by a custom field requires the caller to pass the (already permission-checked) field
+		$custom_order_field = ( $args['orderby'] === 'custom_field' && ! empty( $args['custom_order_field'] ) ) ? $args['custom_order_field'] : null;
+		$orderby = in_array( $args['orderby'], $allowed_orderby, true ) || $custom_order_field ? $args['orderby'] : 'name';
 		$order = in_array( strtoupper( $args['order'] ), array( 'ASC', 'DESC' ), true ) ? strtoupper( $args['order'] ) : 'ASC';
 
 		// Build the SELECT clause - add message counts if sorting by them
 		$select_clause = "a.*";
 		$join_clause = "";
 		$group_clause = "";
-		
-		if ( $orderby === 'message_count' || $orderby === 'non_printed_count' ) {
+
+		if ( $orderby === 'message_count' || $orderby === 'non_printed_count' || $orderby === 'total_letters' ) {
 			$print_log_table = $this->database->get_message_print_log_table();
-			$select_clause = "a.*, COUNT(DISTINCT m.id) as message_count, SUM(CASE WHEN m.id IS NOT NULL AND p.id IS NULL THEN 1 ELSE 0 END) as non_printed_count";
+			$select_clause = "a.*, COUNT(DISTINCT m.id) as message_count, SUM(CASE WHEN m.id IS NOT NULL AND p.id IS NULL THEN 1 ELSE 0 END) as non_printed_count, COUNT(DISTINCT m.id) + a.physical_letters as total_letters";
 			$join_clause = "LEFT JOIN {$messages_table} m ON a.id = m.attendant_id LEFT JOIN {$print_log_table} p ON m.id = p.message_id";
 			$group_clause = "GROUP BY a.id";
 		}
 
+		if ( $custom_order_field ) {
+			$custom_field_model = new DFXPRL_Custom_Field();
+			$join_clause = $wpdb->prepare(
+				"LEFT JOIN {$this->database->get_custom_field_values_table()} cfv ON cfv.attendant_id = a.id AND cfv.field_id = %d", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+				$custom_order_field->id
+			);
+		}
+
 		// Build ORDER BY clause
 		$order_clause = "";
-		if ( $orderby === 'message_count' || $orderby === 'non_printed_count' ) {
+		if ( $custom_order_field ) {
+			// Attendants without a value always go last
+			$sort_expression = $custom_field_model->get_sort_expression( $custom_order_field, 'cfv.value' );
+			$order_clause = "(cfv.value IS NULL OR cfv.value = '') ASC, {$sort_expression} {$order}, a.name ASC";
+		} elseif ( $orderby === 'total_letters' ) {
+			$order_clause = "total_letters {$order}, a.name ASC";
+		} elseif ( $orderby === 'message_count' || $orderby === 'non_printed_count' ) {
 			// When sorting by non_printed_count, add message_count as secondary sort
 			if ( $orderby === 'non_printed_count' ) {
 				$order_clause = "non_printed_count {$order}, message_count {$order}, a.name ASC";
@@ -492,6 +519,8 @@ class DFXPRL_Attendant {
 		if ( ! empty( $attendant_ids ) ) {
 			$message_model = new DFXPRL_ConfidentialMessage();
 			$message_model->delete_by_attendants( $attendant_ids );
+
+			$this->delete_related_data( $attendant_ids );
 		}
 
 		// Then delete all attendants for this retreat
@@ -537,6 +566,17 @@ class DFXPRL_Attendant {
 			$headers[] = __( 'Notes', 'dfx-parish-retreat-letters' );
 		}
 
+		$custom_field_model = new DFXPRL_Custom_Field();
+		$export_fields = array_filter( $custom_field_model->get_by_retreat( $retreat_id ), function( $field ) {
+			return $field->exportable;
+		} );
+		foreach ( $export_fields as $field ) {
+			$headers[] = $field->name;
+		}
+		$custom_values = $export_fields ? $custom_field_model->get_values_for_attendants( array_map( function( $attendant ) {
+			return $attendant->id;
+		}, $attendants ) ) : array();
+
 		$rows = array();
 		foreach ( $attendants as $attendant ) {
 			// Generate message URL if token exists
@@ -561,7 +601,13 @@ class DFXPRL_Attendant {
 			if ( $notes_enabled ) {
 				$row[] = $attendant->notes ?? '';
 			}
-			
+
+			foreach ( $export_fields as $field ) {
+				$value = $custom_values[ (int) $attendant->id ][ $field->id ] ?? '';
+				// Dates are exported in ISO format so they can be imported back unambiguously
+				$row[] = 'date' === $field->field_type ? $value : $custom_field_model->format_value( $field, $value );
+			}
+
 			$rows[] = $row;
 		}
 
@@ -593,6 +639,7 @@ class DFXPRL_Attendant {
 			'incompatibilities'               => sanitize_textarea_field( $data['incompatibilities'] ?? '' ),
 			'notes'                           => sanitize_textarea_field( $data['notes'] ?? '' ),
 			'internal_notes'                  => sanitize_textarea_field( $data['internal_notes'] ?? '' ),
+			'physical_letters'                => absint( $data['physical_letters'] ?? 0 ),
 		);
 	}
 
@@ -674,6 +721,62 @@ class DFXPRL_Attendant {
 	private function is_valid_date( $date ) {
 		$parsed_date = date_parse( $date );
 		return checkdate( $parsed_date['month'], $parsed_date['day'], $parsed_date['year'] );
+	}
+
+	/**
+	 * Update only the physical letters count of an attendant.
+	 *
+	 * @since 1.11.0
+	 * @param int $id    Attendant ID.
+	 * @param int $count Number of physical letters received.
+	 * @return bool True on success, false on failure.
+	 */
+	public function update_physical_letters( $id, $count ) {
+		global $wpdb;
+
+		$result = $wpdb->update(
+			$this->database->get_attendants_table(),
+			array( 'physical_letters' => absint( $count ) ),
+			array( 'id' => $id ),
+			array( '%d' ),
+			array( '%d' )
+		); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
+
+		return $result !== false;
+	}
+
+	/**
+	 * Get the total number of physical letters received by the attendants of a retreat.
+	 *
+	 * @since 1.11.0
+	 * @param int $retreat_id Retreat ID.
+	 * @return int
+	 */
+	public function get_physical_letters_count_by_retreat( $retreat_id ) {
+		global $wpdb;
+
+		$table_name = $this->database->get_attendants_table();
+		return (int) $wpdb->get_var( $wpdb->prepare(
+			"SELECT COALESCE(SUM(physical_letters), 0) FROM {$table_name} WHERE retreat_id = %d", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			$retreat_id
+		) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
+	}
+
+	/**
+	 * Delete the contact log and custom field values of the given attendants.
+	 *
+	 * @since 1.11.0
+	 * @param array $attendant_ids Attendant IDs.
+	 */
+	private function delete_related_data( $attendant_ids ) {
+		if ( class_exists( 'DFXPRL_Attendant_Log' ) ) {
+			$log_model = new DFXPRL_Attendant_Log();
+			$log_model->delete_by_attendants( $attendant_ids );
+		}
+		if ( class_exists( 'DFXPRL_Custom_Field' ) ) {
+			$custom_field_model = new DFXPRL_Custom_Field();
+			$custom_field_model->delete_values_by_attendants( $attendant_ids );
+		}
 	}
 
 	public function exists( $retreat_id, $name, $surnames, $date_of_birth ) {

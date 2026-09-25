@@ -176,6 +176,12 @@ class DFXPRL_Retreat {
 		$attendant_model = new DFXPRL_Attendant();
 		$attendant_model->delete_by_retreat( $id );
 
+		// Delete the custom attendant field definitions of this retreat
+		if ( class_exists( 'DFXPRL_Custom_Field' ) ) {
+			$custom_field_model = new DFXPRL_Custom_Field();
+			$custom_field_model->delete_by_retreat( $id );
+		}
+
 		// Delete all permissions and audit logs for this retreat
 		$permissions_model = DFXPRL_Permissions::get_instance();
 		$permissions_model->delete_by_retreat( $id );

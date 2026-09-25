@@ -210,6 +210,12 @@ class DFXPRL {
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-attendant.php';
 
 		/**
+		 * The classes responsible for custom attendant fields and the attendant contact log.
+		 */
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-custom-field.php';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-attendant-log.php';
+
+		/**
 		 * The class responsible for confidential message CRUD operations.
 		 */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-confidential-message.php';
