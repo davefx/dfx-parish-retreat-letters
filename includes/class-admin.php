@@ -704,21 +704,31 @@ class DFXPRL_Admin {
 	}
 	.dfxprl-attendants-table[data-retreat-id] th[data-column] {
 		position: relative;
-		padding-left: 22px;
 	}
+	/* The drag handle floats over the header corner and only shows on hover, so it takes no room */
 	.dfxprl-column-handle {
 		position: absolute;
-		left: 3px;
-		top: 50%;
-		margin-top: -8px;
+		left: 1px;
+		top: 1px;
 		cursor: move;
-		color: #8c8f94;
-		font-size: 16px;
-		width: 16px;
-		height: 16px;
-	}
-	.dfxprl-column-handle:hover {
 		color: #2271b1;
+		background: rgba(255, 255, 255, 0.9);
+		border-radius: 2px;
+		font-size: 14px;
+		width: 14px;
+		height: 14px;
+		opacity: 0;
+		transition: opacity 0.1s;
+	}
+	.dfxprl-attendants-table th:hover .dfxprl-column-handle,
+	.dfxprl-attendants-table th.ui-sortable-helper .dfxprl-column-handle {
+		opacity: 1;
+	}
+	/* Narrow columns for counters and the contact log button */
+	.dfxprl-attendants-table th[data-column="physical_letters"],
+	.dfxprl-attendants-table th[data-column="total_letters"],
+	.dfxprl-attendants-table th[data-column="contact_log"] {
+		width: 80px;
 	}
 	.dfxprl-attendants-table th.dfxprl-column-placeholder {
 		background: #f0f6fc;
@@ -757,8 +767,16 @@ class DFXPRL_Admin {
 		max-height: 70vh;
 		overflow-y: auto;
 	}
-	.dfxprl-log-latest {
-		color: #50575e;
+	.dfxprl-open-log {
+		display: inline-flex;
+		align-items: center;
+		gap: 2px;
+		text-decoration: none;
+	}
+	.dfxprl-open-log .dashicons {
+		font-size: 18px;
+		width: 18px;
+		height: 18px;
 	}
 	/* Attendant contact log */
 	.dfxprl-log-entry {
@@ -3905,7 +3923,7 @@ class DFXPRL_Admin {
 	 * @param int    $non_printed_count Messages not printed yet.
 	 * @param array  $custom_values     The attendant's custom field values (field_id => value).
 	 * @param array  $list_fields       Custom fields shown in the list, keyed by column key.
-	 * @param object $log_summary       Contact log summary { count, latest }, or null when there are no entries.
+	 * @param object $log_summary       Contact log summary { count }, or null when there are no entries.
 	 * @return string
 	 */
 	private function render_attendant_list_cell( $key, $retreat, $attendant, $message_count, $non_printed_count, $custom_values, $list_fields, $log_summary = null ) {
@@ -4009,26 +4027,13 @@ class DFXPRL_Admin {
 			case 'contact_log':
 				$label = __( 'Contact Log', 'dfx-parish-retreat-letters' );
 				$count = $log_summary ? (int) $log_summary->count : 0;
+				/* translators: %d: number of contact log entries */
+				$log_title = sprintf( _n( '%d entry', '%d entries', $count, 'dfx-parish-retreat-letters' ), $count );
 				?>
-				<button type="button" class="button-link dfxprl-open-log" data-attendant-id="<?php echo esc_attr( $attendant->id ); ?>" data-attendant-name="<?php echo esc_attr( trim( $attendant->name . ' ' . $attendant->surnames ) ); ?>">
-					<?php
-					if ( $count ) {
-						printf(
-							/* translators: %d: number of contact log entries */
-							esc_html( _n( '%d entry', '%d entries', $count, 'dfx-parish-retreat-letters' ) ),
-							esc_html( $count )
-						);
-					} else {
-						esc_html_e( 'Add entry', 'dfx-parish-retreat-letters' );
-					}
-					?>
+				<button type="button" class="button-link dfxprl-open-log" data-attendant-id="<?php echo esc_attr( $attendant->id ); ?>" data-attendant-name="<?php echo esc_attr( trim( $attendant->name . ' ' . $attendant->surnames ) ); ?>" title="<?php echo esc_attr( $log_title ); ?>" aria-label="<?php echo esc_attr( $label . ': ' . $log_title ); ?>">
+					<span class="dashicons dashicons-book-alt" aria-hidden="true"></span>
+					<span class="dfxprl-log-count"><?php echo esc_html( $count ); ?></span>
 				</button>
-				<?php if ( $count ) : ?>
-					<br><small class="dfxprl-log-latest">
-						<strong><?php echo esc_html( date_i18n( get_option( 'date_format' ), strtotime( $log_summary->latest->entry_date ) ) ); ?>:</strong>
-						<?php echo esc_html( wp_trim_words( $log_summary->latest->content, 12 ) ); ?>
-					</small>
-				<?php endif; ?>
 				<?php
 				break;
 

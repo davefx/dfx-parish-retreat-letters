@@ -3,7 +3,7 @@ Contributors: davefx
 Tags: parish, retreat, letters, confidential, GDPR
 Requires at least: 5.0
 Tested up to: 6.9
-Stable tag: 26.09.26.2
+Stable tag: 26.10.01
 Requires PHP: 7.4
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
@@ -173,6 +173,11 @@ By default it is generated automatically and stored in the WordPress database (`
 Yes. A `.pot` translation template is included in the `languages/` directory. Create `.po` and `.mo` files for your language and place them in that folder following standard WordPress translation conventions.
 
 ## Changelog
+
+### 26.10.01
+
+- Change: the attendants list is narrower. The column drag handle only appears when hovering a header and no longer takes up space, and the Physical letters, Total letters and Contact log columns are now narrow.
+- Change: the Contact log column shows a notebook icon with the number of entries; the entries are shown in a window when clicking it.
 
 ### 26.09.26.2
 

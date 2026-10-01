@@ -212,11 +212,11 @@ class DFXPRL_Attendant_Log {
 	}
 
 	/**
-	 * Summarize the contact log of several attendants: number of entries and the most recent one.
+	 * Summarize the contact log of several attendants: number of (non-deleted) entries.
 	 *
 	 * @since 1.12.0
 	 * @param array $attendant_ids Attendant IDs.
-	 * @return array attendant_id => object { count, latest }.
+	 * @return array attendant_id => object { count }.
 	 */
 	public function get_summaries_for_attendants( $attendant_ids ) {
 		global $wpdb;
@@ -228,19 +228,14 @@ class DFXPRL_Attendant_Log {
 
 		$table = $this->database->get_attendant_log_table();
 		$placeholders = implode( ', ', array_fill( 0, count( $attendant_ids ), '%d' ) );
-		$entries = $wpdb->get_results( $wpdb->prepare(
-			"SELECT * FROM {$table} WHERE attendant_id IN ($placeholders) AND deleted_at IS NULL ORDER BY entry_date DESC, created_at DESC, id DESC", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		$rows = $wpdb->get_results( $wpdb->prepare(
+			"SELECT attendant_id, COUNT(*) AS entries FROM {$table} WHERE attendant_id IN ($placeholders) AND deleted_at IS NULL GROUP BY attendant_id", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 			$attendant_ids
 		) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching,WordPress.DB.PreparedSQL.NotPrepared
 
 		$summaries = array();
-		foreach ( (array) $entries as $entry ) {
-			$attendant_id = (int) $entry->attendant_id;
-			if ( ! isset( $summaries[ $attendant_id ] ) ) {
-				// Entries come newest first, so the first one seen is the latest
-				$summaries[ $attendant_id ] = (object) array( 'count' => 0, 'latest' => $entry );
-			}
-			$summaries[ $attendant_id ]->count++;
+		foreach ( (array) $rows as $row ) {
+			$summaries[ (int) $row->attendant_id ] = (object) array( 'count' => (int) $row->entries );
 		}
 
 		return $summaries;
