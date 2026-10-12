@@ -183,188 +183,139 @@
             });
         }
 
-        // Handle delete attendant button clicks
-        $('.dfxprl-delete-attendant').on('click', function(e) {
-            e.preventDefault();
-
-            var attendantId = $(this).data('attendant-id');
-            var $row = $(this).closest('tr');
-
-            // Check if dfxprlAdmin is available
-            var confirmMessage = (typeof dfxprlAdmin !== 'undefined' && dfxprlAdmin.messages && dfxprlAdmin.messages.confirmDeleteAttendant)
-                ? dfxprlAdmin.messages.confirmDeleteAttendant
-                : 'Are you sure you want to delete this attendant?';
-
-            if (!confirm(confirmMessage)) {
-                return;
-            }
-
-            // Disable button and show loading state
-            $(this).prop('disabled', true).text('Deleting...');
-
-            var ajaxUrl = (typeof dfxprlAdmin !== 'undefined' && dfxprlAdmin.ajaxurl)
-                ? dfxprlAdmin.ajaxurl
-                : (typeof ajaxurl !== 'undefined' ? ajaxurl : '');
-            var nonce = (typeof dfxprlAdmin !== 'undefined' && dfxprlAdmin.nonce)
-                ? dfxprlAdmin.nonce
-                : '';
-
-            $.ajax({
-                url: ajaxUrl,
-                type: 'POST',
-                data: {
-                    action: 'dfxprl_delete_attendant',
-                    attendant_id: attendantId,
-                    nonce: nonce
-                },
-                success: function(response) {
-                    if (response.success) {
-                        // Remove the row with animation
-                        $row.fadeOut(300, function() {
-                            $(this).remove();
-
-                            // Show success message
-                            var successMessage = response.data.message || 'Attendant deleted successfully.';
-                            $('<div class="notice notice-success is-dismissible"><p>' + successMessage + '</p></div>')
-                                .insertAfter('.wp-header-end');
-                        });
-                    } else {
-                        alert(response.data.message || 'Error deleting attendant.');
-                        // Re-enable button
-                        $('.dfxprl-delete-attendant[data-attendant-id="' + attendantId + '"]')
-                            .prop('disabled', false)
-                            .text('Delete');
-                    }
-                },
-                error: function() {
-                    alert('Error deleting attendant. Please try again.');
-                    // Re-enable button
-                    $('.dfxprl-delete-attendant[data-attendant-id="' + attendantId + '"]')
-                        .prop('disabled', false)
-                        .text('Delete');
+        // Send an attendant status change (withdraw, reactivate, delete) and reload the list on success
+        function changeAttendantStatus(action, $button) {
+            $button.prop('disabled', true);
+            $.post(dfxprlAdmin.ajaxurl, {
+                action: action,
+                attendant_id: $button.data('attendant-id'),
+                nonce: dfxprlAdmin.nonce
+            }).done(function(response) {
+                if (response.success) {
+                    // Reload so the tabs, counters and summaries reflect the change
+                    window.location.reload();
+                } else {
+                    alert((response.data && response.data.message) || dfxprlAdmin.messages.statusChangeError);
+                    $button.prop('disabled', false);
                 }
+            }).fail(function() {
+                alert(dfxprlAdmin.messages.statusChangeError);
+                $button.prop('disabled', false);
             });
+        }
+
+        // Withdraw an attendant from the retreat
+        $(document).on('click', '.dfxprl-withdraw-attendant', function(e) {
+            e.preventDefault();
+            if (confirm(dfxprlAdmin.messages.confirmWithdrawAttendant.replace('%s', $(this).data('attendant-name')))) {
+                changeAttendantStatus('dfxprl_withdraw_attendant', $(this));
+            }
         });
 
-        // Handle delete all attendants button clicks
-        $('.dfxprl-delete-all-attendants').on('click', function(e) {
+        // Bring a withdrawn attendant back to the retreat
+        $(document).on('click', '.dfxprl-reactivate-attendant', function(e) {
+            e.preventDefault();
+            changeAttendantStatus('dfxprl_reactivate_attendant', $(this));
+        });
+
+        // Permanently delete a withdrawn attendant
+        $(document).on('click', '.dfxprl-delete-attendant', function(e) {
+            e.preventDefault();
+            if (confirm(dfxprlAdmin.messages.confirmDeleteAttendant)) {
+                changeAttendantStatus('dfxprl_delete_attendant', $(this));
+            }
+        });
+
+        // Withdraw all attendants of the retreat (typed confirmation)
+        $('.dfxprl-withdraw-all-attendants').on('click', function(e) {
             e.preventDefault();
 
-            var retreatId = $(this).data('retreat-id');
-            var retreatName = $(this).data('retreat-name');
-            var attendantCount = $(this).data('attendant-count');
-            var messageCount = $(this).data('message-count');
             var $button = $(this);
+            var retreatId = $button.data('retreat-id');
+            var attendantCount = $button.data('attendant-count');
+            var messages = dfxprlAdmin.messages;
 
-            // Show custom delete confirmation modal
-            showDeleteAllAttendantsModal(retreatId, retreatName, attendantCount, messageCount, $button);
-        });
-
-        // Function to show delete all attendants confirmation modal
-        function showDeleteAllAttendantsModal(retreatId, retreatName, attendantCount, messageCount, $button) {
-            // Create modal HTML
-            var modalHtml =
-                '<div id="dfxprl-delete-all-attendants-modal" class="dfxprl-modal-overlay">' +
+            var $modal = $(
+                '<div id="dfxprl-withdraw-all-attendants-modal" class="dfxprl-modal-overlay">' +
                     '<div class="dfxprl-modal-dialog">' +
-                        '<div class="dfxprl-modal-header">' +
-                            '<h3>' + dfxprlAdmin.messages.deleteAllAttendantsTitle + '</h3>' +
-                        '</div>' +
+                        '<div class="dfxprl-modal-header"><h3></h3></div>' +
                         '<div class="dfxprl-modal-body">' +
                             '<div class="dfxprl-warning-message">' +
-                                '<p><strong>' + dfxprlAdmin.messages.deleteWarning + '</strong></p>' +
-                                '<p>' + dfxprlAdmin.messages.deleteAllAttendantsWarning + '</p>' +
-                                '<p><strong>' + dfxprlAdmin.messages.deleteAllAttendantsWarningCount + '</strong></p>' +
-                                '<ul>' +
-                                    '<li>' + dfxprlAdmin.messages.deleteAllAttendantsWarningAttendants.replace('%d', attendantCount) + '</li>' +
-                                    '<li>' + dfxprlAdmin.messages.deleteAllAttendantsWarningMessages.replace('%d', messageCount) + '</li>' +
-                                    '<li>' + dfxprlAdmin.messages.deleteWarningPermanent + '</li>' +
-                                '</ul>' +
+                                '<p><strong class="dfxprl-withdraw-all-warning"></strong></p>' +
+                                '<p class="dfxprl-withdraw-all-details"></p>' +
                             '</div>' +
                             '<div class="dfxprl-confirmation-section">' +
-                                '<p><code style="background: #f0f0f1; padding: 5px 10px; display: inline-block;">' + dfxprlAdmin.messages.confirmationText + '</code></p>' +
-                                '<p>' + dfxprlAdmin.messages.typeConfirmation + '</p>' +
-                                '<input type="text" id="dfxprl-confirmation-text" placeholder="' + dfxprlAdmin.messages.confirmationPlaceholder + '" />' +
+                                '<p><code style="background: #f0f0f1; padding: 5px 10px; display: inline-block;"></code></p>' +
+                                '<p class="dfxprl-type-confirmation"></p>' +
+                                '<input type="text" id="dfxprl-confirmation-text" />' +
                             '</div>' +
                         '</div>' +
                         '<div class="dfxprl-modal-footer">' +
-                            '<button type="button" id="dfxprl-confirm-delete-all" class="button button-primary" disabled>' + dfxprlAdmin.messages.deleteAllButton + '</button>' +
-                            '<button type="button" id="dfxprl-cancel-delete-all" class="button">' + dfxprlAdmin.messages.cancelButton + '</button>' +
+                            '<button type="button" id="dfxprl-confirm-withdraw-all" class="button button-primary" disabled></button>' +
+                            '<button type="button" id="dfxprl-cancel-withdraw-all" class="button"></button>' +
                         '</div>' +
                     '</div>' +
-                '</div>';
+                '</div>'
+            );
+            $modal.find('h3').text(messages.withdrawAllAttendantsTitle);
+            $modal.find('.dfxprl-withdraw-all-warning').text(messages.withdrawAllAttendantsWarning.replace('%d', attendantCount));
+            $modal.find('.dfxprl-withdraw-all-details').text(messages.withdrawAllAttendantsDetails);
+            $modal.find('code').text(messages.confirmationText);
+            $modal.find('.dfxprl-type-confirmation').text(messages.typeConfirmation);
+            $modal.find('#dfxprl-confirmation-text').attr('placeholder', messages.confirmationPlaceholder);
+            $modal.find('#dfxprl-confirm-withdraw-all').text(messages.withdrawAllButton);
+            $modal.find('#dfxprl-cancel-withdraw-all').text(messages.cancelButton);
 
-            // Add modal to body
-            $('body').append(modalHtml);
-
-            var $modal = $('#dfxprl-delete-all-attendants-modal');
-            var $confirmInput = $('#dfxprl-confirmation-text');
-            var $confirmButton = $('#dfxprl-confirm-delete-all');
-
-            // Show modal
+            $('body').append($modal);
             $modal.fadeIn();
-            $confirmInput.focus();
 
-            // Check input as user types
-            $confirmInput.on('input', function() {
-                var enteredText = $(this).val().trim();
-                if (enteredText === dfxprlAdmin.messages.confirmationText) {
-                    $confirmButton.prop('disabled', false);
-                } else {
-                    $confirmButton.prop('disabled', true);
-                }
-            });
+            var $confirmInput = $modal.find('#dfxprl-confirmation-text').trigger('focus');
+            var $confirmButton = $modal.find('#dfxprl-confirm-withdraw-all');
 
-            // Handle cancel
-            $('#dfxprl-cancel-delete-all, .dfxprl-modal-overlay').on('click', function(e) {
-                if (e.target === this) {
-                    $modal.fadeOut(function() {
-                        $modal.remove();
-                    });
-                }
-            });
-
-            // Handle confirm delete
-            $confirmButton.on('click', function() {
+            function closeModal() {
                 $modal.fadeOut(function() {
                     $modal.remove();
                 });
+            }
 
-                // Disable button and show loading state
-                $button.prop('disabled', true).text(dfxprlAdmin.messages.deleting);
+            $confirmInput.on('input', function() {
+                $confirmButton.prop('disabled', $(this).val().trim() !== messages.confirmationText);
+            });
 
-                $.ajax({
-                    url: dfxprlAdmin.ajaxurl,
-                    type: 'POST',
-                    data: {
-                        action: 'dfxprl_delete_all_attendants',
-                        retreat_id: retreatId,
-                        confirmation_text: dfxprlAdmin.messages.confirmationText,
-                        nonce: dfxprlAdmin.nonce
-                    },
-                    success: function(response) {
-                        if (response.success) {
-                            // Show success message and reload the page to reflect changes
-                            $('<div class="notice notice-success is-dismissible"><p>' + response.data.message + '</p></div>')
-                                .insertAfter('.wp-header-end');
-                            
-                            // Reload page after a short delay to show the message
-                            setTimeout(function() {
-                                location.reload();
-                            }, 1500);
-                        } else {
-                            alert(response.data.message || dfxprlAdmin.messages.deleteError);
-                            // Re-enable button
-                            $button.prop('disabled', false).text(dfxprlAdmin.messages.deleteAllButton);
-                        }
-                    },
-                    error: function() {
-                        alert(dfxprlAdmin.messages.deleteError);
-                        // Re-enable button
-                        $button.prop('disabled', false).text(dfxprlAdmin.messages.deleteAllButton);
+            $modal.on('click', function(e) {
+                if (e.target === this) {
+                    closeModal();
+                }
+            });
+            $modal.find('#dfxprl-cancel-withdraw-all').on('click', closeModal);
+
+            $confirmButton.on('click', function() {
+                closeModal();
+                $button.prop('disabled', true).text(messages.withdrawing);
+
+                $.post(dfxprlAdmin.ajaxurl, {
+                    action: 'dfxprl_withdraw_all_attendants',
+                    retreat_id: retreatId,
+                    confirmation_text: messages.confirmationText,
+                    nonce: dfxprlAdmin.nonce
+                }).done(function(response) {
+                    if (response.success) {
+                        $('<div class="notice notice-success is-dismissible"><p></p></div>')
+                            .find('p').text(response.data.message).end()
+                            .insertAfter('.wp-header-end');
+                        setTimeout(function() {
+                            window.location.reload();
+                        }, 1500);
+                    } else {
+                        alert((response.data && response.data.message) || messages.statusChangeError);
+                        $button.prop('disabled', false).text(messages.withdrawAllButton);
                     }
+                }).fail(function() {
+                    alert(messages.statusChangeError);
+                    $button.prop('disabled', false).text(messages.withdrawAllButton);
                 });
             });
-        }
+        });
 
         // Form validation for add/edit retreat
         $('form').on('submit', function(e) {

@@ -3480,3 +3480,157 @@ msgstr "Este campo no se puede editar."
 #: includes/class-admin.php:4000
 msgid "Physical Letters"
 msgstr "Cartas físicas"
+
+#: includes/class-admin.php:1021
+msgid "Permanently delete this attendant together with their messages, contact log and custom field values? This cannot be undone."
+msgstr "¿Borrar definitivamente a este asistente junto con sus mensajes, su bitácora y sus campos personalizados? Esta acción no se puede deshacer."
+
+#. translators: %s: attendant name
+#: includes/class-admin.php:1023
+#, php-format
+msgid "Withdraw %s from the retreat? They will move to the \"Withdrawn attendants\" tab, will not be editable and their message link will stop accepting letters. You can reactivate them at any time."
+msgstr "¿Dar de baja a %s del retiro? Pasará a la pestaña \"Asistentes de baja\", no se podrá editar y su enlace de mensajes dejará de aceptar cartas. Puedes volver a darle de alta en cualquier momento."
+
+#: includes/class-admin.php:1024
+msgid "Error updating the attendant. Please try again."
+msgstr "Error al actualizar el asistente. Inténtalo de nuevo."
+
+#: includes/class-admin.php:1033
+msgid "Withdraw All Attendants - Confirmation Required"
+msgstr "Dar de baja a todos los asistentes - Confirmación necesaria"
+
+#. translators: %d: number of attendants
+#: includes/class-admin.php:1035
+#, php-format
+msgid "You are about to withdraw ALL %d attendants of this retreat."
+msgstr "Vas a dar de baja a LOS %d asistentes de este retiro."
+
+#: includes/class-admin.php:1036
+msgid "They will move to the \"Withdrawn attendants\" tab, will not be editable and their message links will stop accepting letters. Nothing is deleted: you can reactivate them one by one, or delete them permanently from that tab."
+msgstr "Pasarán a la pestaña \"Asistentes de baja\", no se podrán editar y sus enlaces de mensajes dejarán de aceptar cartas. No se borra nada: puedes volver a darles de alta uno a uno, o borrarlos definitivamente desde esa pestaña."
+
+#: includes/class-admin.php:1037
+#: includes/class-admin.php:3066
+msgid "WITHDRAW ALL ATTENDANTS"
+msgstr "DAR DE BAJA A TODOS"
+
+#: includes/class-admin.php:1040
+#: includes/class-admin.php:3451
+msgid "Withdraw All Attendants"
+msgstr "Dar de baja a todos"
+
+#: includes/class-admin.php:1041
+msgid "Withdrawing..."
+msgstr "Dando de baja..."
+
+#: includes/class-admin.php:2031
+msgid "This attendant has been withdrawn from the retreat and cannot be edited. Reactivate them from the \"Withdrawn attendants\" tab to edit their data."
+msgstr "Este asistente está dado de baja y no se puede editar. Vuelve a darle de alta desde la pestaña \"Asistentes de baja\" para editar sus datos."
+
+#: includes/class-admin.php:2032
+msgid "Withdrawn attendant"
+msgstr "Asistente dado de baja"
+
+#: includes/class-admin.php:2090
+msgid "Only withdrawn attendants can be deleted, and only by retreat managers."
+msgstr "Solo se pueden borrar asistentes dados de baja, y solo los gestores del retiro pueden hacerlo."
+
+#: includes/class-admin.php:2129
+msgid "This attendant has been withdrawn from the retreat and cannot be edited."
+msgstr "Este asistente está dado de baja y no se puede editar."
+
+#. translators: %d: Number of CSV rows that match withdrawn attendants
+#: includes/class-admin.php:2444
+#, php-format
+msgid "%d rows match withdrawn attendants and were not updated. Reactivate them first if you need to update their data."
+msgstr "%d filas corresponden a asistentes dados de baja y no se han actualizado. Vuelve a darles de alta primero si necesitas actualizar sus datos."
+
+#: includes/class-admin.php:2963
+msgid "Only withdrawn attendants can be deleted. Withdraw the attendant first."
+msgstr "Solo se pueden borrar asistentes dados de baja. Dale de baja primero."
+
+#: includes/class-admin.php:2986
+msgid "This attendant has already been withdrawn."
+msgstr "Este asistente ya está dado de baja."
+
+#: includes/class-admin.php:2990
+msgid "Error withdrawing the attendant. Please try again."
+msgstr "Error al dar de baja al asistente. Inténtalo de nuevo."
+
+#: includes/class-admin.php:2993
+msgid "Attendant withdrawn. You can find them in the \"Withdrawn attendants\" tab."
+msgstr "Asistente dado de baja. Lo encontrarás en la pestaña \"Asistentes de baja\"."
+
+#: includes/class-admin.php:3009
+msgid "This attendant has not been withdrawn."
+msgstr "Este asistente no está dado de baja."
+
+#: includes/class-admin.php:3013
+msgid "Error reactivating the attendant. Please try again."
+msgstr "Error al volver a dar de alta al asistente. Inténtalo de nuevo."
+
+#: includes/class-admin.php:3016
+msgid "Attendant reactivated."
+msgstr "Asistente dado de alta de nuevo."
+
+#: includes/class-admin.php:3067
+msgid "Confirmation text verification failed. Action cancelled for security."
+msgstr "El texto de confirmación no coincide. Acción cancelada por seguridad."
+
+#: includes/class-admin.php:3072
+msgid "Error withdrawing attendants. Please try again."
+msgstr "Error al dar de baja a los asistentes. Inténtalo de nuevo."
+
+#. translators: %d: Number of withdrawn attendants
+#: includes/class-admin.php:3086
+#, php-format
+msgid "%d attendants have been withdrawn. You can find them in the \"Withdrawn attendants\" tab."
+msgstr "Se ha dado de baja a %d asistentes. Los encontrarás en la pestaña \"Asistentes de baja\"."
+
+#. translators: %d: number of active attendants
+#: includes/class-admin.php:3307
+#, php-format
+msgid "Attendants (%d)"
+msgstr "Asistentes (%d)"
+
+#. translators: %d: number of withdrawn attendants
+#: includes/class-admin.php:3316
+#, php-format
+msgid "Withdrawn attendants (%d)"
+msgstr "Asistentes de baja (%d)"
+
+#: includes/class-admin.php:3610
+#: includes/class-admin.php:4193
+msgid "Status"
+msgstr "Estado"
+
+#: includes/class-admin.php:3661
+msgid "Reactivate"
+msgstr "Volver a dar de alta"
+
+#: includes/class-admin.php:3664
+msgid "Delete Permanently"
+msgstr "Borrar definitivamente"
+
+#: includes/class-admin.php:3700
+msgid "Withdraw"
+msgstr "Dar de baja"
+
+#: includes/class-admin.php:3713
+msgid "No attendants have been withdrawn from this retreat."
+msgstr "No hay asistentes dados de baja en este retiro."
+
+#: includes/class-admin.php:4195
+msgid "Withdrawn"
+msgstr "De baja"
+
+#. translators: 1: date of withdrawal, 2: user who withdrew the attendant
+#: includes/class-admin.php:4198
+#, php-format
+msgid "On %1$s by %2$s"
+msgstr "El %1$s por %2$s"
+
+#: includes/class-dfx-parish-retreat-letters.php:615
+#: includes/class-dfx-parish-retreat-letters.php:1015
+msgid "Messages are no longer being accepted for this attendant."
+msgstr "Ya no se aceptan mensajes para este asistente."

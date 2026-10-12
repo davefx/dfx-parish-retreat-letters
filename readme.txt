@@ -3,7 +3,7 @@ Contributors: davefx
 Tags: parish, retreat, letters, confidential, GDPR
 Requires at least: 5.0
 Tested up to: 6.9
-Stable tag: 26.10.01
+Stable tag: 26.10.12
 Requires PHP: 7.4
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
@@ -173,6 +173,14 @@ By default it is generated automatically and stored in the WordPress database (`
 Yes. A `.pot` translation template is included in the `languages/` directory. Create `.po` and `.mo` files for your language and place them in that folder following standard WordPress translation conventions.
 
 ## Changelog
+
+### 26.10.12
+
+- New: attendants can be **withdrawn** ("dar de baja"). Withdrawn attendants leave the regular list and appear in a new **Withdrawn attendants** tab with their withdrawal date and user, messages, letters and contact log. They cannot be edited, and their public message form no longer accepts messages. The contact log can still be used.
+- New: withdrawn attendants can be **reactivated** or **deleted permanently**. Only withdrawn attendants can be deleted. Withdrawing, reactivating and deleting are restricted to retreat managers.
+- Change: "Delete all attendants" is replaced by **Withdraw all attendants**.
+- Change: the CSV export only includes active attendants, and the import skips rows matching withdrawn attendants. The attendant count in the retreats list only counts active attendants.
+- Fix: deleting an attendant now checks that the user manages the attendant's retreat.
 
 ### 26.10.01
 

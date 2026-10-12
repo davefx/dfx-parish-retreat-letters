@@ -605,6 +605,20 @@ class DFXPRL {
 	 * @param object|null $retreat Retreat object (optional, for custom CSS).
 	 */
 	private function render_message_form( $attendant, $retreat = null ) {
+		// Withdrawn attendants no longer receive messages; the link works again if they are reactivated
+		if ( ! empty( $attendant->withdrawn_at ) ) {
+			?>
+			<div class="dfxprl-message-form-container">
+				<div class="dfxprl-message-form-content">
+					<h1><?php esc_html_e( 'Send a Confidential Message', 'dfx-parish-retreat-letters' ); ?></h1>
+					<div class="dfxprl-notice info">
+						<p><?php esc_html_e( 'Messages are no longer being accepted for this attendant.', 'dfx-parish-retreat-letters' ); ?></p>
+					</div>
+				</div>
+			</div>
+			<?php
+			return;
+		}
 		?>
 		<div class="dfxprl-message-form-container">
 			<div class="dfxprl-message-form-content">
@@ -986,12 +1000,20 @@ class DFXPRL {
 		$retreats_table = $this->database->get_retreats_table();
 
 		$retreat_data = $wpdb->get_row( $wpdb->prepare(
-			"SELECT r.disclaimer_text, r.disclaimer_acceptance_text
+			"SELECT r.disclaimer_text, r.disclaimer_acceptance_text, a.withdrawn_at
 			 FROM `{$attendants_table}` a
 			 INNER JOIN `{$retreats_table}` r ON a.retreat_id = r.id
 			 WHERE a.id = %d", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 			$attendant_id
 		) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
+
+		if ( ! $retreat_data ) {
+			wp_send_json_error( array( 'message' => __( 'Invalid attendant.', 'dfx-parish-retreat-letters' ) ) );
+		}
+
+		if ( ! empty( $retreat_data->withdrawn_at ) ) {
+			wp_send_json_error( array( 'message' => __( 'Messages are no longer being accepted for this attendant.', 'dfx-parish-retreat-letters' ) ) );
+		}
 
 		// Validate disclaimer if required
 		if ( ! empty( $retreat_data->disclaimer_text ) ) {

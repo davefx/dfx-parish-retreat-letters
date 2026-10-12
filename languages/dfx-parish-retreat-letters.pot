@@ -2,7 +2,7 @@
 # This file is distributed under the GPL v3.
 msgid ""
 msgstr ""
-"Project-Id-Version: DFX Parish Retreat Letters 26.10.01\n"
+"Project-Id-Version: DFX Parish Retreat Letters 26.10.12\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/dfx-parish-retreat-letters\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -3264,4 +3264,158 @@ msgstr ""
 #: includes/class-admin.php:3433
 #: includes/class-admin.php:4000
 msgid "Physical Letters"
+msgstr ""
+
+#: includes/class-admin.php:1021
+msgid "Permanently delete this attendant together with their messages, contact log and custom field values? This cannot be undone."
+msgstr ""
+
+#. translators: %s: attendant name
+#: includes/class-admin.php:1023
+#, php-format
+msgid "Withdraw %s from the retreat? They will move to the \"Withdrawn attendants\" tab, will not be editable and their message link will stop accepting letters. You can reactivate them at any time."
+msgstr ""
+
+#: includes/class-admin.php:1024
+msgid "Error updating the attendant. Please try again."
+msgstr ""
+
+#: includes/class-admin.php:1033
+msgid "Withdraw All Attendants - Confirmation Required"
+msgstr ""
+
+#. translators: %d: number of attendants
+#: includes/class-admin.php:1035
+#, php-format
+msgid "You are about to withdraw ALL %d attendants of this retreat."
+msgstr ""
+
+#: includes/class-admin.php:1036
+msgid "They will move to the \"Withdrawn attendants\" tab, will not be editable and their message links will stop accepting letters. Nothing is deleted: you can reactivate them one by one, or delete them permanently from that tab."
+msgstr ""
+
+#: includes/class-admin.php:1037
+#: includes/class-admin.php:3066
+msgid "WITHDRAW ALL ATTENDANTS"
+msgstr ""
+
+#: includes/class-admin.php:1040
+#: includes/class-admin.php:3451
+msgid "Withdraw All Attendants"
+msgstr ""
+
+#: includes/class-admin.php:1041
+msgid "Withdrawing..."
+msgstr ""
+
+#: includes/class-admin.php:2031
+msgid "This attendant has been withdrawn from the retreat and cannot be edited. Reactivate them from the \"Withdrawn attendants\" tab to edit their data."
+msgstr ""
+
+#: includes/class-admin.php:2032
+msgid "Withdrawn attendant"
+msgstr ""
+
+#: includes/class-admin.php:2090
+msgid "Only withdrawn attendants can be deleted, and only by retreat managers."
+msgstr ""
+
+#: includes/class-admin.php:2129
+msgid "This attendant has been withdrawn from the retreat and cannot be edited."
+msgstr ""
+
+#. translators: %d: Number of CSV rows that match withdrawn attendants
+#: includes/class-admin.php:2444
+#, php-format
+msgid "%d rows match withdrawn attendants and were not updated. Reactivate them first if you need to update their data."
+msgstr ""
+
+#: includes/class-admin.php:2963
+msgid "Only withdrawn attendants can be deleted. Withdraw the attendant first."
+msgstr ""
+
+#: includes/class-admin.php:2986
+msgid "This attendant has already been withdrawn."
+msgstr ""
+
+#: includes/class-admin.php:2990
+msgid "Error withdrawing the attendant. Please try again."
+msgstr ""
+
+#: includes/class-admin.php:2993
+msgid "Attendant withdrawn. You can find them in the \"Withdrawn attendants\" tab."
+msgstr ""
+
+#: includes/class-admin.php:3009
+msgid "This attendant has not been withdrawn."
+msgstr ""
+
+#: includes/class-admin.php:3013
+msgid "Error reactivating the attendant. Please try again."
+msgstr ""
+
+#: includes/class-admin.php:3016
+msgid "Attendant reactivated."
+msgstr ""
+
+#: includes/class-admin.php:3067
+msgid "Confirmation text verification failed. Action cancelled for security."
+msgstr ""
+
+#: includes/class-admin.php:3072
+msgid "Error withdrawing attendants. Please try again."
+msgstr ""
+
+#. translators: %d: Number of withdrawn attendants
+#: includes/class-admin.php:3086
+#, php-format
+msgid "%d attendants have been withdrawn. You can find them in the \"Withdrawn attendants\" tab."
+msgstr ""
+
+#. translators: %d: number of active attendants
+#: includes/class-admin.php:3307
+#, php-format
+msgid "Attendants (%d)"
+msgstr ""
+
+#. translators: %d: number of withdrawn attendants
+#: includes/class-admin.php:3316
+#, php-format
+msgid "Withdrawn attendants (%d)"
+msgstr ""
+
+#: includes/class-admin.php:3610
+#: includes/class-admin.php:4193
+msgid "Status"
+msgstr ""
+
+#: includes/class-admin.php:3661
+msgid "Reactivate"
+msgstr ""
+
+#: includes/class-admin.php:3664
+msgid "Delete Permanently"
+msgstr ""
+
+#: includes/class-admin.php:3700
+msgid "Withdraw"
+msgstr ""
+
+#: includes/class-admin.php:3713
+msgid "No attendants have been withdrawn from this retreat."
+msgstr ""
+
+#: includes/class-admin.php:4195
+msgid "Withdrawn"
+msgstr ""
+
+#. translators: 1: date of withdrawal, 2: user who withdrew the attendant
+#: includes/class-admin.php:4198
+#, php-format
+msgid "On %1$s by %2$s"
+msgstr ""
+
+#: includes/class-dfx-parish-retreat-letters.php:615
+#: includes/class-dfx-parish-retreat-letters.php:1015
+msgid "Messages are no longer being accepted for this attendant."
 msgstr ""

@@ -349,16 +349,17 @@ class DFXPRL_ConfidentialMessage {
 	 * Get message count by retreat ID.
 	 *
 	 * @since 1.8.0
-	 * @param int $retreat_id Retreat ID.
+	 * @param int       $retreat_id Retreat ID.
+	 * @param bool|null $withdrawn  false: only active attendants, true: only withdrawn ones, null: all (since 1.13.0).
 	 * @return int Message count.
 	 */
-	public function get_count_by_retreat( $retreat_id ) {
+	public function get_count_by_retreat( $retreat_id, $withdrawn = null ) {
 		global $wpdb;
 
-		$sql = 'SELECT COUNT(*) 
+		$sql = 'SELECT COUNT(*)
 				FROM ' . $this->database->get_messages_table() . ' m
 				INNER JOIN ' . $this->database->get_attendants_table() . ' a ON m.attendant_id = a.id
-				WHERE a.retreat_id = %d';
+				WHERE a.retreat_id = %d' . $this->get_attendant_withdrawn_clause( $withdrawn );
 
 		$sql = $wpdb->prepare( $sql, $retreat_id ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 
@@ -371,17 +372,18 @@ class DFXPRL_ConfidentialMessage {
 	 * Get count of non-printed messages by retreat ID.
 	 *
 	 * @since 1.8.0
-	 * @param int $retreat_id Retreat ID.
+	 * @param int       $retreat_id Retreat ID.
+	 * @param bool|null $withdrawn  false: only active attendants, true: only withdrawn ones, null: all (since 1.13.0).
 	 * @return int Non-printed message count.
 	 */
-	public function get_non_printed_count_by_retreat( $retreat_id ) {
+	public function get_non_printed_count_by_retreat( $retreat_id, $withdrawn = null ) {
 		global $wpdb;
 
-		$sql = 'SELECT COUNT(*) 
+		$sql = 'SELECT COUNT(*)
 				FROM ' . $this->database->get_messages_table() . ' m
 				INNER JOIN ' . $this->database->get_attendants_table() . ' a ON m.attendant_id = a.id
 				LEFT JOIN ' . $this->database->get_message_print_log_table() . ' p ON m.id = p.message_id
-				WHERE a.retreat_id = %d AND p.id IS NULL';
+				WHERE a.retreat_id = %d AND p.id IS NULL' . $this->get_attendant_withdrawn_clause( $withdrawn );
 
 		$sql = $wpdb->prepare( $sql, $retreat_id ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 
@@ -748,5 +750,19 @@ class DFXPRL_ConfidentialMessage {
 		}
 
 		return $deleted_count;
+	}
+
+	/**
+	 * Build the SQL condition that limits messages to active or withdrawn attendants.
+	 *
+	 * @since 1.13.0
+	 * @param bool|null $withdrawn false: active attendants, true: withdrawn ones, null: all.
+	 * @return string
+	 */
+	private function get_attendant_withdrawn_clause( $withdrawn ) {
+		if ( null === $withdrawn ) {
+			return '';
+		}
+		return $withdrawn ? ' AND a.withdrawn_at IS NOT NULL' : ' AND a.withdrawn_at IS NULL';
 	}
 }

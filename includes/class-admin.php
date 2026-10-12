@@ -165,7 +165,9 @@ class DFXPRL_Admin {
 		add_action( 'admin_notices', array( $this, 'maybe_render_ie_unsupported_notice' ) );
 		add_action( 'wp_ajax_dfxprl_delete_retreat', array( $this, 'ajax_delete_retreat' ) );
 		add_action( 'wp_ajax_dfxprl_delete_attendant', array( $this, 'ajax_delete_attendant' ) );
-		add_action( 'wp_ajax_dfxprl_delete_all_attendants', array( $this, 'ajax_delete_all_attendants' ) );
+		add_action( 'wp_ajax_dfxprl_withdraw_all_attendants', array( $this, 'ajax_withdraw_all_attendants' ) );
+		add_action( 'wp_ajax_dfxprl_withdraw_attendant', array( $this, 'ajax_withdraw_attendant' ) );
+		add_action( 'wp_ajax_dfxprl_reactivate_attendant', array( $this, 'ajax_reactivate_attendant' ) );
 		add_action( 'wp_ajax_dfxprl_export_attendants_csv', array( $this, 'ajax_export_attendants_csv' ) );
 		add_action( 'wp_ajax_dfxprl_generate_message_url', array( $this, 'ajax_generate_message_url' ) );
 		add_action( 'wp_ajax_dfxprl_print_message', array( $this, 'ajax_print_message' ) );
@@ -1016,7 +1018,10 @@ class DFXPRL_Admin {
 				'nonce'   => wp_create_nonce( 'dfxprl_retreats_nonce' ),
 				'messages' => array(
 					'confirmDelete' => __( 'Are you sure you want to delete this retreat?', 'dfx-parish-retreat-letters' ),
-					'confirmDeleteAttendant' => __( 'Are you sure you want to delete this attendant?', 'dfx-parish-retreat-letters' ),
+					'confirmDeleteAttendant' => __( 'Permanently delete this attendant together with their messages, contact log and custom field values? This cannot be undone.', 'dfx-parish-retreat-letters' ),
+					/* translators: %s: attendant name */
+					'confirmWithdrawAttendant' => __( 'Withdraw %s from the retreat? They will move to the "Withdrawn attendants" tab, will not be editable and their message link will stop accepting letters. You can reactivate them at any time.', 'dfx-parish-retreat-letters' ),
+					'statusChangeError' => __( 'Error updating the attendant. Please try again.', 'dfx-parish-retreat-letters' ),
 					'confirmDeleteMessage' => __( 'Are you sure you want to delete this message? This action cannot be undone.', 'dfx-parish-retreat-letters' ),
 					'deleteRetreatTitle' => __( 'Delete Retreat - Confirmation Required', 'dfx-parish-retreat-letters' ),
 					'deleteWarning' => __( 'WARNING: This action cannot be undone!', 'dfx-parish-retreat-letters' ),
@@ -1025,17 +1030,15 @@ class DFXPRL_Admin {
 					'deleteWarningPermanent' => __( 'This action is irreversible and cannot be restored', 'dfx-parish-retreat-letters' ),
 					'typeRetreatName' => __( 'To confirm deletion, please type the exact retreat name below:', 'dfx-parish-retreat-letters' ),
 					'retreatNamePlaceholder' => __( 'Type retreat name here...', 'dfx-parish-retreat-letters' ),
-					'deleteAllAttendantsTitle' => __( 'Delete All Attendants - Confirmation Required', 'dfx-parish-retreat-letters' ),
-					'deleteAllAttendantsWarning' => __( 'You are about to delete ALL attendants and their messages from this retreat!', 'dfx-parish-retreat-letters' ),
-					'deleteAllAttendantsWarningCount' => __( 'This will permanently delete:', 'dfx-parish-retreat-letters' ),
+					'withdrawAllAttendantsTitle' => __( 'Withdraw All Attendants - Confirmation Required', 'dfx-parish-retreat-letters' ),
 					/* translators: %d: number of attendants */
-					'deleteAllAttendantsWarningAttendants' => __( '%d attendants', 'dfx-parish-retreat-letters' ),
-					/* translators: %d: number of messages */
-					'deleteAllAttendantsWarningMessages' => __( '%d messages', 'dfx-parish-retreat-letters' ),
-					'confirmationText' => __( 'DELETE ALL ATTENDANTS', 'dfx-parish-retreat-letters' ),
+					'withdrawAllAttendantsWarning' => __( 'You are about to withdraw ALL %d attendants of this retreat.', 'dfx-parish-retreat-letters' ),
+					'withdrawAllAttendantsDetails' => __( 'They will move to the "Withdrawn attendants" tab, will not be editable and their message links will stop accepting letters. Nothing is deleted: you can reactivate them one by one, or delete them permanently from that tab.', 'dfx-parish-retreat-letters' ),
+					'confirmationText' => __( 'WITHDRAW ALL ATTENDANTS', 'dfx-parish-retreat-letters' ),
 					'typeConfirmation' => __( 'To confirm, type the text shown above exactly', 'dfx-parish-retreat-letters' ),
 					'confirmationPlaceholder' => __( 'Type confirmation here...', 'dfx-parish-retreat-letters' ),
-					'deleteAllButton' => __( 'Delete All Attendants Forever', 'dfx-parish-retreat-letters' ),
+					'withdrawAllButton' => __( 'Withdraw All Attendants', 'dfx-parish-retreat-letters' ),
+					'withdrawing' => __( 'Withdrawing...', 'dfx-parish-retreat-letters' ),
 					'deleteButton' => __( 'Delete Forever', 'dfx-parish-retreat-letters' ),
 					'cancelButton' => __( 'Cancel', 'dfx-parish-retreat-letters' ),
 					'deleting' => __( 'Deleting...', 'dfx-parish-retreat-letters' ),
@@ -1905,6 +1908,7 @@ class DFXPRL_Admin {
 		// Get query parameters for search, sorting, and filtering
 		// phpcs:disable WordPress.Security.NonceVerification.Recommended -- URL parameters for list filtering and sorting
 		$search   = sanitize_text_field( wp_unslash( $_GET['s'] ?? '' ) );
+		$withdrawn_view = 'withdrawn' === sanitize_key( wp_unslash( $_GET['status'] ?? '' ) );
 		$orderby  = sanitize_text_field( wp_unslash( $_GET['orderby'] ?? 'name' ) );
 		$order    = sanitize_text_field( wp_unslash( $_GET['order'] ?? 'ASC' ) );
 		$page_num = max( 1, absint( $_GET['paged'] ?? 1 ) );
@@ -1945,6 +1949,7 @@ class DFXPRL_Admin {
 			'order'                    => $order,
 			'per_page'                 => $per_page,
 			'page'                     => $page_num,
+			'withdrawn'                => $withdrawn_view,
 		) );
 
 		$filters = array(
@@ -1957,15 +1962,20 @@ class DFXPRL_Admin {
 			'filter_internal_notes'    => $filter_internal_notes,
 		);
 
-		$total_items = $this->attendant_model->get_count_by_retreat( $retreat_id, $search, $filters );
+		$total_items = $this->attendant_model->get_count_by_retreat( $retreat_id, $search, $filters + array( 'withdrawn' => $withdrawn_view ) );
 		$total_pages = ceil( $total_items / $per_page );
 
-		// Get message counts for this retreat
-		$total_messages = $this->message_model->get_count_by_retreat( $retreat_id );
-		$non_printed_messages = $this->message_model->get_non_printed_count_by_retreat( $retreat_id );
-		$physical_letters = $this->attendant_model->get_physical_letters_count_by_retreat( $retreat_id );
+		// Message and letter counts of the attendants shown in this tab
+		$total_messages = $this->message_model->get_count_by_retreat( $retreat_id, $withdrawn_view );
+		$non_printed_messages = $this->message_model->get_non_printed_count_by_retreat( $retreat_id, $withdrawn_view );
+		$physical_letters = $this->attendant_model->get_physical_letters_count_by_retreat( $retreat_id, $withdrawn_view );
 
-		$this->render_attendants_list_page( $retreat, $attendants, $search, $orderby, $order, $filters, $page_num, $total_pages, $total_items, $total_messages, $non_printed_messages, $physical_letters );
+		$tab_counts = array(
+			'active'    => $this->attendant_model->get_count_by_retreat( $retreat_id, '', array( 'withdrawn' => false ) ),
+			'withdrawn' => $this->attendant_model->get_count_by_retreat( $retreat_id, '', array( 'withdrawn' => true ) ),
+		);
+
+		$this->render_attendants_list_page( $retreat, $attendants, $search, $orderby, $order, $filters, $page_num, $total_pages, $total_items, $total_messages, $non_printed_messages, $physical_letters, $withdrawn_view, $tab_counts );
 	}
 
 	/**
@@ -2016,6 +2026,17 @@ class DFXPRL_Admin {
 			wp_die( esc_html__( 'Retreat or attendant not found, or attendant does not belong to this retreat.', 'dfx-parish-retreat-letters' ) );
 		}
 
+		if ( DFXPRL_Attendant::is_withdrawn( $attendant ) ) {
+			wp_die(
+				esc_html__( 'This attendant has been withdrawn from the retreat and cannot be edited. Reactivate them from the "Withdrawn attendants" tab to edit their data.', 'dfx-parish-retreat-letters' ),
+				esc_html__( 'Withdrawn attendant', 'dfx-parish-retreat-letters' ),
+				array(
+					'back_link' => true,
+					'response'  => 403,
+				)
+			);
+		}
+
 		$this->render_attendant_add_edit_page( $retreat, $attendant );
 	}
 
@@ -2064,6 +2085,10 @@ class DFXPRL_Admin {
 		$attendant_id = absint( $_POST['attendant_id'] ?? 0 );
 
 		if ( $action === 'delete' && $attendant_id ) {
+			$attendant = $this->attendant_model->get( $attendant_id );
+			if ( ! $attendant || (int) $attendant->retreat_id !== (int) $retreat_id || ! DFXPRL_Attendant::is_withdrawn( $attendant ) || ! $this->permissions->current_user_can_manage_retreat( $retreat_id ) ) {
+				wp_die( esc_html__( 'Only withdrawn attendants can be deleted, and only by retreat managers.', 'dfx-parish-retreat-letters' ) );
+			}
 			if ( $this->attendant_model->delete( $attendant_id ) ) {
 				$this->add_admin_notice( __( 'Attendant deleted successfully.', 'dfx-parish-retreat-letters' ), 'success' );
 			} else {
@@ -2099,6 +2124,9 @@ class DFXPRL_Admin {
 			$attendant = $this->attendant_model->get( $attendant_id );
 			if ( ! $attendant || (int) $attendant->retreat_id !== (int) $retreat_id ) {
 				wp_die( esc_html__( 'Retreat or attendant not found, or attendant does not belong to this retreat.', 'dfx-parish-retreat-letters' ) );
+			}
+			if ( DFXPRL_Attendant::is_withdrawn( $attendant ) ) {
+				wp_die( esc_html__( 'This attendant has been withdrawn from the retreat and cannot be edited.', 'dfx-parish-retreat-letters' ) );
 			}
 		}
 
@@ -2261,6 +2289,7 @@ class DFXPRL_Admin {
 		$line_number = 0;
 		$error_details = array();
 		$field_warnings = array();
+		$withdrawn_skipped = 0;
 		$ambiguous_dates = array();
 
 		// Read header row for field mapping
@@ -2320,7 +2349,10 @@ class DFXPRL_Admin {
 				$mapped_data['date_of_birth']
 			);
 
-			if ( $existing_attendant_id ) {
+			if ( $existing_attendant_id && DFXPRL_Attendant::is_withdrawn( $this->attendant_model->get( $existing_attendant_id ) ) ) {
+				// Withdrawn attendants are not editable, so their rows are left untouched
+				$withdrawn_skipped++;
+			} elseif ( $existing_attendant_id ) {
 				// Update emergency contact information for existing attendant
 				$emergency_contact_data = array(
 					'emergency_contact_name'    => $mapped_data['emergency_contact_name'],
@@ -2403,6 +2435,17 @@ class DFXPRL_Admin {
 			}
 
 			$this->add_admin_notice( $error_message, 'warning' );
+		}
+
+		if ( $withdrawn_skipped > 0 ) {
+			$this->add_admin_notice(
+				sprintf(
+					/* translators: %d: Number of CSV rows that match withdrawn attendants */
+					__( '%d rows match withdrawn attendants and were not updated. Reactivate them first if you need to update their data.', 'dfx-parish-retreat-letters' ),
+					$withdrawn_skipped
+				),
+				'info'
+			);
 		}
 
 		if ( ! empty( $field_warnings ) ) {
@@ -2913,9 +2956,14 @@ class DFXPRL_Admin {
 			wp_die( esc_html__( 'Security check failed.', 'dfx-parish-retreat-letters' ) );
 		}
 
-		$attendant_id = absint( $_POST['attendant_id'] ?? 0 );
+		$attendant = $this->get_managed_attendant_from_request();
 
-		if ( $this->attendant_model->delete( $attendant_id ) ) {
+		// Only withdrawn attendants can be deleted
+		if ( ! DFXPRL_Attendant::is_withdrawn( $attendant ) ) {
+			wp_send_json_error( array( 'message' => __( 'Only withdrawn attendants can be deleted. Withdraw the attendant first.', 'dfx-parish-retreat-letters' ) ) );
+		}
+
+		if ( $this->attendant_model->delete( $attendant->id ) ) {
 			wp_send_json_success( array( 'message' => __( 'Attendant deleted successfully.', 'dfx-parish-retreat-letters' ) ) );
 		} else {
 			wp_send_json_error( array( 'message' => __( 'Error deleting attendant.', 'dfx-parish-retreat-letters' ) ) );
@@ -2923,59 +2971,122 @@ class DFXPRL_Admin {
 	}
 
 	/**
-	 * AJAX handler to delete all attendants from a retreat.
-	 * Includes security verification and confirmation name check.
+	 * AJAX handler to withdraw an attendant from the retreat.
 	 *
-	 * @since 1.9.0
+	 * @since 1.13.0
 	 */
-	public function ajax_delete_all_attendants() {
+	public function ajax_withdraw_attendant() {
 		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ?? '' ) ), 'dfxprl_retreats_nonce' ) ) {
-			wp_die( esc_html__( 'Security check failed.', 'dfx-parish-retreat-letters' ) );
+			wp_send_json_error( array( 'message' => __( 'Security check failed.', 'dfx-parish-retreat-letters' ) ) );
+		}
+
+		$attendant = $this->get_managed_attendant_from_request();
+
+		if ( DFXPRL_Attendant::is_withdrawn( $attendant ) ) {
+			wp_send_json_error( array( 'message' => __( 'This attendant has already been withdrawn.', 'dfx-parish-retreat-letters' ) ) );
+		}
+
+		if ( ! $this->attendant_model->withdraw( $attendant->id, get_current_user_id() ) ) {
+			wp_send_json_error( array( 'message' => __( 'Error withdrawing the attendant. Please try again.', 'dfx-parish-retreat-letters' ) ) );
+		}
+
+		wp_send_json_success( array( 'message' => __( 'Attendant withdrawn. You can find them in the "Withdrawn attendants" tab.', 'dfx-parish-retreat-letters' ) ) );
+	}
+
+	/**
+	 * AJAX handler to bring a withdrawn attendant back to the retreat.
+	 *
+	 * @since 1.13.0
+	 */
+	public function ajax_reactivate_attendant() {
+		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ?? '' ) ), 'dfxprl_retreats_nonce' ) ) {
+			wp_send_json_error( array( 'message' => __( 'Security check failed.', 'dfx-parish-retreat-letters' ) ) );
+		}
+
+		$attendant = $this->get_managed_attendant_from_request();
+
+		if ( ! DFXPRL_Attendant::is_withdrawn( $attendant ) ) {
+			wp_send_json_error( array( 'message' => __( 'This attendant has not been withdrawn.', 'dfx-parish-retreat-letters' ) ) );
+		}
+
+		if ( ! $this->attendant_model->reactivate( $attendant->id ) ) {
+			wp_send_json_error( array( 'message' => __( 'Error reactivating the attendant. Please try again.', 'dfx-parish-retreat-letters' ) ) );
+		}
+
+		wp_send_json_success( array( 'message' => __( 'Attendant reactivated.', 'dfx-parish-retreat-letters' ) ) );
+	}
+
+	/**
+	 * Get the attendant of an AJAX request, checking that the current user manages its retreat.
+	 *
+	 * Sends a JSON error (and stops) when the attendant does not exist or the user lacks permission.
+	 * The nonce must be verified by the caller.
+	 *
+	 * @since 1.13.0
+	 * @return object Attendant object.
+	 */
+	private function get_managed_attendant_from_request() {
+		$attendant = $this->attendant_model->get( absint( $_POST['attendant_id'] ?? 0 ) ); // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce verified by the caller
+
+		if ( ! $attendant ) {
+			wp_send_json_error( array( 'message' => __( 'Attendant not found.', 'dfx-parish-retreat-letters' ) ) );
+		}
+
+		if ( ! $this->permissions->current_user_can_manage_retreat( $attendant->retreat_id ) ) {
+			wp_send_json_error( array( 'message' => __( 'You do not have permission to perform this action.', 'dfx-parish-retreat-letters' ) ) );
+		}
+
+		return $attendant;
+	}
+
+	/**
+	 * AJAX handler to withdraw every active attendant of a retreat.
+	 * Includes security verification and a typed confirmation check.
+	 *
+	 * @since 1.13.0 Replaces the former "delete all attendants" action.
+	 */
+	public function ajax_withdraw_all_attendants() {
+		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ?? '' ) ), 'dfxprl_retreats_nonce' ) ) {
+			wp_send_json_error( array( 'message' => __( 'Security check failed.', 'dfx-parish-retreat-letters' ) ) );
 		}
 
 		$retreat_id = absint( $_POST['retreat_id'] ?? 0 );
 		$confirmation_text = sanitize_text_field( wp_unslash( $_POST['confirmation_text'] ?? '' ) );
 
-		// Get the retreat to verify it exists
 		$retreat = $this->retreat_model->get( $retreat_id );
 		if ( ! $retreat ) {
 			wp_send_json_error( array( 'message' => __( 'Retreat not found.', 'dfx-parish-retreat-letters' ) ) );
 		}
 
-		// Verify the confirmation text matches exactly (using translatable string)
-		$expected_confirmation = __( 'DELETE ALL ATTENDANTS', 'dfx-parish-retreat-letters' );
-		if ( $confirmation_text !== $expected_confirmation ) {
-			wp_send_json_error( array( 'message' => __( 'Confirmation text verification failed. Deletion cancelled for security.', 'dfx-parish-retreat-letters' ) ) );
-		}
-
-		// Check if user has permission to manage this retreat
 		if ( ! $this->permissions->current_user_can_manage_retreat( $retreat_id ) ) {
 			wp_send_json_error( array( 'message' => __( 'You do not have permission to perform this action.', 'dfx-parish-retreat-letters' ) ) );
 		}
 
-		// Get count of attendants before deletion for the success message
-		$attendant_count = $this->attendant_model->get_count_by_retreat( $retreat_id );
-
-		// Perform the deletion
-		if ( $this->attendant_model->delete_by_retreat( $retreat_id ) ) {
-			if ( class_exists( 'DFXPRL_GDPR' ) ) {
-				DFXPRL_GDPR::get_instance()->log_audit_event( 'attendants_all_removed', array(
-					'retreat_id'       => (int) $retreat_id,
-					'retreat_name'     => $retreat->name,
-					'attendants_count' => (int) $attendant_count,
-				) );
-			}
-
-			wp_send_json_success( array(
-				'message' => sprintf(
-					/* translators: %d: Number of attendants deleted */
-					__( 'Successfully deleted all %d attendants and their messages from this retreat.', 'dfx-parish-retreat-letters' ),
-					$attendant_count
-				),
-			) );
-		} else {
-			wp_send_json_error( array( 'message' => __( 'Error deleting attendants. Please try again.', 'dfx-parish-retreat-letters' ) ) );
+		// Verify the confirmation text matches exactly (using translatable string)
+		if ( $confirmation_text !== __( 'WITHDRAW ALL ATTENDANTS', 'dfx-parish-retreat-letters' ) ) {
+			wp_send_json_error( array( 'message' => __( 'Confirmation text verification failed. Action cancelled for security.', 'dfx-parish-retreat-letters' ) ) );
 		}
+
+		$withdrawn = $this->attendant_model->withdraw_all_by_retreat( $retreat_id, get_current_user_id() );
+		if ( false === $withdrawn ) {
+			wp_send_json_error( array( 'message' => __( 'Error withdrawing attendants. Please try again.', 'dfx-parish-retreat-letters' ) ) );
+		}
+
+		if ( class_exists( 'DFXPRL_GDPR' ) ) {
+			DFXPRL_GDPR::get_instance()->log_audit_event( 'attendants_all_withdrawn', array(
+				'retreat_id'       => (int) $retreat_id,
+				'retreat_name'     => $retreat->name,
+				'attendants_count' => (int) $withdrawn,
+			) );
+		}
+
+		wp_send_json_success( array(
+			'message' => sprintf(
+				/* translators: %d: Number of withdrawn attendants */
+				__( '%d attendants have been withdrawn. You can find them in the "Withdrawn attendants" tab.', 'dfx-parish-retreat-letters' ),
+				$withdrawn
+			),
+		) );
 	}
 
 	/**
@@ -3052,9 +3163,13 @@ class DFXPRL_Admin {
 	 * @param int    $total_messages       Total messages count for this retreat.
 	 * @param int    $non_printed_messages Non-printed messages count for this retreat.
 	 * @param int    $physical_letters     Physical letters count for this retreat.
+	 * @param bool   $withdrawn_view       Whether the "Withdrawn attendants" tab is shown.
+	 * @param array  $tab_counts           Attendants in each tab: { active, withdrawn }.
 	 */
-	private function render_attendants_list_page( $retreat, $attendants, $search, $orderby, $order, $filters, $page_num, $total_pages, $total_items, $total_messages = 0, $non_printed_messages = 0, $physical_letters = 0 ) {
+	private function render_attendants_list_page( $retreat, $attendants, $search, $orderby, $order, $filters, $page_num, $total_pages, $total_items, $total_messages = 0, $non_printed_messages = 0, $physical_letters = 0, $withdrawn_view = false, $tab_counts = array() ) {
 		$can_manage_retreat = $this->permissions->current_user_can_manage_retreat( $retreat->id );
+		// URL parameters that keep the current tab when sorting or filtering
+		$view_params = $withdrawn_view ? array( 'status' => 'withdrawn' ) : array();
 
 		// Custom fields shown as list columns, and their values for the attendants on this page
 		$list_fields = array_filter( $this->custom_field_model->get_viewable_by_retreat( $retreat->id ), function( $field ) {
@@ -3063,7 +3178,11 @@ class DFXPRL_Admin {
 		$custom_values = $list_fields ? $this->custom_field_model->get_values_for_attendants( wp_list_pluck( $attendants, 'id' ) ) : array();
 
 		// Columns available in this list, in their default order (the Actions column always goes last)
-		$available_columns = array( 'name', 'surnames', 'date_of_birth', 'emergency_contact', 'invited_by', 'incompatibilities' );
+		$available_columns = array( 'name', 'surnames' );
+		if ( $withdrawn_view ) {
+			$available_columns[] = 'withdrawal';
+		}
+		array_push( $available_columns, 'date_of_birth', 'emergency_contact', 'invited_by', 'incompatibilities' );
 		if ( ! empty( $retreat->notes_enabled ) ) {
 			$available_columns[] = 'notes';
 		}
@@ -3087,7 +3206,7 @@ class DFXPRL_Admin {
 		$column_order = $this->merge_list_column_order( $saved_column_order, $available_columns );
 
 		// Helper function to generate sortable column header URL
-		$get_sort_url = function( $column ) use ( $retreat, $search, $orderby, $order, $filters ) {
+		$get_sort_url = function( $column ) use ( $retreat, $search, $orderby, $order, $filters, $view_params ) {
 			$new_order = ( $orderby === $column && $order === 'ASC' ) ? 'DESC' : 'ASC';
 			$params = array(
 				'page'      => 'dfxprl-retreats',
@@ -3095,7 +3214,7 @@ class DFXPRL_Admin {
 				'retreat_id' => $retreat->id,
 				'orderby'   => $column,
 				'order'     => $new_order,
-			);
+			) + $view_params;
 			if ( ! empty( $search ) ) {
 				$params['s'] = $search;
 			}
@@ -3109,7 +3228,7 @@ class DFXPRL_Admin {
 		};
 
 		// Helper function to generate Messages column sort URL with 4-state cycle
-		$get_messages_sort_url = function() use ( $retreat, $search, $orderby, $order, $filters ) {
+		$get_messages_sort_url = function() use ( $retreat, $search, $orderby, $order, $filters, $view_params ) {
 			// Cycle: non_printed_count DESC -> message_count ASC -> message_count DESC -> non_printed_count ASC -> back to start
 			$next_orderby = 'non_printed_count';
 			$next_order = 'DESC';
@@ -3131,7 +3250,7 @@ class DFXPRL_Admin {
 				'retreat_id' => $retreat->id,
 				'orderby'   => $next_orderby,
 				'order'     => $next_order,
-			);
+			) + $view_params;
 			if ( ! empty( $search ) ) {
 				$params['s'] = $search;
 			}
@@ -3179,10 +3298,35 @@ class DFXPRL_Admin {
 
 			<?php $this->display_admin_notices(); ?>
 
+			<?php $attendants_url = admin_url( 'admin.php?page=dfxprl-retreats&action=attendants&retreat_id=' . $retreat->id ); ?>
+			<nav class="nav-tab-wrapper dfxprl-attendant-tabs">
+				<a href="<?php echo esc_url( $attendants_url ); ?>" class="nav-tab<?php echo $withdrawn_view ? '' : ' nav-tab-active'; ?>">
+					<?php
+					printf(
+						/* translators: %d: number of active attendants */
+						esc_html__( 'Attendants (%d)', 'dfx-parish-retreat-letters' ),
+						esc_html( $tab_counts['active'] ?? 0 )
+					);
+					?>
+				</a>
+				<a href="<?php echo esc_url( add_query_arg( 'status', 'withdrawn', $attendants_url ) ); ?>" class="nav-tab<?php echo $withdrawn_view ? ' nav-tab-active' : ''; ?>">
+					<?php
+					printf(
+						/* translators: %d: number of withdrawn attendants */
+						esc_html__( 'Withdrawn attendants (%d)', 'dfx-parish-retreat-letters' ),
+						esc_html( $tab_counts['withdrawn'] ?? 0 )
+					);
+					?>
+				</a>
+			</nav>
+
 			<form method="get" action="">
 				<input type="hidden" name="page" value="dfxprl-retreats">
 				<input type="hidden" name="action" value="attendants">
 				<input type="hidden" name="retreat_id" value="<?php echo esc_attr( $retreat->id ); ?>">
+				<?php if ( $withdrawn_view ) : ?>
+					<input type="hidden" name="status" value="withdrawn">
+				<?php endif; ?>
 				<p class="search-box">
 					<label class="screen-reader-text" for="attendant-search-input"><?php esc_html_e( 'Search Attendants:', 'dfx-parish-retreat-letters' ); ?></label>
 					<input type="search" id="attendant-search-input" name="s" value="<?php echo esc_attr( $search ); ?>">
@@ -3206,6 +3350,9 @@ class DFXPRL_Admin {
 								<input type="hidden" name="page" value="dfxprl-retreats">
 								<input type="hidden" name="action" value="attendants">
 								<input type="hidden" name="retreat_id" value="<?php echo esc_attr( $retreat->id ); ?>">
+								<?php if ( $withdrawn_view ) : ?>
+									<input type="hidden" name="status" value="withdrawn">
+								<?php endif; ?>
 								<?php if ( ! empty( $search ) ) : ?>
 									<input type="hidden" name="s" value="<?php echo esc_attr( $search ); ?>">
 								<?php endif; ?>
@@ -3286,7 +3433,7 @@ class DFXPRL_Admin {
 						<p style="margin-top: 5px;" class="dfxprl-letters-summary">
 							<?php echo $this->render_letters_summary( $total_messages, $physical_letters ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Escaped while building the HTML ?>
 						</p>
-						<?php if ( $can_manage_retreat ) : ?>
+						<?php if ( $can_manage_retreat && ! $withdrawn_view ) : ?>
 							<button type="submit" name="action" value="export_csv" class="button">
 								<?php esc_html_e( 'Export CSV', 'dfx-parish-retreat-letters' ); ?>
 							</button>
@@ -3295,15 +3442,13 @@ class DFXPRL_Admin {
 							</a>
 						<?php endif; ?>
 					</div>
-					<?php if ( $total_items > 0 && $can_manage_retreat ) : ?>
+					<?php if ( $total_items > 0 && $can_manage_retreat && ! $withdrawn_view ) : ?>
 						<div class="alignright actions">
-							<button type="button" class="button button-link-delete dfxprl-delete-all-attendants" 
+							<button type="button" class="button button-link-delete dfxprl-withdraw-all-attendants"
 								data-retreat-id="<?php echo esc_attr( $retreat->id ); ?>"
-								data-retreat-name="<?php echo esc_attr( $retreat->name ); ?>"
-								data-attendant-count="<?php echo esc_attr( $total_items ); ?>"
-								data-message-count="<?php echo esc_attr( $total_messages ); ?>"
+								data-attendant-count="<?php echo esc_attr( $tab_counts['active'] ?? $total_items ); ?>"
 								style="color: #d63638;">
-								<?php esc_html_e( 'Delete All Attendants', 'dfx-parish-retreat-letters' ); ?>
+								<?php esc_html_e( 'Withdraw All Attendants', 'dfx-parish-retreat-letters' ); ?>
 							</button>
 						</div>
 					<?php endif; ?>
@@ -3344,7 +3489,7 @@ class DFXPRL_Admin {
 					</select>
 				</div>
 
-				<?php if ( $can_manage_retreat ) : ?>
+				<?php if ( $can_manage_retreat && ! $withdrawn_view ) : ?>
 					<p class="description dfxprl-column-order-help">
 						<?php esc_html_e( 'Drag the column headers by their handle to reorder the columns. The order is saved for everyone who uses this retreat.', 'dfx-parish-retreat-letters' ); ?>
 						<button type="button" class="button-link dfxprl-reset-column-order" data-retreat-id="<?php echo esc_attr( $retreat->id ); ?>"<?php echo empty( $saved_column_order ) ? ' style="display: none;"' : ''; ?>>
@@ -3353,7 +3498,7 @@ class DFXPRL_Admin {
 					</p>
 				<?php endif; ?>
 
-				<table class="wp-list-table widefat fixed striped dfxprl-attendants-table"<?php echo $can_manage_retreat ? ' data-retreat-id="' . esc_attr( $retreat->id ) . '"' : ''; ?>>
+				<table class="wp-list-table widefat fixed striped dfxprl-attendants-table"<?php echo ( $can_manage_retreat && ! $withdrawn_view ) ? ' data-retreat-id="' . esc_attr( $retreat->id ) . '"' : ''; ?>>
 					<thead>
 						<?php $column_headers = array(); ?>
 						<tr>
@@ -3462,6 +3607,7 @@ class DFXPRL_Admin {
 							</th>
 							<?php $column_headers[ 'total_letters' ] = ob_get_clean(); ?>
 							<?php $column_headers[ 'contact_log' ] = '<th scope="col" class="manage-column">' . esc_html__( 'Contact Log', 'dfx-parish-retreat-letters' ) . '</th>'; ?>
+							<?php $column_headers[ 'withdrawal' ] = '<th scope="col" class="manage-column">' . esc_html__( 'Status', 'dfx-parish-retreat-letters' ) . '</th>'; ?>
 							<?php foreach ( $list_fields as $field ) : ?>
 								<?php if ( $field->sortable ) : ?>
 									<?php $sort_key = 'cf_' . $field->slug; ?>
@@ -3481,7 +3627,7 @@ class DFXPRL_Admin {
 							<?php endforeach; ?>
 							<?php
 							foreach ( $column_order as $column_key ) {
-								echo $this->tag_list_column( $column_headers[ $column_key ], $column_key, $can_manage_retreat ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Escaped when captured
+								echo $this->tag_list_column( $column_headers[ $column_key ], $column_key, $can_manage_retreat && ! $withdrawn_view ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Escaped when captured
 							}
 							?>
 							<th scope="col" class="manage-column"><?php esc_html_e( 'Actions', 'dfx-parish-retreat-letters' ); ?></th>
@@ -3508,6 +3654,17 @@ class DFXPRL_Admin {
 									}
 									?>
 									<td data-colname="<?php esc_attr_e( 'Actions', 'dfx-parish-retreat-letters' ); ?>">
+										<?php if ( DFXPRL_Attendant::is_withdrawn( $attendant ) ) : ?>
+											<?php // Withdrawn attendants can only be brought back or deleted for good ?>
+											<?php if ( $can_manage_retreat ) : ?>
+												<button type="button" class="button button-small button-primary dfxprl-reactivate-attendant" data-attendant-id="<?php echo esc_attr( $attendant->id ); ?>">
+													<?php esc_html_e( 'Reactivate', 'dfx-parish-retreat-letters' ); ?>
+												</button>
+												<button type="button" class="button button-small button-link-delete dfxprl-delete-attendant" data-attendant-id="<?php echo esc_attr( $attendant->id ); ?>">
+													<?php esc_html_e( 'Delete Permanently', 'dfx-parish-retreat-letters' ); ?>
+												</button>
+											<?php endif; ?>
+										<?php else : ?>
 										<?php if ( $this->permissions->current_user_can_manage_messages( $retreat->id ) ) : ?>
 											<a href="<?php echo esc_url( admin_url( 'admin.php?page=dfxprl-retreats&action=edit_attendant&retreat_id=' . $retreat->id . '&attendant_id=' . $attendant->id ) ); ?>" class="button button-small">
 												<?php esc_html_e( 'Edit', 'dfx-parish-retreat-letters' ); ?>
@@ -3538,10 +3695,11 @@ class DFXPRL_Admin {
 											<?php endif; ?>
 										<?php endif; ?>
 
-										<?php if ( $this->permissions->current_user_can_manage_retreat( $retreat->id ) ) : ?>
-											<button type="button" class="button button-small button-link-delete dfxprl-delete-attendant" data-attendant-id="<?php echo esc_attr( $attendant->id ); ?>">
-												<?php esc_html_e( 'Delete', 'dfx-parish-retreat-letters' ); ?>
+										<?php if ( $can_manage_retreat ) : ?>
+											<button type="button" class="button button-small button-link-delete dfxprl-withdraw-attendant" data-attendant-id="<?php echo esc_attr( $attendant->id ); ?>" data-attendant-name="<?php echo esc_attr( trim( $attendant->name . ' ' . $attendant->surnames ) ); ?>">
+												<?php esc_html_e( 'Withdraw', 'dfx-parish-retreat-letters' ); ?>
 											</button>
+										<?php endif; ?>
 										<?php endif; ?>
 									</td>
 								</tr>
@@ -3551,6 +3709,8 @@ class DFXPRL_Admin {
 								<td colspan="<?php echo esc_attr( count( $column_order ) + 1 ); ?>">
 									<?php if ( $search || ! empty( array_filter( $filters ) ) ) : ?>
 										<?php esc_html_e( 'No attendants found matching your criteria.', 'dfx-parish-retreat-letters' ); ?>
+									<?php elseif ( $withdrawn_view ) : ?>
+										<?php esc_html_e( 'No attendants have been withdrawn from this retreat.', 'dfx-parish-retreat-letters' ); ?>
 									<?php else : ?>
 										<?php esc_html_e( 'No attendants found for this retreat.', 'dfx-parish-retreat-letters' ); ?>
 										<?php if ( $this->permissions->current_user_can_manage_retreat( $retreat->id ) ) : ?>
@@ -3935,6 +4095,11 @@ class DFXPRL_Admin {
 		switch ( $key ) {
 			case 'name':
 				$label = __( 'Name', 'dfx-parish-retreat-letters' );
+				if ( DFXPRL_Attendant::is_withdrawn( $attendant ) ) {
+					// Withdrawn attendants cannot be edited, so there is no link to their page
+					echo '<strong>' . esc_html( $attendant->name ) . '</strong>';
+					break;
+				}
 				?>
 				<strong>
 					<a href="<?php echo esc_url( admin_url( 'admin.php?page=dfxprl-retreats&action=edit_attendant&retreat_id=' . $retreat->id . '&attendant_id=' . $attendant->id ) ); ?>">
@@ -4024,6 +4189,20 @@ class DFXPRL_Admin {
 				echo '<strong>' . esc_html( (int) $message_count + (int) $attendant->physical_letters ) . '</strong>';
 				break;
 
+			case 'withdrawal':
+				$label = __( 'Status', 'dfx-parish-retreat-letters' );
+				if ( DFXPRL_Attendant::is_withdrawn( $attendant ) ) {
+					echo '<strong>' . esc_html__( 'Withdrawn', 'dfx-parish-retreat-letters' ) . '</strong><br><small>';
+					printf(
+						/* translators: 1: date of withdrawal, 2: user who withdrew the attendant */
+						esc_html__( 'On %1$s by %2$s', 'dfx-parish-retreat-letters' ),
+						esc_html( get_date_from_gmt( $attendant->withdrawn_at, get_option( 'date_format' ) ) ),
+						esc_html( $this->get_user_display_name( $attendant->withdrawn_by ) )
+					);
+					echo '</small>';
+				}
+				break;
+
 			case 'contact_log':
 				$label = __( 'Contact Log', 'dfx-parish-retreat-letters' );
 				$count = $log_summary ? (int) $log_summary->count : 0;
@@ -4111,6 +4290,11 @@ class DFXPRL_Admin {
 	 */
 	private function get_list_cell_editor( $key, $retreat, $attendant, $field, $custom_values ) {
 		$title = __( 'Click to edit', 'dfx-parish-retreat-letters' );
+
+		// Withdrawn attendants are not editable
+		if ( DFXPRL_Attendant::is_withdrawn( $attendant ) ) {
+			return null;
+		}
 
 		if ( $field ) {
 			if ( ! $this->custom_field_model->current_user_can_edit( $field, $retreat->id ) ) {

@@ -38,7 +38,7 @@ class DFXPRL_Database {
 	 * @since 1.0.0
 	 * @var string
 	 */
-	const DB_VERSION = '1.12.0';
+	const DB_VERSION = '1.13.0';
 
 	/**
 	 * The database version option name.
@@ -256,6 +256,8 @@ class DFXPRL_Database {
 			notes text NULL DEFAULT NULL,
 			internal_notes text NULL DEFAULT NULL,
 			physical_letters int(10) unsigned NOT NULL DEFAULT 0,
+			withdrawn_at datetime NULL DEFAULT NULL,
+			withdrawn_by bigint(20) unsigned NULL DEFAULT NULL,
 			created_at datetime DEFAULT CURRENT_TIMESTAMP,
 			updated_at datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 			PRIMARY KEY (id),
@@ -263,7 +265,8 @@ class DFXPRL_Database {
 			INDEX idx_name (name),
 			INDEX idx_surnames (surnames),
 			INDEX idx_emergency_contact_email (emergency_contact_email),
-			INDEX idx_message_url_token (message_url_token)
+			INDEX idx_message_url_token (message_url_token),
+			INDEX idx_withdrawn_at (withdrawn_at)
 		) $charset_collate;";
 
 		dbDelta( $attendants_sql );

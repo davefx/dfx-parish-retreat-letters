@@ -259,14 +259,15 @@ class DFXPRL_Attendant {
 			'order'                        => 'ASC',
 			'per_page'                     => 100,
 			'page'                         => 1,
+			'withdrawn'                    => false,
 		);
 
 		$args = wp_parse_args( $args, $defaults );
 
 		$attendants_table = $this->database->get_attendants_table();
 		$messages_table = $this->database->get_messages_table();
-		
-		$where_clause = "a.retreat_id = %d";
+
+		$where_clause = "a.retreat_id = %d" . $this->get_withdrawn_clause( $args['withdrawn'], 'a.' );
 		$where_values = array( $retreat_id );
 
 		// Add search functionality
@@ -411,7 +412,7 @@ class DFXPRL_Attendant {
 	public function get_count_by_retreat( $retreat_id, $search = '', $filters = array() ) {
 		global $wpdb;
 
-		$where_clause = 'retreat_id = %d';
+		$where_clause = 'retreat_id = %d' . $this->get_withdrawn_clause( $filters['withdrawn'] ?? false );
 		$where_values = array( $retreat_id );
 
 		if ( ! empty( $search ) ) {
@@ -486,7 +487,7 @@ class DFXPRL_Attendant {
 		$table_name = $this->database->get_attendants_table();
 		$sql = "SELECT retreat_id, COUNT(*) as count 
 				FROM {$table_name} 
-				WHERE retreat_id IN ($placeholders) 
+				WHERE retreat_id IN ($placeholders) AND withdrawn_at IS NULL
 				GROUP BY retreat_id"; // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 
 		$results = $wpdb->get_results( $wpdb->prepare( $sql, $retreat_ids ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching,WordPress.DB.PreparedSQL.NotPrepared
@@ -811,17 +812,130 @@ class DFXPRL_Attendant {
 	 * Get the total number of physical letters received by the attendants of a retreat.
 	 *
 	 * @since 1.11.0
-	 * @param int $retreat_id Retreat ID.
+	 * @param int       $retreat_id Retreat ID.
+	 * @param bool|null $withdrawn  false: active attendants, true: withdrawn ones, null: all.
 	 * @return int
 	 */
-	public function get_physical_letters_count_by_retreat( $retreat_id ) {
+	public function get_physical_letters_count_by_retreat( $retreat_id, $withdrawn = false ) {
 		global $wpdb;
 
 		$table_name = $this->database->get_attendants_table();
+		$withdrawn_clause = $this->get_withdrawn_clause( $withdrawn );
 		return (int) $wpdb->get_var( $wpdb->prepare(
-			"SELECT COALESCE(SUM(physical_letters), 0) FROM {$table_name} WHERE retreat_id = %d", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			"SELECT COALESCE(SUM(physical_letters), 0) FROM {$table_name} WHERE retreat_id = %d{$withdrawn_clause}", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 			$retreat_id
 		) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
+	}
+
+	/**
+	 * Withdraw an attendant from the retreat ("dar de baja").
+	 *
+	 * Withdrawn attendants leave the regular attendants list, cannot be edited and
+	 * stop accepting messages, but keep all their data until they are deleted.
+	 *
+	 * @since 1.13.0
+	 * @param int $id      Attendant ID.
+	 * @param int $user_id User performing the action.
+	 * @return bool True on success, false on failure.
+	 */
+	public function withdraw( $id, $user_id ) {
+		return $this->set_withdrawn( $id, current_time( 'mysql', true ), $user_id, 'attendant_withdrawn' );
+	}
+
+	/**
+	 * Bring a withdrawn attendant back to the retreat ("volver a dar de alta").
+	 *
+	 * @since 1.13.0
+	 * @param int $id Attendant ID.
+	 * @return bool True on success, false on failure.
+	 */
+	public function reactivate( $id ) {
+		return $this->set_withdrawn( $id, null, null, 'attendant_reactivated' );
+	}
+
+	/**
+	 * Withdraw every active attendant of a retreat.
+	 *
+	 * @since 1.13.0
+	 * @param int $retreat_id Retreat ID.
+	 * @param int $user_id    User performing the action.
+	 * @return int|false Number of withdrawn attendants, or false on failure.
+	 */
+	public function withdraw_all_by_retreat( $retreat_id, $user_id ) {
+		global $wpdb;
+
+		$table_name = $this->database->get_attendants_table();
+		$result = $wpdb->query( $wpdb->prepare(
+			"UPDATE {$table_name} SET withdrawn_at = %s, withdrawn_by = %d WHERE retreat_id = %d AND withdrawn_at IS NULL", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			current_time( 'mysql', true ),
+			$user_id,
+			$retreat_id
+		) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
+
+		return false === $result ? false : (int) $result;
+	}
+
+	/**
+	 * Check whether an attendant has been withdrawn.
+	 *
+	 * @since 1.13.0
+	 * @param object $attendant Attendant object.
+	 * @return bool
+	 */
+	public static function is_withdrawn( $attendant ) {
+		return ! empty( $attendant->withdrawn_at );
+	}
+
+	/**
+	 * Store the withdrawal state of an attendant and log it.
+	 *
+	 * @since 1.13.0
+	 * @param int         $id           Attendant ID.
+	 * @param string|null $withdrawn_at UTC datetime, or null to reactivate.
+	 * @param int|null    $withdrawn_by User ID, or null to reactivate.
+	 * @param string      $audit_event  Audit log event name.
+	 * @return bool
+	 */
+	private function set_withdrawn( $id, $withdrawn_at, $withdrawn_by, $audit_event ) {
+		global $wpdb;
+
+		$result = $wpdb->update(
+			$this->database->get_attendants_table(),
+			array(
+				'withdrawn_at' => $withdrawn_at,
+				'withdrawn_by' => $withdrawn_by,
+			),
+			array( 'id' => $id ),
+			array( '%s', '%d' ),
+			array( '%d' )
+		); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
+
+		if ( $result !== false && class_exists( 'DFXPRL_GDPR' ) ) {
+			$gdpr = DFXPRL_GDPR::get_instance();
+			$attendant = $this->get( $id );
+			$gdpr->log_audit_event( $audit_event, array(
+				'attendant_id'       => (int) $id,
+				'retreat_id'         => $attendant ? (int) $attendant->retreat_id : 0,
+				'attendant_initials' => $attendant ? $gdpr->anonymize_name( $attendant->name, $attendant->surnames ) : '',
+			) );
+		}
+
+		return $result !== false;
+	}
+
+	/**
+	 * Build the SQL condition that selects active or withdrawn attendants.
+	 *
+	 * @since 1.13.0
+	 * @param bool|null $withdrawn false: active attendants, true: withdrawn ones, null: all.
+	 * @param string    $alias     Table alias prefix (e.g. "a.").
+	 * @return string
+	 */
+	private function get_withdrawn_clause( $withdrawn, $alias = '' ) {
+		if ( null === $withdrawn ) {
+			return '';
+		}
+		return $withdrawn ? " AND {$alias}withdrawn_at IS NOT NULL" : " AND {$alias}withdrawn_at IS NULL";
 	}
 
 	/**
