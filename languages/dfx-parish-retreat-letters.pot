@@ -2,7 +2,7 @@
 # This file is distributed under the GPL v3.
 msgid ""
 msgstr ""
-"Project-Id-Version: DFX Parish Retreat Letters 26.10.12\n"
+"Project-Id-Version: DFX Parish Retreat Letters 26.10.14\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/dfx-parish-retreat-letters\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -3418,4 +3418,18 @@ msgstr ""
 #: includes/class-dfx-parish-retreat-letters.php:615
 #: includes/class-dfx-parish-retreat-letters.php:1015
 msgid "Messages are no longer being accepted for this attendant."
+msgstr ""
+
+#: includes/class-dfx-parish-retreat-letters.php:619
+msgid "Your message has been received"
+msgstr ""
+
+#. translators: %s: attendant full name
+#: includes/class-dfx-parish-retreat-letters.php:624
+#, php-format
+msgid "Thank you. Your message for %s has been received and securely stored."
+msgstr ""
+
+#: includes/class-dfx-parish-retreat-letters.php:630
+msgid "You can now close this page."
 msgstr ""

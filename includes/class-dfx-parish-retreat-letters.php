@@ -430,21 +430,21 @@ class DFXPRL {
 		}
 
 		// Create patterns for both message submission and print URLs
-		$messages_pattern = '#^' . preg_quote( $site_path, '#' ) . '/messages/([a-zA-Z0-9]+)/?$#';
+		$messages_pattern = '#^' . preg_quote( $site_path, '#' ) . '/messages/([a-zA-Z0-9]+)(/sent)?/?$#';
 		$print_pattern = '#^' . preg_quote( $site_path, '#' ) . '/print/([a-zA-Z0-9]+)/?$#';
 
 		// Also try without the site path for root installations
-		$root_messages_pattern = '#^/messages/([a-zA-Z0-9]+)/?$#';
+		$root_messages_pattern = '#^/messages/([a-zA-Z0-9]+)(/sent)?/?$#';
 		$root_print_pattern = '#^/print/([a-zA-Z0-9]+)/?$#';
 
 		$token = null;
 		$is_print = false;
+		$is_sent = false;
 
 		// Check for message submission URLs
-		if ( preg_match( $messages_pattern, $request_uri, $matches ) ) {
+		if ( preg_match( $messages_pattern, $request_uri, $matches ) || preg_match( $root_messages_pattern, $request_uri, $matches ) ) {
 			$token = sanitize_text_field( $matches[1] );
-		} elseif ( preg_match( $root_messages_pattern, $request_uri, $matches ) ) {
-			$token = sanitize_text_field( $matches[1] );
+			$is_sent = ! empty( $matches[2] );
 		}
 		// Check for print URLs
 		elseif ( preg_match( $print_pattern, $request_uri, $matches ) ) {
@@ -461,7 +461,7 @@ class DFXPRL {
 				exit;
 			}
 
-			$shown = $this->display_message_form( $token );
+			$shown = $this->display_message_form( $token, $is_sent );
 			if ( $shown ) {
 				exit;
 			}
@@ -474,8 +474,9 @@ class DFXPRL {
 	 *
 	 * @since 1.2.0
 	 * @param string $token Message URL token.
+	 * @param bool   $sent  Whether to show the "message received" page instead of the form.
 	 */
-	private function display_message_form( $token ) {
+	private function display_message_form( $token, $sent = false ) {
 		// Verify token and get attendant
 		$attendant = $this->get_attendant_by_token( $token );
 
@@ -539,8 +540,12 @@ class DFXPRL {
 			$this->render_theme_header();
 		}
 
-		// Display the form
-		$this->render_message_form( $attendant, $retreat );
+		// Display the form, or the confirmation page after a message has been sent
+		if ( $sent && empty( $attendant->withdrawn_at ) ) {
+			$this->render_message_sent( $attendant );
+		} else {
+			$this->render_message_form( $attendant, $retreat );
+		}
 
 		// Try to render custom footer, fallback to default
 		$custom_footer_rendered = false;
@@ -595,6 +600,37 @@ class DFXPRL {
 		) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
 
 		return $attendant;
+	}
+
+	/**
+	 * Render the page shown after a message has been sent.
+	 *
+	 * It only confirms the reception, without any form, so the sender clearly
+	 * knows that the message has arrived.
+	 *
+	 * @since 26.10.14
+	 * @param object $attendant Attendant object.
+	 */
+	private function render_message_sent( $attendant ) {
+		?>
+		<div class="dfxprl-message-form-container">
+			<div class="dfxprl-message-form-content dfxprl-message-sent">
+				<div class="dfxprl-message-sent-icon" aria-hidden="true">&#10003;</div>
+				<h1><?php esc_html_e( 'Your message has been received', 'dfx-parish-retreat-letters' ); ?></h1>
+				<p>
+					<?php
+					printf(
+						/* translators: %s: attendant full name */
+						esc_html__( 'Thank you. Your message for %s has been received and securely stored.', 'dfx-parish-retreat-letters' ),
+						'<strong>' . esc_html( trim( $attendant->name . ' ' . $attendant->surnames ) ) . '</strong>' // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped above
+					);
+					?>
+				</p>
+				<p class="dfxprl-message-sent-retreat"><?php echo esc_html( $attendant->retreat_name ); ?></p>
+				<p><?php esc_html_e( 'You can now close this page.', 'dfx-parish-retreat-letters' ); ?></p>
+			</div>
+		</div>
+		<?php
 	}
 
 	/**
@@ -812,10 +848,10 @@ class DFXPRL {
 		}
 
 		// Create the pattern based on the site's base path
-		$pattern = '#^' . preg_quote( $site_path, '#' ) . '/messages/([a-zA-Z0-9]+)/?$#';
+		$pattern = '#^' . preg_quote( $site_path, '#' ) . '/messages/([a-zA-Z0-9]+)(/sent)?/?$#';
 
 		// Also try without the site path for root installations
-		$root_pattern = '#^/messages/([a-zA-Z0-9]+)/?$#';
+		$root_pattern = '#^/messages/([a-zA-Z0-9]+)(/sent)?/?$#';
 
 		$is_message_url = preg_match( $pattern, $request_uri ) || preg_match( $root_pattern, $request_uri );
 
@@ -895,8 +931,8 @@ class DFXPRL {
 		$site_url  = wp_parse_url( home_url(), PHP_URL_PATH );
 		$site_path = ( is_string( $site_url ) && ! empty( $site_url ) ) ? rtrim( $site_url, '/' ) : '';
 
-		$pattern      = '#^' . preg_quote( $site_path, '#' ) . '/messages/([a-zA-Z0-9]+)/?$#';
-		$root_pattern = '#^/messages/([a-zA-Z0-9]+)/?$#';
+		$pattern      = '#^' . preg_quote( $site_path, '#' ) . '/messages/([a-zA-Z0-9]+)(/sent)?/?$#';
+		$root_pattern = '#^/messages/([a-zA-Z0-9]+)(/sent)?/?$#';
 
 		$token = null;
 		if ( preg_match( $pattern, $request_uri, $matches ) || preg_match( $root_pattern, $request_uri, $matches ) ) {
@@ -1000,7 +1036,7 @@ class DFXPRL {
 		$retreats_table = $this->database->get_retreats_table();
 
 		$retreat_data = $wpdb->get_row( $wpdb->prepare(
-			"SELECT r.disclaimer_text, r.disclaimer_acceptance_text, a.withdrawn_at
+			"SELECT r.disclaimer_text, r.disclaimer_acceptance_text, a.withdrawn_at, a.message_url_token
 			 FROM `{$attendants_table}` a
 			 INNER JOIN `{$retreats_table}` r ON a.retreat_id = r.id
 			 WHERE a.id = %d", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
@@ -1168,7 +1204,15 @@ class DFXPRL {
 		// Message was successfully created - now increment the rate limit
 		$this->security->increment_rate_limit( $ip_address, 60 );
 
-		wp_send_json_success( array( 'message' => $success_message ) );
+		wp_send_json_success( array(
+			'message'  => $success_message,
+			'warning'  => ! empty( $upload_result['errors'] ) ? sprintf(
+				/* translators: %s: comma-separated list of file names that failed to upload */
+				__( 'Note: Some files could not be uploaded: %s', 'dfx-parish-retreat-letters' ),
+				implode( ', ', $upload_result['errors'] )
+			) : '',
+			'redirect' => home_url( '/messages/' . $retreat_data->message_url_token . '/sent/' ),
+		) );
 	}
 
 	/**

@@ -3634,3 +3634,17 @@ msgstr "El %1$s por %2$s"
 #: includes/class-dfx-parish-retreat-letters.php:1015
 msgid "Messages are no longer being accepted for this attendant."
 msgstr "Ya no se aceptan mensajes para este asistente."
+
+#: includes/class-dfx-parish-retreat-letters.php:619
+msgid "Your message has been received"
+msgstr "Tu mensaje ha sido recibido"
+
+#. translators: %s: attendant full name
+#: includes/class-dfx-parish-retreat-letters.php:624
+#, php-format
+msgid "Thank you. Your message for %s has been received and securely stored."
+msgstr "Gracias. Tu mensaje para %s se ha recibido correctamente y está guardado de forma segura."
+
+#: includes/class-dfx-parish-retreat-letters.php:630
+msgid "You can now close this page."
+msgstr "Ya puedes cerrar esta página."

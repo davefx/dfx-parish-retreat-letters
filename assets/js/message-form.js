@@ -449,7 +449,16 @@
 				timeout: 60000, // 60 second timeout
 				success: function(response) {
 					if (response.success) {
-						// Show success message
+						// Go to the confirmation page, which shows no form
+						if (response.data && response.data.redirect) {
+							if (response.data.warning) {
+								alert(response.data.warning);
+							}
+							window.location.href = response.data.redirect;
+							return;
+						}
+
+						// Fallback: show success message in place
 						var successHtml = '<div class="dfxprl-success-message">' + 
 							dfxprlMessageForm.i18n.successMessage + '</div>';
 						

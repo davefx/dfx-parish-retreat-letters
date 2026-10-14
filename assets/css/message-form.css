@@ -364,3 +364,24 @@
 
 	.dfxprl-mode-selector {
 		flex-direction: column;
+
+/* Confirmation page shown after sending a message */
+.dfxprl-message-sent {
+	text-align: center;
+	padding: 2rem 1rem;
+}
+
+.dfxprl-message-sent-icon {
+	width: 4rem;
+	height: 4rem;
+	margin: 0 auto 1rem;
+	border-radius: 50%;
+	background: #d4edda;
+	color: #155724;
+	font-size: 2.25rem;
+	line-height: 4rem;
+}
+
+.dfxprl-message-sent-retreat {
+	color: #555;
+}
