@@ -3,7 +3,7 @@ Contributors: davefx
 Tags: parish, retreat, letters, confidential, GDPR
 Requires at least: 5.0
 Tested up to: 6.9
-Stable tag: 26.10.14
+Stable tag: 26.10.15
 Requires PHP: 7.4
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
@@ -173,6 +173,11 @@ By default it is generated automatically and stored in the WordPress database (`
 Yes. A `.pot` translation template is included in the `languages/` directory. Create `.po` and `.mo` files for your language and place them in that folder following standard WordPress translation conventions.
 
 ## Changelog
+
+### 26.10.15
+
+- Change: withdrawn attendants have a **Messages** button again, so their letters can be viewed and printed.
+- Fix: Spanish translation wording ("no válido" instead of "inválido").
 
 ### 26.10.14
 

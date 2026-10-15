@@ -842,7 +842,7 @@ msgstr "Expira %s"
 #: includes/class-admin.php:1624 includes/class-admin.php:1699
 #: includes/class-admin.php:1750
 msgid "Invalid retreat ID."
-msgstr "ID de retiro inválido."
+msgstr "ID de retiro no válido."
 
 #: includes/class-admin.php:1629
 msgid "You do not have permission to view this retreat."
@@ -854,7 +854,7 @@ msgstr "No tienes permiso para añadir asistentes a este retiro."
 
 #: includes/class-admin.php:1724
 msgid "Invalid retreat or attendant ID."
-msgstr "ID de retiro o asistente inválido."
+msgstr "ID de retiro o asistente no válido."
 
 #: includes/class-admin.php:1729
 msgid "You do not have permission to edit attendants for this retreat."
@@ -924,7 +924,7 @@ msgstr "Faltan campos requeridos en el CSV: %s"
 #: includes/class-admin.php:1950
 #, php-format
 msgid "Line %d: Invalid data format"
-msgstr "Línea %d: Formato de datos inválido"
+msgstr "Línea %d: Formato de datos no válido"
 
 #. translators: %d: line number where the error occurred
 #: includes/class-admin.php:1978

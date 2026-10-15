@@ -3655,7 +3655,12 @@ class DFXPRL_Admin {
 									?>
 									<td data-colname="<?php esc_attr_e( 'Actions', 'dfx-parish-retreat-letters' ); ?>">
 										<?php if ( DFXPRL_Attendant::is_withdrawn( $attendant ) ) : ?>
-											<?php // Withdrawn attendants can only be brought back or deleted for good ?>
+											<?php // Withdrawn attendants keep access to their messages (to print them) and can only be brought back or deleted for good ?>
+											<?php if ( $this->permissions->current_user_can_manage_messages( $retreat->id ) ) : ?>
+												<a href="<?php echo esc_url( admin_url( 'admin.php?page=dfxprl-messages&attendant_id=' . $attendant->id ) ); ?>" class="button button-small">
+													<?php esc_html_e( 'Messages', 'dfx-parish-retreat-letters' ); ?>
+												</a>
+											<?php endif; ?>
 											<?php if ( $can_manage_retreat ) : ?>
 												<button type="button" class="button button-small button-primary dfxprl-reactivate-attendant" data-attendant-id="<?php echo esc_attr( $attendant->id ); ?>">
 													<?php esc_html_e( 'Reactivate', 'dfx-parish-retreat-letters' ); ?>
