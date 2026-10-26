@@ -71,8 +71,10 @@ class DFXPRL_Retreat {
 				'notes_enabled'              => $sanitized_data['notes_enabled'],
 				'internal_notes_enabled'     => $sanitized_data['internal_notes_enabled'],
 				'message_request_template'   => $sanitized_data['message_request_template'],
+				'return_email_subject'       => $sanitized_data['return_email_subject'],
+				'return_email_template'      => $sanitized_data['return_email_template'],
 			),
-			array( '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%d', '%d', '%s' )
+			array( '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%d', '%d', '%s', '%s', '%s' )
 		);
 
 		if ( ! $result ) {
@@ -142,9 +144,11 @@ class DFXPRL_Retreat {
 				'notes_enabled'              => $sanitized_data['notes_enabled'],
 				'internal_notes_enabled'     => $sanitized_data['internal_notes_enabled'],
 				'message_request_template'   => $sanitized_data['message_request_template'],
+				'return_email_subject'       => $sanitized_data['return_email_subject'],
+				'return_email_template'      => $sanitized_data['return_email_template'],
 			),
 			array( 'id' => $id ),
-			array( '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%d', '%d', '%s' ),
+			array( '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%d', '%d', '%s', '%s', '%s' ),
 			array( '%d' )
 		);
 
@@ -379,7 +383,51 @@ class DFXPRL_Retreat {
 			'notes_enabled'              => isset( $data['notes_enabled'] ) ? (int) (bool) $data['notes_enabled'] : 0,
 			'internal_notes_enabled'     => isset( $data['internal_notes_enabled'] ) ? (int) (bool) $data['internal_notes_enabled'] : 0,
 			'message_request_template'   => sanitize_textarea_field( $data['message_request_template'] ?? '' ),
+			'return_email_subject'       => sanitize_text_field( $data['return_email_subject'] ?? '' ),
+			'return_email_template'      => sanitize_textarea_field( $data['return_email_template'] ?? '' ),
 		);
+	}
+
+	/**
+	 * Default subject of the email that returns a letter to its sender.
+	 *
+	 * @since 1.14.0
+	 * @return string
+	 */
+	public static function get_default_return_email_subject() {
+		return __( 'Your letter for [attendant_name] [attendant_surnames]', 'dfx-parish-retreat-letters' );
+	}
+
+	/**
+	 * Default text of the email that returns a letter to its sender.
+	 *
+	 * @since 1.14.0
+	 * @return string
+	 */
+	public static function get_default_return_email_template() {
+		return __( "Hello, [sender_name]:\n\nThank you for the letter you wrote to [attendant_name] [attendant_surnames] for the retreat \"[retreat_name]\".\n\nIn the end, [attendant_name] did not attend the retreat. For confidentiality and data protection reasons, we are going to destroy the digital record of your letter and the printed copy that had been prepared to be delivered.\n\nYour letter is attached to this email, so that you can keep it and use it again if [attendant_name] takes part in a retreat in the coming months.\n\nKind regards.", 'dfx-parish-retreat-letters' );
+	}
+
+	/**
+	 * Subject of the return email for a retreat, falling back to the default.
+	 *
+	 * @since 1.14.0
+	 * @param object $retreat Retreat object.
+	 * @return string
+	 */
+	public static function get_return_email_subject( $retreat ) {
+		return ! empty( $retreat->return_email_subject ) ? $retreat->return_email_subject : self::get_default_return_email_subject();
+	}
+
+	/**
+	 * Text of the return email for a retreat, falling back to the default.
+	 *
+	 * @since 1.14.0
+	 * @param object $retreat Retreat object.
+	 * @return string
+	 */
+	public static function get_return_email_template( $retreat ) {
+		return ! empty( $retreat->return_email_template ) ? $retreat->return_email_template : self::get_default_return_email_template();
 	}
 
 	/**

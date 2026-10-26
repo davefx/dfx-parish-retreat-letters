@@ -231,6 +231,11 @@ class DFXPRL {
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-print-log.php';
 
 		/**
+		 * The class responsible for returning letters to their senders.
+		 */
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-letter-return.php';
+
+		/**
 		 * The class responsible for GDPR compliance.
 		 */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-gdpr.php';
@@ -685,6 +690,16 @@ class DFXPRL {
 						<input type="text" id="sender_name" name="sender_name" required maxlength="255" placeholder="<?php esc_attr_e( 'Enter your name', 'dfx-parish-retreat-letters' ); ?>">
 					</div>
 
+					<div class="dfxprl-form-group dfxprl-email-group">
+						<label for="sender_email"><?php esc_html_e( 'Your Email', 'dfx-parish-retreat-letters' ); ?></label>
+						<input type="email" id="sender_email" name="sender_email" maxlength="254" autocomplete="email" placeholder="<?php esc_attr_e( 'name@example.com', 'dfx-parish-retreat-letters' ); ?>">
+						<div class="dfxprl-email-confirm">
+							<label for="sender_email_confirm"><?php esc_html_e( 'Repeat Your Email', 'dfx-parish-retreat-letters' ); ?></label>
+							<input type="email" id="sender_email_confirm" name="sender_email_confirm" maxlength="254" autocomplete="off">
+						</div>
+						<p class="dfxprl-field-help"><?php esc_html_e( 'Optional. It will only be used to let you know about any issue with your letter.', 'dfx-parish-retreat-letters' ); ?></p>
+					</div>
+
 					<div class="dfxprl-message-mode">
 						<h3><?php esc_html_e( 'Choose message type:', 'dfx-parish-retreat-letters' ); ?></h3>
 						<div class="dfxprl-mode-selector">
@@ -807,6 +822,7 @@ class DFXPRL {
 						<li><?php esc_html_e( 'Only authorized retreat administrators can access your message.', 'dfx-parish-retreat-letters' ); ?></li>
 						<li><?php esc_html_e( 'Messages can only be viewed when printed - no content is displayed on screen.', 'dfx-parish-retreat-letters' ); ?></li>
 						<li><?php esc_html_e( 'Your IP address will be anonymized after 30 days for privacy compliance.', 'dfx-parish-retreat-letters' ); ?></li>
+						<li><?php esc_html_e( 'If you give your email, it is stored encrypted and will only be used to let you know about any issue with your letter.', 'dfx-parish-retreat-letters' ); ?></li>
 						<li><?php esc_html_e( 'All data is handled in accordance with GDPR and Spanish privacy laws.', 'dfx-parish-retreat-letters' ); ?></li>
 					</ul>
 				</div>
@@ -890,6 +906,8 @@ class DFXPRL {
 						'pleaseSelectFile'           => __( 'Please select at least one file.', 'dfx-parish-retreat-letters' ),
 						'pleaseCompleteSecurityCheck' => __( 'Please complete the security check.', 'dfx-parish-retreat-letters' ),
 						'pleaseAcceptDisclaimer'     => __( 'Please accept the legal disclaimer to proceed.', 'dfx-parish-retreat-letters' ),
+						'emailsDoNotMatch'           => __( 'The email addresses do not match. Please check them.', 'dfx-parish-retreat-letters' ),
+						'invalidEmail'               => __( 'The email address is not valid.', 'dfx-parish-retreat-letters' ),
 						'successMessage'             => __( 'Your message has been sent successfully and securely stored.', 'dfx-parish-retreat-letters' ),
 						'errorSendingMessage'        => __( 'An error occurred while sending your message.', 'dfx-parish-retreat-letters' ),
 						'requestTimeout'             => __( 'The request timed out. Please check your connection and try again.', 'dfx-parish-retreat-letters' ),
@@ -1065,6 +1083,18 @@ class DFXPRL {
 			wp_send_json_error( array( 'message' => __( 'Sender name is required.', 'dfx-parish-retreat-letters' ) ) );
 		}
 
+		// Validate the optional sender email, which has to be typed twice
+		$sender_email = trim( sanitize_text_field( wp_unslash( $_POST['sender_email'] ?? '' ) ) );
+		$sender_email_confirm = trim( sanitize_text_field( wp_unslash( $_POST['sender_email_confirm'] ?? '' ) ) );
+		if ( '' !== $sender_email || '' !== $sender_email_confirm ) {
+			if ( strtolower( $sender_email ) !== strtolower( $sender_email_confirm ) ) {
+				wp_send_json_error( array( 'message' => __( 'The email addresses do not match. Please check them.', 'dfx-parish-retreat-letters' ) ) );
+			}
+			if ( ! is_email( $sender_email ) ) {
+				wp_send_json_error( array( 'message' => __( 'The email address is not valid.', 'dfx-parish-retreat-letters' ) ) );
+			}
+		}
+
 		// Validate message mode
 		$message_mode = sanitize_text_field( wp_unslash( $_POST['message_mode'] ?? 'text' ) );
 		if ( ! in_array( $message_mode, array( 'text', 'file' ), true ) ) {
@@ -1106,6 +1136,7 @@ class DFXPRL {
 		$message_data = array(
 			'attendant_id' => $attendant_id,
 			'sender_name'  => $sender_name,
+			'sender_email' => $sender_email,
 			'content'      => $content,
 			'message_type' => $message_type,
 		);

@@ -90,6 +90,7 @@
 }
 
 .dfxprl-form-group input[type="text"],
+.dfxprl-form-group input[type="email"],
 .dfxprl-form-group textarea,
 .dfxprl-form-group input[type="file"] {
 	width: 100%;
@@ -364,6 +365,8 @@
 
 	.dfxprl-mode-selector {
 		flex-direction: column;
+	}
+}
 
 /* Confirmation page shown after sending a message */
 .dfxprl-message-sent {
@@ -383,5 +386,16 @@
 }
 
 .dfxprl-message-sent-retreat {
+	color: #555;
+}
+
+/* Optional sender email (typed twice) */
+.dfxprl-email-confirm {
+	margin-top: 0.75rem;
+}
+
+.dfxprl-field-help {
+	margin: 0.5rem 0 0;
+	font-size: 0.9rem;
 	color: #555;
 }

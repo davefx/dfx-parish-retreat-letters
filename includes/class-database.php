@@ -38,7 +38,7 @@ class DFXPRL_Database {
 	 * @since 1.0.0
 	 * @var string
 	 */
-	const DB_VERSION = '1.13.0';
+	const DB_VERSION = '1.14.0';
 
 	/**
 	 * The database version option name.
@@ -226,6 +226,8 @@ class DFXPRL_Database {
 			notes_enabled tinyint(1) NOT NULL DEFAULT 0,
 			internal_notes_enabled tinyint(1) NOT NULL DEFAULT 0,
 			message_request_template text NULL DEFAULT NULL,
+			return_email_subject varchar(255) NULL DEFAULT NULL,
+			return_email_template text NULL DEFAULT NULL,
 			list_column_order text NULL DEFAULT NULL,
 			created_at datetime DEFAULT CURRENT_TIMESTAMP,
 			updated_at datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -276,6 +278,9 @@ class DFXPRL_Database {
 			id mediumint(9) NOT NULL AUTO_INCREMENT,
 			attendant_id mediumint(9) NOT NULL,
 			sender_name varchar(255) DEFAULT '',
+			encrypted_sender_email text NULL DEFAULT NULL,
+			sender_email_salt varchar(255) NULL DEFAULT NULL,
+			sender_email_hash varchar(64) NULL DEFAULT NULL,
 			encrypted_content longtext NOT NULL,
 			content_salt varchar(255) NOT NULL,
 			message_type enum('text','file') NOT NULL DEFAULT 'text',
@@ -287,7 +292,8 @@ class DFXPRL_Database {
 			INDEX idx_attendant_id (attendant_id),
 			INDEX idx_submitted_at (submitted_at),
 			INDEX idx_message_type (message_type),
-			INDEX idx_ip_anonymized_at (ip_anonymized_at)
+			INDEX idx_ip_anonymized_at (ip_anonymized_at),
+			INDEX idx_sender_email_hash (sender_email_hash)
 		) $charset_collate;";
 
 		dbDelta( $messages_sql );

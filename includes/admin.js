@@ -221,7 +221,12 @@
         // Permanently delete a withdrawn attendant
         $(document).on('click', '.dfxprl-delete-attendant', function(e) {
             e.preventDefault();
-            if (confirm(dfxprlAdmin.messages.confirmDeleteAttendant)) {
+            var confirmText = dfxprlAdmin.messages.confirmDeleteAttendant;
+            var returnable = parseInt($(this).data('returnable-count'), 10) || 0;
+            if (returnable > 0) {
+                confirmText = dfxprlAdmin.messages.returnableLettersWarning.replace('%d', returnable) + '\n\n' + confirmText;
+            }
+            if (confirm(confirmText)) {
                 changeAttendantStatus('dfxprl_delete_attendant', $(this));
             }
         });
@@ -865,6 +870,145 @@
             $('#dfxprl-invitation-modal .dfxprl-message-content').text(message);
             $('#dfxprl-invitation-modal').fadeIn(200);
         }
+    });
+
+    // Return letters of withdrawn attendants to their senders by email
+    $(function() {
+        var messages = dfxprlAdmin.messages;
+
+        function escapeHtml(text) {
+            return $('<div>').text(text === undefined || text === null ? '' : String(text)).html();
+        }
+
+        // Show a modal with the given body and a primary button; onConfirm receives the modal
+        function openReturnModal(title, bodyHtml, buttonText, onConfirm) {
+            $('#dfxprl-return-letter-modal').remove();
+            var $modal = $(
+                '<div id="dfxprl-return-letter-modal" class="dfxprl-modal-overlay">' +
+                    '<div class="dfxprl-modal-dialog">' +
+                        '<div class="dfxprl-modal-header">' +
+                            '<h3>' + escapeHtml(title) + '</h3>' +
+                            '<button type="button" class="dfxprl-modal-close">&times;</button>' +
+                        '</div>' +
+                        '<div class="dfxprl-modal-body">' + bodyHtml + '</div>' +
+                        '<div class="dfxprl-modal-footer">' +
+                            '<button type="button" class="button button-primary dfxprl-return-confirm">' + escapeHtml(buttonText) + '</button> ' +
+                            '<button type="button" class="button dfxprl-return-cancel">' + escapeHtml(messages.cancelButton || 'Cancel') + '</button>' +
+                        '</div>' +
+                    '</div>' +
+                '</div>'
+            );
+            $('body').append($modal);
+            $modal.on('click', '.dfxprl-modal-close, .dfxprl-return-cancel', function() {
+                $modal.remove();
+            });
+            $modal.on('click', '.dfxprl-return-confirm', function() {
+                var $button = $(this);
+                $button.prop('disabled', true).text(messages.returnSending);
+                $modal.find('.dfxprl-modal-close, .dfxprl-return-cancel').prop('disabled', true);
+                onConfirm($modal);
+            });
+            $modal.fadeIn(200);
+            return $modal;
+        }
+
+        function returnLetter(messageId) {
+            return $.post(dfxprlAdmin.ajaxurl, {
+                action: 'dfxprl_return_letter',
+                nonce: dfxprlAdmin.nonce,
+                message_id: messageId
+            });
+        }
+
+        // Preview and return one letter
+        $(document).on('click', '.dfxprl-return-letter', function(e) {
+            e.preventDefault();
+            var $button = $(this);
+            var messageId = $button.data('message-id');
+            $button.prop('disabled', true);
+
+            $.post(dfxprlAdmin.ajaxurl, {
+                action: 'dfxprl_return_letter_preview',
+                nonce: dfxprlAdmin.nonce,
+                message_id: messageId
+            }).done(function(response) {
+                $button.prop('disabled', false);
+                if (!response.success) {
+                    alert(response.data && response.data.message ? response.data.message : messages.returnError);
+                    return;
+                }
+                var data = response.data;
+                var body =
+                    '<p><strong>' + escapeHtml(messages.returnTo) + ':</strong> ' + escapeHtml(data.to) + '</p>' +
+                    '<p><strong>' + escapeHtml(messages.returnSubject) + ':</strong> ' + escapeHtml(data.subject) + '</p>' +
+                    '<div class="dfxprl-return-preview" style="background: #f9f9f9; border: 1px solid #ddd; border-radius: 4px; padding: 0 15px; max-height: 320px; overflow-y: auto;">' + data.html + '</div>' +
+                    '<p><strong>' + escapeHtml(messages.returnAttachments) + ':</strong> ' + escapeHtml(data.attachments.join(', ')) + '</p>';
+                if (data.print_count > 0) {
+                    body += '<div class="notice notice-warning inline"><p>' + escapeHtml(messages.returnPrintedWarning.replace('%d', data.print_count)) + '</p></div>';
+                }
+
+                openReturnModal(messages.returnLetterTitle, body, messages.returnSendButton, function($modal) {
+                    returnLetter(messageId).done(function(result) {
+                        $modal.remove();
+                        if (result.success) {
+                            alert(result.data.message);
+                            window.location.reload();
+                        } else {
+                            alert(result.data && result.data.message ? result.data.message : messages.returnError);
+                        }
+                    }).fail(function() {
+                        $modal.remove();
+                        alert(messages.returnError);
+                    });
+                });
+            }).fail(function() {
+                $button.prop('disabled', false);
+                alert(messages.returnError);
+            });
+        });
+
+        // Return every letter on the page that has a sender email, one by one
+        $(document).on('click', '.dfxprl-return-all-letters', function(e) {
+            e.preventDefault();
+            var letters = $('.dfxprl-return-letter').map(function() {
+                return { id: $(this).data('message-id'), email: $(this).data('email') };
+            }).get();
+            if (!letters.length) {
+                return;
+            }
+
+            var body =
+                '<p>' + escapeHtml(messages.returnAllDetails) + '</p>' +
+                '<p><strong>' + escapeHtml(messages.returnRecipients) + ':</strong></p>' +
+                '<ul style="list-style: disc; margin-left: 20px;">' +
+                letters.map(function(letter) { return '<li>' + escapeHtml(letter.email) + '</li>'; }).join('') +
+                '</ul>';
+
+            openReturnModal(messages.returnAllLettersTitle, body, messages.returnSendAllButton, function($modal) {
+                var returned = 0;
+                var failed = 0;
+                var next = function(index) {
+                    if (index >= letters.length) {
+                        $modal.remove();
+                        alert(messages.returnAllSummary.replace('%1$d', returned).replace('%2$d', failed));
+                        window.location.reload();
+                        return;
+                    }
+                    returnLetter(letters[index].id).done(function(result) {
+                        if (result.success) {
+                            returned++;
+                        } else {
+                            failed++;
+                        }
+                    }).fail(function() {
+                        failed++;
+                    }).always(function() {
+                        next(index + 1);
+                    });
+                };
+                next(0);
+            });
+        });
     });
 
 

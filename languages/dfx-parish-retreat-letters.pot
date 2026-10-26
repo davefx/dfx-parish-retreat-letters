@@ -2,7 +2,7 @@
 # This file is distributed under the GPL v3.
 msgid ""
 msgstr ""
-"Project-Id-Version: DFX Parish Retreat Letters 26.10.15\n"
+"Project-Id-Version: DFX Parish Retreat Letters 26.10.26\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/dfx-parish-retreat-letters\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -3432,4 +3432,184 @@ msgstr ""
 
 #: includes/class-dfx-parish-retreat-letters.php:630
 msgid "You can now close this page."
+msgstr ""
+
+#. translators: %d: number of letters that can still be returned by email
+#: includes/class-admin.php:1025
+#, php-format
+msgid "This attendant has %d letters that can still be returned to their senders by email. If you delete the attendant, they will be deleted without being returned."
+msgstr ""
+
+#: includes/class-admin.php:1026
+msgid "Return letter by email"
+msgstr ""
+
+#: includes/class-admin.php:1027
+msgid "Return all letters by email"
+msgstr ""
+
+#: includes/class-admin.php:1029
+msgid "Subject"
+msgstr ""
+
+#: includes/class-admin.php:1030
+msgid "Attachments"
+msgstr ""
+
+#: includes/class-admin.php:1031
+msgid "Recipients"
+msgstr ""
+
+#. translators: %d: number of times the letter was printed
+#: includes/class-admin.php:1033
+#, php-format
+msgid "This letter was printed %d times. Remember to destroy the printed copy."
+msgstr ""
+
+#: includes/class-admin.php:1034
+msgid "Each letter will be sent back to its sender with the configured email, and deleted once sent. Remember to destroy the printed copies."
+msgstr ""
+
+#: includes/class-admin.php:1035
+msgid "Send and delete the letter"
+msgstr ""
+
+#: includes/class-admin.php:1036
+msgid "Send and delete the letters"
+msgstr ""
+
+#: includes/class-admin.php:1038
+#: includes/class-letter-return.php:138
+#: includes/class-letter-return.php:147
+#: includes/class-letter-return.php:164
+msgid "The email could not be sent. The letter has not been deleted."
+msgstr ""
+
+#. translators: 1: number of returned letters, 2: number of letters that could not be returned
+#: includes/class-admin.php:1040
+#, php-format
+msgid "%1$d letters returned and deleted. %2$d could not be returned and have been kept."
+msgstr ""
+
+#: includes/class-admin.php:1635
+msgid "Letter Return Email Subject"
+msgstr ""
+
+#: includes/class-admin.php:1643
+msgid "Letter Return Email Text"
+msgstr ""
+
+#: includes/class-admin.php:1648
+msgid "Email sent to the sender of a letter when the attendant has been withdrawn, with the letter attached. After sending it, the letter is deleted. If left empty, the default text is used. Available placeholders:"
+msgstr ""
+
+#: includes/class-admin.php:1650
+msgid "(Sender name)"
+msgstr ""
+
+#: includes/class-admin.php:1657
+msgid "(Date the letter was sent)"
+msgstr ""
+
+#: includes/class-admin.php:5310
+msgid "This attendant has been withdrawn. You can return by email the letters whose sender gave their address; once returned, they are deleted from the system."
+msgstr ""
+
+#. translators: %d: number of letters that can be returned
+#: includes/class-admin.php:5316
+#, php-format
+msgid "Return all by email (%d)"
+msgstr ""
+
+#: includes/class-admin.php:5487
+msgid "Return by email"
+msgstr ""
+
+#: includes/class-admin.php:5490
+msgid "No email: cannot be returned"
+msgstr ""
+
+#: includes/class-admin.php:5723
+msgid "You do not have permission to manage messages for this retreat."
+msgstr ""
+
+#. translators: %s: email address
+#: includes/class-admin.php:5766
+#, php-format
+msgid "Letter returned to %s and deleted from the system."
+msgstr ""
+
+#: includes/class-admin.php:5770
+msgid "Remember to destroy the printed copy."
+msgstr ""
+
+#: includes/class-dfx-parish-retreat-letters.php:694
+msgid "Your Email"
+msgstr ""
+
+#: includes/class-dfx-parish-retreat-letters.php:695
+msgid "name@example.com"
+msgstr ""
+
+#: includes/class-dfx-parish-retreat-letters.php:696
+msgid "Repeat Your Email"
+msgstr ""
+
+#: includes/class-dfx-parish-retreat-letters.php:915
+#: includes/class-dfx-parish-retreat-letters.php:1097
+msgid "The email addresses do not match. Please check them."
+msgstr ""
+
+#: includes/class-dfx-parish-retreat-letters.php:916
+#: includes/class-dfx-parish-retreat-letters.php:1100
+msgid "The email address is not valid."
+msgstr ""
+
+#: includes/class-letter-return.php:58
+msgid "Only letters for withdrawn attendants can be returned."
+msgstr ""
+
+#: includes/class-letter-return.php:63
+msgid "The sender of this letter did not give an email address, so it cannot be returned."
+msgstr ""
+
+#. translators: %s: attendant full name
+#: includes/class-letter-return.php:226
+#: includes/class-letter-return.php:288
+#, php-format
+msgid "Letter for %s"
+msgstr ""
+
+#: includes/class-letter-return.php:234
+#: includes/class-letter-return.php:261
+msgid "The letter could not be decrypted."
+msgstr ""
+
+#: includes/class-letter-return.php:270
+msgid "The files of this letter could not be found."
+msgstr ""
+
+#: includes/class-retreat.php:398
+msgid "Your letter for [attendant_name] [attendant_surnames]"
+msgstr ""
+
+#: includes/class-retreat.php:408
+msgid ""
+"Hello, [sender_name]:\n"
+"\n"
+"Thank you for the letter you wrote to [attendant_name] [attendant_surnames] for the retreat \"[retreat_name]\".\n"
+"\n"
+"In the end, [attendant_name] did not attend the retreat. For confidentiality and data protection reasons, we are going to destroy the digital record of your letter and the printed copy that had been prepared to be delivered.\n"
+"\n"
+"Your letter is attached to this email, so that you can keep it and use it again if [attendant_name] takes part in a retreat in the coming months.\n"
+"\n"
+"Kind regards."
+msgstr ""
+
+#: includes/class-dfx-parish-retreat-letters.php:700
+msgid "Optional. It will only be used to let you know about any issue with your letter."
+msgstr ""
+
+#: includes/class-dfx-parish-retreat-letters.php:825
+msgid "If you give your email, it is stored encrypted and will only be used to let you know about any issue with your letter."
 msgstr ""

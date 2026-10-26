@@ -173,6 +173,8 @@ class DFXPRL_Admin {
 		add_action( 'wp_ajax_dfxprl_print_message', array( $this, 'ajax_print_message' ) );
 		add_action( 'wp_ajax_dfxprl_download_file', array( $this, 'ajax_download_file' ) );
 		add_action( 'wp_ajax_dfxprl_delete_message', array( $this, 'ajax_delete_message' ) );
+		add_action( 'wp_ajax_dfxprl_return_letter_preview', array( $this, 'ajax_return_letter_preview' ) );
+		add_action( 'wp_ajax_dfxprl_return_letter', array( $this, 'ajax_return_letter' ) );
 		add_action( 'wp_ajax_dfxprl_get_print_log', array( $this, 'ajax_get_print_log' ) );
 		add_action( 'wp_ajax_dfxprl_log_add', array( $this, 'ajax_log_add' ) );
 		add_action( 'wp_ajax_dfxprl_log_update', array( $this, 'ajax_log_update' ) );
@@ -1019,6 +1021,23 @@ class DFXPRL_Admin {
 				'messages' => array(
 					'confirmDelete' => __( 'Are you sure you want to delete this retreat?', 'dfx-parish-retreat-letters' ),
 					'confirmDeleteAttendant' => __( 'Permanently delete this attendant together with their messages, contact log and custom field values? This cannot be undone.', 'dfx-parish-retreat-letters' ),
+					/* translators: %d: number of letters that can still be returned by email */
+					'returnableLettersWarning' => __( 'This attendant has %d letters that can still be returned to their senders by email. If you delete the attendant, they will be deleted without being returned.', 'dfx-parish-retreat-letters' ),
+					'returnLetterTitle'      => __( 'Return letter by email', 'dfx-parish-retreat-letters' ),
+					'returnAllLettersTitle'  => __( 'Return all letters by email', 'dfx-parish-retreat-letters' ),
+					'returnTo'               => __( 'To', 'dfx-parish-retreat-letters' ),
+					'returnSubject'          => __( 'Subject', 'dfx-parish-retreat-letters' ),
+					'returnAttachments'      => __( 'Attachments', 'dfx-parish-retreat-letters' ),
+					'returnRecipients'       => __( 'Recipients', 'dfx-parish-retreat-letters' ),
+					/* translators: %d: number of times the letter was printed */
+					'returnPrintedWarning'   => __( 'This letter was printed %d times. Remember to destroy the printed copy.', 'dfx-parish-retreat-letters' ),
+					'returnAllDetails'       => __( 'Each letter will be sent back to its sender with the configured email, and deleted once sent. Remember to destroy the printed copies.', 'dfx-parish-retreat-letters' ),
+					'returnSendButton'       => __( 'Send and delete the letter', 'dfx-parish-retreat-letters' ),
+					'returnSendAllButton'    => __( 'Send and delete the letters', 'dfx-parish-retreat-letters' ),
+					'returnSending'          => __( 'Sending...', 'dfx-parish-retreat-letters' ),
+					'returnError'            => __( 'The email could not be sent. The letter has not been deleted.', 'dfx-parish-retreat-letters' ),
+					/* translators: 1: number of returned letters, 2: number of letters that could not be returned */
+					'returnAllSummary'       => __( '%1$d letters returned and deleted. %2$d could not be returned and have been kept.', 'dfx-parish-retreat-letters' ),
 					/* translators: %s: attendant name */
 					'confirmWithdrawAttendant' => __( 'Withdraw %s from the retreat? They will move to the "Withdrawn attendants" tab, will not be editable and their message link will stop accepting letters. You can reactivate them at any time.', 'dfx-parish-retreat-letters' ),
 					'statusChangeError' => __( 'Error updating the attendant. Please try again.', 'dfx-parish-retreat-letters' ),
@@ -1241,7 +1260,17 @@ class DFXPRL_Admin {
 			'notes_enabled'              => isset( $_POST['notes_enabled'] ) ? 1 : 0,
 			'internal_notes_enabled'     => isset( $_POST['internal_notes_enabled'] ) ? 1 : 0,
 			'message_request_template'   => sanitize_textarea_field( wp_unslash( $_POST['message_request_template'] ?? '' ) ),
+			'return_email_subject'       => sanitize_text_field( wp_unslash( $_POST['return_email_subject'] ?? '' ) ),
+			'return_email_template'      => sanitize_textarea_field( wp_unslash( $_POST['return_email_template'] ?? '' ) ),
 		);
+
+		// Keep the default texts unsaved, so they follow the plugin's default (and its translation)
+		if ( trim( $data['return_email_subject'] ) === DFXPRL_Retreat::get_default_return_email_subject() ) {
+			$data['return_email_subject'] = '';
+		}
+		if ( str_replace( "\r\n", "\n", trim( $data['return_email_template'] ) ) === DFXPRL_Retreat::get_default_return_email_template() ) {
+			$data['return_email_template'] = '';
+		}
 
 		if ( $retreat_id ) {
 			// Update existing retreat
@@ -1598,6 +1627,34 @@ class DFXPRL_Admin {
 													}, $template_fields ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Escaped in the callback
 													?>
 												<?php endif; ?>
+											</p>
+										</td>
+									</tr>
+									<tr>
+										<th scope="row">
+											<label for="return_email_subject"><?php esc_html_e( 'Letter Return Email Subject', 'dfx-parish-retreat-letters' ); ?></label>
+										</th>
+										<td>
+											<input type="text" id="return_email_subject" name="return_email_subject" class="large-text" maxlength="255" value="<?php echo esc_attr( DFXPRL_Retreat::get_return_email_subject( $retreat ?? (object) array() ) ); ?>">
+										</td>
+									</tr>
+									<tr>
+										<th scope="row">
+											<label for="return_email_template"><?php esc_html_e( 'Letter Return Email Text', 'dfx-parish-retreat-letters' ); ?></label>
+										</th>
+										<td>
+											<textarea id="return_email_template" name="return_email_template" rows="12" class="large-text"><?php echo esc_textarea( DFXPRL_Retreat::get_return_email_template( $retreat ?? (object) array() ) ); ?></textarea>
+											<p class="description">
+												<?php esc_html_e( 'Email sent to the sender of a letter when the attendant has been withdrawn, with the letter attached. After sending it, the letter is deleted. If left empty, the default text is used. Available placeholders:', 'dfx-parish-retreat-letters' ); ?>
+												<br>
+												<code>[sender_name]</code> <?php esc_html_e( '(Sender name)', 'dfx-parish-retreat-letters' ); ?>,
+												<code>[attendant_name]</code> <?php esc_html_e( '(First name)', 'dfx-parish-retreat-letters' ); ?>,
+												<code>[attendant_surnames]</code> <?php esc_html_e( '(Surnames)', 'dfx-parish-retreat-letters' ); ?>,
+												<code>[retreat_name]</code> <?php esc_html_e( '(Name)', 'dfx-parish-retreat-letters' ); ?>,
+												<code>[retreat_location]</code> <?php esc_html_e( '(Location)', 'dfx-parish-retreat-letters' ); ?>,
+												<code>[retreat_start_date]</code> <?php esc_html_e( '(Start date)', 'dfx-parish-retreat-letters' ); ?>,
+												<code>[retreat_end_date]</code> <?php esc_html_e( '(End date)', 'dfx-parish-retreat-letters' ); ?>,
+												<code>[message_date]</code> <?php esc_html_e( '(Date the letter was sent)', 'dfx-parish-retreat-letters' ); ?>
 											</p>
 										</td>
 									</tr>
@@ -3171,6 +3228,9 @@ class DFXPRL_Admin {
 		// URL parameters that keep the current tab when sorting or filtering
 		$view_params = $withdrawn_view ? array( 'status' => 'withdrawn' ) : array();
 
+		// Letters that can still be returned by email, to warn before deleting a withdrawn attendant
+		$returnable_counts = $withdrawn_view ? ( new DFXPRL_LetterReturn() )->get_returnable_counts( wp_list_pluck( $attendants, 'id' ) ) : array();
+
 		// Custom fields shown as list columns, and their values for the attendants on this page
 		$list_fields = array_filter( $this->custom_field_model->get_viewable_by_retreat( $retreat->id ), function( $field ) {
 			return $field->show_in_list;
@@ -3665,7 +3725,7 @@ class DFXPRL_Admin {
 												<button type="button" class="button button-small button-primary dfxprl-reactivate-attendant" data-attendant-id="<?php echo esc_attr( $attendant->id ); ?>">
 													<?php esc_html_e( 'Reactivate', 'dfx-parish-retreat-letters' ); ?>
 												</button>
-												<button type="button" class="button button-small button-link-delete dfxprl-delete-attendant" data-attendant-id="<?php echo esc_attr( $attendant->id ); ?>">
+												<button type="button" class="button button-small button-link-delete dfxprl-delete-attendant" data-attendant-id="<?php echo esc_attr( $attendant->id ); ?>" data-returnable-count="<?php echo esc_attr( $returnable_counts[ (int) $attendant->id ] ?? 0 ); ?>">
 													<?php esc_html_e( 'Delete Permanently', 'dfx-parish-retreat-letters' ); ?>
 												</button>
 											<?php endif; ?>
@@ -5239,6 +5299,30 @@ class DFXPRL_Admin {
 				<p><strong><?php esc_html_e( 'Security Notice:', 'dfx-parish-retreat-letters' ); ?></strong> <?php esc_html_e( 'Message content is encrypted and can only be viewed when printed. This page shows metadata only for privacy and security compliance.', 'dfx-parish-retreat-letters' ); ?></p>
 			</div>
 
+			<?php
+			// Letters of withdrawn attendants can be returned to their senders by email
+			$can_return_letters = $attendant && DFXPRL_Attendant::is_withdrawn( $attendant ) && $this->permissions->current_user_can_manage_messages( $attendant->retreat_id );
+			$returnable_count = $can_return_letters ? ( ( new DFXPRL_LetterReturn() )->get_returnable_counts( array( $attendant->id ) )[ (int) $attendant->id ] ?? 0 ) : 0;
+			?>
+			<?php if ( $can_return_letters ) : ?>
+				<div class="notice notice-info dfxprl-return-letters-notice">
+					<p>
+						<?php esc_html_e( 'This attendant has been withdrawn. You can return by email the letters whose sender gave their address; once returned, they are deleted from the system.', 'dfx-parish-retreat-letters' ); ?>
+						<?php if ( $returnable_count > 1 ) : ?>
+							<button type="button" class="button button-primary dfxprl-return-all-letters" style="margin-left: 8px;">
+								<?php
+								printf(
+									/* translators: %d: number of letters that can be returned */
+									esc_html__( 'Return all by email (%d)', 'dfx-parish-retreat-letters' ),
+									(int) $returnable_count
+								);
+								?>
+							</button>
+						<?php endif; ?>
+					</p>
+				</div>
+			<?php endif; ?>
+
 			<!-- Filters -->
 			<form method="get" action="">
 				<input type="hidden" name="page" value="dfxprl-messages">
@@ -5348,7 +5432,13 @@ class DFXPRL_Admin {
 						<?php if ( ! empty( $messages ) ) : ?>
 							<?php foreach ( $messages as $message ) : ?>
 								<tr>
-									<td data-colname="<?php esc_attr_e( 'From', 'dfx-parish-retreat-letters' ); ?>"><?php echo esc_html( $message->sender_name ?: __( 'Anonymous', 'dfx-parish-retreat-letters' ) ); ?></td>
+									<?php $sender_email = $this->message_model->get_sender_email( $message ); ?>
+									<td data-colname="<?php esc_attr_e( 'From', 'dfx-parish-retreat-letters' ); ?>">
+										<?php echo esc_html( $message->sender_name ?: __( 'Anonymous', 'dfx-parish-retreat-letters' ) ); ?>
+										<?php if ( '' !== $sender_email ) : ?>
+											<br><a href="mailto:<?php echo esc_attr( $sender_email ); ?>" class="description"><?php echo esc_html( $sender_email ); ?></a>
+										<?php endif; ?>
+									</td>
 									<td data-colname="<?php esc_attr_e( 'Type', 'dfx-parish-retreat-letters' ); ?>">
 										<?php if ( $message->message_type === 'text' ) : ?>
 											<span class="dashicons dashicons-text" title="<?php esc_attr_e( 'Text Message', 'dfx-parish-retreat-letters' ); ?>"></span>
@@ -5390,6 +5480,16 @@ class DFXPRL_Admin {
 											$can_delete = $this->permissions->current_user_can_manage_plugin();
 										}
 										?>
+
+										<?php if ( $can_return_letters ) : ?>
+											<?php if ( '' !== $sender_email ) : ?>
+												<button type="button" class="button button-small dfxprl-return-letter" data-message-id="<?php echo esc_attr( $message->id ); ?>" data-email="<?php echo esc_attr( $sender_email ); ?>">
+													<?php esc_html_e( 'Return by email', 'dfx-parish-retreat-letters' ); ?>
+												</button>
+											<?php else : ?>
+												<span class="description"><?php esc_html_e( 'No email: cannot be returned', 'dfx-parish-retreat-letters' ); ?></span>
+											<?php endif; ?>
+										<?php endif; ?>
 
 										<?php if ( $can_delete ) : ?>
 											<button type="button" class="button button-small button-link-delete dfxprl-delete-message" data-message-id="<?php echo esc_attr( $message->id ); ?>">
@@ -5598,6 +5698,79 @@ class DFXPRL_Admin {
 		} else {
 			wp_send_json_error( array( 'message' => __( 'Error deleting message.', 'dfx-parish-retreat-letters' ) ) );
 		}
+	}
+
+	/**
+	 * Check the request to return a letter and get its message ID.
+	 *
+	 * Sends a JSON error and stops when the request is not valid or the user cannot manage the retreat's messages.
+	 *
+	 * @since 1.14.0
+	 * @return int Message ID.
+	 */
+	private function get_returnable_message_id_from_request() {
+		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ?? '' ) ), 'dfxprl_retreats_nonce' ) ) {
+			wp_send_json_error( array( 'message' => __( 'Security check failed.', 'dfx-parish-retreat-letters' ) ) );
+		}
+
+		$message_id = absint( $_POST['message_id'] ?? 0 );
+		$message = $message_id ? $this->message_model->get( $message_id ) : null;
+		if ( ! $message ) {
+			wp_send_json_error( array( 'message' => __( 'Message not found.', 'dfx-parish-retreat-letters' ) ) );
+		}
+
+		if ( ! $this->permissions->current_user_can_manage_messages( $message->retreat_id ) ) {
+			wp_send_json_error( array( 'message' => __( 'You do not have permission to manage messages for this retreat.', 'dfx-parish-retreat-letters' ) ) );
+		}
+
+		return $message_id;
+	}
+
+	/**
+	 * AJAX handler that shows the email that would return a letter to its sender.
+	 *
+	 * @since 1.14.0
+	 */
+	public function ajax_return_letter_preview() {
+		$message_id = $this->get_returnable_message_id_from_request();
+
+		$email = ( new DFXPRL_LetterReturn() )->build( $message_id, false );
+		if ( is_wp_error( $email ) ) {
+			wp_send_json_error( array( 'message' => $email->get_error_message() ) );
+		}
+
+		wp_send_json_success( array(
+			'to'          => $email['to'],
+			'subject'     => $email['subject'],
+			'html'        => $email['html'],
+			'attachments' => wp_list_pluck( $email['attachments'], 'filename' ),
+			'print_count' => $email['print_count'],
+		) );
+	}
+
+	/**
+	 * AJAX handler that returns a letter to its sender by email and then deletes it.
+	 *
+	 * @since 1.14.0
+	 */
+	public function ajax_return_letter() {
+		$message_id = $this->get_returnable_message_id_from_request();
+
+		$result = ( new DFXPRL_LetterReturn() )->send( $message_id );
+		if ( is_wp_error( $result ) ) {
+			wp_send_json_error( array( 'message' => $result->get_error_message() ) );
+		}
+
+		$text = sprintf(
+			/* translators: %s: email address */
+			__( 'Letter returned to %s and deleted from the system.', 'dfx-parish-retreat-letters' ),
+			$result['to']
+		);
+		if ( $result['print_count'] > 0 ) {
+			$text .= ' ' . __( 'Remember to destroy the printed copy.', 'dfx-parish-retreat-letters' );
+		}
+
+		wp_send_json_success( array( 'message' => $text ) );
 	}
 
 	/**

@@ -165,16 +165,19 @@ class DFXPRL_GDPR {
 			 FROM `{$messages_table}` m
 			 INNER JOIN `{$attendants_table}` a ON m.attendant_id = a.id
 			 INNER JOIN `{$retreats_table}` r ON a.retreat_id = r.id
-			 WHERE m.sender_name LIKE %s",
-			'%' . $wpdb->esc_like( $identifier ) . '%'
+			 WHERE m.sender_name LIKE %s OR m.sender_email_hash = %s",
+			'%' . $wpdb->esc_like( $identifier ) . '%',
+			$this->get_sender_email_hash_for_identifier( $identifier )
 		) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 
+		$message_model = new DFXPRL_ConfidentialMessage();
 		foreach ( $messages as $message ) {
 			$export_data['messages'][] = array(
 				'message_id' => $message->id,
 				'attendant' => $message->attendant_name . ' ' . $message->attendant_surnames,
 				'retreat' => $message->retreat_name,
 				'sender_name' => $message->sender_name,
+				'sender_email' => $message_model->get_sender_email( $message ),
 				'submitted_at' => $message->submitted_at,
 				'note' => __( 'Message content is encrypted and cannot be exported in plain text for security reasons.', 'dfx-parish-retreat-letters' ),
 			);
@@ -228,8 +231,9 @@ class DFXPRL_GDPR {
 		$messages_table = $this->database->get_messages_table();
 		$messages = $wpdb->get_results( $wpdb->prepare(
 			"SELECT m.id FROM `{$messages_table}` m
-			 WHERE m.sender_name LIKE %s",
-			'%' . $wpdb->esc_like( $identifier ) . '%'
+			 WHERE m.sender_name LIKE %s OR m.sender_email_hash = %s",
+			'%' . $wpdb->esc_like( $identifier ) . '%',
+			$this->get_sender_email_hash_for_identifier( $identifier )
 		) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 
 		// Erase each message and its associated data
@@ -265,6 +269,17 @@ class DFXPRL_GDPR {
 		) );
 
 		return $erasure_results;
+	}
+
+	/**
+	 * Hash to find messages by sender email when the identifier is an email.
+	 *
+	 * @since 1.14.0
+	 * @param string $identifier Email or name.
+	 * @return string The hash, or a value that matches nothing when the identifier is not an email.
+	 */
+	private function get_sender_email_hash_for_identifier( $identifier ) {
+		return is_email( trim( $identifier ) ) ? DFXPRL_ConfidentialMessage::hash_sender_email( $identifier ) : '-';
 	}
 
 	/**

@@ -3648,3 +3648,183 @@ msgstr "Gracias. Tu mensaje para %s se ha recibido correctamente y está guardad
 #: includes/class-dfx-parish-retreat-letters.php:630
 msgid "You can now close this page."
 msgstr "Ya puedes cerrar esta página."
+
+#. translators: %d: number of letters that can still be returned by email
+#: includes/class-admin.php:1025
+#, php-format
+msgid "This attendant has %d letters that can still be returned to their senders by email. If you delete the attendant, they will be deleted without being returned."
+msgstr "Este asistente tiene %d cartas que todavía se pueden devolver por email a sus remitentes. Si borras al asistente, se borrarán sin devolverse."
+
+#: includes/class-admin.php:1026
+msgid "Return letter by email"
+msgstr "Devolver carta por email"
+
+#: includes/class-admin.php:1027
+msgid "Return all letters by email"
+msgstr "Devolver todas las cartas por email"
+
+#: includes/class-admin.php:1029
+msgid "Subject"
+msgstr "Asunto"
+
+#: includes/class-admin.php:1030
+msgid "Attachments"
+msgstr "Adjuntos"
+
+#: includes/class-admin.php:1031
+msgid "Recipients"
+msgstr "Destinatarios"
+
+#. translators: %d: number of times the letter was printed
+#: includes/class-admin.php:1033
+#, php-format
+msgid "This letter was printed %d times. Remember to destroy the printed copy."
+msgstr "Esta carta se imprimió %d veces. Recuerda destruir la copia impresa."
+
+#: includes/class-admin.php:1034
+msgid "Each letter will be sent back to its sender with the configured email, and deleted once sent. Remember to destroy the printed copies."
+msgstr "Cada carta se devolverá a su remitente con el email configurado y se borrará una vez enviada. Recuerda destruir las copias impresas."
+
+#: includes/class-admin.php:1035
+msgid "Send and delete the letter"
+msgstr "Enviar y borrar la carta"
+
+#: includes/class-admin.php:1036
+msgid "Send and delete the letters"
+msgstr "Enviar y borrar las cartas"
+
+#: includes/class-admin.php:1038
+#: includes/class-letter-return.php:138
+#: includes/class-letter-return.php:147
+#: includes/class-letter-return.php:164
+msgid "The email could not be sent. The letter has not been deleted."
+msgstr "No se ha podido enviar el email. La carta no se ha borrado."
+
+#. translators: 1: number of returned letters, 2: number of letters that could not be returned
+#: includes/class-admin.php:1040
+#, php-format
+msgid "%1$d letters returned and deleted. %2$d could not be returned and have been kept."
+msgstr "%1$d cartas devueltas y borradas. %2$d no se han podido devolver y se conservan."
+
+#: includes/class-admin.php:1635
+msgid "Letter Return Email Subject"
+msgstr "Asunto del email de devolución"
+
+#: includes/class-admin.php:1643
+msgid "Letter Return Email Text"
+msgstr "Texto del email de devolución"
+
+#: includes/class-admin.php:1648
+msgid "Email sent to the sender of a letter when the attendant has been withdrawn, with the letter attached. After sending it, the letter is deleted. If left empty, the default text is used. Available placeholders:"
+msgstr "Email que se envía al remitente de una carta cuando el asistente se ha dado de baja, con la carta adjunta. Tras enviarlo, la carta se borra. Si se deja vacío, se usa el texto por defecto. Marcadores disponibles:"
+
+#: includes/class-admin.php:1650
+msgid "(Sender name)"
+msgstr "(Nombre del remitente)"
+
+#: includes/class-admin.php:1657
+msgid "(Date the letter was sent)"
+msgstr "(Fecha en que se envió la carta)"
+
+#: includes/class-admin.php:5310
+msgid "This attendant has been withdrawn. You can return by email the letters whose sender gave their address; once returned, they are deleted from the system."
+msgstr "Este asistente está dado de baja. Puedes devolver por email las cartas cuyo remitente dejó su dirección; al hacerlo se borran del sistema."
+
+#. translators: %d: number of letters that can be returned
+#: includes/class-admin.php:5316
+#, php-format
+msgid "Return all by email (%d)"
+msgstr "Devolver todas por email (%d)"
+
+#: includes/class-admin.php:5487
+msgid "Return by email"
+msgstr "Devolver por email"
+
+#: includes/class-admin.php:5490
+msgid "No email: cannot be returned"
+msgstr "Sin email: no se puede devolver"
+
+#: includes/class-admin.php:5723
+msgid "You do not have permission to manage messages for this retreat."
+msgstr "No tienes permiso para gestionar los mensajes de este retiro."
+
+#. translators: %s: email address
+#: includes/class-admin.php:5766
+#, php-format
+msgid "Letter returned to %s and deleted from the system."
+msgstr "Carta devuelta a %s y borrada del sistema."
+
+#: includes/class-admin.php:5770
+msgid "Remember to destroy the printed copy."
+msgstr "Recuerda destruir la copia impresa."
+
+#: includes/class-dfx-parish-retreat-letters.php:694
+msgid "Your Email"
+msgstr "Tu email"
+
+#: includes/class-dfx-parish-retreat-letters.php:695
+msgid "name@example.com"
+msgstr "nombre@ejemplo.com"
+
+#: includes/class-dfx-parish-retreat-letters.php:696
+msgid "Repeat Your Email"
+msgstr "Repite tu email"
+
+#: includes/class-dfx-parish-retreat-letters.php:915
+#: includes/class-dfx-parish-retreat-letters.php:1097
+msgid "The email addresses do not match. Please check them."
+msgstr "Los emails no coinciden. Revísalos, por favor."
+
+#: includes/class-dfx-parish-retreat-letters.php:916
+#: includes/class-dfx-parish-retreat-letters.php:1100
+msgid "The email address is not valid."
+msgstr "El email no es válido."
+
+#: includes/class-letter-return.php:58
+msgid "Only letters for withdrawn attendants can be returned."
+msgstr "Solo se pueden devolver las cartas de asistentes dados de baja."
+
+#: includes/class-letter-return.php:63
+msgid "The sender of this letter did not give an email address, so it cannot be returned."
+msgstr "El remitente de esta carta no dejó su email, así que no se puede devolver."
+
+#. translators: %s: attendant full name
+#: includes/class-letter-return.php:226
+#: includes/class-letter-return.php:288
+#, php-format
+msgid "Letter for %s"
+msgstr "Carta para %s"
+
+#: includes/class-letter-return.php:234
+#: includes/class-letter-return.php:261
+msgid "The letter could not be decrypted."
+msgstr "No se ha podido descifrar la carta."
+
+#: includes/class-letter-return.php:270
+msgid "The files of this letter could not be found."
+msgstr "No se han encontrado los archivos de esta carta."
+
+#: includes/class-retreat.php:398
+msgid "Your letter for [attendant_name] [attendant_surnames]"
+msgstr "Tu carta para [attendant_name] [attendant_surnames]"
+
+#: includes/class-retreat.php:408
+msgid ""
+"Hello, [sender_name]:\n"
+"\n"
+"Thank you for the letter you wrote to [attendant_name] [attendant_surnames] for the retreat \"[retreat_name]\".\n"
+"\n"
+"In the end, [attendant_name] did not attend the retreat. For confidentiality and data protection reasons, we are going to destroy the digital record of your letter and the printed copy that had been prepared to be delivered.\n"
+"\n"
+"Your letter is attached to this email, so that you can keep it and use it again if [attendant_name] takes part in a retreat in the coming months.\n"
+"\n"
+"Kind regards."
+msgstr "Hola, [sender_name]:\n\nGracias por la carta que escribiste a [attendant_name] [attendant_surnames] para el retiro «[retreat_name]».\n\nFinalmente, [attendant_name] no ha asistido al retiro. Por motivos de confidencialidad y protección de datos, vamos a destruir el registro digital de tu carta y la copia impresa que se había preparado para entregársela.\n\nTe adjuntamos tu carta en este email para que la conserves y puedas volver a utilizarla si [attendant_name] participa en un retiro en los próximos meses.\n\nUn saludo."
+
+#: includes/class-dfx-parish-retreat-letters.php:700
+msgid "Optional. It will only be used to let you know about any issue with your letter."
+msgstr "Opcional. Solo se usará para comunicarte incidencias con tu carta."
+
+#: includes/class-dfx-parish-retreat-letters.php:825
+msgid "If you give your email, it is stored encrypted and will only be used to let you know about any issue with your letter."
+msgstr "Si indicas tu email, se guarda cifrado y solo se usará para comunicarte incidencias con tu carta."

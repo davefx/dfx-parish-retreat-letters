@@ -90,6 +90,11 @@
 			displaySelectedFiles(this.files);
 		});
 
+		// The email confirmation has to be typed, not pasted
+		$('#sender_email_confirm').on('paste drop', function(e) {
+			e.preventDefault();
+		});
+
 		// Form submission
 		$('#dfxprl-message-form').on('submit', function(e) {
 			e.preventDefault();
@@ -412,6 +417,22 @@
 				var files = $('#message_files')[0].files;
 				if (!files || files.length === 0) {
 					alert(dfxprlMessageForm.i18n.pleaseSelectFile);
+					return;
+				}
+			}
+
+			// Validate the optional sender email, which has to be typed twice
+			var senderEmail = $.trim($('#sender_email').val() || '');
+			var senderEmailConfirm = $.trim($('#sender_email_confirm').val() || '');
+			if (senderEmail !== '' || senderEmailConfirm !== '') {
+				if (senderEmail.toLowerCase() !== senderEmailConfirm.toLowerCase()) {
+					alert(dfxprlMessageForm.i18n.emailsDoNotMatch);
+					$('#sender_email_confirm').trigger('focus');
+					return;
+				}
+				if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(senderEmail)) {
+					alert(dfxprlMessageForm.i18n.invalidEmail);
+					$('#sender_email').trigger('focus');
 					return;
 				}
 			}

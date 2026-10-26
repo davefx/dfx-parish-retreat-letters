@@ -73,17 +73,30 @@ class DFXPRL_ConfidentialMessage {
 
 		$ip_address = $this->security->get_user_ip();
 
+		$row = array(
+			'attendant_id'      => $sanitized_data['attendant_id'],
+			'sender_name'       => $sanitized_data['sender_name'],
+			'encrypted_content' => $encryption_result['encrypted'],
+			'content_salt'      => $encryption_result['salt'],
+			'message_type'      => $sanitized_data['message_type'],
+			'ip_address'        => $ip_address,
+		);
+
+		// The optional sender email is personal data: store it encrypted, plus a hash to find it on GDPR requests
+		if ( '' !== $sanitized_data['sender_email'] ) {
+			$email_encryption = $this->security->encrypt_data( $sanitized_data['sender_email'] );
+			if ( $email_encryption === false ) {
+				return false;
+			}
+			$row['encrypted_sender_email'] = $email_encryption['encrypted'];
+			$row['sender_email_salt']      = $email_encryption['salt'];
+			$row['sender_email_hash']      = self::hash_sender_email( $sanitized_data['sender_email'] );
+		}
+
 		$result = $wpdb->insert(
 			$this->database->get_messages_table(),
-			array(
-				'attendant_id'      => $sanitized_data['attendant_id'],
-				'sender_name'       => $sanitized_data['sender_name'],
-				'encrypted_content' => $encryption_result['encrypted'],
-				'content_salt'      => $encryption_result['salt'],
-				'message_type'      => $sanitized_data['message_type'],
-				'ip_address'        => $ip_address,
-			),
-			array( '%d', '%s', '%s', '%s', '%s', '%s' )
+			$row,
+			array_merge( array( '%d' ), array_fill( 0, count( $row ) - 1, '%s' ) )
 		); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
 
 		if ( ! $result ) {
@@ -175,6 +188,33 @@ class DFXPRL_ConfidentialMessage {
 
 		$message->decrypted_content = $decrypted_content;
 		return $message;
+	}
+
+	/**
+	 * Get the decrypted sender email of a message.
+	 *
+	 * @since 1.14.0
+	 * @param object $message Message object (as returned by get()).
+	 * @return string The email, or an empty string when the sender did not give one.
+	 */
+	public function get_sender_email( $message ) {
+		if ( empty( $message->encrypted_sender_email ) || empty( $message->sender_email_salt ) ) {
+			return '';
+		}
+
+		$email = $this->security->decrypt_data( $message->encrypted_sender_email, $message->sender_email_salt );
+		return is_string( $email ) && is_email( $email ) ? $email : '';
+	}
+
+	/**
+	 * Hash a sender email so messages can be found by email without decrypting them.
+	 *
+	 * @since 1.14.0
+	 * @param string $email Email address.
+	 * @return string
+	 */
+	public static function hash_sender_email( $email ) {
+		return hash_hmac( 'sha256', strtolower( trim( $email ) ), wp_salt( 'auth' ) );
 	}
 
 	/**
@@ -548,12 +588,21 @@ class DFXPRL_ConfidentialMessage {
 			$file_model->delete( $file->id );
 		}
 
-		// Delete the message (cascading will handle related records)
+		// Delete the message
 		$result = $wpdb->delete(
 			$this->database->get_messages_table(),
 			array( 'id' => $id ),
 			array( '%d' )
 		); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
+
+		// There are no foreign keys, so the print history has to be removed explicitly
+		if ( $result !== false ) {
+			$wpdb->delete(
+				$this->database->get_message_print_log_table(),
+				array( 'message_id' => $id ),
+				array( '%d' )
+			); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
+		}
 
 		if ( $result !== false ) {
 			$this->log_message_audit_event( 'letter_removed', $id, $attendant_id_for_audit );
@@ -618,6 +667,7 @@ class DFXPRL_ConfidentialMessage {
 		return array(
 			'attendant_id'  => absint( $data['attendant_id'] ?? 0 ),
 			'sender_name'   => sanitize_text_field( $data['sender_name'] ?? '' ),
+			'sender_email'  => sanitize_email( $data['sender_email'] ?? '' ),
 			'content'       => wp_kses_post( $data['content'] ?? '' ),
 			'message_type'  => sanitize_text_field( $data['message_type'] ?? 'text' ),
 		);
@@ -638,6 +688,11 @@ class DFXPRL_ConfidentialMessage {
 
 		// Validate message type
 		if ( ! in_array( $data['message_type'], array( 'text', 'file' ), true ) ) {
+			return false;
+		}
+
+		// The sender email is optional, but must be valid when given
+		if ( '' !== $data['sender_email'] && ! is_email( $data['sender_email'] ) ) {
 			return false;
 		}
 

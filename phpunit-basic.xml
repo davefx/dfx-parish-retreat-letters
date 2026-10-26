@@ -20,6 +20,7 @@
             <file>./tests/unit/DateImportTest.php</file>
             <file>./tests/unit/CustomFieldTest.php</file>
             <file>./tests/unit/WithdrawAttendantsTest.php</file>
+            <file>./tests/unit/LetterReturnTest.php</file>
         </testsuite>
         <testsuite name="basic">
             <file>./tests/unit/BasicInfrastructureTest.php</file>

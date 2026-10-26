@@ -3,7 +3,7 @@ Contributors: davefx
 Tags: parish, retreat, letters, confidential, GDPR
 Requires at least: 5.0
 Tested up to: 6.9
-Stable tag: 26.10.15
+Stable tag: 26.10.26
 Requires PHP: 7.4
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
@@ -173,6 +173,15 @@ By default it is generated automatically and stored in the WordPress database (`
 Yes. A `.pot` translation template is included in the `languages/` directory. Create `.po` and `.mo` files for your language and place them in that folder following standard WordPress translation conventions.
 
 ## Changelog
+
+### 26.10.26
+
+- New: optional sender email in the message form, typed twice to avoid typos. It is stored encrypted and only used to let the sender know about any issue with their letter.
+- New: letters of withdrawn attendants can be **returned by email** to their senders, one by one or all at once, with the letter attached (an HTML document for text letters, the original files otherwise). After the email is sent, the letter is deleted. The email subject and text can be configured per retreat, with placeholders, and are previewed before sending.
+- New: warning before permanently deleting a withdrawn attendant who still has letters that can be returned.
+- Change: personal data export and erasure also find letters by the sender's email.
+- Fix: deleting a letter also deletes its print history.
+- Fix: the message form styles for wide screens were partly ignored (including the message received page) because of an unclosed CSS block.
 
 ### 26.10.15
 
