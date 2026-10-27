@@ -205,6 +205,26 @@ class DFXPRL_LetterReturn {
 	}
 
 	/**
+	 * Count the letters of the withdrawn attendants of a retreat that can still be returned.
+	 *
+	 * @since 1.15.0
+	 * @param int $retreat_id Retreat ID.
+	 * @return int
+	 */
+	public function get_returnable_count_by_retreat( $retreat_id ) {
+		global $wpdb;
+
+		$database         = DFXPRL_Database::get_instance();
+		$messages_table   = $database->get_messages_table();
+		$attendants_table = $database->get_attendants_table();
+
+		return (int) $wpdb->get_var( $wpdb->prepare(
+			"SELECT COUNT(*) FROM {$messages_table} m INNER JOIN {$attendants_table} a ON a.id = m.attendant_id WHERE a.retreat_id = %d AND a.withdrawn_at IS NOT NULL AND m.encrypted_sender_email IS NOT NULL AND m.encrypted_sender_email <> ''", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			$retreat_id
+		) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
+	}
+
+	/**
 	 * Build the files attached to the return email.
 	 *
 	 * A text letter is attached as a standalone HTML document; a letter with

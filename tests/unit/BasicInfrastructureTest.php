@@ -33,11 +33,11 @@ class BasicInfrastructureTest extends TestCase {
     public function testPluginConstantsCanBeDefined() {
         // Test that we can define the constants
         if (!defined('DFXPRL_VERSION')) {
-            define('DFXPRL_VERSION', '26.10.26');
+            define('DFXPRL_VERSION', '26.10.27');
         }
         
         $this->assertTrue(defined('DFXPRL_VERSION'));
-        $this->assertEquals('26.10.26', DFXPRL_VERSION);
+        $this->assertEquals('26.10.27', DFXPRL_VERSION);
     }
 
     /**

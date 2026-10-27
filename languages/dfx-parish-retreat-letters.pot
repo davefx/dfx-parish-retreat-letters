@@ -3613,3 +3613,54 @@ msgstr ""
 #: includes/class-dfx-parish-retreat-letters.php:825
 msgid "If you give your email, it is stored encrypted and will only be used to let you know about any issue with your letter."
 msgstr ""
+
+#: includes/class-admin.php:1062
+msgid "Empty Retreat - Confirmation Required"
+msgstr ""
+
+#. translators: %d: number of attendants
+#: includes/class-admin.php:1064
+#, php-format
+msgid "You are about to permanently delete ALL %d attendants of this retreat, active and withdrawn."
+msgstr ""
+
+#: includes/class-admin.php:1065
+msgid "Their letters, files, print history, contact log and custom field values will also be deleted. The retreat, its settings, custom fields and managers are kept, so it can be reused. This cannot be undone."
+msgstr ""
+
+#. translators: %d: number of letters
+#: includes/class-admin.php:1067
+#, php-format
+msgid "Letters of withdrawn attendants that can still be returned to their senders by email: %d. If you empty the retreat, they will be deleted without being returned."
+msgstr ""
+
+#: includes/class-admin.php:1068
+msgid "To confirm, type the exact retreat name below:"
+msgstr ""
+
+#: includes/class-admin.php:1069
+#: includes/class-admin.php:3596
+msgid "Empty Retreat"
+msgstr ""
+
+#: includes/class-admin.php:1070
+msgid "Emptying..."
+msgstr ""
+
+#: includes/class-admin.php:3188
+msgid "A retreat can only be emptied after its end date."
+msgstr ""
+
+#: includes/class-admin.php:3192
+msgid "Retreat name verification failed. Action cancelled for security."
+msgstr ""
+
+#: includes/class-admin.php:3199
+msgid "Error emptying the retreat. Please try again."
+msgstr ""
+
+#. translators: %d: Number of deleted attendants
+#: includes/class-admin.php:3213
+#, php-format
+msgid "Retreat emptied: %d attendants have been deleted together with their letters. The retreat and its settings are kept."
+msgstr ""

@@ -166,6 +166,7 @@ class DFXPRL_Admin {
 		add_action( 'wp_ajax_dfxprl_delete_retreat', array( $this, 'ajax_delete_retreat' ) );
 		add_action( 'wp_ajax_dfxprl_delete_attendant', array( $this, 'ajax_delete_attendant' ) );
 		add_action( 'wp_ajax_dfxprl_withdraw_all_attendants', array( $this, 'ajax_withdraw_all_attendants' ) );
+		add_action( 'wp_ajax_dfxprl_empty_retreat', array( $this, 'ajax_empty_retreat' ) );
 		add_action( 'wp_ajax_dfxprl_withdraw_attendant', array( $this, 'ajax_withdraw_attendant' ) );
 		add_action( 'wp_ajax_dfxprl_reactivate_attendant', array( $this, 'ajax_reactivate_attendant' ) );
 		add_action( 'wp_ajax_dfxprl_export_attendants_csv', array( $this, 'ajax_export_attendants_csv' ) );
@@ -1058,6 +1059,15 @@ class DFXPRL_Admin {
 					'confirmationPlaceholder' => __( 'Type confirmation here...', 'dfx-parish-retreat-letters' ),
 					'withdrawAllButton' => __( 'Withdraw All Attendants', 'dfx-parish-retreat-letters' ),
 					'withdrawing' => __( 'Withdrawing...', 'dfx-parish-retreat-letters' ),
+					'emptyRetreatTitle' => __( 'Empty Retreat - Confirmation Required', 'dfx-parish-retreat-letters' ),
+					/* translators: %d: number of attendants */
+					'emptyRetreatWarning' => __( 'You are about to permanently delete ALL %d attendants of this retreat, active and withdrawn.', 'dfx-parish-retreat-letters' ),
+					'emptyRetreatDetails' => __( 'Their letters, files, print history, contact log and custom field values will also be deleted. The retreat, its settings, custom fields and managers are kept, so it can be reused. This cannot be undone.', 'dfx-parish-retreat-letters' ),
+					/* translators: %d: number of letters */
+					'emptyRetreatReturnable' => __( 'Letters of withdrawn attendants that can still be returned to their senders by email: %d. If you empty the retreat, they will be deleted without being returned.', 'dfx-parish-retreat-letters' ),
+					'typeRetreatNameToEmpty' => __( 'To confirm, type the exact retreat name below:', 'dfx-parish-retreat-letters' ),
+					'emptyRetreatButton' => __( 'Empty Retreat', 'dfx-parish-retreat-letters' ),
+					'emptyingRetreat' => __( 'Emptying...', 'dfx-parish-retreat-letters' ),
 					'deleteButton' => __( 'Delete Forever', 'dfx-parish-retreat-letters' ),
 					'cancelButton' => __( 'Cancel', 'dfx-parish-retreat-letters' ),
 					'deleting' => __( 'Deleting...', 'dfx-parish-retreat-letters' ),
@@ -1318,6 +1328,11 @@ class DFXPRL_Admin {
 	public function ajax_delete_retreat() {
 		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ?? '' ) ), 'dfxprl_retreats_nonce' ) ) {
 			wp_die( esc_html__( 'Security check failed.', 'dfx-parish-retreat-letters' ) );
+		}
+
+		// Only plugin administrators can delete retreats
+		if ( ! $this->permissions->current_user_can_manage_plugin() ) {
+			wp_send_json_error( array( 'message' => __( 'You do not have permission to perform this action.', 'dfx-parish-retreat-letters' ) ) );
 		}
 
 		$retreat_id = absint( $_POST['retreat_id'] ?? 0 );
@@ -3147,6 +3162,61 @@ class DFXPRL_Admin {
 	}
 
 	/**
+	 * AJAX handler to empty a finished retreat: permanently delete all its attendants
+	 * (active and withdrawn) with their letters and related data, keeping the retreat.
+	 *
+	 * @since 1.15.0
+	 */
+	public function ajax_empty_retreat() {
+		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ?? '' ) ), 'dfxprl_retreats_nonce' ) ) {
+			wp_send_json_error( array( 'message' => __( 'Security check failed.', 'dfx-parish-retreat-letters' ) ) );
+		}
+
+		$retreat_id = absint( $_POST['retreat_id'] ?? 0 );
+		$retreat_name = sanitize_text_field( wp_unslash( $_POST['retreat_name'] ?? '' ) );
+
+		$retreat = $this->retreat_model->get( $retreat_id );
+		if ( ! $retreat ) {
+			wp_send_json_error( array( 'message' => __( 'Retreat not found.', 'dfx-parish-retreat-letters' ) ) );
+		}
+
+		if ( ! $this->permissions->current_user_can_manage_retreat( $retreat_id ) ) {
+			wp_send_json_error( array( 'message' => __( 'You do not have permission to perform this action.', 'dfx-parish-retreat-letters' ) ) );
+		}
+
+		if ( ! DFXPRL_Retreat::has_ended( $retreat ) ) {
+			wp_send_json_error( array( 'message' => __( 'A retreat can only be emptied after its end date.', 'dfx-parish-retreat-letters' ) ) );
+		}
+
+		if ( $retreat->name !== $retreat_name ) {
+			wp_send_json_error( array( 'message' => __( 'Retreat name verification failed. Action cancelled for security.', 'dfx-parish-retreat-letters' ) ) );
+		}
+
+		$attendants_count = $this->attendant_model->get_count_by_retreat( $retreat_id, '', array( 'withdrawn' => false ) )
+			+ $this->attendant_model->get_count_by_retreat( $retreat_id, '', array( 'withdrawn' => true ) );
+
+		if ( ! $this->attendant_model->delete_by_retreat( $retreat_id ) ) {
+			wp_send_json_error( array( 'message' => __( 'Error emptying the retreat. Please try again.', 'dfx-parish-retreat-letters' ) ) );
+		}
+
+		if ( class_exists( 'DFXPRL_GDPR' ) ) {
+			DFXPRL_GDPR::get_instance()->log_audit_event( 'retreat_emptied', array(
+				'retreat_id'       => (int) $retreat_id,
+				'retreat_name'     => $retreat->name,
+				'attendants_count' => (int) $attendants_count,
+			) );
+		}
+
+		wp_send_json_success( array(
+			'message' => sprintf(
+				/* translators: %d: Number of deleted attendants */
+				__( 'Retreat emptied: %d attendants have been deleted together with their letters. The retreat and its settings are kept.', 'dfx-parish-retreat-letters' ),
+				$attendants_count
+			),
+		) );
+	}
+
+	/**
 	 * Export attendants CSV.
 	 *
 	 * @since 1.0.0
@@ -3509,6 +3579,21 @@ class DFXPRL_Admin {
 								data-attendant-count="<?php echo esc_attr( $tab_counts['active'] ?? $total_items ); ?>"
 								style="color: #d63638;">
 								<?php esc_html_e( 'Withdraw All Attendants', 'dfx-parish-retreat-letters' ); ?>
+							</button>
+						</div>
+					<?php endif; ?>
+					<?php
+					$all_attendants_count = (int) ( $tab_counts['active'] ?? 0 ) + (int) ( $tab_counts['withdrawn'] ?? 0 );
+					if ( $all_attendants_count > 0 && $can_manage_retreat && DFXPRL_Retreat::has_ended( $retreat ) ) :
+						?>
+						<div class="alignright actions">
+							<button type="button" class="button button-link-delete dfxprl-empty-retreat"
+								data-retreat-id="<?php echo esc_attr( $retreat->id ); ?>"
+								data-retreat-name="<?php echo esc_attr( $retreat->name ); ?>"
+								data-attendant-count="<?php echo esc_attr( $all_attendants_count ); ?>"
+								data-returnable-count="<?php echo esc_attr( ( new DFXPRL_LetterReturn() )->get_returnable_count_by_retreat( $retreat->id ) ); ?>"
+								style="color: #d63638;">
+								<?php esc_html_e( 'Empty Retreat', 'dfx-parish-retreat-letters' ); ?>
 							</button>
 						</div>
 					<?php endif; ?>

@@ -3,7 +3,7 @@ Contributors: davefx
 Tags: parish, retreat, letters, confidential, GDPR
 Requires at least: 5.0
 Tested up to: 6.9
-Stable tag: 26.10.26
+Stable tag: 26.10.27
 Requires PHP: 7.4
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
@@ -173,6 +173,11 @@ By default it is generated automatically and stored in the WordPress database (`
 Yes. A `.pot` translation template is included in the `languages/` directory. Create `.po` and `.mo` files for your language and place them in that folder following standard WordPress translation conventions.
 
 ## Changelog
+
+### 26.10.27
+
+- New: **Empty retreat** button in the attendants page, available to retreat managers once the retreat has finished. It permanently deletes all the attendants of the retreat, active and withdrawn, with their letters, files, print history, contact log and custom field values, and keeps the retreat with its settings, custom fields and managers so it can be reused. It asks to type the retreat name and warns about letters that could still be returned by email.
+- Security: only plugin administrators can delete a retreat (the server now checks it, not only the interface).
 
 ### 26.10.26
 

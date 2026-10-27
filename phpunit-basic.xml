@@ -21,6 +21,7 @@
             <file>./tests/unit/CustomFieldTest.php</file>
             <file>./tests/unit/WithdrawAttendantsTest.php</file>
             <file>./tests/unit/LetterReturnTest.php</file>
+            <file>./tests/unit/EmptyRetreatTest.php</file>
         </testsuite>
         <testsuite name="basic">
             <file>./tests/unit/BasicInfrastructureTest.php</file>

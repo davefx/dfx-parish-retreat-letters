@@ -322,6 +322,104 @@
             });
         });
 
+        // Empty a finished retreat: delete all its attendants and letters (typed retreat name confirmation)
+        $('.dfxprl-empty-retreat').on('click', function(e) {
+            e.preventDefault();
+
+            var $button = $(this);
+            var retreatId = $button.data('retreat-id');
+            var retreatName = String($button.data('retreat-name'));
+            var returnable = parseInt($button.data('returnable-count'), 10) || 0;
+            var messages = dfxprlAdmin.messages;
+
+            var $modal = $(
+                '<div id="dfxprl-empty-retreat-modal" class="dfxprl-modal-overlay">' +
+                    '<div class="dfxprl-modal-dialog">' +
+                        '<div class="dfxprl-modal-header"><h3></h3></div>' +
+                        '<div class="dfxprl-modal-body">' +
+                            '<div class="dfxprl-warning-message">' +
+                                '<p><strong class="dfxprl-empty-retreat-warning"></strong></p>' +
+                                '<p class="dfxprl-empty-retreat-details"></p>' +
+                                '<p class="dfxprl-empty-retreat-returnable"><strong></strong></p>' +
+                            '</div>' +
+                            '<div class="dfxprl-confirmation-section">' +
+                                '<p class="dfxprl-type-confirmation"></p>' +
+                                '<p><strong class="dfxprl-empty-retreat-name"></strong></p>' +
+                                '<input type="text" id="dfxprl-empty-retreat-confirm" />' +
+                            '</div>' +
+                        '</div>' +
+                        '<div class="dfxprl-modal-footer">' +
+                            '<button type="button" id="dfxprl-confirm-empty-retreat" class="button button-primary" disabled></button>' +
+                            '<button type="button" id="dfxprl-cancel-empty-retreat" class="button"></button>' +
+                        '</div>' +
+                    '</div>' +
+                '</div>'
+            );
+            $modal.find('h3').text(messages.emptyRetreatTitle);
+            $modal.find('.dfxprl-empty-retreat-warning').text(messages.emptyRetreatWarning.replace('%d', $button.data('attendant-count')));
+            $modal.find('.dfxprl-empty-retreat-details').text(messages.emptyRetreatDetails);
+            if (returnable > 0) {
+                $modal.find('.dfxprl-empty-retreat-returnable strong').text(messages.emptyRetreatReturnable.replace('%d', returnable));
+            } else {
+                $modal.find('.dfxprl-empty-retreat-returnable').remove();
+            }
+            $modal.find('.dfxprl-type-confirmation').text(messages.typeRetreatNameToEmpty);
+            $modal.find('.dfxprl-empty-retreat-name').text(retreatName);
+            $modal.find('#dfxprl-empty-retreat-confirm').attr('placeholder', messages.retreatNamePlaceholder);
+            $modal.find('#dfxprl-confirm-empty-retreat').text(messages.emptyRetreatButton);
+            $modal.find('#dfxprl-cancel-empty-retreat').text(messages.cancelButton);
+
+            $('body').append($modal);
+            $modal.fadeIn();
+
+            var $confirmInput = $modal.find('#dfxprl-empty-retreat-confirm').trigger('focus');
+            var $confirmButton = $modal.find('#dfxprl-confirm-empty-retreat');
+
+            function closeModal() {
+                $modal.fadeOut(function() {
+                    $modal.remove();
+                });
+            }
+
+            $confirmInput.on('input', function() {
+                $confirmButton.prop('disabled', $(this).val().trim() !== retreatName);
+            });
+
+            $modal.on('click', function(e) {
+                if (e.target === this) {
+                    closeModal();
+                }
+            });
+            $modal.find('#dfxprl-cancel-empty-retreat').on('click', closeModal);
+
+            $confirmButton.on('click', function() {
+                closeModal();
+                $button.prop('disabled', true).text(messages.emptyingRetreat);
+
+                $.post(dfxprlAdmin.ajaxurl, {
+                    action: 'dfxprl_empty_retreat',
+                    retreat_id: retreatId,
+                    retreat_name: retreatName,
+                    nonce: dfxprlAdmin.nonce
+                }).done(function(response) {
+                    if (response.success) {
+                        $('<div class="notice notice-success is-dismissible"><p></p></div>')
+                            .find('p').text(response.data.message).end()
+                            .insertAfter('.wp-header-end');
+                        setTimeout(function() {
+                            window.location.reload();
+                        }, 1500);
+                    } else {
+                        alert((response.data && response.data.message) || messages.statusChangeError);
+                        $button.prop('disabled', false).text(messages.emptyRetreatButton);
+                    }
+                }).fail(function() {
+                    alert(messages.statusChangeError);
+                    $button.prop('disabled', false).text(messages.emptyRetreatButton);
+                });
+            });
+        });
+
         // Form validation for add/edit retreat
         $('form').on('submit', function(e) {
             var startDate = $('#start_date').val();

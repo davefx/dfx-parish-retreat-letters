@@ -431,6 +431,17 @@ class DFXPRL_Retreat {
 	}
 
 	/**
+	 * Check whether a retreat has already finished (its end date is in the past).
+	 *
+	 * @since 1.15.0
+	 * @param object $retreat Retreat object.
+	 * @return bool
+	 */
+	public static function has_ended( $retreat ) {
+		return ! empty( $retreat->end_date ) && current_time( 'Y-m-d' ) > $retreat->end_date;
+	}
+
+	/**
 	 * Sanitize block selection value.
 	 * Handles both legacy numeric format and new prefixed format.
 	 *
