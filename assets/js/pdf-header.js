@@ -123,6 +123,9 @@
 		// Mirrors the previous server-side TCPDF layout: ~16 mm header strip.
 		var HEADER_HEIGHT = 45;
 		var HEADER_MARGIN = 11;
+		// Wider left margin (~15 mm): many printers cannot print the outer 5 mm or so,
+		// and they were cutting the "To:" and "From:" labels.
+		var HEADER_LEFT_MARGIN = 42;
 		var LINE_HEIGHT = 14;
 		var BOTTOM_MARGIN = 28;
 		var FONT_SIZE = 10;
@@ -147,13 +150,13 @@
 		var textColor = rgb( 0.2, 0.2, 0.2 );
 
 		if ( data.to ) {
-			newFirstPage.drawText( toLabelText, { x: HEADER_MARGIN, y: yPos, size: FONT_SIZE, font: font, color: textColor } );
-			newFirstPage.drawText( data.to, { x: HEADER_MARGIN + labelWidth, y: yPos, size: FONT_SIZE, font: font, color: textColor } );
+			newFirstPage.drawText( toLabelText, { x: HEADER_LEFT_MARGIN, y: yPos, size: FONT_SIZE, font: font, color: textColor } );
+			newFirstPage.drawText( data.to, { x: HEADER_LEFT_MARGIN + labelWidth, y: yPos, size: FONT_SIZE, font: font, color: textColor } );
 			yPos -= LINE_HEIGHT;
 		}
 		if ( data.from ) {
-			newFirstPage.drawText( fromLabelText, { x: HEADER_MARGIN, y: yPos, size: FONT_SIZE, font: font, color: textColor } );
-			newFirstPage.drawText( data.from, { x: HEADER_MARGIN + labelWidth, y: yPos, size: FONT_SIZE, font: font, color: textColor } );
+			newFirstPage.drawText( fromLabelText, { x: HEADER_LEFT_MARGIN, y: yPos, size: FONT_SIZE, font: font, color: textColor } );
+			newFirstPage.drawText( data.from, { x: HEADER_LEFT_MARGIN + labelWidth, y: yPos, size: FONT_SIZE, font: font, color: textColor } );
 		}
 
 		// Draw the scaled-down first page below the header.
