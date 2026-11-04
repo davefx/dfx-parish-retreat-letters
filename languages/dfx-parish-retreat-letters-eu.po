@@ -1,0 +1,3408 @@
+# Basque translation of DFX Parish Retreat Letters.
+# This file is distributed under the GPL v3.
+msgid ""
+msgstr ""
+"Project-Id-Version: DFX Parish Retreat Letters 26.11.04\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/dfx-parish-retreat-letters\n"
+"Language: eu\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Domain: dfx-parish-retreat-letters\n"
+
+#. Plugin Name of the plugin
+#: dfx-parish-retreat-letters.php
+msgid "DFX Parish Retreat Letters"
+msgstr "DFX Parrokiako erretiroetako gutunak"
+
+#. Plugin URI of the plugin
+#: dfx-parish-retreat-letters.php
+msgid "https://github.com/davefx/dfx-parish-retreat-letters"
+msgstr "https://github.com/davefx/dfx-parish-retreat-letters"
+
+#. Description of the plugin
+#: dfx-parish-retreat-letters.php
+msgid "A WordPress plugin for managing parish retreat letters."
+msgstr "Parrokiako erretiroetako gutunak kudeatzeko WordPress plugin bat."
+
+#: includes/class-admin.php:270 includes/class-admin.php:1230 includes/class-admin.php:1253 includes/class-admin.php:1337 includes/class-admin.php:2180 includes/class-admin.php:2208 includes/class-admin.php:2347 includes/class-admin.php:3110 includes/class-admin.php:3134 includes/class-admin.php:3157 includes/class-admin.php:3204 includes/class-admin.php:3323 includes/class-admin.php:3363 includes/class-admin.php:3461 includes/class-admin.php:4392 includes/class-admin.php:4696 includes/class-admin.php:5216 includes/class-admin.php:5443 includes/class-admin.php:5842 includes/class-admin.php:5864 includes/class-admin.php:5951 includes/class-admin.php:5973 includes/class-admin.php:6009 includes/class-admin.php:6079 includes/class-admin.php:6117 includes/class-admin.php:6164 includes/class-admin.php:6213 includes/class-admin.php:6256 includes/class-admin.php:6289 includes/class-admin.php:6339 includes/class-admin.php:6582 includes/class-admin.php:6612 includes/class-admin.php:6644 includes/class-dfx-parish-retreat-letters.php:1241 includes/class-gdpr.php:453 includes/class-gdpr.php:487
+msgid "Security check failed."
+msgstr "Segurtasun-egiaztapenak huts egin du."
+
+#: includes/class-admin.php:273
+msgid "You do not have permission to export attendants for this retreat."
+msgstr "Ez duzu baimenik erretiro honetako parte-hartzaileak esportatzeko."
+
+#: includes/class-admin.php:333 includes/class-admin.php:334 includes/class-admin.php:1379 includes/class-admin.php:3615 includes/class-admin.php:4114 includes/class-admin.php:5331 includes/class-admin.php:5583
+msgid "Retreats"
+msgstr "Erretiroak"
+
+#: includes/class-admin.php:344 includes/class-admin.php:345
+msgid "All Retreats"
+msgstr "Erretiro guztiak"
+
+#: includes/class-admin.php:354 includes/class-admin.php:1511
+msgid "Add New Retreat"
+msgstr "Gehitu erretiro berria"
+
+#: includes/class-admin.php:368 includes/class-admin.php:1382 includes/class-admin.php:4117
+msgid "Add New"
+msgstr "Gehitu berria"
+
+#: includes/class-admin.php:376 includes/class-admin.php:377 includes/class-admin.php:6376
+msgid "Privacy & Compliance"
+msgstr "Pribatutasuna eta betetzea"
+
+#: includes/class-admin.php:385 includes/class-admin.php:386 includes/class-admin.php:7060
+msgid "Global Settings"
+msgstr "Ezarpen orokorrak"
+
+#: includes/class-admin.php:396 includes/class-admin.php:4260 includes/class-admin.php:5570 includes/class-admin.php:6417
+msgid "Confidential Messages"
+msgstr "Mezu konfidentzialak"
+
+#: includes/class-admin.php:479
+msgid "Internet Explorer is not supported."
+msgstr "Internet Explorer ez da onartzen."
+
+#: includes/class-admin.php:480
+msgid "This plugin (including the letter print view) requires a modern browser. Please use Microsoft Edge, Google Chrome, Mozilla Firefox or Safari."
+msgstr "Plugin honek (gutunak inprimatzeko ikuspegia barne) nabigatzaile moderno bat behar du. Erabili Microsoft Edge, Google Chrome, Mozilla Firefox edo Safari."
+
+#: includes/class-admin.php:929 includes/class-admin.php:7212
+msgid "Choose a user..."
+msgstr "Aukeratu erabiltzaile bat..."
+
+#: includes/class-admin.php:971
+msgid "Search failed. Please try again."
+msgstr "Bilaketak huts egin du. Saiatu berriro."
+
+#: includes/class-admin.php:972
+msgid "No users found."
+msgstr "Ez da erabiltzailerik aurkitu."
+
+#: includes/class-admin.php:973 includes/class-admin.php:1922
+msgid "Select role..."
+msgstr "Hautatu rola..."
+
+#: includes/class-admin.php:974 includes/class-admin.php:1812 includes/class-admin.php:1857 includes/class-admin.php:1923 includes/class-admin.php:6184 includes/class-invitations.php:560 includes/class-invitations.php:773
+msgid "Retreat Manager"
+msgstr "Erretiro-kudeatzailea"
+
+#: includes/class-admin.php:975 includes/class-admin.php:1813 includes/class-admin.php:1858 includes/class-admin.php:1924 includes/class-admin.php:6185 includes/class-invitations.php:561 includes/class-invitations.php:774
+msgid "Message Manager"
+msgstr "Mezu-kudeatzailea"
+
+#: includes/class-admin.php:976
+msgid "Grant"
+msgstr "Eman"
+
+#: includes/class-admin.php:977
+msgid "Please select a role."
+msgstr "Hautatu rol bat."
+
+#: includes/class-admin.php:978
+msgid "Failed to grant permission. Please try again."
+msgstr "Ezin izan da baimena eman. Saiatu berriro."
+
+#: includes/class-admin.php:979
+msgid "Failed to revoke permission. Please try again."
+msgstr "Ezin izan da baimena baliogabetu. Saiatu berriro."
+
+#: includes/class-admin.php:980
+msgid "Failed to send invitation. Please try again."
+msgstr "Ezin izan da gonbidapena bidali. Saiatu berriro."
+
+#: includes/class-admin.php:981
+msgid "Failed to cancel invitation. Please try again."
+msgstr "Ezin izan da gonbidapena bertan behera utzi. Saiatu berriro."
+
+#: includes/class-admin.php:1004
+msgid "Please enter a sender name or email."
+msgstr "Sartu igorlearen izena edo e-posta."
+
+#. translators: %s: text to type, e.g. "ERASE ALL DATA"
+#: includes/class-admin.php:1005 includes/class-admin.php:6510 includes/class-gdpr.php:502
+msgid "ERASE ALL DATA"
+msgstr "EZABATU DATU GUZTIAK"
+
+#: includes/class-admin.php:1006 includes/class-gdpr.php:503
+msgid "Please type \"ERASE ALL DATA\" to confirm."
+msgstr "Idatzi «EZABATU DATU GUZTIAK» berresteko."
+
+#: includes/class-admin.php:1007
+msgid "Are you sure you want to permanently erase all data for this person? This action cannot be undone."
+msgstr "Ziur al zaude pertsona honen datu guztiak behin betiko ezabatu nahi dituzula? Ekintza hau ezin da desegin."
+
+#: includes/class-admin.php:1008
+msgid "Erasing..."
+msgstr "Ezabatzen..."
+
+#: includes/class-admin.php:1009
+msgid "Data has been permanently erased."
+msgstr "Datuak behin betiko ezabatu dira."
+
+#: includes/class-admin.php:1010
+msgid "Error erasing data. Please try again."
+msgstr "Errore bat gertatu da datuak ezabatzean. Saiatu berriro."
+
+#. translators: %s: text to type, e.g. "ERASE ALL DATA"
+#: includes/class-admin.php:1011 includes/class-admin.php:6511
+msgid "Erase Data"
+msgstr "Ezabatu datuak"
+
+#: includes/class-admin.php:1024
+msgid "Are you sure you want to delete this retreat?"
+msgstr "Ziur al zaude erretiro hau ezabatu nahi duzula?"
+
+#: includes/class-admin.php:1025
+msgid "Permanently delete this attendant together with their messages, contact log and custom field values? This cannot be undone."
+msgstr "Parte-hartzaile hau behin betiko ezabatu nahi duzu, bere mezuekin, kontaktuen erregistroarekin eta eremu pertsonalizatuen balioekin batera? Ezin da desegin."
+
+#. translators: %d: number of letters that can still be returned by email
+#: includes/class-admin.php:1027
+#, php-format
+msgid "This attendant has %d letters that can still be returned to their senders by email. If you delete the attendant, they will be deleted without being returned."
+msgstr "Parte-hartzaile honek oraindik e-postaz igorleei itzul dakizkiekeen %d gutun ditu. Parte-hartzailea ezabatzen baduzu, itzuli gabe ezabatuko dira."
+
+#: includes/class-admin.php:1028
+msgid "Return letter by email"
+msgstr "Itzuli gutuna e-postaz"
+
+#: includes/class-admin.php:1029
+msgid "Return all letters by email"
+msgstr "Itzuli gutun guztiak e-postaz"
+
+#: includes/class-admin.php:1030 includes/class-dfx-parish-retreat-letters.php:1863 includes/class-dfx-parish-retreat-letters.php:1980 includes/class-dfx-parish-retreat-letters.php:2169 includes/class-letter-return.php:329
+msgid "To"
+msgstr "Nori"
+
+#: includes/class-admin.php:1031
+msgid "Subject"
+msgstr "Gaia"
+
+#: includes/class-admin.php:1032
+msgid "Attachments"
+msgstr "Eranskinak"
+
+#: includes/class-admin.php:1033
+msgid "Recipients"
+msgstr "Hartzaileak"
+
+#. translators: %d: number of times the letter was printed
+#: includes/class-admin.php:1035
+#, php-format
+msgid "This letter was printed %d times. Remember to destroy the printed copy."
+msgstr "Gutun hau %d aldiz inprimatu da. Gogoratu inprimatutako kopia suntsitzeaz."
+
+#: includes/class-admin.php:1036
+msgid "Each letter will be sent back to its sender with the configured email, and deleted once sent. Remember to destroy the printed copies."
+msgstr "Gutun bakoitza bere igorleari itzuliko zaio konfiguratutako e-postarekin, eta bidali ondoren ezabatu egingo da. Gogoratu inprimatutako kopiak suntsitzeaz."
+
+#: includes/class-admin.php:1037
+msgid "Send and delete the letter"
+msgstr "Bidali eta ezabatu gutuna"
+
+#: includes/class-admin.php:1038
+msgid "Send and delete the letters"
+msgstr "Bidali eta ezabatu gutunak"
+
+#: includes/class-admin.php:1039 includes/class-dfx-parish-retreat-letters.php:677
+msgid "Sending..."
+msgstr "Bidaltzen..."
+
+#: includes/class-admin.php:1040 includes/class-letter-return.php:138 includes/class-letter-return.php:147 includes/class-letter-return.php:164
+msgid "The email could not be sent. The letter has not been deleted."
+msgstr "Ezin izan da e-posta bidali. Gutuna ez da ezabatu."
+
+#. translators: 1: number of returned letters, 2: number of letters that could not be returned
+#: includes/class-admin.php:1042
+#, php-format
+msgid "%1$d letters returned and deleted. %2$d could not be returned and have been kept."
+msgstr "%1$d gutun itzuli eta ezabatu dira. %2$d ezin izan dira itzuli eta gorde egin dira."
+
+#. translators: %s: attendant name
+#: includes/class-admin.php:1044
+#, php-format
+msgid "Withdraw %s from the retreat? They will move to the \"Withdrawn attendants\" tab, will not be editable and their message link will stop accepting letters. You can reactivate them at any time."
+msgstr "%s erretirotik baja eman nahi duzu? «Baja emandako parte-hartzaileak» erlaitzera pasatuko da, ezin izango da editatu eta bere mezuen estekak gutunak onartzeari utziko dio. Edozein unetan berraktiba dezakezu."
+
+#: includes/class-admin.php:1045
+msgid "Error updating the attendant. Please try again."
+msgstr "Errore bat gertatu da parte-hartzailea eguneratzean. Saiatu berriro."
+
+#: includes/class-admin.php:1046
+msgid "Are you sure you want to delete this message? This action cannot be undone."
+msgstr "Ziur al zaude mezu hau ezabatu nahi duzula? Ekintza hau ezin da desegin."
+
+#: includes/class-admin.php:1047
+msgid "Delete Retreat - Confirmation Required"
+msgstr "Ezabatu erretiroa - Berrespena behar da"
+
+#: includes/class-admin.php:1048
+msgid "WARNING: This action cannot be undone!"
+msgstr "KONTUZ: ekintza hau ezin da desegin!"
+
+#: includes/class-admin.php:1049
+msgid "All attendants for this retreat will be permanently deleted"
+msgstr "Erretiro honetako parte-hartzaile guztiak behin betiko ezabatuko dira"
+
+#: includes/class-admin.php:1050
+msgid "All letters and related information will be permanently deleted"
+msgstr "Gutun guztiak eta haiei lotutako informazioa behin betiko ezabatuko dira"
+
+#: includes/class-admin.php:1051
+msgid "This action is irreversible and cannot be restored"
+msgstr "Ekintza hau itzulezina da eta ezin da berreskuratu"
+
+#: includes/class-admin.php:1052
+msgid "To confirm deletion, please type the exact retreat name below:"
+msgstr "Ezabatzea berresteko, idatzi behean erretiroaren izen zehatza:"
+
+#: includes/class-admin.php:1053
+msgid "Type retreat name here..."
+msgstr "Idatzi hemen erretiroaren izena..."
+
+#: includes/class-admin.php:1054
+msgid "Withdraw All Attendants - Confirmation Required"
+msgstr "Eman baja parte-hartzaile guztiei - Berrespena behar da"
+
+#. translators: %d: number of attendants
+#: includes/class-admin.php:1056
+#, php-format
+msgid "You are about to withdraw ALL %d attendants of this retreat."
+msgstr "Erretiro honetako %d parte-hartzaile GUZTIEI baja ematera zoaz."
+
+#: includes/class-admin.php:1057
+msgid "They will move to the \"Withdrawn attendants\" tab, will not be editable and their message links will stop accepting letters. Nothing is deleted: you can reactivate them one by one, or delete them permanently from that tab."
+msgstr "«Baja emandako parte-hartzaileak» erlaitzera pasatuko dira, ezin izango dira editatu eta haien mezuen estekek gutunak onartzeari utziko diote. Ez da ezer ezabatzen: banan-banan berraktiba ditzakezu, edo erlaitz horretatik behin betiko ezabatu."
+
+#: includes/class-admin.php:1058 includes/class-admin.php:3220
+msgid "WITHDRAW ALL ATTENDANTS"
+msgstr "EMAN BAJA PARTE-HARTZAILE GUZTIEI"
+
+#: includes/class-admin.php:1059
+msgid "To confirm, type the text shown above exactly"
+msgstr "Berresteko, idatzi goian erakutsitako testua zehatz-mehatz"
+
+#: includes/class-admin.php:1060
+msgid "Type confirmation here..."
+msgstr "Idatzi hemen berrespena..."
+
+#: includes/class-admin.php:1061 includes/class-admin.php:3772
+msgid "Withdraw All Attendants"
+msgstr "Eman baja parte-hartzaile guztiei"
+
+#: includes/class-admin.php:1062
+msgid "Withdrawing..."
+msgstr "Baja ematen..."
+
+#: includes/class-admin.php:1063
+msgid "Empty Retreat - Confirmation Required"
+msgstr "Hustu erretiroa - Berrespena behar da"
+
+#. translators: %d: number of attendants
+#: includes/class-admin.php:1065
+#, php-format
+msgid "You are about to permanently delete ALL %d attendants of this retreat, active and withdrawn."
+msgstr "Erretiro honetako %d parte-hartzaile GUZTIAK behin betiko ezabatzera zoaz, aktiboak zein baja emandakoak."
+
+#: includes/class-admin.php:1066
+msgid "Their letters, files, print history, contact log and custom field values will also be deleted. The retreat, its settings, custom fields and managers are kept, so it can be reused. This cannot be undone."
+msgstr "Haien gutunak, fitxategiak, inprimatze-historia, kontaktuen erregistroa eta eremu pertsonalizatuen balioak ere ezabatuko dira. Erretiroa, bere ezarpenak, eremu pertsonalizatuak eta kudeatzaileak gorde egiten dira, berriro erabili ahal izateko. Ezin da desegin."
+
+#. translators: %d: number of letters
+#: includes/class-admin.php:1068
+#, php-format
+msgid "Letters of withdrawn attendants that can still be returned to their senders by email: %d. If you empty the retreat, they will be deleted without being returned."
+msgstr "Oraindik e-postaz igorleei itzul dakizkiekeen baja emandako parte-hartzaileen gutunak: %d. Erretiroa husten baduzu, itzuli gabe ezabatuko dira."
+
+#: includes/class-admin.php:1069
+msgid "To confirm, type the exact retreat name below:"
+msgstr "Berresteko, idatzi behean erretiroaren izen zehatza:"
+
+#: includes/class-admin.php:1070 includes/class-admin.php:3787
+msgid "Empty Retreat"
+msgstr "Hustu erretiroa"
+
+#: includes/class-admin.php:1071
+msgid "Emptying..."
+msgstr "Husten..."
+
+#: includes/class-admin.php:1072
+msgid "Translating..."
+msgstr "Itzultzen..."
+
+#: includes/class-admin.php:1073
+msgid "This language already has texts written. Replace them with the automatic translation?"
+msgstr "Hizkuntza honek idatzitako testuak ditu jada. Itzulpen automatikoarekin ordezkatu nahi dituzu?"
+
+#: includes/class-admin.php:1074
+msgid "The texts could not be translated. Please try again."
+msgstr "Ezin izan dira testuak itzuli. Saiatu berriro."
+
+#: includes/class-admin.php:1075
+msgid "Delete Forever"
+msgstr "Ezabatu betiko"
+
+#: includes/class-admin.php:1076 includes/class-admin.php:1757 includes/class-admin.php:1872 includes/class-admin.php:4310 includes/class-admin.php:5426
+msgid "Cancel"
+msgstr "Utzi"
+
+#: includes/class-admin.php:1077
+msgid "Deleting..."
+msgstr "Ezabatzen..."
+
+#: includes/class-admin.php:1078
+msgid "Error deleting retreat. Please try again."
+msgstr "Errore bat gertatu da erretiroa ezabatzean. Saiatu berriro."
+
+#: includes/class-admin.php:1079
+msgid "Generating URL..."
+msgstr "URLa sortzen..."
+
+#: includes/class-admin.php:1080
+msgid "Error generating message URL. Please try again."
+msgstr "Errore bat gertatu da mezuen URLa sortzean. Saiatu berriro."
+
+#: includes/class-admin.php:1081
+msgid "Message URL generated successfully!"
+msgstr "Mezuen URLa ondo sortu da!"
+
+#: includes/class-admin.php:1082
+msgid "URL copied to clipboard!"
+msgstr "URLa arbelera kopiatu da!"
+
+#: includes/class-admin.php:1083
+msgid "Failed to copy URL. Please copy it manually."
+msgstr "Ezin izan da URLa kopiatu. Kopiatu eskuz."
+
+#: includes/class-admin.php:1084 includes/class-admin.php:4024
+msgid "Invitation Message"
+msgstr "Gonbidapen-mezua"
+
+#: includes/class-admin.php:1085
+msgid "Loading message..."
+msgstr "Mezua kargatzen..."
+
+#: includes/class-admin.php:1086
+msgid "Error loading invitation message. Please try again."
+msgstr "Errore bat gertatu da gonbidapen-mezua kargatzean. Saiatu berriro."
+
+#: includes/class-admin.php:1087
+msgid "Message copied to clipboard!"
+msgstr "Mezua arbelera kopiatu da!"
+
+#: includes/class-admin.php:1088
+msgid "Failed to copy message. Please copy it manually."
+msgstr "Ezin izan da mezua kopiatu. Kopiatu eskuz."
+
+#: includes/class-admin.php:1089
+msgid "Preparing for print..."
+msgstr "Inprimatzeko prestatzen..."
+
+#: includes/class-admin.php:1090
+msgid "Error preparing message for print. Please try again."
+msgstr "Errore bat gertatu da mezua inprimatzeko prestatzean. Saiatu berriro."
+
+#: includes/class-admin.php:1091
+msgid "Downloading..."
+msgstr "Deskargatzen..."
+
+#: includes/class-admin.php:1092
+msgid "Error downloading file. Please try again."
+msgstr "Errore bat gertatu da fitxategia deskargatzean. Saiatu berriro."
+
+#: includes/class-admin.php:1093 includes/class-admin.php:5850 includes/class-admin.php:5993
+msgid "Message deleted successfully."
+msgstr "Mezua ondo ezabatu da."
+
+#: includes/class-admin.php:1094
+msgid "Error saving the contact log entry. Please try again."
+msgstr "Errore bat gertatu da kontaktuen erregistroko sarrera gordetzean. Saiatu berriro."
+
+#: includes/class-admin.php:1095 includes/class-admin.php:5251
+msgid "Please enter a description."
+msgstr "Idatzi deskripzio bat."
+
+#: includes/class-admin.php:1096
+msgid "Are you sure you want to delete this contact log entry?"
+msgstr "Ziur al zaude kontaktuen erregistroko sarrera hau ezabatu nahi duzula?"
+
+#: includes/class-admin.php:1097
+msgid "Save"
+msgstr "Gorde"
+
+#: includes/class-admin.php:1098
+msgid "Error saving the column order. Please try again."
+msgstr "Errore bat gertatu da zutabeen ordena gordetzean. Saiatu berriro."
+
+#: includes/class-admin.php:1099 includes/class-admin.php:3945 includes/class-admin.php:4548 includes/class-admin.php:4963
+msgid "Contact Log"
+msgstr "Kontaktuen erregistroa"
+
+#: includes/class-admin.php:1100 includes/class-admin.php:4806 includes/class-custom-field.php:416 includes/class-custom-field.php:472
+msgid "Yes"
+msgstr "Bai"
+
+#: includes/class-admin.php:1101 includes/class-attendant.php:787
+msgid "This field is required."
+msgstr "Eremu hau beharrezkoa da."
+
+#: includes/class-admin.php:1102 includes/class-admin.php:4739
+msgid "Error saving the field. Please try again."
+msgstr "Errore bat gertatu da eremua gordetzean. Saiatu berriro."
+
+#: includes/class-admin.php:1103
+msgid "Removing this field will permanently delete its values for all attendants when the retreat is saved. Continue?"
+msgstr "Eremu hau kentzen baduzu, parte-hartzaile guztien balioak behin betiko ezabatuko dira erretiroa gordetzean. Jarraitu nahi duzu?"
+
+#: includes/class-admin.php:1205 includes/class-admin.php:1257
+msgid "You do not have permission to edit this retreat."
+msgstr "Ez duzu baimenik erretiro hau editatzeko."
+
+#: includes/class-admin.php:1210
+msgid "You do not have permission to add new retreats."
+msgstr "Ez duzu baimenik erretiro berriak gehitzeko."
+
+#: includes/class-admin.php:1238 includes/class-admin.php:1360
+msgid "Retreat deleted successfully."
+msgstr "Erretiroa ondo ezabatu da."
+
+#: includes/class-admin.php:1240 includes/class-admin.php:1362
+msgid "Error deleting retreat."
+msgstr "Errore bat gertatu da erretiroa ezabatzean."
+
+#: includes/class-admin.php:1296
+msgid "Retreat updated successfully."
+msgstr "Erretiroa ondo eguneratu da."
+
+#: includes/class-admin.php:1300
+msgid "Error updating retreat. Please check your data."
+msgstr "Errore bat gertatu da erretiroa eguneratzean. Egiaztatu zure datuak."
+
+#: includes/class-admin.php:1307
+msgid "Retreat created successfully."
+msgstr "Erretiroa ondo sortu da."
+
+#: includes/class-admin.php:1311
+msgid "Error creating retreat. Please check your data."
+msgstr "Errore bat gertatu da erretiroa sortzean. Egiaztatu zure datuak."
+
+#: includes/class-admin.php:1342 includes/class-admin.php:3190 includes/class-admin.php:3216 includes/class-admin.php:3330 includes/class-admin.php:3375 includes/class-admin.php:4401 includes/class-admin.php:6617 includes/class-admin.php:7252
+msgid "You do not have permission to perform this action."
+msgstr "Ez duzu baimenik ekintza hau egiteko."
+
+#: includes/class-admin.php:1351 includes/class-admin.php:2004 includes/class-admin.php:2098 includes/class-admin.php:2155 includes/class-admin.php:3212 includes/class-admin.php:3371 includes/class-admin.php:4397 includes/class-invitations.php:525 includes/class-letter-return.php:68
+msgid "Retreat not found."
+msgstr "Ez da erretiroa aurkitu."
+
+#: includes/class-admin.php:1356
+msgid "Retreat name verification failed. Deletion cancelled for security."
+msgstr "Erretiroaren izenaren egiaztapenak huts egin du. Ezabatzea bertan behera utzi da segurtasunagatik."
+
+#: includes/class-admin.php:1392
+msgid "Search Retreats:"
+msgstr "Bilatu erretiroak:"
+
+#: includes/class-admin.php:1394
+msgid "Search Retreats"
+msgstr "Bilatu erretiroak"
+
+#. translators: %d: number of retreats
+#: includes/class-admin.php:1404
+#, php-format
+msgid "Total retreats: %d"
+msgstr "Erretiroak guztira: %d"
+
+#: includes/class-admin.php:1423 includes/class-admin.php:1435 includes/class-admin.php:1912 includes/class-admin.php:2631 includes/class-admin.php:2828 includes/class-admin.php:3689 includes/class-admin.php:3810 includes/class-admin.php:3844 includes/class-admin.php:4134 includes/class-admin.php:4438 includes/class-admin.php:4890 includes/class-attendant.php:555
+msgid "Name"
+msgstr "Izena"
+
+#: includes/class-admin.php:1424 includes/class-admin.php:1442 includes/class-admin.php:1536 includes/class-invitations.php:803
+msgid "Location"
+msgstr "Kokalekua"
+
+#: includes/class-admin.php:1425 includes/class-admin.php:1443 includes/class-admin.php:1544
+msgid "Start Date"
+msgstr "Hasiera-data"
+
+#: includes/class-admin.php:1426 includes/class-admin.php:1444 includes/class-admin.php:1552
+msgid "End Date"
+msgstr "Amaiera-data"
+
+#: includes/class-admin.php:1427 includes/class-admin.php:1445 includes/class-admin.php:1466 includes/class-admin.php:3617 includes/class-admin.php:4116 includes/class-admin.php:5333
+msgid "Attendants"
+msgstr "Parte-hartzaileak"
+
+#: includes/class-admin.php:1428 includes/class-admin.php:1457 includes/class-admin.php:3969 includes/class-admin.php:3992 includes/class-admin.php:5724 includes/class-admin.php:5762 includes/class-admin.php:7170 includes/class-admin.php:7179
+msgid "Actions"
+msgstr "Ekintzak"
+
+#. translators: %d: Number of attendants
+#: includes/class-admin.php:1451
+#, php-format
+msgid "%d attendant"
+msgid_plural "%d attendants"
+msgstr[0] "%d parte-hartzaile"
+msgstr[1] "%d parte-hartzaile"
+
+#: includes/class-admin.php:1460 includes/class-admin.php:4011 includes/class-admin.php:4117 includes/class-admin.php:5137
+msgid "Edit"
+msgstr "Editatu"
+
+#: includes/class-admin.php:1472 includes/class-admin.php:5152 includes/class-admin.php:5792
+msgid "Delete"
+msgstr "Ezabatu"
+
+#: includes/class-admin.php:1482
+msgid "No retreats found for your search."
+msgstr "Ez da erretirorik aurkitu zure bilaketarako."
+
+#: includes/class-admin.php:1484
+msgid "No retreats found."
+msgstr "Ez da erretirorik aurkitu."
+
+#: includes/class-admin.php:1487
+msgid "Add the first retreat"
+msgstr "Gehitu lehen erretiroa"
+
+#: includes/class-admin.php:1511
+msgid "Edit Retreat"
+msgstr "Editatu erretiroa"
+
+#: includes/class-admin.php:1528
+msgid "Retreat Name"
+msgstr "Erretiroaren izena"
+
+#: includes/class-admin.php:1528 includes/class-admin.php:1536 includes/class-admin.php:1544 includes/class-admin.php:1552 includes/class-admin.php:4134 includes/class-admin.php:4142 includes/class-admin.php:4150 includes/class-admin.php:4158 includes/class-admin.php:4174 includes/class-admin.php:5413
+msgid "required"
+msgstr "beharrezkoa"
+
+#: includes/class-admin.php:1560 includes/class-admin.php:3298
+msgid "Custom Message for Letter Senders"
+msgstr "Gutunen igorleentzako mezu pertsonalizatua"
+
+#: includes/class-admin.php:1563
+msgid "Optional message that will be displayed to senders in the letters form."
+msgstr "Gutunen inprimakian igorleei erakutsiko zaien aukerako mezua."
+
+#: includes/class-admin.php:1564
+msgid "This message will be displayed before the message submission form for all attendants of this retreat. HTML is allowed."
+msgstr "Mezu hau mezuak bidaltzeko inprimakiaren aurretik erakutsiko da erretiro honetako parte-hartzaile guztientzat. HTML onartzen da."
+
+#: includes/class-admin.php:1569 includes/class-admin.php:3302
+msgid "Legal Disclaimer Text"
+msgstr "Lege-oharraren testua"
+
+#: includes/class-admin.php:1572
+msgid "Optional legal disclaimer that users must accept before submitting messages."
+msgstr "Erabiltzaileek mezuak bidali aurretik onartu behar duten aukerako lege-oharra."
+
+#: includes/class-admin.php:1573
+msgid "If provided, this disclaimer will be displayed in the message form and users must accept it to submit messages. HTML is allowed."
+msgstr "Ematen bada, lege-ohar hau mezuen inprimakian erakutsiko da eta erabiltzaileek onartu egin beharko dute mezuak bidaltzeko. HTML onartzen da."
+
+#: includes/class-admin.php:1578 includes/class-admin.php:3306
+msgid "Disclaimer Acceptance Text"
+msgstr "Lege-oharra onartzeko testua"
+
+#: includes/class-admin.php:1581
+msgid "I accept the terms and conditions"
+msgstr "Baldintzak onartzen ditut"
+
+#: includes/class-admin.php:1582
+msgid "This text will appear next to the disclaimer acceptance checkbox. Only used if disclaimer text is provided."
+msgstr "Testu hau lege-oharra onartzeko kontrol-laukiaren ondoan agertuko da. Lege-oharraren testua ematen bada soilik erabiltzen da."
+
+#: includes/class-admin.php:1587
+msgid "Multilingual Form"
+msgstr "Inprimaki eleanitza"
+
+#: includes/class-admin.php:1592
+msgid "Let senders see the letters form in their language"
+msgstr "Utzi igorleei gutunen inprimakia beren hizkuntzan ikusten"
+
+#: includes/class-admin.php:1594
+msgid "When disabled, the form is always shown in the main language of the site, without language selector or automatic translation."
+msgstr "Desgaituta dagoenean, inprimakia beti gunearen hizkuntza nagusian erakusten da, hizkuntza-hautatzailerik eta itzulpen automatikorik gabe."
+
+#: includes/class-admin.php:1599
+msgid "Translations of These Texts"
+msgstr "Testu hauen itzulpenak"
+
+#: includes/class-admin.php:1607
+msgid "Enable Notes Field"
+msgstr "Gaitu oharren eremua"
+
+#: includes/class-admin.php:1612
+msgid "Enable optional notes field for attendants"
+msgstr "Gaitu parte-hartzaileentzako aukerako oharren eremua"
+
+#: includes/class-admin.php:1614
+msgid "When enabled, an optional notes field will be available for each attendant and displayed in the attendants list."
+msgstr "Gaituta dagoenean, aukerako oharren eremu bat egongo da parte-hartzaile bakoitzarentzat, eta parte-hartzaileen zerrendan erakutsiko da."
+
+#: includes/class-admin.php:1619
+msgid "Enable Internal Notes Field"
+msgstr "Gaitu barne-oharren eremua"
+
+#: includes/class-admin.php:1624
+msgid "Enable optional internal notes field for attendants"
+msgstr "Gaitu parte-hartzaileentzako aukerako barne-oharren eremua"
+
+#: includes/class-admin.php:1626
+msgid "When enabled, an optional internal notes field will be available for each attendant. This field will NOT be imported or exported via CSV."
+msgstr "Gaituta dagoenean, aukerako barne-oharren eremu bat egongo da parte-hartzaile bakoitzarentzat. Eremu hau EZ da CSV bidez inportatuko edo esportatuko."
+
+#: includes/class-admin.php:1631
+msgid "Message Request Template"
+msgstr "Mezuak eskatzeko txantiloia"
+
+#: includes/class-admin.php:1634
+msgid "Template for requesting messages from emergency contacts..."
+msgstr "Larrialdietarako kontaktuei mezuak eskatzeko txantiloia..."
+
+#: includes/class-admin.php:1636
+msgid "Template message to request letters from emergency contacts. Available placeholders:"
+msgstr "Larrialdietarako kontaktuei gutunak eskatzeko txantiloi-mezua. Leku-marka erabilgarriak:"
+
+#: includes/class-admin.php:1638
+msgid "Attendant:"
+msgstr "Parte-hartzailea:"
+
+#: includes/class-admin.php:1639 includes/class-admin.php:1646 includes/class-admin.php:1693
+msgid "(First name)"
+msgstr "(Izena)"
+
+#: includes/class-admin.php:1640 includes/class-admin.php:1694
+msgid "(Surnames)"
+msgstr "(Abizenak)"
+
+#: includes/class-admin.php:1641
+msgid "(Date of birth)"
+msgstr "(Jaiotze-data)"
+
+#: includes/class-admin.php:1642
+msgid "(Notes, if enabled)"
+msgstr "(Oharrak, gaituta badaude)"
+
+#: includes/class-admin.php:1643
+msgid "(Internal notes, if enabled)"
+msgstr "(Barne-oharrak, gaituta badaude)"
+
+#: includes/class-admin.php:1645
+msgid "Emergency Contact:"
+msgstr "Larrialdietarako kontaktua:"
+
+#: includes/class-admin.php:1647
+msgid "(Surname)"
+msgstr "(Abizena)"
+
+#: includes/class-admin.php:1648
+msgid "(Phone)"
+msgstr "(Telefonoa)"
+
+#: includes/class-admin.php:1649
+msgid "(Email)"
+msgstr "(E-posta)"
+
+#: includes/class-admin.php:1650
+msgid "(Relationship)"
+msgstr "(Harremana)"
+
+#: includes/class-admin.php:1652
+msgid "Other:"
+msgstr "Bestelakoak:"
+
+#: includes/class-admin.php:1653
+msgid "(Invited by)"
+msgstr "(Nork gonbidatua)"
+
+#: includes/class-admin.php:1654
+msgid "(Incompatibilities)"
+msgstr "(Bateraezintasunak)"
+
+#: includes/class-admin.php:1655
+msgid "(Message submission URL)"
+msgstr "(Mezuak bidaltzeko URLa)"
+
+#: includes/class-admin.php:1657
+msgid "Retreat:"
+msgstr "Erretiroa:"
+
+#: includes/class-admin.php:1658 includes/class-admin.php:1695
+msgid "(Name)"
+msgstr "(Izena)"
+
+#: includes/class-admin.php:1659 includes/class-admin.php:1696
+msgid "(Location)"
+msgstr "(Kokalekua)"
+
+#: includes/class-admin.php:1660 includes/class-admin.php:1697
+msgid "(Start date)"
+msgstr "(Hasiera-data)"
+
+#: includes/class-admin.php:1661 includes/class-admin.php:1698
+msgid "(End date)"
+msgstr "(Amaiera-data)"
+
+#: includes/class-admin.php:1665
+msgid "Custom fields:"
+msgstr "Eremu pertsonalizatuak:"
+
+#: includes/class-admin.php:1677
+msgid "Letter Return Email Subject"
+msgstr "Gutuna itzultzeko e-postaren gaia"
+
+#: includes/class-admin.php:1685
+msgid "Letter Return Email Text"
+msgstr "Gutuna itzultzeko e-postaren testua"
+
+#: includes/class-admin.php:1690
+msgid "Email sent to the sender of a letter when the attendant has been withdrawn, with the letter attached. After sending it, the letter is deleted. If left empty, the default text is used. Available placeholders:"
+msgstr "Parte-hartzaileari baja eman zaionean gutun baten igorleari bidaltzen zaion e-posta, gutuna erantsita duela. Bidali ondoren, gutuna ezabatu egiten da. Hutsik uzten bada, testu lehenetsia erabiltzen da. Leku-marka erabilgarriak:"
+
+#: includes/class-admin.php:1692
+msgid "(Sender name)"
+msgstr "(Igorlearen izena)"
+
+#: includes/class-admin.php:1699
+msgid "(Date the letter was sent)"
+msgstr "(Gutuna bidali zen data)"
+
+#: includes/class-admin.php:1707
+msgid "Use default header"
+msgstr "Erabili goiburu lehenetsia"
+
+#: includes/class-admin.php:1708
+msgid "Use global default header"
+msgstr "Erabili goiburu lehenetsi orokorra"
+
+#: includes/class-admin.php:1710
+msgid "Use default footer"
+msgstr "Erabili orri-oin lehenetsia"
+
+#: includes/class-admin.php:1711
+msgid "Use global default footer"
+msgstr "Erabili orri-oin lehenetsi orokorra"
+
+#: includes/class-admin.php:1717
+msgid "Custom Header Block"
+msgstr "Goiburu pertsonalizatuaren blokea"
+
+#: includes/class-admin.php:1721
+msgid "Select a reusable block, template part, or pattern to display as custom header in the letters form page. Leave empty to use the default header."
+msgstr "Hautatu bloke berrerabilgarri bat, txantiloi zati bat edo eredu bat, gutunen inprimakiaren orrialdean goiburu pertsonalizatu gisa bistaratzeko. Utzi hutsik goiburu lehenetsia erabiltzeko."
+
+#: includes/class-admin.php:1726
+msgid "Custom Footer Block"
+msgstr "Orri-oin pertsonalizatuaren blokea"
+
+#: includes/class-admin.php:1730
+msgid "Select a reusable block, template part, or pattern to display as custom footer in the letters form page. Leave empty to use the default footer."
+msgstr "Hautatu bloke berrerabilgarri bat, txantiloi zati bat edo eredu bat, gutunen inprimakiaren orrialdean orri-oin pertsonalizatu gisa bistaratzeko. Utzi hutsik orri-oin lehenetsia erabiltzeko."
+
+#: includes/class-admin.php:1735 includes/class-admin.php:7103
+msgid "Additional Body Classes"
+msgstr "Body-ko klase gehigarriak"
+
+#: includes/class-admin.php:1739
+msgid "Space-separated CSS class names to add to the &lt;body&gt; tag on this retreat's message form page. Leave empty to use only the global default classes."
+msgstr "Erretiro honen mezuen inprimakiaren orrialdeko &lt;body&gt; etiketari gehitzeko CSS klaseen izenak, zuriuneekin bereizita. Utzi hutsik klase lehenetsi orokorrak soilik erabiltzeko."
+
+#: includes/class-admin.php:1750
+msgid "Update Retreat"
+msgstr "Eguneratu erretiroa"
+
+#: includes/class-admin.php:1750
+msgid "Add Retreat"
+msgstr "Gehitu erretiroa"
+
+#: includes/class-admin.php:1753
+msgid "Manage Attendants"
+msgstr "Kudeatu parte-hartzaileak"
+
+#: includes/class-admin.php:1792
+msgid "Access Management"
+msgstr "Sarbidearen kudeaketa"
+
+#: includes/class-admin.php:1799
+msgid "Current Permissions"
+msgstr "Uneko baimenak"
+
+#. translators: %s: name of the person who granted the permission
+#: includes/class-admin.php:1821
+#, php-format
+msgid "By %s"
+msgstr "Nork: %s"
+
+#: includes/class-admin.php:1829
+msgid "Are you sure you want to revoke this permission?"
+msgstr "Ziur al zaude baimen hau baliogabetu nahi duzula?"
+
+#: includes/class-admin.php:1830
+msgid "Revoke"
+msgstr "Baliogabetu"
+
+#: includes/class-admin.php:1838
+msgid "No users have been granted permissions for this retreat yet."
+msgstr "Oraindik ez zaio erabiltzaileri baimenik eman erretiro honetarako."
+
+#: includes/class-admin.php:1845
+msgid "Pending Invitations"
+msgstr "Zain dauden gonbidapenak"
+
+#. translators: %s: formatted expiration date
+#: includes/class-admin.php:1866
+#, php-format
+msgid "Expires %s"
+msgstr "Iraungitze-data: %s"
+
+#: includes/class-admin.php:1871
+msgid "Are you sure you want to cancel this invitation?"
+msgstr "Ziur al zaude gonbidapen hau bertan behera utzi nahi duzula?"
+
+#: includes/class-admin.php:1883 includes/class-admin.php:7228
+msgid "Grant Access"
+msgstr "Eman sarbidea"
+
+#: includes/class-admin.php:1888
+msgid "Existing Users"
+msgstr "Lehendik dauden erabiltzaileak"
+
+#: includes/class-admin.php:1891
+msgid "Invite New Users"
+msgstr "Gonbidatu erabiltzaile berriak"
+
+#: includes/class-admin.php:1898
+msgid "Search and Grant Permission to Existing Users"
+msgstr "Bilatu lehendik dauden erabiltzaileak eta eman baimena"
+
+#: includes/class-admin.php:1900
+msgid "Search by username, email, or name..."
+msgstr "Bilatu erabiltzaile-izenaren, e-postaren edo izenaren arabera..."
+
+#: includes/class-admin.php:1909
+msgid "Send Invitation to New User"
+msgstr "Bidali gonbidapena erabiltzaile berri bati"
+
+#: includes/class-admin.php:1916 includes/class-admin.php:7168 includes/class-admin.php:7177 includes/class-invitations.php:861
+msgid "Email"
+msgstr "E-posta"
+
+#: includes/class-admin.php:1920 includes/class-admin.php:7169 includes/class-admin.php:7178
+msgid "Role"
+msgstr "Rola"
+
+#: includes/class-admin.php:1928
+msgid "Send Invitation"
+msgstr "Bidali gonbidapena"
+
+#: includes/class-admin.php:1994 includes/class-admin.php:2088 includes/class-admin.php:2150
+msgid "Invalid retreat ID."
+msgstr "Erretiroaren identifikatzaile baliogabea."
+
+#: includes/class-admin.php:1999
+msgid "You do not have permission to view this retreat."
+msgstr "Ez duzu baimenik erretiro hau ikusteko."
+
+#: includes/class-admin.php:2093
+msgid "You do not have permission to add attendants to this retreat."
+msgstr "Ez duzu baimenik erretiro honi parte-hartzaileak gehitzeko."
+
+#: includes/class-admin.php:2113
+msgid "Invalid retreat or attendant ID."
+msgstr "Erretiroaren edo parte-hartzailearen identifikatzaile baliogabea."
+
+#: includes/class-admin.php:2118 includes/class-admin.php:2219
+msgid "You do not have permission to edit attendants for this retreat."
+msgstr "Ez duzu baimenik erretiro honetako parte-hartzaileak editatzeko."
+
+#: includes/class-admin.php:2125 includes/class-admin.php:2225
+msgid "Retreat or attendant not found, or attendant does not belong to this retreat."
+msgstr "Ez da erretiroa edo parte-hartzailea aurkitu, edo parte-hartzailea ez da erretiro honetakoa."
+
+#: includes/class-admin.php:2130
+msgid "This attendant has been withdrawn from the retreat and cannot be edited. Reactivate them from the \"Withdrawn attendants\" tab to edit their data."
+msgstr "Parte-hartzaile honi erretiroan baja eman zaio eta ezin da editatu. Berraktibatu «Baja emandako parte-hartzaileak» erlaitzean bere datuak editatzeko."
+
+#: includes/class-admin.php:2131
+msgid "Withdrawn attendant"
+msgstr "Baja emandako parte-hartzailea"
+
+#: includes/class-admin.php:2160 includes/class-admin.php:2351
+msgid "You do not have permission to import attendants for this retreat."
+msgstr "Ez duzu baimenik erretiro honetarako parte-hartzaileak inportatzeko."
+
+#: includes/class-admin.php:2189
+msgid "Only withdrawn attendants can be deleted, and only by retreat managers."
+msgstr "Baja emandako parte-hartzaileak soilik ezaba daitezke, eta erretiro-kudeatzaileek soilik."
+
+#: includes/class-admin.php:2192 includes/class-admin.php:3121
+msgid "Attendant deleted successfully."
+msgstr "Parte-hartzailea ondo ezabatu da."
+
+#: includes/class-admin.php:2194 includes/class-admin.php:3123
+msgid "Error deleting attendant."
+msgstr "Errore bat gertatu da parte-hartzailea ezabatzean."
+
+#: includes/class-admin.php:2214
+msgid "Invalid retreat."
+msgstr "Erretiro baliogabea."
+
+#: includes/class-admin.php:2228
+msgid "This attendant has been withdrawn from the retreat and cannot be edited."
+msgstr "Parte-hartzaile honi erretiroan baja eman zaio eta ezin da editatu."
+
+#: includes/class-admin.php:2243 includes/class-admin.php:2280
+msgid "Attendant updated successfully."
+msgstr "Parte-hartzailea ondo eguneratu da."
+
+#: includes/class-admin.php:2247 includes/class-admin.php:2284
+msgid "Error updating attendant. Please check your data."
+msgstr "Errore bat gertatu da parte-hartzailea eguneratzean. Egiaztatu zure datuak."
+
+#: includes/class-admin.php:2291
+msgid "Attendant created successfully."
+msgstr "Parte-hartzailea ondo sortu da."
+
+#: includes/class-admin.php:2295
+msgid "Error creating attendant. Please check your data."
+msgstr "Errore bat gertatu da parte-hartzailea sortzean. Egiaztatu zure datuak."
+
+#: includes/class-admin.php:2361
+msgid "Please select a valid CSV file."
+msgstr "Hautatu baliozko CSV fitxategi bat."
+
+#: includes/class-admin.php:2370
+msgid "CSV file is too large. Maximum size is 2MB."
+msgstr "CSV fitxategia handiegia da. Gehieneko tamaina 2 MB da."
+
+#: includes/class-admin.php:2380
+msgid "Unable to read CSV file."
+msgstr "Ezin da CSV fitxategia irakurri."
+
+#: includes/class-admin.php:2399
+msgid "CSV file appears to be empty or invalid."
+msgstr "Badirudi CSV fitxategia hutsik dagoela edo baliogabea dela."
+
+#. translators: %s: List of missing field names
+#: includes/class-admin.php:2414
+#, php-format
+msgid "Required fields missing from CSV: %s"
+msgstr "Beharrezko eremuak falta dira CSVan: %s"
+
+#. translators: %d: line number where the error occurred
+#: includes/class-admin.php:2437
+#, php-format
+msgid "Line %d: Invalid data format"
+msgstr "%d. lerroa: datu-formatu baliogabea"
+
+#. translators: %d: line number where the error occurred
+#: includes/class-admin.php:2469
+#, php-format
+msgid "Line %d: Failed to update emergency contact for existing attendant"
+msgstr "%d. lerroa: ezin izan da lehendik dagoen parte-hartzailearen larrialdietarako kontaktua eguneratu"
+
+#. translators: %d: line number where the error occurred
+#: includes/class-admin.php:2480
+#, php-format
+msgid "Line %d: Failed to create attendant"
+msgstr "%d. lerroa: ezin izan da parte-hartzailea sortu"
+
+#. translators: %d: Number of imported attendants
+#: includes/class-admin.php:2491
+#, php-format
+msgid "Successfully imported %d new attendants."
+msgstr "%d parte-hartzaile berri ondo inportatu dira."
+
+#. translators: %d: Number of updated attendants
+#: includes/class-admin.php:2502
+#, php-format
+msgid "Successfully updated emergency contact information for %d existing attendants."
+msgstr "Lehendik dauden %d parte-hartzaileren larrialdietarako kontaktuaren informazioa ondo eguneratu da."
+
+#. translators: %d: Number of skipped attendants
+#: includes/class-admin.php:2513
+#, php-format
+msgid "%d rows were skipped due to data issues."
+msgstr "%d errenkada saltatu dira datuetako arazoengatik."
+
+#. translators: %d: Number of errors
+#: includes/class-admin.php:2523
+#, php-format
+msgid "%d rows had errors and were not imported."
+msgstr "%d errenkadak erroreak izan dituzte eta ez dira inportatu."
+
+#: includes/class-admin.php:2529
+msgid "Error details:"
+msgstr "Errorearen xehetasunak:"
+
+#: includes/class-admin.php:2532 includes/class-admin.php:2558
+msgid "...and more errors."
+msgstr "...eta errore gehiago."
+
+#. translators: %d: Number of CSV rows that match withdrawn attendants
+#: includes/class-admin.php:2543
+#, php-format
+msgid "%d rows match withdrawn attendants and were not updated. Reactivate them first if you need to update their data."
+msgstr "%d errenkada baja emandako parte-hartzaileekin bat datoz eta ez dira eguneratu. Berraktibatu itzazu lehenik haien datuak eguneratu behar badituzu."
+
+#. translators: %d: Number of custom field values that could not be imported
+#: includes/class-admin.php:2553
+#, php-format
+msgid "%d custom field values were not valid and were left unchanged."
+msgstr "Eremu pertsonalizatuen %d balio ez ziren baliozkoak eta aldatu gabe utzi dira."
+
+#: includes/class-admin.php:2571 includes/class-admin.php:2577 includes/class-admin.php:5403
+msgid "DD/MM/YYYY (Day/Month/Year)"
+msgstr "EE/HH/UUUU (Eguna/Hilabetea/Urtea)"
+
+#: includes/class-admin.php:2574 includes/class-admin.php:5404
+msgid "MM/DD/YYYY (Month/Day/Year)"
+msgstr "HH/EE/UUUU (Hilabetea/Eguna/Urtea)"
+
+#. translators: %1$d: Number of ambiguous dates, %2$s: Current preference
+#: includes/class-admin.php:2583
+#, php-format
+msgid "Warning: %1$d ambiguous date(s) were interpreted using your current preference (%2$s)."
+msgstr "Abisua: data anbiguo %1$d zure uneko hobespena (%2$s) erabiliz interpretatu d(ir)a."
+
+#: includes/class-admin.php:2589
+msgid "Ambiguous dates found:"
+msgstr "Aurkitutako data anbiguoak:"
+
+#: includes/class-admin.php:2592
+msgid "To avoid ambiguity in future imports, consider using YYYY-MM-DD format."
+msgstr "Etorkizuneko inportazioetan anbiguotasuna saihesteko, erabili UUUU-HH-EE formatua."
+
+#: includes/class-admin.php:2632 includes/class-admin.php:2831 includes/class-admin.php:3693 includes/class-admin.php:3811 includes/class-admin.php:3852 includes/class-admin.php:4142 includes/class-admin.php:4454 includes/class-attendant.php:556
+msgid "Surnames"
+msgstr "Abizenak"
+
+#: includes/class-admin.php:2633 includes/class-admin.php:2834 includes/class-admin.php:3812 includes/class-admin.php:3860 includes/class-admin.php:4150 includes/class-admin.php:4459 includes/class-attendant.php:557
+msgid "Date of Birth"
+msgstr "Jaiotze-data"
+
+#: includes/class-admin.php:2634 includes/class-admin.php:2837 includes/class-admin.php:4158 includes/class-attendant.php:558
+msgid "Emergency Contact Name"
+msgstr "Larrialdietarako kontaktuaren izena"
+
+#: includes/class-admin.php:2635 includes/class-admin.php:2840 includes/class-admin.php:4166 includes/class-attendant.php:559
+msgid "Emergency Contact Surname"
+msgstr "Larrialdietarako kontaktuaren abizena"
+
+#: includes/class-admin.php:2636 includes/class-admin.php:2843 includes/class-admin.php:4174 includes/class-attendant.php:560
+msgid "Emergency Contact Phone"
+msgstr "Larrialdietarako kontaktuaren telefonoa"
+
+#: includes/class-admin.php:2637 includes/class-admin.php:4183 includes/class-attendant.php:561
+msgid "Emergency Contact Email"
+msgstr "Larrialdietarako kontaktuaren e-posta"
+
+#: includes/class-admin.php:2638 includes/class-admin.php:4192 includes/class-admin.php:5370 includes/class-attendant.php:562
+msgid "Emergency Contact Relationship"
+msgstr "Larrialdietarako kontaktuarekiko harremana"
+
+#: includes/class-admin.php:2639 includes/class-admin.php:3697 includes/class-admin.php:3814 includes/class-admin.php:3876 includes/class-admin.php:4201 includes/class-admin.php:4479 includes/class-admin.php:5371 includes/class-attendant.php:563
+msgid "Invited By"
+msgstr "Nork gonbidatua"
+
+#: includes/class-admin.php:2640 includes/class-admin.php:3701 includes/class-admin.php:3815 includes/class-admin.php:3884 includes/class-admin.php:4210 includes/class-admin.php:4484 includes/class-admin.php:5372 includes/class-attendant.php:564
+msgid "Incompatibilities"
+msgstr "Bateraezintasunak"
+
+#: includes/class-admin.php:2641 includes/class-admin.php:3710 includes/class-admin.php:3893 includes/class-admin.php:4220 includes/class-admin.php:4490 includes/class-attendant.php:569
+msgid "Notes"
+msgstr "Oharrak"
+
+#. translators: JSON array of CSV column headers that map to the "name" field when importing attendants. Translate each value to the equivalent column header in your language. Keep the JSON format: ["value1", "value2"]. Example for Spanish: ["nombre", "nombre de pila"]
+#: includes/class-admin.php:2660
+msgid "[\"name\", \"first name\"]"
+msgstr "[\"izena\", \"izen\"]"
+
+#. translators: JSON array of CSV column headers that map to the "surnames" field when importing attendants. Translate each value to the equivalent column header in your language. Keep the JSON format: ["value1", "value2"]. Example for Spanish: ["apellido", "apellidos"]
+#: includes/class-admin.php:2664
+msgid "[\"surname\", \"surnames\", \"last name\"]"
+msgstr "[\"abizena\", \"abizenak\", \"deitura\", \"deiturak\"]"
+
+#. translators: JSON array of CSV column headers that map to the "date of birth" field when importing attendants. Translate each value to the equivalent column header in your language. Keep the JSON format: ["value1", "value2"]. Example for Spanish: ["fecha de nacimiento", "nacimiento"]
+#: includes/class-admin.php:2668
+msgid "[\"date of birth\", \"birth date\", \"dob\", \"birthdate\"]"
+msgstr "[\"jaiotze-data\", \"jaiotze data\", \"jaiotza\", \"jaioteguna\"]"
+
+#. translators: JSON array of CSV column headers that map to the "emergency contact name" field when importing attendants. Translate each value to the equivalent column header in your language. Keep the JSON format: ["value1", "value2"]. Example for Spanish: ["nombre del contacto de emergencia", "nombre de emergencia", "nombre del contacto"]
+#: includes/class-admin.php:2672
+msgid "[\"emergency contact name\", \"emergency name\", \"contact name\",\"emergency contact first name\", \"emergency first name\", \"contact first name\"]"
+msgstr "[\"larrialdietarako kontaktuaren izena\", \"larrialdiko izena\", \"kontaktuaren izena\", \"larrialdiko kontaktuaren izena\"]"
+
+#. translators: JSON array of CSV column headers that map to the "emergency contact surname" field when importing attendants. Translate each value to the equivalent column header in your language. Keep the JSON format: ["value1", "value2"]. Example for Spanish: ["apellido del contacto de emergencia", "apellido de emergencia", "apellido del contacto"]
+#: includes/class-admin.php:2676
+msgid "[\"emergency contact surname\", \"emergency surname\", \"contact surname\", \"emergency contact last name\", \"emergency last name\", \"contact last name\"]"
+msgstr "[\"larrialdietarako kontaktuaren abizena\", \"larrialdietarako kontaktuaren abizenak\", \"larrialdiko abizena\", \"kontaktuaren abizena\", \"kontaktuaren abizenak\"]"
+
+#. translators: JSON array of CSV column headers that map to the "emergency contact phone" field when importing attendants. Translate each value to the equivalent column header in your language. Keep the JSON format: ["value1", "value2"]. Example for Spanish: ["teléfono de emergencia", "teléfono del contacto", "teléfono"]
+#: includes/class-admin.php:2680
+msgid "[\"emergency contact phone\", \"emergency phone\", \"contact phone\", \"phone\"]"
+msgstr "[\"larrialdietarako kontaktuaren telefonoa\", \"larrialdiko telefonoa\", \"kontaktuaren telefonoa\", \"telefonoa\"]"
+
+#. translators: JSON array of CSV column headers that map to the "emergency contact email" field when importing attendants. Translate each value to the equivalent column header in your language. Keep the JSON format: ["value1", "value2"]. Example for Spanish: ["email de emergencia", "email del contacto", "email"]
+#: includes/class-admin.php:2684
+msgid "[\"emergency contact email\", \"emergency email\", \"contact email\", \"email\"]"
+msgstr "[\"larrialdietarako kontaktuaren e-posta\", \"larrialdiko e-posta\", \"kontaktuaren e-posta\", \"e-posta\", \"posta elektronikoa\", \"helbide elektronikoa\"]"
+
+#. translators: JSON array of CSV column headers that map to the "emergency contact relationship" field when importing attendants. Translate each value to the equivalent column header in your language. Keep the JSON format: ["value1", "value2"]. Example for Spanish: ["parentesco del contacto de emergencia", "parentesco", "relación"]
+#: includes/class-admin.php:2688
+msgid "[\"emergency contact relationship\", \"relationship\", \"contact relationship\"]"
+msgstr "[\"larrialdietarako kontaktuarekiko harremana\", \"harremana\", \"kontaktuarekiko harremana\", \"ahaidetasuna\"]"
+
+#. translators: JSON array of CSV column headers that map to the "invited by" field when importing attendants. Translate each value to the equivalent column header in your language. Keep the JSON format: ["value1", "value2"]. Example for Spanish: ["invitado por", "invitador"]
+#: includes/class-admin.php:2692
+msgid "[\"invited by\", \"invited\", \"inviter\"]"
+msgstr "[\"nork gonbidatua\", \"gonbidatzailea\", \"gonbidatua\"]"
+
+#. translators: JSON array of CSV column headers that map to the "incompatibilities" field when importing attendants. Translate each value to the equivalent column header in your language. Keep the JSON format: ["value1", "value2"]. Example for Spanish: ["incompatibilidades", "incompatibilidad", "no puede estar con"]
+#: includes/class-admin.php:2696
+msgid "[\"incompatibilities\", \"incompatibility\", \"cannot be placed with\"]"
+msgstr "[\"bateraezintasunak\", \"bateraezintasuna\", \"ezin da egon honekin\"]"
+
+#. translators: JSON array of CSV column headers that map to the "notes" field when importing attendants. Translate each value to the equivalent column header in your language. Keep the JSON format: ["value1", "value2"]. Example for Spanish: ["notas", "nota", "comentarios", "comentario"]
+#: includes/class-admin.php:2700
+msgid "[\"notes\", \"note\", \"comments\", \"comment\"]"
+msgstr "[\"oharrak\", \"oharra\", \"iruzkinak\", \"iruzkina\"]"
+
+#. translators: 1: line number, 2: error message
+#: includes/class-admin.php:2804
+#, php-format
+msgid "Line %1$d: %2$s"
+msgstr "%1$d. lerroa: %2$s"
+
+#: includes/class-admin.php:3117
+msgid "Only withdrawn attendants can be deleted. Withdraw the attendant first."
+msgstr "Baja emandako parte-hartzaileak soilik ezaba daitezke. Eman baja parte-hartzaileari lehenik."
+
+#: includes/class-admin.php:3140
+msgid "This attendant has already been withdrawn."
+msgstr "Parte-hartzaile honi baja eman zaio jada."
+
+#: includes/class-admin.php:3144
+msgid "Error withdrawing the attendant. Please try again."
+msgstr "Errore bat gertatu da parte-hartzaileari baja ematean. Saiatu berriro."
+
+#: includes/class-admin.php:3147
+msgid "Attendant withdrawn. You can find them in the \"Withdrawn attendants\" tab."
+msgstr "Parte-hartzaileari baja eman zaio. «Baja emandako parte-hartzaileak» erlaitzean aurki dezakezu."
+
+#: includes/class-admin.php:3163
+msgid "This attendant has not been withdrawn."
+msgstr "Parte-hartzaile honi ez zaio baja eman."
+
+#: includes/class-admin.php:3167
+msgid "Error reactivating the attendant. Please try again."
+msgstr "Errore bat gertatu da parte-hartzailea berraktibatzean. Saiatu berriro."
+
+#: includes/class-admin.php:3170
+msgid "Attendant reactivated."
+msgstr "Parte-hartzailea berraktibatu da."
+
+#: includes/class-admin.php:3186 includes/class-admin.php:4702 includes/class-admin.php:5221 includes/class-admin.php:5454
+msgid "Attendant not found."
+msgstr "Ez da parte-hartzailea aurkitu."
+
+#: includes/class-admin.php:3221
+msgid "Confirmation text verification failed. Action cancelled for security."
+msgstr "Berrespen-testuaren egiaztapenak huts egin du. Ekintza bertan behera utzi da segurtasunagatik."
+
+#: includes/class-admin.php:3226
+msgid "Error withdrawing attendants. Please try again."
+msgstr "Errore bat gertatu da parte-hartzaileei baja ematean. Saiatu berriro."
+
+#. translators: %d: Number of withdrawn attendants
+#: includes/class-admin.php:3240
+#, php-format
+msgid "%d attendants have been withdrawn. You can find them in the \"Withdrawn attendants\" tab."
+msgstr "%d parte-hartzaileri baja eman zaie. «Baja emandako parte-hartzaileak» erlaitzean aurki ditzakezu."
+
+#. translators: %s: name of the main language, e.g. "Español"
+#: includes/class-admin.php:3262
+#, php-format
+msgid "The texts above are written in the main language of the site (%s). Visitors can see the letters form in other languages; write here a version of these texts for each language you want. Empty fields use the automatic translation, if it is configured in the global settings, or the original text otherwise."
+msgstr "Goiko testuak gunearen hizkuntza nagusian idatzita daude (%s). Bisitariek gutunen inprimakia beste hizkuntza batzuetan ikus dezakete; idatzi hemen testu hauen bertsio bat nahi duzun hizkuntza bakoitzerako. Hutsik dauden eremuek itzulpen automatikoa erabiltzen dute, ezarpen orokorretan konfiguratuta badago, edo bestela jatorrizko testua."
+
+#: includes/class-admin.php:3269
+msgid "Configure automatic translation"
+msgstr "Konfiguratu itzulpen automatikoa"
+
+#: includes/class-admin.php:3286
+msgid "(written)"
+msgstr "(idatzita)"
+
+#: includes/class-admin.php:3292
+msgid "Translate automatically"
+msgstr "Itzuli automatikoki"
+
+#: includes/class-admin.php:3294
+msgid "Fills these fields from the texts above, so you can review them before saving."
+msgstr "Eremu hauek goiko testuetatik betetzen ditu, gorde aurretik berrikus ditzazun."
+
+#: includes/class-admin.php:3335
+msgid "Language not supported."
+msgstr "Hizkuntza ez da onartzen."
+
+#: includes/class-admin.php:3344
+msgid "There are no texts to translate. Write the custom message or the legal disclaimer first."
+msgstr "Ez dago itzultzeko testurik. Idatzi lehenik mezu pertsonalizatua edo lege-oharra."
+
+#: includes/class-admin.php:3379
+msgid "A retreat can only be emptied after its end date."
+msgstr "Erretiro bat bere amaiera-dataren ondoren soilik hustu daiteke."
+
+#: includes/class-admin.php:3383
+msgid "Retreat name verification failed. Action cancelled for security."
+msgstr "Erretiroaren izenaren egiaztapenak huts egin du. Ekintza bertan behera utzi da segurtasunagatik."
+
+#: includes/class-admin.php:3390
+msgid "Error emptying the retreat. Please try again."
+msgstr "Errore bat gertatu da erretiroa hustean. Saiatu berriro."
+
+#. translators: %d: Number of deleted attendants
+#: includes/class-admin.php:3404
+#, php-format
+msgid "Retreat emptied: %d attendants have been deleted together with their letters. The retreat and its settings are kept."
+msgstr "Erretiroa hustu da: %d parte-hartzaile ezabatu dira beren gutunekin batera. Erretiroa eta bere ezarpenak gorde egin dira."
+
+#. translators: %1$s is the retreat name, %2$s is the current date (YYYY-MM-DD)
+#: includes/class-admin.php:3429
+#, php-format
+msgid "retreat-%1$s-attendants-%2$s.csv"
+msgstr "erretiroa-%1$s-parte-hartzaileak-%2$s.csv"
+
+#. translators: %s: Retreat name
+#: includes/class-admin.php:3601
+#, php-format
+msgid "Attendants for %s"
+msgstr "%s erretiroko parte-hartzaileak"
+
+#: includes/class-admin.php:3608 includes/class-admin.php:4101
+msgid "Add New Attendant"
+msgstr "Gehitu parte-hartzaile berria"
+
+#. translators: %d: number of active attendants
+#: includes/class-admin.php:3628
+#, php-format
+msgid "Attendants (%d)"
+msgstr "Parte-hartzaileak (%d)"
+
+#. translators: %d: number of withdrawn attendants
+#: includes/class-admin.php:3637
+#, php-format
+msgid "Withdrawn attendants (%d)"
+msgstr "Baja emandako parte-hartzaileak (%d)"
+
+#: includes/class-admin.php:3652
+msgid "Search Attendants:"
+msgstr "Bilatu parte-hartzaileak:"
+
+#: includes/class-admin.php:3654
+msgid "Search Attendants"
+msgstr "Bilatu parte-hartzaileak"
+
+#: includes/class-admin.php:3664
+msgid "Filters"
+msgstr "Iragazkiak"
+
+#: includes/class-admin.php:3666
+msgid "(Active)"
+msgstr "(Aktiboak)"
+
+#: includes/class-admin.php:3705 includes/class-admin.php:3813 includes/class-admin.php:3868 includes/class-admin.php:4464
+msgid "Emergency Contact"
+msgstr "Larrialdietarako kontaktua"
+
+#: includes/class-admin.php:3716 includes/class-admin.php:3903 includes/class-admin.php:4231 includes/class-admin.php:4490
+msgid "Internal Notes"
+msgstr "Barne-oharrak"
+
+#: includes/class-admin.php:3723
+msgid "Apply Filters"
+msgstr "Aplikatu iragazkiak"
+
+#: includes/class-admin.php:3726
+msgid "Clear Filters"
+msgstr "Garbitu iragazkiak"
+
+#. translators: %d: number of attendants
+#: includes/class-admin.php:3742
+#, php-format
+msgid "Total attendants: %d"
+msgstr "Parte-hartzaileak guztira: %d"
+
+#: includes/class-admin.php:3744
+msgid "Messages:"
+msgstr "Mezuak:"
+
+#. translators: 1: total messages count, 2: non-printed messages count
+#: includes/class-admin.php:3748
+#, php-format
+msgid "%1$d received (%2$d unprinted)"
+msgstr "%1$d jasota (%2$d inprimatu gabe)"
+
+#: includes/class-admin.php:3759
+msgid "Export CSV"
+msgstr "Esportatu CSVa"
+
+#: includes/class-admin.php:3762 includes/class-admin.php:5334
+msgid "Import CSV"
+msgstr "Inportatu CSVa"
+
+#: includes/class-admin.php:3807 includes/class-admin.php:5687
+msgid "Sort by:"
+msgstr "Ordenatu honen arabera:"
+
+#: includes/class-admin.php:3809 includes/class-admin.php:5689
+msgid "Select..."
+msgstr "Hautatu..."
+
+#: includes/class-admin.php:3816 includes/class-admin.php:3997 includes/class-admin.php:4017 includes/class-admin.php:4264 includes/class-admin.php:4495
+msgid "Messages"
+msgstr "Mezuak"
+
+#: includes/class-admin.php:3817 includes/class-admin.php:3932 includes/class-admin.php:4524
+msgid "Physical Letters"
+msgstr "Paperezko gutunak"
+
+#: includes/class-admin.php:3818 includes/class-admin.php:3940 includes/class-admin.php:4529
+msgid "Total Letters"
+msgstr "Gutunak guztira"
+
+#: includes/class-admin.php:3830
+msgid "Drag the column headers by their handle to reorder the columns. The order is saved for everyone who uses this retreat."
+msgstr "Arrastatu zutabeen goiburuak heldulekutik zutabeak berrordenatzeko. Ordena erretiro hau erabiltzen duten guztientzat gordetzen da."
+
+#: includes/class-admin.php:3832
+msgid "Restore default order"
+msgstr "Berrezarri ordena lehenetsia"
+
+#: includes/class-admin.php:3915
+msgid "Messages (non-printed)"
+msgstr "Mezuak (inprimatu gabeak)"
+
+#: includes/class-admin.php:3917
+msgid "Messages (total)"
+msgstr "Mezuak (guztira)"
+
+#: includes/class-admin.php:3946 includes/class-admin.php:4534
+msgid "Status"
+msgstr "Egoera"
+
+#: includes/class-admin.php:4002
+msgid "Reactivate"
+msgstr "Berraktibatu"
+
+#: includes/class-admin.php:4005
+msgid "Delete Permanently"
+msgstr "Ezabatu behin betiko"
+
+#: includes/class-admin.php:4030 includes/class-admin.php:4289
+msgid "Generate Message URL"
+msgstr "Sortu mezuen URLa"
+
+#: includes/class-admin.php:4034 includes/class-admin.php:4296
+msgid "Copy Message URL"
+msgstr "Kopiatu mezuen URLa"
+
+#: includes/class-admin.php:4041
+msgid "Withdraw"
+msgstr "Eman baja"
+
+#: includes/class-admin.php:4052
+msgid "No attendants found matching your criteria."
+msgstr "Ez da zure irizpideekin bat datorren parte-hartzailerik aurkitu."
+
+#: includes/class-admin.php:4054
+msgid "No attendants have been withdrawn from this retreat."
+msgstr "Ez zaio parte-hartzaileri baja eman erretiro honetan."
+
+#: includes/class-admin.php:4056
+msgid "No attendants found for this retreat."
+msgstr "Ez da parte-hartzailerik aurkitu erretiro honetarako."
+
+#: includes/class-admin.php:4059
+msgid "Add the first attendant"
+msgstr "Gehitu lehen parte-hartzailea"
+
+#: includes/class-admin.php:4072 includes/class-admin.php:5815
+msgid "Note:"
+msgstr "Oharra:"
+
+#. translators: %1$d: current page, %2$d: total pages, %3$d: items per page
+#: includes/class-admin.php:4076
+#, php-format
+msgid "Showing page %1$d of %2$d. There are more attendants available. Use the pagination controls above to view all %3$d attendants per page."
+msgstr "%1$d. orrialdea erakusten (%2$d guztira). Parte-hartzaile gehiago daude. Erabili goiko orrialdekatze-kontrolak parte-hartzaile guztiak ikusteko, %3$d orrialdeko."
+
+#: includes/class-admin.php:4101
+msgid "Edit Attendant"
+msgstr "Editatu parte-hartzailea"
+
+#: includes/class-admin.php:4124
+msgid "As a message manager you can update the physical letters received, the custom fields you are allowed to edit and the contact log. The rest of the data is read-only."
+msgstr "Mezu-kudeatzaile gisa, jasotako paperezko gutunak, editatzeko baimena duzun eremu pertsonalizatuak eta kontaktuen erregistroa egunera ditzakezu. Gainerako datuak irakurtzeko soilik dira."
+
+#: includes/class-admin.php:4166 includes/class-admin.php:4183 includes/class-admin.php:4192 includes/class-admin.php:4201 includes/class-admin.php:4210 includes/class-admin.php:4220 includes/class-admin.php:4231
+msgid "optional"
+msgstr "aukerakoa"
+
+#: includes/class-admin.php:4178
+msgid "Enter phone number with area code."
+msgstr "Sartu telefono-zenbakia aurrezenbakiarekin."
+
+#: includes/class-admin.php:4187
+msgid "Enter email address for emergency contact."
+msgstr "Sartu larrialdietarako kontaktuaren e-posta helbidea."
+
+#: includes/class-admin.php:4196
+msgid "Relationship to the emergency contact (e.g., husband, friend, daughter)."
+msgstr "Larrialdietarako kontaktuarekiko harremana (adib.: senarra, laguna, alaba)."
+
+#: includes/class-admin.php:4205
+msgid "Name of the person who invited this attendant."
+msgstr "Parte-hartzaile hau gonbidatu zuen pertsonaren izena."
+
+#: includes/class-admin.php:4214
+msgid "Names of other attendants they should not be placed with."
+msgstr "Parte-hartzaile honekin batera jarri behar ez diren beste parte-hartzaileen izenak."
+
+#: includes/class-admin.php:4224
+msgid "Optional notes for this attendant."
+msgstr "Parte-hartzaile honentzako aukerako oharrak."
+
+#: includes/class-admin.php:4235
+msgid "Optional internal notes for this attendant. This field will NOT be imported or exported via CSV."
+msgstr "Parte-hartzaile honentzako aukerako barne-oharrak. Eremu hau EZ da CSV bidez inportatuko edo esportatuko."
+
+#: includes/class-admin.php:4241
+msgid "Physical Letters Received"
+msgstr "Jasotako paperezko gutunak"
+
+#: includes/class-admin.php:4245
+msgid "Number of paper letters received for this attendant outside the application. They are added to the messages received to compute the total letters."
+msgstr "Parte-hartzaile honentzat aplikaziotik kanpo jasotako paperezko gutunen kopurua. Jasotako mezuei gehitzen zaizkie gutunak guztira kalkulatzeko."
+
+#. translators: %d: Number of messages
+#: includes/class-admin.php:4272
+#, php-format
+msgid "View %d message"
+msgid_plural "View %d messages"
+msgstr[0] "Ikusi mezu %d"
+msgstr[1] "Ikusi %d mezu"
+
+#: includes/class-admin.php:4279
+msgid "No messages received yet."
+msgstr "Oraindik ez da mezurik jaso."
+
+#: includes/class-admin.php:4284 includes/class-attendant.php:565
+msgid "Message URL"
+msgstr "Mezuen URLa"
+
+#: includes/class-admin.php:4292
+msgid "Generate a secure URL that can be shared with this attendant to receive confidential messages."
+msgstr "Sortu parte-hartzaile honekin parteka daitekeen URL seguru bat, mezu konfidentzialak jasotzeko."
+
+#: includes/class-admin.php:4299
+msgid "Share this secure URL with the attendant to receive confidential messages."
+msgstr "Partekatu URL seguru hau parte-hartzailearekin mezu konfidentzialak jasotzeko."
+
+#: includes/class-admin.php:4308
+msgid "Update Attendant"
+msgstr "Eguneratu parte-hartzailea"
+
+#: includes/class-admin.php:4308
+msgid "Add Attendant"
+msgstr "Gehitu parte-hartzailea"
+
+#: includes/class-admin.php:4372
+msgid "Drag to reorder"
+msgstr "Arrastatu berrordenatzeko"
+
+#: includes/class-admin.php:4407
+msgid "Error saving the column order."
+msgstr "Errore bat gertatu da zutabeen ordena gordetzean."
+
+#: includes/class-admin.php:4432
+msgid "N/A"
+msgstr "E/E"
+
+#: includes/class-admin.php:4433
+msgid "No notes"
+msgstr "Oharrik ez"
+
+#. translators: %d: Number of messages
+#: includes/class-admin.php:4502
+#, php-format
+msgid "%d message"
+msgid_plural "%d messages"
+msgstr[0] "Mezu %d"
+msgstr[1] "%d mezu"
+
+#. translators: %d: Number of non-printed messages
+#: includes/class-admin.php:4509
+#, php-format
+msgid " (%d non-printed)"
+msgstr " (%d inprimatu gabe)"
+
+#: includes/class-admin.php:4518
+msgid "No messages"
+msgstr "Mezurik ez"
+
+#: includes/class-admin.php:4536
+msgid "Withdrawn"
+msgstr "Baja emanda"
+
+#. translators: 1: date of withdrawal, 2: user who withdrew the attendant
+#: includes/class-admin.php:4539
+#, php-format
+msgid "On %1$s by %2$s"
+msgstr "%1$s, %2$s(e)k"
+
+#. translators: %d: number of contact log entries
+#: includes/class-admin.php:4551
+#, php-format
+msgid "%d entry"
+msgid_plural "%d entries"
+msgstr[0] "Sarrera %d"
+msgstr[1] "%d sarrera"
+
+#: includes/class-admin.php:4612
+msgid "Letters:"
+msgstr "Gutunak:"
+
+#. translators: 1: total letters count, 2: letters received through the app, 3: physical letters count
+#: includes/class-admin.php:4614
+#, php-format
+msgid "%1$d in total (%2$d via app, %3$d physical)"
+msgstr "%1$d guztira (%2$d aplikazioaren bidez, %3$d paperezko)"
+
+#: includes/class-admin.php:4633
+msgid "Click to edit"
+msgstr "Egin klik editatzeko"
+
+#: includes/class-admin.php:4717
+msgid "You do not have permission to edit this field."
+msgstr "Ez duzu baimenik eremu hau editatzeko."
+
+#: includes/class-admin.php:4728
+msgid "The number of physical letters must be a whole number, zero or greater."
+msgstr "Paperezko gutunen kopuruak zenbaki osoa izan behar du, zero edo handiagoa."
+
+#: includes/class-admin.php:4819
+msgid "— Select —"
+msgstr "— Hautatu —"
+
+#: includes/class-admin.php:4848
+msgid "Custom Attendant Fields"
+msgstr "Parte-hartzaileen eremu pertsonalizatuak"
+
+#: includes/class-admin.php:4850
+msgid "Define additional fields for the attendants of this retreat. The slug identifies the field in CSV files and can be used as a placeholder in the message request template, e.g. [my_field]."
+msgstr "Definitu eremu gehigarriak erretiro honetako parte-hartzaileentzat. Slugak eremua identifikatzen du CSV fitxategietan, eta leku-marka gisa erabil daiteke mezuak eskatzeko txantiloian, adibidez [my_field]."
+
+#: includes/class-admin.php:4860
+msgid "Add Field"
+msgstr "Gehitu eremua"
+
+#: includes/class-admin.php:4881
+msgid "Retreat managers only"
+msgstr "Erretiro-kudeatzaileak soilik"
+
+#: includes/class-admin.php:4882
+msgid "Retreat managers and message managers"
+msgstr "Erretiro-kudeatzaileak eta mezu-kudeatzaileak"
+
+#: includes/class-admin.php:4894
+msgid "Slug"
+msgstr "Slug"
+
+#: includes/class-admin.php:4898 includes/class-admin.php:5691 includes/class-admin.php:5708 includes/class-admin.php:5738
+msgid "Type"
+msgstr "Mota"
+
+#: includes/class-admin.php:4908
+msgid "Options (one per line)"
+msgstr "Aukerak (bat lerroko)"
+
+#: includes/class-admin.php:4914
+msgid "Visible to"
+msgstr "Nork ikus dezakeen"
+
+#: includes/class-admin.php:4922
+msgid "Editable by"
+msgstr "Nork edita dezakeen"
+
+#: includes/class-admin.php:4933
+msgid "Show in attendants list"
+msgstr "Erakutsi parte-hartzaileen zerrendan"
+
+#: includes/class-admin.php:4937
+msgid "Sortable"
+msgstr "Ordenagarria"
+
+#: includes/class-admin.php:4941
+msgid "Import from CSV"
+msgstr "Inportatu CSVtik"
+
+#: includes/class-admin.php:4945
+msgid "Export to CSV"
+msgstr "Esportatu CSVra"
+
+#: includes/class-admin.php:4947
+msgid "Remove field"
+msgstr "Kendu eremua"
+
+#: includes/class-admin.php:4964
+msgid "Record the contacts and conversations held with this attendant's contact person."
+msgstr "Erregistratu parte-hartzaile honen kontaktu-pertsonarekin izandako harremanak eta elkarrizketak."
+
+#: includes/class-admin.php:4984 includes/class-custom-field.php:95
+msgid "Date"
+msgstr "Data"
+
+#: includes/class-admin.php:4990
+msgid "Description"
+msgstr "Deskripzioa"
+
+#: includes/class-admin.php:4995
+msgid "Add Entry"
+msgstr "Gehitu sarrera"
+
+#: includes/class-admin.php:5059
+msgid "No contact log entries yet."
+msgstr "Oraindik ez dago kontaktuen erregistroko sarrerarik."
+
+#. translators: %d: number of deleted contact log entries
+#: includes/class-admin.php:5073
+#, php-format
+msgid "Deleted entries (%d)"
+msgstr "Ezabatutako sarrerak (%d)"
+
+#: includes/class-admin.php:5108
+msgid "Written on"
+msgstr "Idazte-data"
+
+#. translators: 1: date and time of the last edit, 2: user who made it
+#: includes/class-admin.php:5113
+#, php-format
+msgid "Last edited on %1$s by %2$s"
+msgstr "Azken edizioa: %1$s, %2$s(e)k"
+
+#: includes/class-admin.php:5118
+msgid "(edited)"
+msgstr "(editatuta)"
+
+#. translators: 1: date and time of the deletion, 2: user who deleted the entry
+#: includes/class-admin.php:5125
+#, php-format
+msgid "Deleted on %1$s by %2$s"
+msgstr "Ezabatua: %1$s, %2$s(e)k"
+
+#. translators: %d: minutes left to edit the entry
+#: includes/class-admin.php:5144
+#, php-format
+msgid "(editable for %d more minute)"
+msgid_plural "(editable for %d more minutes)"
+msgstr[0] "(minutu %d gehiagoz edita daiteke)"
+msgstr[1] "(%d minutu gehiagoz edita daiteke)"
+
+#: includes/class-admin.php:5158
+msgid "Change history"
+msgstr "Aldaketen historia"
+
+#: includes/class-admin.php:5165
+msgid "Created"
+msgstr "Sortua"
+
+#: includes/class-admin.php:5166
+msgid "Edited"
+msgstr "Editatua"
+
+#: includes/class-admin.php:5167
+msgid "Deleted"
+msgstr "Ezabatua"
+
+#: includes/class-admin.php:5199 includes/class-admin.php:6095 includes/class-admin.php:6538 includes/class-print-log.php:503
+msgid "Unknown User"
+msgstr "Erabiltzaile ezezaguna"
+
+#: includes/class-admin.php:5225 includes/class-admin.php:5459 includes/class-admin.php:6657
+msgid "You do not have permission to access this retreat."
+msgstr "Ez duzu baimenik erretiro honetara sartzeko."
+
+#: includes/class-admin.php:5247
+msgid "Please enter a valid date."
+msgstr "Sartu baliozko data bat."
+
+#: includes/class-admin.php:5270 includes/class-admin.php:5291
+msgid "Error saving the contact log entry."
+msgstr "Errore bat gertatu da kontaktuen erregistroko sarrera gordetzean."
+
+#: includes/class-admin.php:5287
+msgid "You cannot edit this entry."
+msgstr "Ezin duzu sarrera hau editatu."
+
+#: includes/class-admin.php:5307
+msgid "You cannot delete this entry."
+msgstr "Ezin duzu sarrera hau ezabatu."
+
+#: includes/class-admin.php:5311
+msgid "Error deleting the contact log entry."
+msgstr "Errore bat gertatu da kontaktuen erregistroko sarrera ezabatzean."
+
+#: includes/class-admin.php:5326
+msgid "Import Attendants from CSV"
+msgstr "Inportatu parte-hartzaileak CSVtik"
+
+#: includes/class-admin.php:5340
+msgid "CSV Import Instructions"
+msgstr "CSVa inportatzeko argibideak"
+
+#: includes/class-admin.php:5341
+msgid "Your CSV file should contain the following required columns. Column order is flexible and the system will automatically identify columns by their names:"
+msgstr "Zure CSV fitxategiak beharrezko zutabe hauek izan behar ditu. Zutabeen ordena malgua da, eta sistemak automatikoki identifikatuko ditu zutabeak beren izenen arabera:"
+
+#. translators: %s: column name in English
+#: includes/class-admin.php:5361
+#, php-format
+msgid "(optional, or \"%s\")"
+msgstr "(aukerakoa, edo «%s»)"
+
+#. translators: %s: column name in English
+#: includes/class-admin.php:5363
+#, php-format
+msgid "(or \"%s\")"
+msgstr "(edo «%s»)"
+
+#: includes/class-admin.php:5365 includes/class-admin.php:5370 includes/class-admin.php:5371 includes/class-admin.php:5372
+msgid "(optional)"
+msgstr "(aukerakoa)"
+
+#: includes/class-admin.php:5374
+msgid "Additional features:"
+msgstr "Ezaugarri gehigarriak:"
+
+#: includes/class-admin.php:5376
+msgid "Column order can be any order"
+msgstr "Zutabeak edozein ordenatan egon daitezke"
+
+#: includes/class-admin.php:5377
+msgid "Extra columns are allowed and will be ignored"
+msgstr "Zutabe gehigarriak onartzen dira eta ez ikusi egingo zaie"
+
+#: includes/class-admin.php:5378
+msgid "Date formats supported: YYYY-MM-DD, DD/MM/YYYY, MM/DD/YYYY, DD-MM-YYYY, MM-DD-YYYY, DD.MM.YYYY"
+msgstr "Onartutako data-formatuak: UUUU-HH-EE, EE/HH/UUUU, HH/EE/UUUU, EE-HH-UUUU, HH-EE-UUUU, EE.HH.UUUU"
+
+#: includes/class-admin.php:5379
+msgid "Column names can be in English or in the language of the panel"
+msgstr "Zutabeen izenak ingelesez edo panelaren hizkuntzan egon daitezke"
+
+#: includes/class-admin.php:5380
+msgid "The first row must contain column headers"
+msgstr "Lehen errenkadak zutabeen goiburuak izan behar ditu"
+
+#: includes/class-admin.php:5383
+msgid "Important Note about Date Formats:"
+msgstr "Ohar garrantzitsua data-formatuei buruz:"
+
+#: includes/class-admin.php:5384
+msgid "For ambiguous dates like \"01/10/2025\", the system cannot determine if this means \"January 10th\" or \"October 1st\". To avoid confusion:"
+msgstr "«01/10/2025» bezalako data anbiguoetan, sistemak ezin du jakin «urtarrilaren 10a» ala «urriaren 1a» esan nahi duen. Nahasmena saihesteko:"
+
+#: includes/class-admin.php:5386
+msgid "Use unambiguous formats like YYYY-MM-DD (2025-01-10)"
+msgstr "Erabili formatu ez-anbiguoak, adibidez UUUU-HH-EE (2025-01-10)"
+
+#: includes/class-admin.php:5387
+msgid "Set your preferred date format below to ensure consistent interpretation"
+msgstr "Ezarri behean nahiago duzun data-formatua interpretazio koherentea bermatzeko"
+
+#: includes/class-admin.php:5398
+msgid "Date Format Preference"
+msgstr "Data-formatuaren hobespena"
+
+#: includes/class-admin.php:5407
+msgid "This preference is used to interpret ambiguous dates like \"01/10/2025\". Unambiguous dates are always parsed correctly regardless of this setting."
+msgstr "Hobespen hau «01/10/2025» bezalako data anbiguoak interpretatzeko erabiltzen da. Data ez-anbiguoak beti behar bezala aztertzen dira, ezarpen hau edozein dela ere."
+
+#: includes/class-admin.php:5413
+msgid "CSV File"
+msgstr "CSV fitxategia"
+
+#: includes/class-admin.php:5417
+msgid "Select a CSV file to import. Maximum file size: 2MB."
+msgstr "Hautatu inportatzeko CSV fitxategi bat. Fitxategiaren gehieneko tamaina: 2 MB."
+
+#: includes/class-admin.php:5424
+msgid "Import Attendants"
+msgstr "Inportatu parte-hartzaileak"
+
+#: includes/class-admin.php:5448
+msgid "Invalid attendant ID."
+msgstr "Parte-hartzailearen identifikatzaile baliogabea."
+
+#: includes/class-admin.php:5480
+msgid "Failed to generate message URL."
+msgstr "Ezin izan da mezuen URLa sortu."
+
+#: includes/class-admin.php:5486
+msgid "Message URL generated successfully."
+msgstr "Mezuen URLa ondo sortu da."
+
+#. translators: %s: Attendant name
+#: includes/class-admin.php:5566
+#, php-format
+msgid "Messages for %s"
+msgstr "%s(r)entzako mezuak"
+
+#: includes/class-admin.php:5595
+msgid "Security Notice:"
+msgstr "Segurtasun-oharra:"
+
+#: includes/class-admin.php:5595
+msgid "Message content is encrypted and can only be viewed when printed. This page shows metadata only for privacy and security compliance."
+msgstr "Mezuen edukia zifratuta dago eta inprimatzean soilik ikus daiteke. Orrialde honek metadatuak soilik erakusten ditu, pribatutasuna eta segurtasuna betetzeko."
+
+#: includes/class-admin.php:5606
+msgid "This attendant has been withdrawn. You can return by email the letters whose sender gave their address; once returned, they are deleted from the system."
+msgstr "Parte-hartzaile honi baja eman zaio. Igorleak bere helbidea eman duen gutunak e-postaz itzul ditzakezu; itzuli ondoren, sistematik ezabatzen dira."
+
+#. translators: %d: number of letters that can be returned
+#: includes/class-admin.php:5612
+#, php-format
+msgid "Return all by email (%d)"
+msgstr "Itzuli guztiak e-postaz (%d)"
+
+#: includes/class-admin.php:5630
+msgid "All Types"
+msgstr "Mota guztiak"
+
+#: includes/class-admin.php:5631
+msgid "Text Messages"
+msgstr "Testu-mezuak"
+
+#: includes/class-admin.php:5632
+msgid "Messages with Files"
+msgstr "Fitxategidun mezuak"
+
+#: includes/class-admin.php:5635
+msgid "Filter"
+msgstr "Iragazi"
+
+#: includes/class-admin.php:5639
+msgid "Search Messages:"
+msgstr "Bilatu mezuak:"
+
+#: includes/class-admin.php:5640
+msgid "Search by sender..."
+msgstr "Bilatu igorlearen arabera..."
+
+#: includes/class-admin.php:5641
+msgid "Search Messages"
+msgstr "Bilatu mezuak"
+
+#. translators: %d: number of messages
+#: includes/class-admin.php:5652
+#, php-format
+msgid "Total messages: %d"
+msgstr "Mezuak guztira: %d"
+
+#: includes/class-admin.php:5690 includes/class-admin.php:5702 includes/class-admin.php:5732 includes/class-dfx-parish-retreat-letters.php:1864 includes/class-dfx-parish-retreat-letters.php:1983 includes/class-dfx-parish-retreat-letters.php:2178 includes/class-letter-return.php:331
+msgid "From"
+msgstr "Nork"
+
+#: includes/class-admin.php:5692 includes/class-admin.php:5714 includes/class-admin.php:5750 includes/class-letter-return.php:334
+msgid "Submitted"
+msgstr "Bidaltze-data"
+
+#: includes/class-admin.php:5693 includes/class-admin.php:5720 includes/class-admin.php:5753
+msgid "Print Status"
+msgstr "Inprimatze-egoera"
+
+#: includes/class-admin.php:5733
+msgid "Anonymous"
+msgstr "Anonimoa"
+
+#: includes/class-admin.php:5740 includes/class-dfx-parish-retreat-letters.php:665
+msgid "Text Message"
+msgstr "Testu-mezua"
+
+#: includes/class-admin.php:5741 includes/class-custom-field.php:92
+msgid "Text"
+msgstr "Testua"
+
+#: includes/class-admin.php:5743
+msgid "Message with Files"
+msgstr "Fitxategidun mezua"
+
+#: includes/class-admin.php:5744
+msgid "Files"
+msgstr "Fitxategiak"
+
+#: includes/class-admin.php:5764
+msgid "Print"
+msgstr "Inprimatu"
+
+#: includes/class-admin.php:5783
+msgid "Return by email"
+msgstr "Itzuli e-postaz"
+
+#: includes/class-admin.php:5786
+msgid "No email: cannot be returned"
+msgstr "E-postarik ez: ezin da itzuli"
+
+#: includes/class-admin.php:5802
+msgid "No messages found for your search/filter criteria."
+msgstr "Ez da mezurik aurkitu zure bilaketa- edo iragazki-irizpideetarako."
+
+#: includes/class-admin.php:5804
+msgid "No confidential messages have been received yet."
+msgstr "Oraindik ez da mezu konfidentzialik jaso."
+
+#. translators: %1$d: current page, %2$d: total pages, %3$d: items per page
+#: includes/class-admin.php:5819
+#, php-format
+msgid "Showing page %1$d of %2$d. There are more messages available. Use the pagination controls above to view all %3$d messages per page."
+msgstr "%1$d. orrialdea erakusten (%2$d guztira). Mezu gehiago daude. Erabili goiko orrialdekatze-kontrolak mezu guztiak ikusteko, %3$d orrialdeko."
+
+#: includes/class-admin.php:5852 includes/class-admin.php:5995
+msgid "Error deleting message."
+msgstr "Errore bat gertatu da mezua ezabatzean."
+
+#: includes/class-admin.php:5869 includes/class-admin.php:5978 includes/class-admin.php:6084
+msgid "Invalid message ID."
+msgstr "Mezuaren identifikatzaile baliogabea."
+
+#: includes/class-admin.php:5912
+msgid "Printed"
+msgstr "Inprimatuta"
+
+#. translators: %1$d: Print count, %2$s: First print date
+#: includes/class-admin.php:5917
+#, php-format
+msgid "Printed %1$d time, first: %2$s."
+msgid_plural "Printed %1$d times, first: %2$s."
+msgstr[0] "%1$d aldiz inprimatua, lehen aldiz: %2$s."
+msgstr[1] "%1$d aldiz inprimatua, lehen aldiz: %2$s."
+
+#: includes/class-admin.php:5932
+msgid "Click to view print history"
+msgstr "Egin klik inprimatze-historia ikusteko"
+
+#: includes/class-admin.php:5937
+msgid "Not Printed"
+msgstr "Inprimatu gabe"
+
+#: includes/class-admin.php:5938
+msgid "Not printed"
+msgstr "Inprimatu gabe"
+
+#: includes/class-admin.php:5956
+msgid "Invalid file ID."
+msgstr "Fitxategiaren identifikatzaile baliogabea."
+
+#: includes/class-admin.php:5963
+msgid "File not found or access denied."
+msgstr "Ez da fitxategia aurkitu edo sarbidea ukatu da."
+
+#: includes/class-admin.php:5984 includes/class-admin.php:6015 includes/class-dfx-parish-retreat-letters.php:1608 includes/class-letter-return.php:53
+msgid "Message not found."
+msgstr "Ez da mezua aurkitu."
+
+#: includes/class-admin.php:5989
+msgid "You do not have permission to delete messages for this retreat."
+msgstr "Ez duzu baimenik erretiro honetako mezuak ezabatzeko."
+
+#: includes/class-admin.php:6019
+msgid "You do not have permission to manage messages for this retreat."
+msgstr "Ez duzu baimenik erretiro honetako mezuak kudeatzeko."
+
+#. translators: %s: email address
+#: includes/class-admin.php:6062
+#, php-format
+msgid "Letter returned to %s and deleted from the system."
+msgstr "Gutuna %s helbidera itzuli eta sistematik ezabatu da."
+
+#: includes/class-admin.php:6066
+msgid "Remember to destroy the printed copy."
+msgstr "Gogoratu inprimatutako kopia suntsitzeaz."
+
+#: includes/class-admin.php:6122 includes/class-admin.php:6176 includes/class-admin.php:6225 includes/class-admin.php:6269 includes/class-admin.php:6300
+msgid "Permission denied."
+msgstr "Baimena ukatu da."
+
+#: includes/class-admin.php:6127
+msgid "Search term must be at least 2 characters."
+msgstr "Bilaketa-terminoak gutxienez 2 karaktere izan behar ditu."
+
+#: includes/class-admin.php:6172 includes/class-admin.php:6221 includes/class-admin.php:6265 includes/class-admin.php:6296
+msgid "Invalid parameters."
+msgstr "Parametro baliogabeak."
+
+#. translators: %1$s: user's display name, %2$s: permission level name
+#: includes/class-admin.php:6190
+#, php-format
+msgid "Permission granted to %1$s as %2$s."
+msgstr "%1$s(r)i baimena eman zaio %2$s gisa."
+
+#: includes/class-admin.php:6202
+msgid "Failed to grant permission."
+msgstr "Ezin izan da baimena eman."
+
+#: includes/class-admin.php:6230
+msgid "You cannot revoke your own permissions."
+msgstr "Ezin dituzu zure baimenak baliogabetu."
+
+#. translators: %s: user's display name
+#: includes/class-admin.php:6240
+#, php-format
+msgid "Permission revoked from %s."
+msgstr "%s(r)en baimena baliogabetu da."
+
+#: includes/class-admin.php:6245
+msgid "Failed to revoke permission."
+msgstr "Ezin izan da baimena baliogabetu."
+
+#: includes/class-admin.php:6307
+msgid "Invitation cancelled successfully."
+msgstr "Gonbidapena ondo utzi da bertan behera."
+
+#: includes/class-admin.php:6309
+msgid "Failed to cancel invitation."
+msgstr "Ezin izan da gonbidapena bertan behera utzi."
+
+#: includes/class-admin.php:6352
+msgid "Retention settings updated successfully."
+msgstr "Atxikipen-ezarpenak ondo eguneratu dira."
+
+#: includes/class-admin.php:6354
+msgid "Error updating retention settings. Please check your values."
+msgstr "Errore bat gertatu da atxikipen-ezarpenak eguneratzean. Egiaztatu balioak."
+
+#: includes/class-admin.php:6360
+msgid "Privacy cleanup completed successfully."
+msgstr "Pribatutasun-garbiketa ondo burutu da."
+
+#: includes/class-admin.php:6383
+msgid "Compliance Status Overview"
+msgstr "Betetze-egoeraren ikuspegi orokorra"
+
+#: includes/class-admin.php:6387
+msgid "Encryption"
+msgstr "Zifratzea"
+
+#: includes/class-admin.php:6388
+msgid "AES-256 encryption active"
+msgstr "AES-256 zifratzea aktibo"
+
+#: includes/class-admin.php:6388
+msgid "Encryption requirements not met"
+msgstr "Ez dira zifratze-eskakizunak betetzen"
+
+#: includes/class-admin.php:6393
+msgid "IP Anonymization"
+msgstr "IParen anonimizazioa"
+
+#: includes/class-admin.php:6394
+msgid "IPs anonymized after 30 days"
+msgstr "IPak 30 egunen buruan anonimizatzen dira"
+
+#: includes/class-admin.php:6399
+msgid "Data Retention"
+msgstr "Datuen atxikipena"
+
+#: includes/class-admin.php:6400
+msgid "Policy configured"
+msgstr "Gidalerroa konfiguratuta"
+
+#: includes/class-admin.php:6400
+msgid "Policy needs configuration"
+msgstr "Gidalerroa konfiguratu egin behar da"
+
+#: includes/class-admin.php:6405
+msgid "Audit Logging"
+msgstr "Auditoria-erregistroa"
+
+#: includes/class-admin.php:6406
+msgid "All actions are logged"
+msgstr "Ekintza guztiak erregistratzen dira"
+
+#: includes/class-admin.php:6413
+msgid "Data Statistics"
+msgstr "Datuen estatistikak"
+
+#: includes/class-admin.php:6421
+msgid "Encrypted Files"
+msgstr "Zifratutako fitxategiak"
+
+#: includes/class-admin.php:6425
+msgid "Audit Log Entries"
+msgstr "Auditoria-erregistroko sarrerak"
+
+#: includes/class-admin.php:6428
+msgid "Never"
+msgstr "Inoiz ez"
+
+#: includes/class-admin.php:6429
+msgid "Last Cleanup"
+msgstr "Azken garbiketa"
+
+#: includes/class-admin.php:6439
+msgid "Data Retention Policy"
+msgstr "Datuak atxikitzeko gidalerroa"
+
+#: includes/class-admin.php:6444
+msgid "Message Retention Period"
+msgstr "Mezuak atxikitzeko epea"
+
+#: includes/class-admin.php:6448
+msgid "Number of days to keep confidential messages (30-3650 days). Set to 0 to keep indefinitely."
+msgstr "Mezu konfidentzialak gordetzeko egun kopurua (30-3650 egun). Ezarri 0 mugarik gabe gordetzeko."
+
+#: includes/class-admin.php:6453
+msgid "Audit Log Retention Period"
+msgstr "Auditoria-erregistroa atxikitzeko epea"
+
+#: includes/class-admin.php:6457
+msgid "Number of days to keep audit logs (365-3650 days)."
+msgstr "Auditoria-erregistroak gordetzeko egun kopurua (365-3650 egun)."
+
+#: includes/class-admin.php:6462
+msgid "IP Address Anonymization"
+msgstr "IP helbideen anonimizazioa"
+
+#: includes/class-admin.php:6465
+msgid "30 days (Fixed for GDPR compliance)"
+msgstr "30 egun (finkoa, DBEO betetzeko)"
+
+#: includes/class-admin.php:6466
+msgid "IP addresses are automatically anonymized after 30 days to comply with GDPR requirements."
+msgstr "IP helbideak automatikoki anonimizatzen dira 30 egunen buruan, DBEOren eskakizunak betetzeko."
+
+#: includes/class-admin.php:6473
+msgid "Update Retention Settings"
+msgstr "Eguneratu atxikipen-ezarpenak"
+
+#: includes/class-admin.php:6478
+msgid "Privacy Tools"
+msgstr "Pribatutasun-tresnak"
+
+#: includes/class-admin.php:6481
+msgid "Manual Cleanup"
+msgstr "Eskuzko garbiketa"
+
+#: includes/class-admin.php:6482
+msgid "Run manual privacy cleanup to anonymize old IP addresses and clean up expired data."
+msgstr "Exekutatu eskuz pribatutasun-garbiketa, IP helbide zaharrak anonimizatzeko eta iraungitako datuak garbitzeko."
+
+#: includes/class-admin.php:6486
+msgid "Run Cleanup Now"
+msgstr "Exekutatu garbiketa orain"
+
+#: includes/class-admin.php:6486
+msgid "Are you sure you want to run the privacy cleanup?"
+msgstr "Ziur al zaude pribatutasun-garbiketa exekutatu nahi duzula?"
+
+#: includes/class-admin.php:6491
+msgid "Rate Limit Management"
+msgstr "Eskaeren mugen kudeaketa"
+
+#: includes/class-admin.php:6492
+msgid "Reset message submission rate limits to allow users to submit messages again after encountering errors."
+msgstr "Berrezarri mezuak bidaltzeko eskaeren mugak, erabiltzaileek erroreak izan ondoren berriro mezuak bidali ahal izan ditzaten."
+
+#: includes/class-admin.php:6493
+msgid "Reset All Rate Limits"
+msgstr "Berrezarri eskaeren muga guztiak"
+
+#: includes/class-admin.php:6497
+msgid "Personal Data Export/Erasure"
+msgstr "Datu pertsonalak esportatzea/ezabatzea"
+
+#: includes/class-admin.php:6498
+msgid "Export or erase personal data by sender name for GDPR compliance."
+msgstr "Esportatu edo ezabatu datu pertsonalak igorlearen izenaren arabera, DBEO betetzeko."
+
+#: includes/class-admin.php:6502
+msgid "Export Personal Data"
+msgstr "Esportatu datu pertsonalak"
+
+#: includes/class-admin.php:6503 includes/class-admin.php:6509
+msgid "Enter sender name or email"
+msgstr "Sartu igorlearen izena edo e-posta"
+
+#: includes/class-admin.php:6504
+msgid "Export Data"
+msgstr "Esportatu datuak"
+
+#: includes/class-admin.php:6508
+msgid "Erase Personal Data"
+msgstr "Ezabatu datu pertsonalak"
+
+#. translators: %s: text to type, e.g. "ERASE ALL DATA"
+#: includes/class-admin.php:6510
+#, php-format
+msgid "Type %s to confirm"
+msgstr "Idatzi %s berresteko"
+
+#: includes/class-admin.php:6518
+msgid "Recent Audit Activity"
+msgstr "Azken auditoria-jarduera"
+
+#: includes/class-admin.php:6522 includes/class-admin.php:6532
+msgid "Date/Time"
+msgstr "Data/ordua"
+
+#: includes/class-admin.php:6523 includes/class-admin.php:6533
+msgid "Event Type"
+msgstr "Gertaera mota"
+
+#: includes/class-admin.php:6524 includes/class-admin.php:6534 includes/class-admin.php:7167 includes/class-admin.php:7176
+msgid "User"
+msgstr "Erabiltzailea"
+
+#: includes/class-admin.php:6525 includes/class-admin.php:6544
+msgid "Details"
+msgstr "Xehetasunak"
+
+#: includes/class-admin.php:6540
+msgid "System"
+msgstr "Sistema"
+
+#: includes/class-admin.php:6549
+msgid "No additional details"
+msgstr "Xehetasun gehigarririk ez"
+
+#: includes/class-admin.php:6557
+msgid "No audit logs found."
+msgstr "Ez da auditoria-erregistrorik aurkitu."
+
+#: includes/class-admin.php:6587
+msgid "You do not have permission to reset rate limits."
+msgstr "Ez duzu baimenik eskaeren mugak berrezartzeko."
+
+#. translators: %d: number of rate limits that were reset
+#: includes/class-admin.php:6595
+#, php-format
+msgid "Successfully reset %d rate limit(s)."
+msgstr "Eskaeren %d muga ondo berrezarri d(ir)a."
+
+#: includes/class-admin.php:6623
+msgid "Cannot remove database key: no encryption key is defined in wp-config.php."
+msgstr "Ezin da datu-baseko gakoa kendu: ez dago zifratze-gakorik definituta wp-config.php fitxategian."
+
+#: includes/class-admin.php:6629
+msgid "Database encryption key removed successfully. The plugin will now use the key from wp-config.php."
+msgstr "Datu-baseko zifratze-gakoa ondo kendu da. Pluginak wp-config.php fitxategiko gakoa erabiliko du hemendik aurrera."
+
+#: includes/class-admin.php:6632
+msgid "Failed to remove the database encryption key. It may have already been removed."
+msgstr "Ezin izan da datu-baseko zifratze-gakoa kendu. Baliteke dagoeneko kenduta egotea."
+
+#: includes/class-admin.php:6652
+msgid "Invalid attendant or retreat ID."
+msgstr "Parte-hartzailearen edo erretiroaren identifikatzaile baliogabea."
+
+#: includes/class-admin.php:6665
+msgid "Attendant or retreat not found."
+msgstr "Ez da parte-hartzailea edo erretiroa aurkitu."
+
+#: includes/class-admin.php:6670
+msgid "Attendant does not belong to this retreat."
+msgstr "Parte-hartzailea ez da erretiro honetakoa."
+
+#: includes/class-admin.php:6675
+msgid "No message request template configured for this retreat."
+msgstr "Ez dago mezuak eskatzeko txantiloirik konfiguratuta erretiro honetarako."
+
+#: includes/class-admin.php:6917
+msgid "Reusable Block"
+msgstr "Bloke berrerabilgarria"
+
+#: includes/class-admin.php:6939
+msgid "Template Part"
+msgstr "Txantiloi zatia"
+
+#: includes/class-admin.php:6956
+msgid "Block Pattern"
+msgstr "Bloke-eredua"
+
+#: includes/class-admin.php:6973
+msgid "Registered Pattern"
+msgstr "Eredu erregistratua"
+
+#: includes/class-admin.php:7009
+msgid "No reusable blocks or patterns found - create one first"
+msgstr "Ez da bloke berrerabilgarririk edo eredurik aurkitu - sortu bat lehenik"
+
+#. translators: %s: URL to WordPress documentation about reusable blocks
+#: includes/class-admin.php:7027
+#, php-format
+msgid "To create reusable blocks: Go to <strong>Appearance > Editor > Patterns</strong> or edit any page/post and create a block, then save it as a reusable block. For template parts, use <strong>Appearance > Editor > Patterns > Template Parts</strong>. For block patterns, use the Site Editor. <a href=\"%s\" target=\"_blank\">Learn more</a>"
+msgstr "Bloke berrerabilgarriak sortzeko: joan <strong>Itxura > Editorea > Ereduak</strong> atalera edo editatu edozein orrialde edo bidalketa eta sortu bloke bat, eta gero gorde bloke berrerabilgarri gisa. Txantiloi zatietarako, erabili <strong>Itxura > Editorea > Ereduak > Txantiloi zatiak</strong>. Bloke-ereduetarako, erabili Gune-editorea. <a href=\"%s\" target=\"_blank\">Informazio gehiago</a>"
+
+#: includes/class-admin.php:7043
+msgid "You do not have permission to access this page."
+msgstr "Ez duzu baimenik orrialde honetara sartzeko."
+
+#: includes/class-admin.php:7071
+msgid "Per-Retreat Customization"
+msgstr "Erretiroz erretiroko pertsonalizazioa"
+
+#: includes/class-admin.php:7075
+msgid "Allow individual retreats to customize headers, footers, and CSS"
+msgstr "Utzi erretiro bakoitzari goiburuak, orri-oinak eta CSSa pertsonalizatzen"
+
+#: includes/class-admin.php:7076
+msgid "When disabled, all retreats will use the global default settings defined below."
+msgstr "Desgaituta dagoenean, erretiro guztiek behean definitutako ezarpen lehenetsi orokorrak erabiliko dituzte."
+
+#: includes/class-admin.php:7083
+msgid "Default Header Block"
+msgstr "Goiburu-bloke lehenetsia"
+
+#: includes/class-admin.php:7086
+msgid "Use default WordPress header"
+msgstr "Erabili WordPressen goiburu lehenetsia"
+
+#: includes/class-admin.php:7087
+msgid "Select a reusable block, template part, or pattern to display as the default header in all retreat message form pages."
+msgstr "Hautatu bloke berrerabilgarri bat, txantiloi zati bat edo eredu bat, erretiroetako mezu-inprimakien orrialde guztietan goiburu lehenetsi gisa bistaratzeko."
+
+#: includes/class-admin.php:7092
+msgid "Default Footer Block"
+msgstr "Orri-oin bloke lehenetsia"
+
+#: includes/class-admin.php:7095
+msgid "Use default WordPress footer"
+msgstr "Erabili WordPressen orri-oin lehenetsia"
+
+#: includes/class-admin.php:7096
+msgid "Select a reusable block, template part, or pattern to display as the default footer in all retreat message form pages."
+msgstr "Hautatu bloke berrerabilgarri bat, txantiloi zati bat edo eredu bat, erretiroetako mezu-inprimakien orrialde guztietan orri-oin lehenetsi gisa bistaratzeko."
+
+#: includes/class-admin.php:7107
+msgid "Space-separated CSS class names to add to the &lt;body&gt; tag on all retreat message form pages."
+msgstr "Erretiroetako mezu-inprimakien orrialde guztietako &lt;body&gt; etiketari gehitzeko CSS klaseen izenak, zuriuneekin bereizita."
+
+#: includes/class-admin.php:7113
+msgid "Add PDF Header"
+msgstr "Gehitu PDF goiburua"
+
+#: includes/class-admin.php:7117
+msgid "Add a From/To header to PDF letters when printing"
+msgstr "Gehitu Nork/Nori goiburu bat PDF gutunei inprimatzean"
+
+#: includes/class-admin.php:7118
+msgid "Enabled by default. The From/To header is added on the recipient&#8217;s browser (no server memory cost). If the browser cannot do it, the unmodified PDF is printed."
+msgstr "Modu lehenetsian gaituta. Nork/Nori goiburua hartzailearen nabigatzailean gehitzen da (zerbitzariaren memoriarik kontsumitu gabe). Nabigatzaileak ezin badu egin, PDFa aldatu gabe inprimatzen da."
+
+#: includes/class-admin.php:7124
+msgid "Google Cloud Translation API Key"
+msgstr "Google Cloud Translation API gakoa"
+
+#: includes/class-admin.php:7128
+msgid "The key is defined in wp-config.php (DFXPRL_GOOGLE_TRANSLATE_API_KEY)."
+msgstr "Gakoa wp-config.php fitxategian dago definituta (DFXPRL_GOOGLE_TRANSLATE_API_KEY)."
+
+#: includes/class-admin.php:7131
+msgid "Saved. Leave blank to keep it."
+msgstr "Gordeta. Utzi hutsik mantentzeko."
+
+#: includes/class-admin.php:7133
+msgid "Delete the saved key"
+msgstr "Ezabatu gordetako gakoa"
+
+#: includes/class-admin.php:7136
+msgid "Optional. The letters form can be shown in Spanish, Catalan, Basque, Galician, English, Portuguese, French, Italian and German. With this key, the texts configured for each retreat (custom message and legal disclaimer) are translated automatically into the language of the visitor when the retreat has no version written for that language. Each translation is done once and cached, and done again only if the original text changes. Only those retreat texts are sent to Google, never letters or personal data."
+msgstr "Aukerakoa. Gutunen inprimakia gaztelaniaz, katalanez, euskaraz, galegoz, ingelesez, portugesez, frantsesez, italieraz eta alemanez erakuts daiteke. Gako honekin, erretiro bakoitzean konfiguratutako testuak (mezu pertsonalizatua eta lege-oharra) automatikoki itzultzen dira bisitariaren hizkuntzara, erretiroak hizkuntza horretarako idatzitako bertsiorik ez duenean. Itzulpen bakoitza behin egiten da eta cachean gordetzen da, eta jatorrizko testua aldatzen bada soilik egiten da berriro. Erretiroko testu horiek soilik bidaltzen zaizkio Googleri, inoiz ez gutunak edo datu pertsonalak."
+
+#: includes/class-admin.php:7147
+msgid "Save Settings"
+msgstr "Gorde ezarpenak"
+
+#: includes/class-admin.php:7153
+msgid "User Management"
+msgstr "Erabiltzaileen kudeaketa"
+
+#: includes/class-admin.php:7154
+msgid "Grant or revoke global retreat management permissions. Users with this permission can manage all retreats and create new ones."
+msgstr "Eman edo baliogabetu erretiroak globalki kudeatzeko baimenak. Baimen hau duten erabiltzaileek erretiro guztiak kudea ditzakete eta berriak sor ditzakete."
+
+#: includes/class-admin.php:7163
+msgid "Current Global Retreat Managers"
+msgstr "Erretiroen uneko kudeatzaile globalak"
+
+#: includes/class-admin.php:7184
+msgid "Are you sure you want to revoke global retreat management access from this user?"
+msgstr "Ziur al zaude erabiltzaile honi erretiroak globalki kudeatzeko sarbidea baliogabetu nahi diozula?"
+
+#: includes/class-admin.php:7185
+msgid "Revoke Access"
+msgstr "Baliogabetu sarbidea"
+
+#: includes/class-admin.php:7196
+msgid "Grant Global Retreat Management Access"
+msgstr "Eman erretiroak globalki kudeatzeko sarbidea"
+
+#: includes/class-admin.php:7199
+msgid "No non-administrator users available."
+msgstr "Ez dago administratzaile ez den erabiltzailerik eskuragarri."
+
+#: includes/class-admin.php:7208
+msgid "Select User"
+msgstr "Hautatu erabiltzailea"
+
+#: includes/class-admin.php:7221
+msgid "Select a user to grant global retreat management permissions."
+msgstr "Hautatu erabiltzaile bat erretiroak globalki kudeatzeko baimenak emateko."
+
+#: includes/class-admin.php:7236
+msgid "Per-Retreat Permissions"
+msgstr "Erretiroz erretiroko baimenak"
+
+#: includes/class-admin.php:7237
+msgid "For retreat-specific permissions (individual retreat management), use the corresponding retreat edition page"
+msgstr "Erretiro jakin baterako baimenetarako (erretiro bakoitzaren kudeaketa), erabili dagokion erretiroaren edizio-orrialdea"
+
+#: includes/class-admin.php:7268 includes/class-admin.php:7311
+msgid "Security check failed. Please try again."
+msgstr "Segurtasun-egiaztapenak huts egin du. Saiatu berriro."
+
+#: includes/class-admin.php:7297
+msgid "Global settings saved successfully."
+msgstr "Ezarpen orokorrak ondo gorde dira."
+
+#: includes/class-admin.php:7299
+msgid "Error saving global settings. Please try again."
+msgstr "Errore bat gertatu da ezarpen orokorrak gordetzean. Saiatu berriro."
+
+#: includes/class-admin.php:7319 includes/class-admin.php:7360
+msgid "Invalid action."
+msgstr "Ekintza baliogabea."
+
+#: includes/class-admin.php:7324
+msgid "Invalid user selected."
+msgstr "Hautatutako erabiltzailea baliogabea da."
+
+#: includes/class-admin.php:7330
+msgid "User not found."
+msgstr "Ez da erabiltzailea aurkitu."
+
+#: includes/class-admin.php:7336
+msgid "Cannot modify permissions for administrators."
+msgstr "Ezin dira administratzaileen baimenak aldatu."
+
+#. translators: %s: User display name
+#: includes/class-admin.php:7344
+#, php-format
+msgid "Global retreat management access granted to %s."
+msgstr "%s(r)i erretiroak globalki kudeatzeko sarbidea eman zaio."
+
+#: includes/class-admin.php:7346
+msgid "Failed to grant global retreat management access."
+msgstr "Ezin izan da erretiroak globalki kudeatzeko sarbidea eman."
+
+#. translators: %s: User display name
+#: includes/class-admin.php:7353
+#, php-format
+msgid "Global retreat management access revoked from %s."
+msgstr "%s(r)i erretiroak globalki kudeatzeko sarbidea baliogabetu zaio."
+
+#: includes/class-admin.php:7355
+msgid "Failed to revoke global retreat management access."
+msgstr "Ezin izan da erretiroak globalki kudeatzeko sarbidea baliogabetu."
+
+#. translators: %1$s: Plugin name, %2$s: Author link
+#: includes/class-admin.php:7377
+#, php-format
+msgid "Retreat letters management features provided via %1$s plugin by %2$s. A.M.D.G."
+msgstr "Erretiroetako gutunak kudeatzeko funtzioak %2$s(e)k egindako %1$s pluginaren bidez eskaintzen dira. A.M.D.G."
+
+#: includes/class-admin.php:7379
+msgid "https://davefx.com/en/wordpress-plugins/"
+msgstr "https://davefx.com/en/wordpress-plugins/"
+
+#: includes/class-attendant.php:665
+msgid "All fields are required."
+msgstr "Eremu guztiak beharrezkoak dira."
+
+#: includes/class-attendant.php:674 includes/class-attendant.php:779
+msgid "Invalid date of birth format. Please use YYYY-MM-DD."
+msgstr "Jaiotze-dataren formatu baliogabea. Erabili UUUU-HH-EE."
+
+#: includes/class-attendant.php:683
+msgid "Invalid emergency contact phone number format."
+msgstr "Larrialdietarako kontaktuaren telefono-zenbakiaren formatu baliogabea."
+
+#: includes/class-attendant.php:692
+msgid "Invalid emergency contact email format."
+msgstr "Larrialdietarako kontaktuaren e-postaren formatu baliogabea."
+
+#: includes/class-attendant.php:708
+msgid "The specified retreat does not exist."
+msgstr "Zehaztutako erretiroa ez da existitzen."
+
+#: includes/class-attendant.php:783
+msgid "This field cannot be edited."
+msgstr "Eremu hau ezin da editatu."
+
+#: includes/class-custom-field.php:93
+msgid "Long text"
+msgstr "Testu luzea"
+
+#: includes/class-custom-field.php:94
+msgid "Number"
+msgstr "Zenbakia"
+
+#: includes/class-custom-field.php:96
+msgid "Yes/No"
+msgstr "Bai/Ez"
+
+#: includes/class-custom-field.php:97
+msgid "Options list"
+msgstr "Aukera-zerrenda"
+
+#: includes/class-custom-field.php:202
+msgid "Custom field names cannot be empty."
+msgstr "Eremu pertsonalizatuen izenak ezin dira hutsik egon."
+
+#. translators: %s: custom field slug
+#: includes/class-custom-field.php:216
+#, php-format
+msgid "The slug \"%s\" is reserved. Please choose a different one."
+msgstr "«%s» sluga erreserbatuta dago. Aukeratu beste bat."
+
+#. translators: %s: custom field slug
+#: includes/class-custom-field.php:225
+#, php-format
+msgid "The slug \"%s\" is already used by another field of this retreat."
+msgstr "«%s» sluga erretiro honetako beste eremu batek erabiltzen du dagoeneko."
+
+#. translators: %s: custom field name
+#: includes/class-custom-field.php:234
+#, php-format
+msgid "The options list field \"%s\" needs at least one option."
+msgstr "«%s» aukera-zerrenda eremuak gutxienez aukera bat behar du."
+
+#. translators: %s: custom field name
+#: includes/class-custom-field.php:266
+#, php-format
+msgid "Error saving the custom field \"%s\"."
+msgstr "Errore bat gertatu da «%s» eremu pertsonalizatua gordetzean."
+
+#: includes/class-custom-field.php:472
+msgid "No"
+msgstr "Ez"
+
+#. translators: 1: invalid value, 2: custom field name
+#: includes/class-custom-field.php:661
+#, php-format
+msgid "Invalid value \"%1$s\" for field \"%2$s\"."
+msgstr "«%1$s» balio baliogabea «%2$s» eremurako."
+
+#: includes/class-dfx-parish-retreat-letters.php:524 includes/class-dfx-parish-retreat-letters.php:1036
+msgid "Too many requests. Please wait before trying again."
+msgstr "Eskaera gehiegi. Itxaron pixka bat berriro saiatu aurretik."
+
+#: includes/class-dfx-parish-retreat-letters.php:525
+msgid "Rate Limit Exceeded"
+msgstr "Eskaeren muga gainditu da"
+
+#: includes/class-dfx-parish-retreat-letters.php:648 includes/class-form-languages.php:437
+msgid "Language"
+msgstr "Hizkuntza"
+
+#: includes/class-dfx-parish-retreat-letters.php:649
+msgid "Send a Confidential Message"
+msgstr "Bidali mezu konfidentzial bat"
+
+#: includes/class-dfx-parish-retreat-letters.php:650 includes/class-dfx-parish-retreat-letters.php:1291
+msgid "Messages are no longer being accepted for this attendant."
+msgstr "Jada ez da mezurik onartzen parte-hartzaile honentzat."
+
+#: includes/class-dfx-parish-retreat-letters.php:651
+msgid "Your message has been received"
+msgstr "Zure mezua jaso dugu"
+
+#. translators: %s: attendant full name
+#: includes/class-dfx-parish-retreat-letters.php:654
+#, php-format
+msgid "Thank you. Your message for %s has been received and securely stored."
+msgstr "Eskerrik asko. %s(r)entzako zure mezua jaso eta modu seguruan gorde da."
+
+#: includes/class-dfx-parish-retreat-letters.php:657
+msgid "You can now close this page."
+msgstr "Orain orrialde hau itxi dezakezu."
+
+#: includes/class-dfx-parish-retreat-letters.php:658
+msgid "For Retreat Attendant"
+msgstr "Erretiroko parte-hartzailearentzat"
+
+#: includes/class-dfx-parish-retreat-letters.php:660
+msgid "Your Name"
+msgstr "Zure izena"
+
+#: includes/class-dfx-parish-retreat-letters.php:661
+msgid "Your Email"
+msgstr "Zure e-posta helbidea"
+
+#: includes/class-dfx-parish-retreat-letters.php:662
+msgid "Repeat Your Email"
+msgstr "Errepikatu zure e-posta helbidea"
+
+#: includes/class-dfx-parish-retreat-letters.php:663
+msgid "Optional. It will only be used to let you know about any issue with your letter."
+msgstr "Aukerakoa. Zure gutunarekin arazoren bat badago jakinarazteko soilik erabiliko da."
+
+#: includes/class-dfx-parish-retreat-letters.php:664
+msgid "Choose message type:"
+msgstr "Aukeratu mezu mota:"
+
+#: includes/class-dfx-parish-retreat-letters.php:666
+msgid "File Upload"
+msgstr "Fitxategiak igo"
+
+#: includes/class-dfx-parish-retreat-letters.php:667
+msgid "Your Message"
+msgstr "Zure mezua"
+
+#: includes/class-dfx-parish-retreat-letters.php:668
+msgid "List"
+msgstr "Zerrenda"
+
+#: includes/class-dfx-parish-retreat-letters.php:669 includes/class-dfx-parish-retreat-letters.php:711
+msgid "Undo"
+msgstr "Desegin"
+
+#: includes/class-dfx-parish-retreat-letters.php:670 includes/class-dfx-parish-retreat-letters.php:712
+msgid "Redo"
+msgstr "Berregin"
+
+#: includes/class-dfx-parish-retreat-letters.php:671
+msgid "You can use the toolbar to format your text, create lists, and paste images. HTML is allowed but will be filtered for security."
+msgstr "Tresna-barra erabil dezakezu testuari formatua emateko, zerrendak sortzeko eta irudiak itsasteko. HTML onartzen da, baina segurtasunagatik iragazi egingo da."
+
+#: includes/class-dfx-parish-retreat-letters.php:672
+msgid "Attach Files"
+msgstr "Erantsi fitxategiak"
+
+#: includes/class-dfx-parish-retreat-letters.php:674
+msgid "Security Check"
+msgstr "Segurtasun-egiaztapena"
+
+#: includes/class-dfx-parish-retreat-letters.php:675
+msgid "Legal Disclaimer"
+msgstr "Lege-oharra"
+
+#: includes/class-dfx-parish-retreat-letters.php:676
+msgid "Send Confidential Message"
+msgstr "Bidali mezu konfidentziala"
+
+#: includes/class-dfx-parish-retreat-letters.php:678
+msgid "Privacy & Security"
+msgstr "Pribatutasuna eta segurtasuna"
+
+#: includes/class-dfx-parish-retreat-letters.php:679
+msgid "Your message will be encrypted and stored securely."
+msgstr "Zure mezua zifratu eta modu seguruan gordeko da."
+
+#: includes/class-dfx-parish-retreat-letters.php:680
+msgid "Only authorized retreat administrators can access your message."
+msgstr "Erretiroko administratzaile baimenduek soilik atzi dezakete zure mezua."
+
+#: includes/class-dfx-parish-retreat-letters.php:681
+msgid "Messages can only be viewed when printed - no content is displayed on screen."
+msgstr "Mezuak inprimatzean soilik ikus daitezke: ez da edukirik pantailan erakusten."
+
+#: includes/class-dfx-parish-retreat-letters.php:682
+msgid "Your IP address will be anonymized after 30 days for privacy compliance."
+msgstr "Zure IP helbidea anonimizatu egingo da 30 egunen buruan, pribatutasun-araudia betetzeko."
+
+#: includes/class-dfx-parish-retreat-letters.php:683
+msgid "If you give your email, it is stored encrypted and will only be used to let you know about any issue with your letter."
+msgstr "Zure e-posta helbidea ematen baduzu, zifratuta gordetzen da, eta zure gutunarekin arazoren bat badago jakinarazteko soilik erabiliko da."
+
+#: includes/class-dfx-parish-retreat-letters.php:684
+msgid "All data is handled in accordance with GDPR and Spanish privacy laws."
+msgstr "Datu guztiak DBEOren eta Espainiako datuen babeserako araudiaren arabera tratatzen dira."
+
+#: includes/class-dfx-parish-retreat-letters.php:699
+msgid "I accept the terms and conditions stated above"
+msgstr "Goian adierazitako baldintzak onartzen ditut"
+
+#: includes/class-dfx-parish-retreat-letters.php:704
+msgid "Enter your name"
+msgstr "Idatzi zure izena"
+
+#: includes/class-dfx-parish-retreat-letters.php:705
+msgid "name@example.com"
+msgstr "izena@adibidea.eus"
+
+#: includes/class-dfx-parish-retreat-letters.php:706
+msgid "Bold"
+msgstr "Lodia"
+
+#: includes/class-dfx-parish-retreat-letters.php:707
+msgid "Italic"
+msgstr "Etzana"
+
+#: includes/class-dfx-parish-retreat-letters.php:708
+msgid "Underline"
+msgstr "Azpimarratua"
+
+#: includes/class-dfx-parish-retreat-letters.php:709
+msgid "Bullet List"
+msgstr "Buletadun zerrenda"
+
+#: includes/class-dfx-parish-retreat-letters.php:710
+msgid "Numbered List"
+msgstr "Zenbakidun zerrenda"
+
+#. translators: %s: attendant full name (name and surnames)
+#: includes/class-dfx-parish-retreat-letters.php:714
+#, php-format
+msgid "Write your confidential message for %s here..."
+msgstr "Idatzi hemen %s(r)entzako zure mezu konfidentziala..."
+
+#: includes/class-dfx-parish-retreat-letters.php:715
+msgid "Please enter the result"
+msgstr "Idatzi emaitza"
+
+#. translators: %1$s: maximum size per file, %2$s: maximum combined size
+#: includes/class-dfx-parish-retreat-letters.php:738
+#, php-format
+msgid "Allowed file types: PDF, DOC, DOCX, TXT, JPG, PNG, GIF. Maximum %1$s per file, %2$s total."
+msgstr "Onartutako fitxategi motak: PDF, DOC, DOCX, TXT, JPG, PNG, GIF. Gehienez %1$s fitxategiko, %2$s guztira."
+
+#. translators: %s: maximum size per file
+#: includes/class-dfx-parish-retreat-letters.php:746
+#, php-format
+msgid "Allowed file types: PDF, DOC, DOCX, TXT, JPG, PNG, GIF. Maximum %s per file."
+msgstr "Onartutako fitxategi motak: PDF, DOC, DOCX, TXT, JPG, PNG, GIF. Gehienez %s fitxategiko."
+
+#. translators: %s: maximum combined size
+#: includes/class-dfx-parish-retreat-letters.php:753
+#, php-format
+msgid "Allowed file types: PDF, DOC, DOCX, TXT, JPG, PNG, GIF. Maximum %s total."
+msgstr "Onartutako fitxategi motak: PDF, DOC, DOCX, TXT, JPG, PNG, GIF. Gehienez %s guztira."
+
+#: includes/class-dfx-parish-retreat-letters.php:758
+msgid "Allowed file types: PDF, DOC, DOCX, TXT, JPG, PNG, GIF."
+msgstr "Onartutako fitxategi motak: PDF, DOC, DOCX, TXT, JPG, PNG, GIF."
+
+#: includes/class-dfx-parish-retreat-letters.php:987
+msgid "Automatic translation by Google."
+msgstr "Googleren itzulpen automatikoa."
+
+#: includes/class-dfx-parish-retreat-letters.php:998
+msgid "Please solve: "
+msgstr "Ebatzi: "
+
+#: includes/class-dfx-parish-retreat-letters.php:999
+msgid "Remove"
+msgstr "Kendu"
+
+#: includes/class-dfx-parish-retreat-letters.php:1000
+msgid "Please enter a message."
+msgstr "Idatzi mezu bat."
+
+#: includes/class-dfx-parish-retreat-letters.php:1001
+msgid "Please select at least one file."
+msgstr "Hautatu gutxienez fitxategi bat."
+
+#: includes/class-dfx-parish-retreat-letters.php:1002 includes/class-dfx-parish-retreat-letters.php:1259
+msgid "Please complete the security check."
+msgstr "Osatu segurtasun-egiaztapena."
+
+#: includes/class-dfx-parish-retreat-letters.php:1003
+msgid "Please accept the legal disclaimer to proceed."
+msgstr "Onartu lege-oharra jarraitzeko."
+
+#: includes/class-dfx-parish-retreat-letters.php:1004 includes/class-dfx-parish-retreat-letters.php:1313
+msgid "The email addresses do not match. Please check them."
+msgstr "E-posta helbideak ez datoz bat. Egiaztatu itzazu."
+
+#: includes/class-dfx-parish-retreat-letters.php:1005 includes/class-dfx-parish-retreat-letters.php:1316
+msgid "The email address is not valid."
+msgstr "E-posta helbidea ez da baliozkoa."
+
+#: includes/class-dfx-parish-retreat-letters.php:1006
+msgid "Your message has been sent successfully and securely stored."
+msgstr "Zure mezua ondo bidali eta modu seguruan gorde da."
+
+#: includes/class-dfx-parish-retreat-letters.php:1007
+msgid "An error occurred while sending your message."
+msgstr "Errore bat gertatu da zure mezua bidaltzean."
+
+#: includes/class-dfx-parish-retreat-letters.php:1008
+msgid "The request timed out. Please check your connection and try again."
+msgstr "Eskaerak denbora gehiegi behar izan du. Egiaztatu konexioa eta saiatu berriro."
+
+#: includes/class-dfx-parish-retreat-letters.php:1009
+msgid "The request was cancelled. Please try again."
+msgstr "Eskaera bertan behera geratu da. Saiatu berriro."
+
+#: includes/class-dfx-parish-retreat-letters.php:1010
+msgid "Cannot connect to the server. Please check your internet connection."
+msgstr "Ezin da zerbitzariarekin konektatu. Egiaztatu interneteko konexioa."
+
+#: includes/class-dfx-parish-retreat-letters.php:1011
+msgid "There was a problem with your request. Please refresh the page and try again."
+msgstr "Arazo bat egon da zure eskaerarekin. Freskatu orrialdea eta saiatu berriro."
+
+#: includes/class-dfx-parish-retreat-letters.php:1012
+msgid "Access denied. Please refresh the page and try again."
+msgstr "Sarbidea ukatu da. Freskatu orrialdea eta saiatu berriro."
+
+#: includes/class-dfx-parish-retreat-letters.php:1013
+msgid "The uploaded files are too large. Please reduce the file size and try again."
+msgstr "Igotako fitxategiak handiegiak dira. Txikitu fitxategiak eta saiatu berriro."
+
+#: includes/class-dfx-parish-retreat-letters.php:1014
+msgid "A server error occurred. Please try again later or contact support if the problem persists."
+msgstr "Zerbitzariko errore bat gertatu da. Saiatu berriro geroago, edo jarri harremanetan laguntza-zerbitzuarekin arazoak jarraitzen badu."
+
+#: includes/class-dfx-parish-retreat-letters.php:1015
+msgid "There was a problem processing the server response. Please try again."
+msgstr "Arazo bat egon da zerbitzariaren erantzuna prozesatzean. Saiatu berriro."
+
+#: includes/class-dfx-parish-retreat-letters.php:1016
+msgid "A network error occurred. Please try again."
+msgstr "Sareko errore bat gertatu da. Saiatu berriro."
+
+#: includes/class-dfx-parish-retreat-letters.php:1017
+msgid "The language could not be changed. Please try again."
+msgstr "Ezin izan da hizkuntza aldatu. Saiatu berriro."
+
+#: includes/class-dfx-parish-retreat-letters.php:1048
+msgid "Invalid request."
+msgstr "Eskaera baliogabea."
+
+#: includes/class-dfx-parish-retreat-letters.php:1250
+msgid "Too many submission attempts. Please wait before trying again."
+msgstr "Bidaltzeko saiakera gehiegi. Itxaron pixka bat berriro saiatu aurretik."
+
+#: includes/class-dfx-parish-retreat-letters.php:1264
+msgid "Incorrect security answer."
+msgstr "Segurtasun-erantzuna ez da zuzena."
+
+#: includes/class-dfx-parish-retreat-letters.php:1270 includes/class-dfx-parish-retreat-letters.php:1287
+msgid "Invalid attendant."
+msgstr "Parte-hartzaile baliogabea."
+
+#: includes/class-dfx-parish-retreat-letters.php:1298
+msgid "You must accept the legal disclaimer to proceed."
+msgstr "Lege-oharra onartu behar duzu jarraitzeko."
+
+#: includes/class-dfx-parish-retreat-letters.php:1305
+msgid "Sender name is required."
+msgstr "Igorlearen izena beharrezkoa da."
+
+#: includes/class-dfx-parish-retreat-letters.php:1323
+msgid "Invalid message mode."
+msgstr "Mezu mota baliogabea."
+
+#: includes/class-dfx-parish-retreat-letters.php:1337
+msgid "Message content is required."
+msgstr "Mezuaren edukia beharrezkoa da."
+
+#: includes/class-dfx-parish-retreat-letters.php:1343
+msgid "At least one file is required."
+msgstr "Gutxienez fitxategi bat behar da."
+
+#: includes/class-dfx-parish-retreat-letters.php:1368
+msgid "Failed to save message."
+msgstr "Ezin izan da mezua gorde."
+
+#. translators: %1$d: number of files received, %2$d: number of files expected, %3$s: maximum combined upload size
+#: includes/class-dfx-parish-retreat-letters.php:1386
+#, php-format
+msgid "Only %1$d of %2$d files were received. The total file size likely exceeds the server upload limit of %3$s. Please reduce the file sizes or upload fewer files at once."
+msgstr "%2$d fitxategietatik %1$d soilik jaso dira. Seguruenik, guztizko tamainak zerbitzariaren igotze-muga (%3$s) gainditzen du. Txikitu fitxategiak edo igo gutxiago aldi berean."
+
+#: includes/class-dfx-parish-retreat-letters.php:1402
+msgid "No files could be uploaded."
+msgstr "Ezin izan da fitxategirik igo."
+
+#. translators: %1$d: number of files uploaded, %2$d: number of files expected
+#: includes/class-dfx-parish-retreat-letters.php:1417
+#, php-format
+msgid "Only %1$d of %2$d files could be uploaded. "
+msgstr "%2$d fitxategietatik %1$d soilik igo dira. "
+
+#. translators: %s: maximum combined upload size
+#: includes/class-dfx-parish-retreat-letters.php:1428
+#, php-format
+msgid "Some files may be too large or the total size exceeds the server limit of %s. Please reduce file sizes or upload fewer files."
+msgstr "Baliteke fitxategi batzuk handiegiak izatea edo guztizko tamainak zerbitzariaren muga (%s) gainditzea. Txikitu fitxategiak edo igo gutxiago."
+
+#: includes/class-dfx-parish-retreat-letters.php:1437
+msgid "Message sent successfully."
+msgstr "Mezua ondo bidali da."
+
+#. translators: %d: number of files uploaded
+#: includes/class-dfx-parish-retreat-letters.php:1443
+#, php-format
+msgid "Message sent successfully with %d file(s)."
+msgstr "Mezua ondo bidali da, %d fitxategirekin."
+
+#. translators: %s: comma-separated list of file names that failed to upload
+#: includes/class-dfx-parish-retreat-letters.php:1451 includes/class-dfx-parish-retreat-letters.php:1464
+#, php-format
+msgid "Note: Some files could not be uploaded: %s"
+msgstr "Oharra: fitxategi batzuk ezin izan dira igo: %s"
+
+#. translators: %s: file name
+#: includes/class-dfx-parish-retreat-letters.php:1504
+#, php-format
+msgid "File \"%s\" exceeds the maximum upload size limit."
+msgstr "«%s» fitxategiak igotzeko gehieneko tamaina gainditzen du."
+
+#. translators: %s: file name
+#: includes/class-dfx-parish-retreat-letters.php:1511
+#, php-format
+msgid "File \"%s\" is too large."
+msgstr "«%s» fitxategia handiegia da."
+
+#. translators: %s: file name
+#: includes/class-dfx-parish-retreat-letters.php:1518
+#, php-format
+msgid "File \"%s\" was only partially uploaded. Please try again."
+msgstr "«%s» fitxategia partzialki baino ez da igo. Saiatu berriro."
+
+#. translators: %1$s: file name, %2$d: error code number
+#: includes/class-dfx-parish-retreat-letters.php:1528
+#, php-format
+msgid "File \"%1$s\" upload failed with error code %2$d."
+msgstr "«%1$s» fitxategia igotzeak huts egin du, %2$d errore-kodearekin."
+
+#. translators: %s: file name
+#: includes/class-dfx-parish-retreat-letters.php:1549
+#, php-format
+msgid "File \"%s\" failed validation (unsupported type or too large)."
+msgstr "«%s» fitxategiak ez du balidazioa gainditu (mota ez onartua edo handiegia)."
+
+#. translators: %s: file name
+#: includes/class-dfx-parish-retreat-letters.php:1569
+#, php-format
+msgid "File \"%s\" could not be saved to database."
+msgstr "«%s» fitxategia ezin izan da datu-basean gorde."
+
+#: includes/class-dfx-parish-retreat-letters.php:1590
+msgid "Invalid print request."
+msgstr "Inprimatze-eskaera baliogabea."
+
+#: includes/class-dfx-parish-retreat-letters.php:1595
+msgid "Print token expired or invalid."
+msgstr "Inprimatzeko tokena iraungita edo baliogabea."
+
+#: includes/class-dfx-parish-retreat-letters.php:1670 includes/class-dfx-parish-retreat-letters.php:1700 includes/class-dfx-parish-retreat-letters.php:1853
+msgid "File not found."
+msgstr "Ez da fitxategia aurkitu."
+
+#: includes/class-dfx-parish-retreat-letters.php:1710 includes/class-dfx-parish-retreat-letters.php:1877
+msgid "Print PDF"
+msgstr "Inprimatu PDFa"
+
+#: includes/class-dfx-parish-retreat-letters.php:1937 includes/class-dfx-parish-retreat-letters.php:2155
+msgid "Print Message"
+msgstr "Inprimatu mezua"
+
+#. translators: %d: number of pages in the attached PDF
+#: includes/class-dfx-parish-retreat-letters.php:1991
+#, php-format
+msgid "Attached document: %d page"
+msgid_plural "Attached document: %d pages"
+msgstr[0] "Erantsitako dokumentua: orrialde %d"
+msgstr[1] "Erantsitako dokumentua: %d orrialde"
+
+#: includes/class-dfx-parish-retreat-letters.php:2017
+msgid "ZIP functionality is not available on this server."
+msgstr "ZIP funtzioa ez dago erabilgarri zerbitzari honetan."
+
+#: includes/class-dfx-parish-retreat-letters.php:2023
+msgid "Unable to create temporary file for ZIP download."
+msgstr "Ezin da aldi baterako fitxategia sortu ZIPa deskargatzeko."
+
+#: includes/class-dfx-parish-retreat-letters.php:2031
+msgid "Unable to create ZIP file."
+msgstr "Ezin da ZIP fitxategia sortu."
+
+#: includes/class-dfx-parish-retreat-letters.php:2051
+msgid "Failed to generate ZIP file."
+msgstr "Ezin izan da ZIP fitxategia sortu."
+
+#: includes/class-dfx-parish-retreat-letters.php:2081
+msgid "Unable to read ZIP file for download."
+msgstr "Ezin da ZIP fitxategia irakurri deskargatzeko."
+
+#: includes/class-dfx-parish-retreat-letters.php:2225
+msgid "Word document content cannot be displayed for printing. Please download and print separately."
+msgstr "Word dokumentuaren edukia ezin da bistaratu inprimatzeko. Deskargatu eta inprimatu bereizita."
+
+#: includes/class-dfx-parish-retreat-letters.php:2226
+msgid "File size:"
+msgstr "Fitxategiaren tamaina:"
+
+#. translators: %1$s: file type, %2$s: formatted file size
+#: includes/class-dfx-parish-retreat-letters.php:2240
+#, php-format
+msgid "File type: %1$s, Size: %2$s - Cannot display content for printing."
+msgstr "Fitxategi mota: %1$s, tamaina: %2$s - Ezin da edukia bistaratu inprimatzeko."
+
+#: includes/class-dfx-parish-retreat-letters.php:2297
+msgid "Browser not supported"
+msgstr "Nabigatzailea ez da onartzen"
+
+#: includes/class-dfx-parish-retreat-letters.php:2308
+msgid "Internet Explorer is not supported"
+msgstr "Internet Explorer ez da onartzen"
+
+#: includes/class-dfx-parish-retreat-letters.php:2310
+msgid "The print view cannot be displayed in Internet Explorer. Microsoft retired Internet Explorer in June 2022 and it no longer receives security updates."
+msgstr "Inprimatzeko ikuspegia ezin da Internet Explorerren bistaratu. Microsoftek 2022ko ekainean erretiratu zuen Internet Explorer, eta ez du segurtasun-eguneratzerik jasotzen jada."
+
+#: includes/class-dfx-parish-retreat-letters.php:2313
+msgid "Please reopen this page in one of the following modern browsers:"
+msgstr "Ireki berriro orrialde hau nabigatzaile moderno hauetako batean:"
+
+#: includes/class-form-languages.php:447
+msgid "Change"
+msgstr "Aldatu"
+
+#: includes/class-gdpr.php:182
+msgid "Message content is encrypted and cannot be exported in plain text for security reasons."
+msgstr "Mezuaren edukia zifratuta dago eta ezin da testu arruntean esportatu segurtasun-arrazoiengatik."
+
+#: includes/class-gdpr.php:199
+msgid "File content is encrypted and cannot be exported for security reasons."
+msgstr "Fitxategiaren edukia zifratuta dago eta ezin da esportatu segurtasun-arrazoiengatik."
+
+#. translators: %d: message ID number
+#: includes/class-gdpr.php:257
+#, php-format
+msgid "Message ID %d could not be deleted due to system error"
+msgstr "%d IDa duen mezua ezin izan da ezabatu sistemako errore baten ondorioz"
+
+#: includes/class-gdpr.php:457 includes/class-gdpr.php:491
+msgid "Insufficient permissions."
+msgstr "Baimen nahikorik ez."
+
+#: includes/class-gdpr.php:462 includes/class-gdpr.php:498
+msgid "Please provide an identifier (name or email)."
+msgstr "Eman identifikatzaile bat (izena edo e-posta)."
+
+#. translators: %1$d: number of messages erased, %2$d: number of files erased
+#: includes/class-gdpr.php:511
+#, php-format
+msgid "Data erasure completed. Erased %1$d messages and %2$d files."
+msgstr "Datuen ezabatzea osatu da. %1$d mezu eta %2$d fitxategi ezabatu dira."
+
+#: includes/class-invitations.php:164
+msgid "Invalid email address."
+msgstr "E-posta helbide baliogabea."
+
+#: includes/class-invitations.php:171
+msgid "Invalid permission level."
+msgstr "Baimen-maila baliogabea."
+
+#: includes/class-invitations.php:183
+msgid "Permission granted to existing user."
+msgstr "Baimena eman zaio lehendik dagoen erabiltzaileari."
+
+#: includes/class-invitations.php:188
+msgid "Failed to grant permission to existing user."
+msgstr "Ezin izan zaio baimena eman lehendik dagoen erabiltzaileari."
+
+#: includes/class-invitations.php:198
+msgid "An invitation for this email and permission level is already pending."
+msgstr "Dagoeneko badago zain dagoen gonbidapen bat e-posta eta baimen-maila honetarako."
+
+#: includes/class-invitations.php:229
+msgid "Failed to create invitation."
+msgstr "Ezin izan da gonbidapena sortu."
+
+#: includes/class-invitations.php:243
+msgid "Failed to send invitation email."
+msgstr "Ezin izan da gonbidapenaren e-posta bidali."
+
+#: includes/class-invitations.php:259
+msgid "Invitation sent successfully."
+msgstr "Gonbidapena ondo bidali da."
+
+#: includes/class-invitations.php:278 includes/class-invitations.php:507
+msgid "Invalid or expired invitation."
+msgstr "Gonbidapen baliogabea edo iraungita."
+
+#: includes/class-invitations.php:286
+msgid "This invitation has already been processed."
+msgstr "Gonbidapen hau prozesatu da jada."
+
+#: includes/class-invitations.php:295 includes/class-invitations.php:513
+msgid "This invitation has expired."
+msgstr "Gonbidapen hau iraungita dago."
+
+#: includes/class-invitations.php:312
+msgid "Failed to create user account."
+msgstr "Ezin izan da erabiltzaile-kontua sortu."
+
+#: includes/class-invitations.php:343
+msgid "Failed to grant permissions."
+msgstr "Ezin izan dira baimenak eman."
+
+#: includes/class-invitations.php:373
+msgid "Invitation accepted successfully."
+msgstr "Gonbidapena ondo onartu da."
+
+#: includes/class-invitations.php:570
+msgid "Retreat Invitation"
+msgstr "Erretirorako gonbidapena"
+
+#: includes/class-invitations.php:579
+msgid "You have been invited to:"
+msgstr "Honetara gonbidatu zaituzte:"
+
+#: includes/class-invitations.php:582
+msgid "Location:"
+msgstr "Kokalekua:"
+
+#: includes/class-invitations.php:583
+msgid "Dates:"
+msgstr "Datak:"
+
+#: includes/class-invitations.php:587
+msgid "Role:"
+msgstr "Rola:"
+
+#: includes/class-invitations.php:594
+msgid "Complete Your Profile"
+msgstr "Osatu zure profila"
+
+#: includes/class-invitations.php:597
+msgid "First Name"
+msgstr "Izena"
+
+#: includes/class-invitations.php:602
+msgid "Last Name"
+msgstr "Abizenak"
+
+#: includes/class-invitations.php:608 includes/class-invitations.php:811
+msgid "Accept Invitation"
+msgstr "Onartu gonbidapena"
+
+#: includes/class-invitations.php:614
+msgid "What happens next?"
+msgstr "Zer gertatuko da orain?"
+
+#: includes/class-invitations.php:616
+msgid "A user account will be created for you automatically"
+msgstr "Erabiltzaile-kontu bat sortuko da zuretzat automatikoki"
+
+#: includes/class-invitations.php:617
+msgid "You will receive login credentials via email"
+msgstr "Saioa hasteko kredentzialak e-postaz jasoko dituzu"
+
+#: includes/class-invitations.php:618
+msgid "You can then access the retreat management system"
+msgstr "Ondoren, erretiroak kudeatzeko sistemara sartu ahal izango zara"
+
+#. translators: %s: retreat name
+#: includes/class-invitations.php:780
+#, php-format
+msgid "Invitation to manage retreat: %s"
+msgstr "Erretiroa kudeatzeko gonbidapena: %s"
+
+#. translators: %s: person's name
+#: includes/class-invitations.php:799
+#, php-format
+msgid "Hello %s,"
+msgstr "Kaixo, %s:"
+
+#: includes/class-invitations.php:800
+msgid "You have been invited to participate in the management of the following retreat:"
+msgstr "Erretiro honen kudeaketan parte hartzera gonbidatu zaituzte:"
+
+#: includes/class-invitations.php:801 includes/class-letter-return.php:333
+msgid "Retreat"
+msgstr "Erretiroa"
+
+#: includes/class-invitations.php:805
+msgid "Dates"
+msgstr "Datak"
+
+#: includes/class-invitations.php:808
+msgid "Your Role"
+msgstr "Zure rola"
+
+#: includes/class-invitations.php:812
+msgid "This invitation will expire in 7 days."
+msgstr "Gonbidapen hau 7 egunen buruan iraungiko da."
+
+#: includes/class-invitations.php:813
+msgid "If you have any questions, please contact the retreat administrator."
+msgstr "Galderarik baduzu, jarri harremanetan erretiroaren administratzailearekin."
+
+#: includes/class-invitations.php:814 includes/class-invitations.php:868
+msgid "Best regards,"
+msgstr "Agur bero bat,"
+
+#. translators: %s: site name
+#: includes/class-invitations.php:840
+#, php-format
+msgid "Welcome to %s - Your account details"
+msgstr "Ongi etorri %s gunera - Zure kontuaren xehetasunak"
+
+#. translators: %s: user's display name
+#: includes/class-invitations.php:857
+#, php-format
+msgid "Welcome %s,"
+msgstr "Ongi etorri, %s:"
+
+#: includes/class-invitations.php:858
+msgid "Your account has been created successfully!"
+msgstr "Zure kontua ondo sortu da!"
+
+#: includes/class-invitations.php:859
+msgid "Username"
+msgstr "Erabiltzaile-izena"
+
+#: includes/class-invitations.php:863
+msgid "Password"
+msgstr "Pasahitza"
+
+#: includes/class-invitations.php:866
+msgid "Login Now"
+msgstr "Hasi saioa orain"
+
+#: includes/class-invitations.php:867
+msgid "For security, please change your password after your first login."
+msgstr "Segurtasunagatik, aldatu pasahitza lehen aldiz saioa hasi ondoren."
+
+#: includes/class-letter-return.php:58
+msgid "Only letters for withdrawn attendants can be returned."
+msgstr "Baja emandako parte-hartzaileen gutunak soilik itzul daitezke."
+
+#: includes/class-letter-return.php:63
+msgid "The sender of this letter did not give an email address, so it cannot be returned."
+msgstr "Gutun honen igorleak ez zuen e-posta helbiderik eman; beraz, ezin da itzuli."
+
+#. translators: %s: attendant full name
+#: includes/class-letter-return.php:246 includes/class-letter-return.php:308
+#, php-format
+msgid "Letter for %s"
+msgstr "%s(r)entzako gutuna"
+
+#: includes/class-letter-return.php:254 includes/class-letter-return.php:281
+msgid "The letter could not be decrypted."
+msgstr "Ezin izan da gutuna deszifratu."
+
+#: includes/class-letter-return.php:290
+msgid "The files of this letter could not be found."
+msgstr "Ezin izan dira gutun honen fitxategiak aurkitu."
+
+#: includes/class-retreat.php:405
+msgid "Your letter for [attendant_name] [attendant_surnames]"
+msgstr "[attendant_name] [attendant_surnames](r)entzako zure gutuna"
+
+#: includes/class-retreat.php:415
+msgid ""
+"Hello, [sender_name]:\n"
+"\n"
+"Thank you for the letter you wrote to [attendant_name] [attendant_surnames] for the retreat \"[retreat_name]\".\n"
+"\n"
+"In the end, [attendant_name] did not attend the retreat. For confidentiality and data protection reasons, we are going to destroy the digital record of your letter and the printed copy that had been prepared to be delivered.\n"
+"\n"
+"Your letter is attached to this email, so that you can keep it and use it again if [attendant_name] takes part in a retreat in the coming months.\n"
+"\n"
+"Kind regards."
+msgstr ""
+"Kaixo, [sender_name]:\n"
+"\n"
+"Eskerrik asko «[retreat_name]» erretirorako [attendant_name] [attendant_surnames](r)i idatzi zenion gutunagatik.\n"
+"\n"
+"Azkenean, [attendant_name](e)k ez du erretiroan parte hartu. Konfidentzialtasun- eta datuen babeserako arrazoiengatik, zure gutunaren erregistro digitala eta entregatzeko prestatuta zegoen inprimatutako kopia suntsitu egingo ditugu.\n"
+"\n"
+"Zure gutuna e-posta honi erantsita doa, gorde dezazun eta berriro erabili ahal izan dezazun [attendant_name](e)k datozen hilabeteetan erretiroren batean parte hartzen badu.\n"
+"\n"
+"Agur bero bat."
+
+#: includes/class-security.php:93
+msgid "DFX Parish Retreat Letters: OpenSSL extension is required for the confidential message system."
+msgstr "DFX Parrokiako erretiroetako gutunak: OpenSSL hedapena beharrezkoa da mezu konfidentzialen sistemarako."
+
+#: includes/class-security.php:157
+msgid "DFX Parish Retreat Letters: The encryption key is stored in the database. For better security, please define DFXPRL_ENCRYPTION_KEY in wp-config.php."
+msgstr "DFX Parrokiako erretiroetako gutunak: zifratze-gakoa datu-basean gordeta dago. Segurtasun handiagoa izateko, definitu DFXPRL_ENCRYPTION_KEY wp-config.php fitxategian."
+
+#: includes/class-security.php:159
+msgid "You can generate a secure key using the following code:"
+msgstr "Gako seguru bat sor dezakezu kode hau erabiliz:"
+
+#: includes/class-security.php:161
+msgid "Place this line in your wp-config.php file to secure the key."
+msgstr "Jarri lerro hau zure wp-config.php fitxategian gakoa babesteko."
+
+#: includes/class-security.php:183
+msgid "DFX Parish Retreat Letters: Encryption Key Mismatch"
+msgstr "DFX Parrokiako erretiroetako gutunak: zifratze-gakoak ez datoz bat"
+
+#: includes/class-security.php:186
+msgid "The encryption key defined in wp-config.php does not match the one stored in the database."
+msgstr "wp-config.php fitxategian definitutako zifratze-gakoa ez dator bat datu-basean gordetakoarekin."
+
+#: includes/class-security.php:189
+msgid "Warning:"
+msgstr "Abisua:"
+
+#: includes/class-security.php:190
+msgid "Only the key defined in wp-config.php will be used. If any messages were already encrypted using the database key, they will become unreadable."
+msgstr "wp-config.php fitxategian definitutako gakoa soilik erabiliko da. Mezuren bat datu-baseko gakoarekin zifratu bada, irakurtezin bihurtuko da."
+
+#: includes/class-security.php:193
+msgid "You can either:"
+msgstr "Aukera hauek dituzu:"
+
+#: includes/class-security.php:196
+msgid "Update the key in wp-config.php to match the database key, or"
+msgstr "Eguneratu wp-config.php fitxategiko gakoa datu-basekoarekin bat etor dadin, edo"
+
+#: includes/class-security.php:197
+msgid "Remove the key from the database to use the wp-config.php key (click the button below)"
+msgstr "Kendu gakoa datu-basetik wp-config.php fitxategiko gakoa erabiltzeko (egin klik beheko botoian)"
+
+#: includes/class-security.php:201
+msgid "Remove Database Key and Use wp-config.php Key"
+msgstr "Kendu datu-baseko gakoa eta erabili wp-config.php fitxategikoa"
+
+#: includes/class-security.php:224
+msgid "Are you sure you want to remove the encryption key from the database? Any messages encrypted with the old key will become unreadable. This action cannot be undone."
+msgstr "Ziur al zaude zifratze-gakoa datu-basetik kendu nahi duzula? Gako zaharrarekin zifratutako mezuak irakurtezin bihurtuko dira. Ekintza hau ezin da desegin."
+
+#: includes/class-security.php:225
+msgid "Removing..."
+msgstr "Kentzen..."
+
+#: includes/class-security.php:226
+msgid "An error occurred. Please try again."
+msgstr "Errore bat gertatu da. Saiatu berriro."
+
+#: includes/class-translator.php:100
+msgid "Automatic translation is not configured."
+msgstr "Itzulpen automatikoa ez dago konfiguratuta."
+
+#. translators: %s: error message returned by Google
+#: includes/class-translator.php:134
+#, php-format
+msgid "Google Cloud Translation error: %s"
+msgstr "Google Cloud Translation errorea: %s"

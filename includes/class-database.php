@@ -38,7 +38,7 @@ class DFXPRL_Database {
 	 * @since 1.0.0
 	 * @var string
 	 */
-	const DB_VERSION = '1.14.0';
+	const DB_VERSION = '1.15.0';
 
 	/**
 	 * The database version option name.
@@ -228,6 +228,9 @@ class DFXPRL_Database {
 			message_request_template text NULL DEFAULT NULL,
 			return_email_subject varchar(255) NULL DEFAULT NULL,
 			return_email_template text NULL DEFAULT NULL,
+			multilingual_enabled tinyint(1) NOT NULL DEFAULT 1,
+			form_translations longtext NULL DEFAULT NULL,
+			form_translations_cache longtext NULL DEFAULT NULL,
 			list_column_order text NULL DEFAULT NULL,
 			created_at datetime DEFAULT CURRENT_TIMESTAMP,
 			updated_at datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,

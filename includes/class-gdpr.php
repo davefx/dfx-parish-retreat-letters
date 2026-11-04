@@ -498,8 +498,9 @@ class DFXPRL_GDPR {
 			wp_send_json_error( array( 'message' => __( 'Please provide an identifier (name or email).', 'dfx-parish-retreat-letters' ) ) );
 		}
 
-		if ( $confirm !== 'ERASE' ) {
-			wp_send_json_error( array( 'message' => __( 'Please type "ERASE" to confirm data deletion.', 'dfx-parish-retreat-letters' ) ) );
+		// The same confirmation text that the admin page asks to type, in the language of the panel
+		if ( __( 'ERASE ALL DATA', 'dfx-parish-retreat-letters' ) !== $confirm ) {
+			wp_send_json_error( array( 'message' => __( 'Please type "ERASE ALL DATA" to confirm.', 'dfx-parish-retreat-letters' ) ) );
 		}
 
 		$erasure_results = $this->erase_personal_data( $identifier );

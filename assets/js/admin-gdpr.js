@@ -61,6 +61,7 @@
 				data: {
 					action: 'dfxprl_erase_personal_data',
 					identifier: identifier,
+					confirm: confirm,
 					nonce: dfxprlGDPR.nonce
 				},
 				success: function(response) {

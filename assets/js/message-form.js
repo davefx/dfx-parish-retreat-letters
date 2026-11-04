@@ -16,6 +16,81 @@
 		var editor = $('#message_content');
 		var hiddenInput = $('#message_content_hidden');
 
+		var captchaQuestion = '';
+
+		// Language selector: load the texts of the chosen language and replace them,
+		// without reloading the page, so nothing written is lost
+		$('.dfxprl-language-selector').on('submit', function(e) {
+			e.preventDefault();
+		});
+		$('#dfxprl-lang').on('change', function() {
+			var $select = $(this);
+			var previous = $('input[name="dfxprl_lang"]').val() || $select.find('option[selected]').val();
+
+			$select.prop('disabled', true);
+			$.ajax({
+				url: dfxprlMessageForm.ajaxurl,
+				type: 'POST',
+				dataType: 'json',
+				timeout: 30000,
+				data: {
+					action: 'dfxprl_form_strings',
+					token: dfxprlMessageForm.token,
+					sent: dfxprlMessageForm.sent ? 1 : 0,
+					lang: $select.val()
+				}
+			}).done(function(response) {
+				if (response && response.success) {
+					applyLanguage(response.data);
+				} else {
+					languageNotChanged();
+				}
+			}).fail(languageNotChanged).always(function() {
+				$select.prop('disabled', false);
+			});
+
+			function languageNotChanged() {
+				$select.val(previous);
+				window.alert(dfxprlMessageForm.i18n.languageNotChanged);
+			}
+		});
+
+		function applyLanguage(data) {
+			$('[data-dfxprl-i18n]').each(function() {
+				var key = $(this).attr('data-dfxprl-i18n');
+				if (Object.prototype.hasOwnProperty.call(data.html, key)) {
+					$(this).html(data.html[key]);
+				}
+			});
+			$.each(['placeholder', 'title'], function(i, attribute) {
+				$('[data-dfxprl-i18n-' + attribute + ']').each(function() {
+					var key = $(this).attr('data-dfxprl-i18n-' + attribute);
+					if (Object.prototype.hasOwnProperty.call(data.attr, key)) {
+						$(this).attr(attribute, data.attr[key]);
+					}
+				});
+			});
+
+			dfxprlMessageForm.i18n = data.i18n;
+			if (captchaQuestion) {
+				showCaptchaQuestion();
+			}
+			$('.dfxprl-file-remove').text(data.i18n.remove);
+
+			document.documentElement.lang = data.lang;
+			$('input[name="dfxprl_lang"]').val(data.locale);
+			$('#dfxprl-lang option').prop('defaultSelected', false)
+				.filter(function() { return this.value === data.locale; }).prop('defaultSelected', true).prop('selected', true);
+
+			// The choice is remembered in a cookie; a lang parameter in the address would override it on reload
+			if (window.history && window.history.replaceState && /[?&]lang=/.test(window.location.search)) {
+				var params = window.location.search.substring(1).split('&').filter(function(param) {
+					return param !== '' && param.split('=')[0] !== 'lang';
+				});
+				window.history.replaceState(null, '', window.location.pathname + (params.length ? '?' + params.join('&') : '') + window.location.hash);
+			}
+		}
+
 		// Initialize editor
 		if (editor.length) {
 			// Set initial placeholder state
@@ -340,10 +415,8 @@
 			}
 
 			// Set question text with proper string
-			var questionElement = $('#dfxprl-captcha-question');
-			if (questionElement.length) {
-				questionElement.html(dfxprlMessageForm.i18n.captchaPrefix + '<strong>' + question + '</strong>');
-			}
+			captchaQuestion = question;
+			showCaptchaQuestion();
 
 			// Set token and clear answer
 			var tokenElement = $('#captcha_token');
@@ -359,6 +432,13 @@
 
 			if (answerElement.length) {
 				answerElement.val('');
+			}
+		}
+
+		function showCaptchaQuestion() {
+			var questionElement = $('#dfxprl-captcha-question');
+			if (questionElement.length) {
+				questionElement.empty().text(dfxprlMessageForm.i18n.captchaPrefix).append($('<strong>').text(captchaQuestion));
 			}
 		}
 

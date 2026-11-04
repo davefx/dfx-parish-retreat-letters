@@ -322,6 +322,52 @@
             });
         });
 
+        // Fill the translations of the retreat texts of a language with Google Cloud Translation
+        // The translations of the retreat texts are only used by the multilingual form
+        $('#multilingual_enabled').on('change', function() {
+            $('.dfxprl-form-translations-row').toggle(this.checked);
+        });
+
+        $('.dfxprl-translate-form-texts').on('click', function(e) {
+            e.preventDefault();
+
+            var $button = $(this);
+            var $fields = $button.closest('.dfxprl-form-translation').find('[data-field]');
+            var messages = dfxprlAdmin.messages;
+            var written = $fields.filter(function() {
+                return $.trim($(this).val()) !== '';
+            }).length > 0;
+
+            if (written && !confirm(messages.translateOverwrite)) {
+                return;
+            }
+
+            var label = $button.text();
+            $button.prop('disabled', true).text(messages.translating);
+
+            $.post(dfxprlAdmin.ajaxurl, {
+                action: 'dfxprl_translate_form_texts',
+                nonce: dfxprlAdmin.nonce,
+                retreat_id: $button.data('retreat-id'),
+                locale: $button.data('locale'),
+                custom_message: $('#custom_message').val(),
+                disclaimer_text: $('#disclaimer_text').val(),
+                disclaimer_acceptance_text: $('#disclaimer_acceptance_text').val()
+            }).done(function(response) {
+                if (response.success) {
+                    $fields.each(function() {
+                        $(this).val(response.data.translations[$(this).data('field')] || '');
+                    });
+                } else {
+                    alert((response.data && response.data.message) || messages.translateError);
+                }
+            }).fail(function() {
+                alert(messages.translateError);
+            }).always(function() {
+                $button.prop('disabled', false).text(label);
+            });
+        });
+
         // Empty a finished retreat: delete all its attendants and letters (typed retreat name confirmation)
         $('.dfxprl-empty-retreat').on('click', function(e) {
             e.preventDefault();

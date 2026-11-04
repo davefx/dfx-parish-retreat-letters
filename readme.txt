@@ -2,8 +2,8 @@
 Contributors: davefx
 Tags: parish, retreat, letters, confidential, GDPR
 Requires at least: 5.0
-Tested up to: 6.9
-Stable tag: 26.10.31
+Tested up to: 7.1
+Stable tag: 26.11.04
 Requires PHP: 7.4
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
@@ -50,6 +50,8 @@ DFX Parish Retreat Letters lets your parish manage the full lifecycle of confide
 * A simple **arithmetic CAPTCHA** prevents automated submissions. Logged-in WordPress users skip the CAPTCHA.
 * The form URL includes the attendant's initials as a suffix for easy identification when sharing links, without exposing the full name.
 * **Rate limiting** (20 requests per hour per IP) prevents abuse.
+* The form is **multilingual**: senders see it in their browser's language, or choose one from a selector, among Spanish, Catalan, Basque, Galician, English, Portuguese, French, Italian and German. Changing the language does not reload the page, so nothing written is lost. It can be disabled per retreat.
+* The retreat texts (custom message and legal disclaimer) can have a version written for each language, or be translated automatically with **Google Cloud Translation** (optional; each translation is cached and only those texts are sent to Google).
 
 = Secure message access and printing =
 
@@ -111,10 +113,12 @@ Under **Retreats > Global Settings** you can configure:
 * Default header and footer blocks for the message submission form (overridable per retreat).
 * Default body CSS classes for the submission form page.
 * Encryption key management (including the option to remove a database-stored key in favour of the `wp-config.php` constant).
+* The Google Cloud Translation API key for the automatic translation of the retreat texts (it can also be defined in `wp-config.php` as `DFXPRL_GOOGLE_TRANSLATE_API_KEY`).
 
 = Internationalisation =
 
-* The plugin ships with a complete **Spanish (es_ES)** translation.
+* The plugin ships with complete translations into **Spanish, Catalan, Basque, Galician, Portuguese (Portugal), French, Italian and German**. The Spanish one matches the translation approved on translate.wordpress.org; the others were machine-generated following the wordpress.org glossary of each language and are open to review on translate.wordpress.org.
+* When the site has a language pack from translate.wordpress.org, its translations take precedence, and the files bundled with the plugin fill in any texts the pack does not translate yet.
 * A `.pot` template file is included so you can add your own language.
 * The public submission form uses informal Spanish ("tú") for a friendlier tone.
 
@@ -170,9 +174,19 @@ By default it is generated automatically and stored in the WordPress database (`
 
 = Can I add translations for my language? =
 
-Yes. A `.pot` translation template is included in the `languages/` directory. Create `.po` and `.mo` files for your language and place them in that folder following standard WordPress translation conventions.
+Yes. The best place is [translate.wordpress.org](https://translate.wordpress.org/projects/wp-plugins/dfx-parish-retreat-letters/), so the translation reaches every site as a language pack. A `.pot` translation template is also included in the `languages/` directory.
 
 ## Changelog
+
+### 26.11.04
+
+- New: **multilingual letters form**. Senders see the form in their browser's language, or choose one from a selector, among Spanish, Catalan, Basque, Galician, English, Portuguese, French, Italian and German. The choice is remembered, and changing it replaces the texts without reloading the page, so nothing written is lost. Dates and error messages follow the chosen language. It is enabled by default and can be disabled per retreat (**Multilingual Form**).
+- New: the custom message, legal disclaimer and acceptance text of each retreat can have a version written for each language, with a **Translate automatically** button to draft it.
+- New: optional automatic translation of those retreat texts with **Google Cloud Translation** when a language has no version written. Each translation is cached and only redone when the original changes; only those texts are sent to Google, never letters or personal data. The API key goes in **Global Settings** or in `wp-config.php` (`DFXPRL_GOOGLE_TRANSLATE_API_KEY`).
+- New: complete translations into Catalan, Basque, Galician, Portuguese (Portugal), French, Italian and German. The Spanish translation now matches the one approved on translate.wordpress.org.
+- Improvement: the bundled translations fill in the texts that a translate.wordpress.org language pack does not translate yet, instead of showing them in English.
+- Fix: erasing personal data from **Privacy & Compliance** always failed; it now works, and the field shows the exact text to type.
+- Fix: the CSV import of attendants now always accepts the English column names as well as those of the panel language, as the help says.
 
 ### 26.10.31
 

@@ -2,14 +2,14 @@
 # This file is distributed under the GPL v3.
 msgid ""
 msgstr ""
-"Project-Id-Version: DFX Parish Retreat Letters 26.10.26\n"
+"Project-Id-Version: DFX Parish Retreat Letters 26.11.04\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/dfx-parish-retreat-letters\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-03-21T16:02:13+00:00\n"
+"POT-Creation-Date: 2026-11-04T11:09:40+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: dfx-parish-retreat-letters\n"
@@ -21,7 +21,7 @@ msgstr ""
 
 #. Plugin URI of the plugin
 #: dfx-parish-retreat-letters.php
-msgid "https://davefx.com/dfx-parish-retreat-letters"
+msgid "https://github.com/davefx/dfx-parish-retreat-letters"
 msgstr ""
 
 #. Description of the plugin
@@ -39,1228 +39,1788 @@ msgstr ""
 msgid "https://davefx.com"
 msgstr ""
 
-#: includes/class-admin.php:239
-#: includes/class-admin.php:782
-#: includes/class-admin.php:805
-#: includes/class-admin.php:853
-#: includes/class-admin.php:1780
-#: includes/class-admin.php:1804
-#: includes/class-admin.php:1867
-#: includes/class-admin.php:2425
-#: includes/class-admin.php:2445
-#: includes/class-admin.php:2536
-#: includes/class-admin.php:3359
-#: includes/class-admin.php:3678
-#: includes/class-admin.php:3700
-#: includes/class-admin.php:3729
-#: includes/class-admin.php:3751
-#: includes/class-admin.php:3784
-#: includes/class-admin.php:3822
-#: includes/class-admin.php:3869
-#: includes/class-admin.php:3918
-#: includes/class-admin.php:3961
-#: includes/class-admin.php:3994
-#: includes/class-admin.php:4044
-#: includes/class-admin.php:4287
-#: includes/class-admin.php:4317
-#: includes/class-admin.php:4348
-#: includes/class-dfx-parish-retreat-letters.php:945
-#: includes/class-gdpr.php:409
-#: includes/class-gdpr.php:443
+#: includes/class-admin.php:270
+#: includes/class-admin.php:1230
+#: includes/class-admin.php:1253
+#: includes/class-admin.php:1337
+#: includes/class-admin.php:2180
+#: includes/class-admin.php:2208
+#: includes/class-admin.php:2347
+#: includes/class-admin.php:3110
+#: includes/class-admin.php:3134
+#: includes/class-admin.php:3157
+#: includes/class-admin.php:3204
+#: includes/class-admin.php:3323
+#: includes/class-admin.php:3363
+#: includes/class-admin.php:3461
+#: includes/class-admin.php:4392
+#: includes/class-admin.php:4696
+#: includes/class-admin.php:5216
+#: includes/class-admin.php:5443
+#: includes/class-admin.php:5842
+#: includes/class-admin.php:5864
+#: includes/class-admin.php:5951
+#: includes/class-admin.php:5973
+#: includes/class-admin.php:6009
+#: includes/class-admin.php:6079
+#: includes/class-admin.php:6117
+#: includes/class-admin.php:6164
+#: includes/class-admin.php:6213
+#: includes/class-admin.php:6256
+#: includes/class-admin.php:6289
+#: includes/class-admin.php:6339
+#: includes/class-admin.php:6582
+#: includes/class-admin.php:6612
+#: includes/class-admin.php:6644
+#: includes/class-dfx-parish-retreat-letters.php:1241
+#: includes/class-gdpr.php:453
+#: includes/class-gdpr.php:487
 msgid "Security check failed."
 msgstr ""
 
-#: includes/class-admin.php:242
+#: includes/class-admin.php:273
 msgid "You do not have permission to export attendants for this retreat."
 msgstr ""
 
-#: includes/class-admin.php:302
-#: includes/class-admin.php:303
-#: includes/class-admin.php:890
-#: includes/class-admin.php:2646
-#: includes/class-admin.php:3065
-#: includes/class-admin.php:3267
-#: includes/class-admin.php:3488
+#: includes/class-admin.php:333
+#: includes/class-admin.php:334
+#: includes/class-admin.php:1379
+#: includes/class-admin.php:3615
+#: includes/class-admin.php:4114
+#: includes/class-admin.php:5331
+#: includes/class-admin.php:5583
 msgid "Retreats"
 msgstr ""
 
-#: includes/class-admin.php:313
-#: includes/class-admin.php:314
+#: includes/class-admin.php:344
+#: includes/class-admin.php:345
 msgid "All Retreats"
 msgstr ""
 
-#: includes/class-admin.php:323
-#: includes/class-admin.php:1022
+#: includes/class-admin.php:354
+#: includes/class-admin.php:1511
 msgid "Add New Retreat"
 msgstr ""
 
-#: includes/class-admin.php:337
-#: includes/class-admin.php:893
-#: includes/class-admin.php:3068
+#: includes/class-admin.php:368
+#: includes/class-admin.php:1382
+#: includes/class-admin.php:4117
 msgid "Add New"
 msgstr ""
 
-#: includes/class-admin.php:345
-#: includes/class-admin.php:346
-#: includes/class-admin.php:4081
+#: includes/class-admin.php:376
+#: includes/class-admin.php:377
+#: includes/class-admin.php:6376
 msgid "Privacy & Compliance"
 msgstr ""
 
-#: includes/class-admin.php:354
-#: includes/class-admin.php:355
-#: includes/class-admin.php:4752
+#: includes/class-admin.php:385
+#: includes/class-admin.php:386
+#: includes/class-admin.php:7060
 msgid "Global Settings"
 msgstr ""
 
-#: includes/class-admin.php:365
-#: includes/class-admin.php:3193
-#: includes/class-admin.php:3475
-#: includes/class-admin.php:4122
+#: includes/class-admin.php:396
+#: includes/class-admin.php:4260
+#: includes/class-admin.php:5570
+#: includes/class-admin.php:6417
 msgid "Confidential Messages"
 msgstr ""
 
-#: includes/class-admin.php:521
-#: includes/class-admin.php:4871
+#: includes/class-admin.php:479
+msgid "Internet Explorer is not supported."
+msgstr ""
+
+#: includes/class-admin.php:480
+msgid "This plugin (including the letter print view) requires a modern browser. Please use Microsoft Edge, Google Chrome, Mozilla Firefox or Safari."
+msgstr ""
+
+#: includes/class-admin.php:929
+#: includes/class-admin.php:7212
 msgid "Choose a user..."
 msgstr ""
 
-#: includes/class-admin.php:563
+#: includes/class-admin.php:971
 msgid "Search failed. Please try again."
 msgstr ""
 
-#: includes/class-admin.php:564
+#: includes/class-admin.php:972
 msgid "No users found."
 msgstr ""
 
-#: includes/class-admin.php:565
-#: includes/class-admin.php:1387
-#: includes/class-admin.php:1552
+#: includes/class-admin.php:973
+#: includes/class-admin.php:1922
 msgid "Select role..."
 msgstr ""
 
-#: includes/class-admin.php:566
-#: includes/class-admin.php:1270
-#: includes/class-admin.php:1322
-#: includes/class-admin.php:1388
-#: includes/class-admin.php:1444
-#: includes/class-admin.php:1488
-#: includes/class-admin.php:1553
-#: includes/class-admin.php:3889
+#: includes/class-admin.php:974
+#: includes/class-admin.php:1812
+#: includes/class-admin.php:1857
+#: includes/class-admin.php:1923
+#: includes/class-admin.php:6184
 #: includes/class-invitations.php:560
 #: includes/class-invitations.php:773
 msgid "Retreat Manager"
 msgstr ""
 
-#: includes/class-admin.php:567
-#: includes/class-admin.php:1271
-#: includes/class-admin.php:1323
-#: includes/class-admin.php:1389
-#: includes/class-admin.php:1445
-#: includes/class-admin.php:1489
-#: includes/class-admin.php:1554
-#: includes/class-admin.php:3890
+#: includes/class-admin.php:975
+#: includes/class-admin.php:1813
+#: includes/class-admin.php:1858
+#: includes/class-admin.php:1924
+#: includes/class-admin.php:6185
 #: includes/class-invitations.php:561
 #: includes/class-invitations.php:774
 msgid "Message Manager"
 msgstr ""
 
-#: includes/class-admin.php:568
+#: includes/class-admin.php:976
 msgid "Grant"
 msgstr ""
 
-#: includes/class-admin.php:569
+#: includes/class-admin.php:977
 msgid "Please select a role."
 msgstr ""
 
-#: includes/class-admin.php:570
+#: includes/class-admin.php:978
 msgid "Failed to grant permission. Please try again."
 msgstr ""
 
-#: includes/class-admin.php:571
+#: includes/class-admin.php:979
 msgid "Failed to revoke permission. Please try again."
 msgstr ""
 
-#: includes/class-admin.php:572
+#: includes/class-admin.php:980
 msgid "Failed to send invitation. Please try again."
 msgstr ""
 
-#: includes/class-admin.php:573
+#: includes/class-admin.php:981
 msgid "Failed to cancel invitation. Please try again."
 msgstr ""
 
-#: includes/class-admin.php:596
+#: includes/class-admin.php:1004
 msgid "Please enter a sender name or email."
 msgstr ""
 
-#: includes/class-admin.php:597
+#. translators: %s: text to type, e.g. "ERASE ALL DATA"
+#: includes/class-admin.php:1005
+#: includes/class-admin.php:6510
+#: includes/class-gdpr.php:502
 msgid "ERASE ALL DATA"
 msgstr ""
 
-#: includes/class-admin.php:598
+#: includes/class-admin.php:1006
+#: includes/class-gdpr.php:503
 msgid "Please type \"ERASE ALL DATA\" to confirm."
 msgstr ""
 
-#: includes/class-admin.php:599
+#: includes/class-admin.php:1007
 msgid "Are you sure you want to permanently erase all data for this person? This action cannot be undone."
 msgstr ""
 
-#: includes/class-admin.php:600
+#: includes/class-admin.php:1008
 msgid "Erasing..."
 msgstr ""
 
-#: includes/class-admin.php:601
+#: includes/class-admin.php:1009
 msgid "Data has been permanently erased."
 msgstr ""
 
-#: includes/class-admin.php:602
+#: includes/class-admin.php:1010
 msgid "Error erasing data. Please try again."
 msgstr ""
 
-#: includes/class-admin.php:603
-#: includes/class-admin.php:4216
+#. translators: %s: text to type, e.g. "ERASE ALL DATA"
+#: includes/class-admin.php:1011
+#: includes/class-admin.php:6511
 msgid "Erase Data"
 msgstr ""
 
-#: includes/class-admin.php:616
+#: includes/class-admin.php:1024
 msgid "Are you sure you want to delete this retreat?"
 msgstr ""
 
-#: includes/class-admin.php:617
-msgid "Are you sure you want to delete this attendant?"
+#: includes/class-admin.php:1025
+msgid "Permanently delete this attendant together with their messages, contact log and custom field values? This cannot be undone."
 msgstr ""
 
-#: includes/class-admin.php:618
+#. translators: %d: number of letters that can still be returned by email
+#: includes/class-admin.php:1027
+#, php-format
+msgid "This attendant has %d letters that can still be returned to their senders by email. If you delete the attendant, they will be deleted without being returned."
+msgstr ""
+
+#: includes/class-admin.php:1028
+msgid "Return letter by email"
+msgstr ""
+
+#: includes/class-admin.php:1029
+msgid "Return all letters by email"
+msgstr ""
+
+#: includes/class-admin.php:1030
+#: includes/class-dfx-parish-retreat-letters.php:1863
+#: includes/class-dfx-parish-retreat-letters.php:1980
+#: includes/class-dfx-parish-retreat-letters.php:2169
+#: includes/class-letter-return.php:329
+msgid "To"
+msgstr ""
+
+#: includes/class-admin.php:1031
+msgid "Subject"
+msgstr ""
+
+#: includes/class-admin.php:1032
+msgid "Attachments"
+msgstr ""
+
+#: includes/class-admin.php:1033
+msgid "Recipients"
+msgstr ""
+
+#. translators: %d: number of times the letter was printed
+#: includes/class-admin.php:1035
+#, php-format
+msgid "This letter was printed %d times. Remember to destroy the printed copy."
+msgstr ""
+
+#: includes/class-admin.php:1036
+msgid "Each letter will be sent back to its sender with the configured email, and deleted once sent. Remember to destroy the printed copies."
+msgstr ""
+
+#: includes/class-admin.php:1037
+msgid "Send and delete the letter"
+msgstr ""
+
+#: includes/class-admin.php:1038
+msgid "Send and delete the letters"
+msgstr ""
+
+#: includes/class-admin.php:1039
+#: includes/class-dfx-parish-retreat-letters.php:677
+msgid "Sending..."
+msgstr ""
+
+#: includes/class-admin.php:1040
+#: includes/class-letter-return.php:138
+#: includes/class-letter-return.php:147
+#: includes/class-letter-return.php:164
+msgid "The email could not be sent. The letter has not been deleted."
+msgstr ""
+
+#. translators: 1: number of returned letters, 2: number of letters that could not be returned
+#: includes/class-admin.php:1042
+#, php-format
+msgid "%1$d letters returned and deleted. %2$d could not be returned and have been kept."
+msgstr ""
+
+#. translators: %s: attendant name
+#: includes/class-admin.php:1044
+#, php-format
+msgid "Withdraw %s from the retreat? They will move to the \"Withdrawn attendants\" tab, will not be editable and their message link will stop accepting letters. You can reactivate them at any time."
+msgstr ""
+
+#: includes/class-admin.php:1045
+msgid "Error updating the attendant. Please try again."
+msgstr ""
+
+#: includes/class-admin.php:1046
 msgid "Are you sure you want to delete this message? This action cannot be undone."
 msgstr ""
 
-#: includes/class-admin.php:619
+#: includes/class-admin.php:1047
 msgid "Delete Retreat - Confirmation Required"
 msgstr ""
 
-#: includes/class-admin.php:620
+#: includes/class-admin.php:1048
 msgid "WARNING: This action cannot be undone!"
 msgstr ""
 
-#: includes/class-admin.php:621
+#: includes/class-admin.php:1049
 msgid "All attendants for this retreat will be permanently deleted"
 msgstr ""
 
-#: includes/class-admin.php:622
+#: includes/class-admin.php:1050
 msgid "All letters and related information will be permanently deleted"
 msgstr ""
 
-#: includes/class-admin.php:623
+#: includes/class-admin.php:1051
 msgid "This action is irreversible and cannot be restored"
 msgstr ""
 
-#: includes/class-admin.php:624
+#: includes/class-admin.php:1052
 msgid "To confirm deletion, please type the exact retreat name below:"
 msgstr ""
 
-#: includes/class-admin.php:625
+#: includes/class-admin.php:1053
 msgid "Type retreat name here..."
 msgstr ""
 
-#: includes/class-admin.php:626
-msgid "Delete All Attendants - Confirmation Required"
-msgstr ""
-
-#: includes/class-admin.php:627
-msgid "You are about to delete ALL attendants and their messages from this retreat!"
-msgstr ""
-
-#: includes/class-admin.php:628
-msgid "This will permanently delete:"
+#: includes/class-admin.php:1054
+msgid "Withdraw All Attendants - Confirmation Required"
 msgstr ""
 
 #. translators: %d: number of attendants
-#: includes/class-admin.php:630
+#: includes/class-admin.php:1056
 #, php-format
-msgid "%d attendants"
+msgid "You are about to withdraw ALL %d attendants of this retreat."
 msgstr ""
 
-#. translators: %d: number of messages
-#: includes/class-admin.php:632
-#, php-format
-msgid "%d messages"
+#: includes/class-admin.php:1057
+msgid "They will move to the \"Withdrawn attendants\" tab, will not be editable and their message links will stop accepting letters. Nothing is deleted: you can reactivate them one by one, or delete them permanently from that tab."
 msgstr ""
 
-#: includes/class-admin.php:633
-#: includes/class-admin.php:2458
-msgid "DELETE ALL ATTENDANTS"
+#: includes/class-admin.php:1058
+#: includes/class-admin.php:3220
+msgid "WITHDRAW ALL ATTENDANTS"
 msgstr ""
 
-#: includes/class-admin.php:634
+#: includes/class-admin.php:1059
 msgid "To confirm, type the text shown above exactly"
 msgstr ""
 
-#: includes/class-admin.php:635
+#: includes/class-admin.php:1060
 msgid "Type confirmation here..."
 msgstr ""
 
-#: includes/class-admin.php:636
-msgid "Delete All Attendants Forever"
+#: includes/class-admin.php:1061
+#: includes/class-admin.php:3772
+msgid "Withdraw All Attendants"
 msgstr ""
 
-#: includes/class-admin.php:637
+#: includes/class-admin.php:1062
+msgid "Withdrawing..."
+msgstr ""
+
+#: includes/class-admin.php:1063
+msgid "Empty Retreat - Confirmation Required"
+msgstr ""
+
+#. translators: %d: number of attendants
+#: includes/class-admin.php:1065
+#, php-format
+msgid "You are about to permanently delete ALL %d attendants of this retreat, active and withdrawn."
+msgstr ""
+
+#: includes/class-admin.php:1066
+msgid "Their letters, files, print history, contact log and custom field values will also be deleted. The retreat, its settings, custom fields and managers are kept, so it can be reused. This cannot be undone."
+msgstr ""
+
+#. translators: %d: number of letters
+#: includes/class-admin.php:1068
+#, php-format
+msgid "Letters of withdrawn attendants that can still be returned to their senders by email: %d. If you empty the retreat, they will be deleted without being returned."
+msgstr ""
+
+#: includes/class-admin.php:1069
+msgid "To confirm, type the exact retreat name below:"
+msgstr ""
+
+#: includes/class-admin.php:1070
+#: includes/class-admin.php:3787
+msgid "Empty Retreat"
+msgstr ""
+
+#: includes/class-admin.php:1071
+msgid "Emptying..."
+msgstr ""
+
+#: includes/class-admin.php:1072
+msgid "Translating..."
+msgstr ""
+
+#: includes/class-admin.php:1073
+msgid "This language already has texts written. Replace them with the automatic translation?"
+msgstr ""
+
+#: includes/class-admin.php:1074
+msgid "The texts could not be translated. Please try again."
+msgstr ""
+
+#: includes/class-admin.php:1075
 msgid "Delete Forever"
 msgstr ""
 
-#: includes/class-admin.php:638
-#: includes/class-admin.php:1208
-#: includes/class-admin.php:1333
-#: includes/class-admin.php:1502
-#: includes/class-admin.php:3243
-#: includes/class-admin.php:3342
+#: includes/class-admin.php:1076
+#: includes/class-admin.php:1757
+#: includes/class-admin.php:1872
+#: includes/class-admin.php:4310
+#: includes/class-admin.php:5426
 msgid "Cancel"
 msgstr ""
 
-#: includes/class-admin.php:639
+#: includes/class-admin.php:1077
 msgid "Deleting..."
 msgstr ""
 
-#: includes/class-admin.php:640
+#: includes/class-admin.php:1078
 msgid "Error deleting retreat. Please try again."
 msgstr ""
 
-#: includes/class-admin.php:641
+#: includes/class-admin.php:1079
 msgid "Generating URL..."
 msgstr ""
 
-#: includes/class-admin.php:642
+#: includes/class-admin.php:1080
 msgid "Error generating message URL. Please try again."
 msgstr ""
 
-#: includes/class-admin.php:643
+#: includes/class-admin.php:1081
 msgid "Message URL generated successfully!"
 msgstr ""
 
-#: includes/class-admin.php:644
+#: includes/class-admin.php:1082
 msgid "URL copied to clipboard!"
 msgstr ""
 
-#: includes/class-admin.php:645
+#: includes/class-admin.php:1083
 msgid "Failed to copy URL. Please copy it manually."
 msgstr ""
 
-#: includes/class-admin.php:646
-#: includes/class-admin.php:2983
+#: includes/class-admin.php:1084
+#: includes/class-admin.php:4024
 msgid "Invitation Message"
 msgstr ""
 
-#: includes/class-admin.php:647
+#: includes/class-admin.php:1085
 msgid "Loading message..."
 msgstr ""
 
-#: includes/class-admin.php:648
+#: includes/class-admin.php:1086
 msgid "Error loading invitation message. Please try again."
 msgstr ""
 
-#: includes/class-admin.php:649
+#: includes/class-admin.php:1087
 msgid "Message copied to clipboard!"
 msgstr ""
 
-#: includes/class-admin.php:650
+#: includes/class-admin.php:1088
 msgid "Failed to copy message. Please copy it manually."
 msgstr ""
 
-#: includes/class-admin.php:651
+#: includes/class-admin.php:1089
 msgid "Preparing for print..."
 msgstr ""
 
-#: includes/class-admin.php:652
+#: includes/class-admin.php:1090
 msgid "Error preparing message for print. Please try again."
 msgstr ""
 
-#: includes/class-admin.php:653
+#: includes/class-admin.php:1091
 msgid "Downloading..."
 msgstr ""
 
-#: includes/class-admin.php:654
+#: includes/class-admin.php:1092
 msgid "Error downloading file. Please try again."
 msgstr ""
 
-#: includes/class-admin.php:655
-#: includes/class-admin.php:3686
-#: includes/class-admin.php:3771
+#: includes/class-admin.php:1093
+#: includes/class-admin.php:5850
+#: includes/class-admin.php:5993
 msgid "Message deleted successfully."
 msgstr ""
 
-#: includes/class-admin.php:757
+#: includes/class-admin.php:1094
+msgid "Error saving the contact log entry. Please try again."
+msgstr ""
+
+#: includes/class-admin.php:1095
+#: includes/class-admin.php:5251
+msgid "Please enter a description."
+msgstr ""
+
+#: includes/class-admin.php:1096
+msgid "Are you sure you want to delete this contact log entry?"
+msgstr ""
+
+#: includes/class-admin.php:1097
+msgid "Save"
+msgstr ""
+
+#: includes/class-admin.php:1098
+msgid "Error saving the column order. Please try again."
+msgstr ""
+
+#: includes/class-admin.php:1099
+#: includes/class-admin.php:3945
+#: includes/class-admin.php:4548
+#: includes/class-admin.php:4963
+msgid "Contact Log"
+msgstr ""
+
+#: includes/class-admin.php:1100
+#: includes/class-admin.php:4806
+#: includes/class-custom-field.php:416
+#: includes/class-custom-field.php:472
+msgid "Yes"
+msgstr ""
+
+#: includes/class-admin.php:1101
+#: includes/class-attendant.php:787
+msgid "This field is required."
+msgstr ""
+
+#: includes/class-admin.php:1102
+#: includes/class-admin.php:4739
+msgid "Error saving the field. Please try again."
+msgstr ""
+
+#: includes/class-admin.php:1103
+msgid "Removing this field will permanently delete its values for all attendants when the retreat is saved. Continue?"
+msgstr ""
+
+#: includes/class-admin.php:1205
+#: includes/class-admin.php:1257
 msgid "You do not have permission to edit this retreat."
 msgstr ""
 
-#: includes/class-admin.php:762
+#: includes/class-admin.php:1210
 msgid "You do not have permission to add new retreats."
 msgstr ""
 
-#: includes/class-admin.php:790
-#: includes/class-admin.php:871
+#: includes/class-admin.php:1238
+#: includes/class-admin.php:1360
 msgid "Retreat deleted successfully."
 msgstr ""
 
-#: includes/class-admin.php:792
-#: includes/class-admin.php:873
+#: includes/class-admin.php:1240
+#: includes/class-admin.php:1362
 msgid "Error deleting retreat."
 msgstr ""
 
-#: includes/class-admin.php:827
+#: includes/class-admin.php:1296
 msgid "Retreat updated successfully."
 msgstr ""
 
-#: includes/class-admin.php:831
+#: includes/class-admin.php:1300
 msgid "Error updating retreat. Please check your data."
 msgstr ""
 
-#: includes/class-admin.php:837
+#: includes/class-admin.php:1307
 msgid "Retreat created successfully."
 msgstr ""
 
-#: includes/class-admin.php:841
+#: includes/class-admin.php:1311
 msgid "Error creating retreat. Please check your data."
 msgstr ""
 
-#: includes/class-admin.php:862
-#: includes/class-admin.php:1634
-#: includes/class-admin.php:1709
-#: includes/class-admin.php:1755
-#: includes/class-admin.php:2454
+#: includes/class-admin.php:1342
+#: includes/class-admin.php:3190
+#: includes/class-admin.php:3216
+#: includes/class-admin.php:3330
+#: includes/class-admin.php:3375
+#: includes/class-admin.php:4401
+#: includes/class-admin.php:6617
+#: includes/class-admin.php:7252
+msgid "You do not have permission to perform this action."
+msgstr ""
+
+#: includes/class-admin.php:1351
+#: includes/class-admin.php:2004
+#: includes/class-admin.php:2098
+#: includes/class-admin.php:2155
+#: includes/class-admin.php:3212
+#: includes/class-admin.php:3371
+#: includes/class-admin.php:4397
 #: includes/class-invitations.php:525
+#: includes/class-letter-return.php:68
 msgid "Retreat not found."
 msgstr ""
 
-#: includes/class-admin.php:867
+#: includes/class-admin.php:1356
 msgid "Retreat name verification failed. Deletion cancelled for security."
 msgstr ""
 
-#: includes/class-admin.php:903
+#: includes/class-admin.php:1392
 msgid "Search Retreats:"
 msgstr ""
 
-#: includes/class-admin.php:905
+#: includes/class-admin.php:1394
 msgid "Search Retreats"
 msgstr ""
 
 #. translators: %d: number of retreats
-#: includes/class-admin.php:915
+#: includes/class-admin.php:1404
 #, php-format
 msgid "Total retreats: %d"
 msgstr ""
 
-#: includes/class-admin.php:934
-#: includes/class-admin.php:1305
-#: includes/class-admin.php:1375
-#: includes/class-admin.php:1542
-#: includes/class-admin.php:2169
-#: includes/class-admin.php:2692
-#: includes/class-admin.php:2796
-#: includes/class-admin.php:3079
-#: includes/class-admin.php:3279
-#: includes/class-attendant.php:487
+#: includes/class-admin.php:1423
+#: includes/class-admin.php:1435
+#: includes/class-admin.php:1912
+#: includes/class-admin.php:2631
+#: includes/class-admin.php:2828
+#: includes/class-admin.php:3689
+#: includes/class-admin.php:3810
+#: includes/class-admin.php:3844
+#: includes/class-admin.php:4134
+#: includes/class-admin.php:4438
+#: includes/class-admin.php:4890
+#: includes/class-attendant.php:555
 msgid "Name"
 msgstr ""
 
-#: includes/class-admin.php:935
-#: includes/class-admin.php:1047
+#: includes/class-admin.php:1424
+#: includes/class-admin.php:1442
+#: includes/class-admin.php:1536
 #: includes/class-invitations.php:803
 msgid "Location"
 msgstr ""
 
-#: includes/class-admin.php:936
-#: includes/class-admin.php:1055
+#: includes/class-admin.php:1425
+#: includes/class-admin.php:1443
+#: includes/class-admin.php:1544
 msgid "Start Date"
 msgstr ""
 
-#: includes/class-admin.php:937
-#: includes/class-admin.php:1063
+#: includes/class-admin.php:1426
+#: includes/class-admin.php:1444
+#: includes/class-admin.php:1552
 msgid "End Date"
 msgstr ""
 
-#: includes/class-admin.php:938
-#: includes/class-admin.php:977
-#: includes/class-admin.php:2648
-#: includes/class-admin.php:3067
-#: includes/class-admin.php:3269
+#: includes/class-admin.php:1427
+#: includes/class-admin.php:1445
+#: includes/class-admin.php:1466
+#: includes/class-admin.php:3617
+#: includes/class-admin.php:4116
+#: includes/class-admin.php:5333
 msgid "Attendants"
 msgstr ""
 
-#: includes/class-admin.php:939
-#: includes/class-admin.php:1256
-#: includes/class-admin.php:1310
-#: includes/class-admin.php:2864
-#: includes/class-admin.php:3556
-#: includes/class-admin.php:4829
+#: includes/class-admin.php:1428
+#: includes/class-admin.php:1457
+#: includes/class-admin.php:3969
+#: includes/class-admin.php:3992
+#: includes/class-admin.php:5724
+#: includes/class-admin.php:5762
+#: includes/class-admin.php:7170
+#: includes/class-admin.php:7179
 msgid "Actions"
 msgstr ""
 
 #. translators: %d: Number of attendants
-#: includes/class-admin.php:962
+#: includes/class-admin.php:1451
 #, php-format
 msgid "%d attendant"
 msgid_plural "%d attendants"
 msgstr[0] ""
 msgstr[1] ""
 
-#: includes/class-admin.php:971
-#: includes/class-admin.php:2970
-#: includes/class-admin.php:3068
+#: includes/class-admin.php:1460
+#: includes/class-admin.php:4011
+#: includes/class-admin.php:4117
+#: includes/class-admin.php:5137
 msgid "Edit"
 msgstr ""
 
-#: includes/class-admin.php:983
-#: includes/class-admin.php:3000
-#: includes/class-admin.php:3628
+#: includes/class-admin.php:1472
+#: includes/class-admin.php:5152
+#: includes/class-admin.php:5792
 msgid "Delete"
 msgstr ""
 
-#: includes/class-admin.php:993
+#: includes/class-admin.php:1482
 msgid "No retreats found for your search."
 msgstr ""
 
-#: includes/class-admin.php:995
+#: includes/class-admin.php:1484
 msgid "No retreats found."
 msgstr ""
 
-#: includes/class-admin.php:998
+#: includes/class-admin.php:1487
 msgid "Add the first retreat"
 msgstr ""
 
-#: includes/class-admin.php:1022
+#: includes/class-admin.php:1511
 msgid "Edit Retreat"
 msgstr ""
 
-#: includes/class-admin.php:1039
+#: includes/class-admin.php:1528
 msgid "Retreat Name"
 msgstr ""
 
-#: includes/class-admin.php:1039
-#: includes/class-admin.php:1047
-#: includes/class-admin.php:1055
-#: includes/class-admin.php:1063
-#: includes/class-admin.php:3079
-#: includes/class-admin.php:3087
-#: includes/class-admin.php:3095
-#: includes/class-admin.php:3103
-#: includes/class-admin.php:3119
-#: includes/class-admin.php:3329
+#: includes/class-admin.php:1528
+#: includes/class-admin.php:1536
+#: includes/class-admin.php:1544
+#: includes/class-admin.php:1552
+#: includes/class-admin.php:4134
+#: includes/class-admin.php:4142
+#: includes/class-admin.php:4150
+#: includes/class-admin.php:4158
+#: includes/class-admin.php:4174
+#: includes/class-admin.php:5413
 msgid "required"
 msgstr ""
 
-#: includes/class-admin.php:1071
+#: includes/class-admin.php:1560
+#: includes/class-admin.php:3298
 msgid "Custom Message for Letter Senders"
 msgstr ""
 
-#: includes/class-admin.php:1074
+#: includes/class-admin.php:1563
 msgid "Optional message that will be displayed to senders in the letters form."
 msgstr ""
 
-#: includes/class-admin.php:1075
+#: includes/class-admin.php:1564
 msgid "This message will be displayed before the message submission form for all attendants of this retreat. HTML is allowed."
 msgstr ""
 
-#: includes/class-admin.php:1080
+#: includes/class-admin.php:1569
+#: includes/class-admin.php:3302
 msgid "Legal Disclaimer Text"
 msgstr ""
 
-#: includes/class-admin.php:1083
+#: includes/class-admin.php:1572
 msgid "Optional legal disclaimer that users must accept before submitting messages."
 msgstr ""
 
-#: includes/class-admin.php:1084
+#: includes/class-admin.php:1573
 msgid "If provided, this disclaimer will be displayed in the message form and users must accept it to submit messages. HTML is allowed."
 msgstr ""
 
-#: includes/class-admin.php:1089
+#: includes/class-admin.php:1578
+#: includes/class-admin.php:3306
 msgid "Disclaimer Acceptance Text"
 msgstr ""
 
-#: includes/class-admin.php:1092
+#: includes/class-admin.php:1581
 msgid "I accept the terms and conditions"
 msgstr ""
 
-#: includes/class-admin.php:1093
+#: includes/class-admin.php:1582
 msgid "This text will appear next to the disclaimer acceptance checkbox. Only used if disclaimer text is provided."
 msgstr ""
 
-#: includes/class-admin.php:1098
+#: includes/class-admin.php:1587
+msgid "Multilingual Form"
+msgstr ""
+
+#: includes/class-admin.php:1592
+msgid "Let senders see the letters form in their language"
+msgstr ""
+
+#: includes/class-admin.php:1594
+msgid "When disabled, the form is always shown in the main language of the site, without language selector or automatic translation."
+msgstr ""
+
+#: includes/class-admin.php:1599
+msgid "Translations of These Texts"
+msgstr ""
+
+#: includes/class-admin.php:1607
 msgid "Enable Notes Field"
 msgstr ""
 
-#: includes/class-admin.php:1103
+#: includes/class-admin.php:1612
 msgid "Enable optional notes field for attendants"
 msgstr ""
 
-#: includes/class-admin.php:1105
+#: includes/class-admin.php:1614
 msgid "When enabled, an optional notes field will be available for each attendant and displayed in the attendants list."
 msgstr ""
 
-#: includes/class-admin.php:1110
+#: includes/class-admin.php:1619
 msgid "Enable Internal Notes Field"
 msgstr ""
 
-#: includes/class-admin.php:1115
+#: includes/class-admin.php:1624
 msgid "Enable optional internal notes field for attendants"
 msgstr ""
 
-#: includes/class-admin.php:1117
+#: includes/class-admin.php:1626
 msgid "When enabled, an optional internal notes field will be available for each attendant. This field will NOT be imported or exported via CSV."
 msgstr ""
 
-#: includes/class-admin.php:1122
+#: includes/class-admin.php:1631
 msgid "Message Request Template"
 msgstr ""
 
-#: includes/class-admin.php:1125
+#: includes/class-admin.php:1634
 msgid "Template for requesting messages from emergency contacts..."
 msgstr ""
 
-#: includes/class-admin.php:1127
+#: includes/class-admin.php:1636
 msgid "Template message to request letters from emergency contacts. Available placeholders:"
 msgstr ""
 
-#: includes/class-admin.php:1129
+#: includes/class-admin.php:1638
 msgid "Attendant:"
 msgstr ""
 
-#: includes/class-admin.php:1130
-#: includes/class-admin.php:1137
+#: includes/class-admin.php:1639
+#: includes/class-admin.php:1646
+#: includes/class-admin.php:1693
 msgid "(First name)"
 msgstr ""
 
-#: includes/class-admin.php:1131
+#: includes/class-admin.php:1640
+#: includes/class-admin.php:1694
 msgid "(Surnames)"
 msgstr ""
 
-#: includes/class-admin.php:1132
+#: includes/class-admin.php:1641
 msgid "(Date of birth)"
 msgstr ""
 
-#: includes/class-admin.php:1133
+#: includes/class-admin.php:1642
 msgid "(Notes, if enabled)"
 msgstr ""
 
-#: includes/class-admin.php:1134
+#: includes/class-admin.php:1643
 msgid "(Internal notes, if enabled)"
 msgstr ""
 
-#: includes/class-admin.php:1136
+#: includes/class-admin.php:1645
 msgid "Emergency Contact:"
 msgstr ""
 
-#: includes/class-admin.php:1138
+#: includes/class-admin.php:1647
 msgid "(Surname)"
 msgstr ""
 
-#: includes/class-admin.php:1139
+#: includes/class-admin.php:1648
 msgid "(Phone)"
 msgstr ""
 
-#: includes/class-admin.php:1140
+#: includes/class-admin.php:1649
 msgid "(Email)"
 msgstr ""
 
-#: includes/class-admin.php:1141
+#: includes/class-admin.php:1650
 msgid "(Relationship)"
 msgstr ""
 
-#: includes/class-admin.php:1143
+#: includes/class-admin.php:1652
 msgid "Other:"
 msgstr ""
 
-#: includes/class-admin.php:1144
+#: includes/class-admin.php:1653
 msgid "(Invited by)"
 msgstr ""
 
-#: includes/class-admin.php:1145
+#: includes/class-admin.php:1654
 msgid "(Incompatibilities)"
 msgstr ""
 
-#: includes/class-admin.php:1146
+#: includes/class-admin.php:1655
 msgid "(Message submission URL)"
 msgstr ""
 
-#: includes/class-admin.php:1148
+#: includes/class-admin.php:1657
 msgid "Retreat:"
 msgstr ""
 
-#: includes/class-admin.php:1149
+#: includes/class-admin.php:1658
+#: includes/class-admin.php:1695
 msgid "(Name)"
 msgstr ""
 
-#: includes/class-admin.php:1150
+#: includes/class-admin.php:1659
+#: includes/class-admin.php:1696
 msgid "(Location)"
 msgstr ""
 
-#: includes/class-admin.php:1151
+#: includes/class-admin.php:1660
+#: includes/class-admin.php:1697
 msgid "(Start date)"
 msgstr ""
 
-#: includes/class-admin.php:1152
+#: includes/class-admin.php:1661
+#: includes/class-admin.php:1698
 msgid "(End date)"
 msgstr ""
 
-#: includes/class-admin.php:1160
+#: includes/class-admin.php:1665
+msgid "Custom fields:"
+msgstr ""
+
+#: includes/class-admin.php:1677
+msgid "Letter Return Email Subject"
+msgstr ""
+
+#: includes/class-admin.php:1685
+msgid "Letter Return Email Text"
+msgstr ""
+
+#: includes/class-admin.php:1690
+msgid "Email sent to the sender of a letter when the attendant has been withdrawn, with the letter attached. After sending it, the letter is deleted. If left empty, the default text is used. Available placeholders:"
+msgstr ""
+
+#: includes/class-admin.php:1692
+msgid "(Sender name)"
+msgstr ""
+
+#: includes/class-admin.php:1699
+msgid "(Date the letter was sent)"
+msgstr ""
+
+#: includes/class-admin.php:1707
 msgid "Use default header"
 msgstr ""
 
-#: includes/class-admin.php:1161
+#: includes/class-admin.php:1708
 msgid "Use global default header"
 msgstr ""
 
-#: includes/class-admin.php:1163
+#: includes/class-admin.php:1710
 msgid "Use default footer"
 msgstr ""
 
-#: includes/class-admin.php:1164
+#: includes/class-admin.php:1711
 msgid "Use global default footer"
 msgstr ""
 
-#: includes/class-admin.php:1170
+#: includes/class-admin.php:1717
 msgid "Custom Header Block"
 msgstr ""
 
-#: includes/class-admin.php:1174
+#: includes/class-admin.php:1721
 msgid "Select a reusable block, template part, or pattern to display as custom header in the letters form page. Leave empty to use the default header."
 msgstr ""
 
-#: includes/class-admin.php:1179
+#: includes/class-admin.php:1726
 msgid "Custom Footer Block"
 msgstr ""
 
-#: includes/class-admin.php:1183
+#: includes/class-admin.php:1730
 msgid "Select a reusable block, template part, or pattern to display as custom footer in the letters form page. Leave empty to use the default footer."
 msgstr ""
 
-#: includes/class-admin.php:1188
-#: includes/class-admin.php:4795
+#: includes/class-admin.php:1735
+#: includes/class-admin.php:7103
 msgid "Additional Body Classes"
 msgstr ""
 
-#: includes/class-admin.php:1192
+#: includes/class-admin.php:1739
 msgid "Space-separated CSS class names to add to the &lt;body&gt; tag on this retreat's message form page. Leave empty to use only the global default classes."
 msgstr ""
 
-#: includes/class-admin.php:1201
+#: includes/class-admin.php:1750
 msgid "Update Retreat"
 msgstr ""
 
-#: includes/class-admin.php:1201
+#: includes/class-admin.php:1750
 msgid "Add Retreat"
 msgstr ""
 
-#: includes/class-admin.php:1204
+#: includes/class-admin.php:1753
 msgid "Manage Attendants"
 msgstr ""
 
-#: includes/class-admin.php:1241
-#: includes/class-admin.php:1424
+#: includes/class-admin.php:1792
 msgid "Access Management"
 msgstr ""
 
-#: includes/class-admin.php:1247
-#: includes/class-admin.php:1431
+#: includes/class-admin.php:1799
 msgid "Current Permissions"
 msgstr ""
 
-#: includes/class-admin.php:1252
-#: includes/class-admin.php:4229
-#: includes/class-admin.php:4826
-msgid "User"
-msgstr ""
-
-#: includes/class-admin.php:1253
-#: includes/class-admin.php:1307
-#: includes/class-admin.php:1385
-#: includes/class-admin.php:1550
-#: includes/class-admin.php:4828
-msgid "Role"
-msgstr ""
-
-#: includes/class-admin.php:1254
-msgid "Granted By"
-msgstr ""
-
-#: includes/class-admin.php:1255
-msgid "Date"
-msgstr ""
-
-#: includes/class-admin.php:1283
-#: includes/class-admin.php:1461
-msgid "Revoke"
-msgstr ""
-
-#: includes/class-admin.php:1286
-msgid "You cannot revoke your own permissions"
-msgstr ""
-
-#: includes/class-admin.php:1294
-#: includes/class-admin.php:1469
-msgid "No users have been granted permissions for this retreat yet."
-msgstr ""
-
-#: includes/class-admin.php:1301
-#: includes/class-admin.php:1476
-msgid "Pending Invitations"
-msgstr ""
-
-#: includes/class-admin.php:1306
-#: includes/class-admin.php:1379
-#: includes/class-admin.php:1546
-#: includes/class-admin.php:4827
-#: includes/class-invitations.php:861
-msgid "Email"
-msgstr ""
-
-#: includes/class-admin.php:1308
-msgid "Invited"
-msgstr ""
-
-#: includes/class-admin.php:1309
-msgid "Expires"
-msgstr ""
-
-#: includes/class-admin.php:1345
-#: includes/class-admin.php:1513
-#: includes/class-admin.php:4887
-msgid "Grant Access"
-msgstr ""
-
-#: includes/class-admin.php:1350
-#: includes/class-admin.php:1518
-msgid "Existing Users"
-msgstr ""
-
-#: includes/class-admin.php:1353
-#: includes/class-admin.php:1521
-msgid "Invite New Users"
-msgstr ""
-
-#: includes/class-admin.php:1360
-#: includes/class-admin.php:1528
-msgid "Search and Grant Permission to Existing Users"
-msgstr ""
-
-#: includes/class-admin.php:1362
-#: includes/class-admin.php:1530
-msgid "Search by username, email, or name..."
-msgstr ""
-
-#: includes/class-admin.php:1371
-#: includes/class-admin.php:1539
-msgid "Send Invitation to New User"
-msgstr ""
-
-#: includes/class-admin.php:1394
-#: includes/class-admin.php:1558
-msgid "Send Invitation"
-msgstr ""
-
 #. translators: %s: name of the person who granted the permission
-#: includes/class-admin.php:1453
+#: includes/class-admin.php:1821
 #, php-format
 msgid "By %s"
 msgstr ""
 
+#: includes/class-admin.php:1829
+msgid "Are you sure you want to revoke this permission?"
+msgstr ""
+
+#: includes/class-admin.php:1830
+msgid "Revoke"
+msgstr ""
+
+#: includes/class-admin.php:1838
+msgid "No users have been granted permissions for this retreat yet."
+msgstr ""
+
+#: includes/class-admin.php:1845
+msgid "Pending Invitations"
+msgstr ""
+
 #. translators: %s: formatted expiration date
-#: includes/class-admin.php:1497
+#: includes/class-admin.php:1866
 #, php-format
 msgid "Expires %s"
 msgstr ""
 
-#: includes/class-admin.php:1624
-#: includes/class-admin.php:1699
-#: includes/class-admin.php:1750
+#: includes/class-admin.php:1871
+msgid "Are you sure you want to cancel this invitation?"
+msgstr ""
+
+#: includes/class-admin.php:1883
+#: includes/class-admin.php:7228
+msgid "Grant Access"
+msgstr ""
+
+#: includes/class-admin.php:1888
+msgid "Existing Users"
+msgstr ""
+
+#: includes/class-admin.php:1891
+msgid "Invite New Users"
+msgstr ""
+
+#: includes/class-admin.php:1898
+msgid "Search and Grant Permission to Existing Users"
+msgstr ""
+
+#: includes/class-admin.php:1900
+msgid "Search by username, email, or name..."
+msgstr ""
+
+#: includes/class-admin.php:1909
+msgid "Send Invitation to New User"
+msgstr ""
+
+#: includes/class-admin.php:1916
+#: includes/class-admin.php:7168
+#: includes/class-admin.php:7177
+#: includes/class-invitations.php:861
+msgid "Email"
+msgstr ""
+
+#: includes/class-admin.php:1920
+#: includes/class-admin.php:7169
+#: includes/class-admin.php:7178
+msgid "Role"
+msgstr ""
+
+#: includes/class-admin.php:1928
+msgid "Send Invitation"
+msgstr ""
+
+#: includes/class-admin.php:1994
+#: includes/class-admin.php:2088
+#: includes/class-admin.php:2150
 msgid "Invalid retreat ID."
 msgstr ""
 
-#: includes/class-admin.php:1629
+#: includes/class-admin.php:1999
 msgid "You do not have permission to view this retreat."
 msgstr ""
 
-#: includes/class-admin.php:1704
+#: includes/class-admin.php:2093
 msgid "You do not have permission to add attendants to this retreat."
 msgstr ""
 
-#: includes/class-admin.php:1724
+#: includes/class-admin.php:2113
 msgid "Invalid retreat or attendant ID."
 msgstr ""
 
-#: includes/class-admin.php:1729
+#: includes/class-admin.php:2118
+#: includes/class-admin.php:2219
 msgid "You do not have permission to edit attendants for this retreat."
 msgstr ""
 
-#: includes/class-admin.php:1736
+#: includes/class-admin.php:2125
+#: includes/class-admin.php:2225
 msgid "Retreat or attendant not found, or attendant does not belong to this retreat."
 msgstr ""
 
-#: includes/class-admin.php:1760
+#: includes/class-admin.php:2130
+msgid "This attendant has been withdrawn from the retreat and cannot be edited. Reactivate them from the \"Withdrawn attendants\" tab to edit their data."
+msgstr ""
+
+#: includes/class-admin.php:2131
+msgid "Withdrawn attendant"
+msgstr ""
+
+#: includes/class-admin.php:2160
+#: includes/class-admin.php:2351
 msgid "You do not have permission to import attendants for this retreat."
 msgstr ""
 
-#: includes/class-admin.php:1788
-#: includes/class-admin.php:2431
+#: includes/class-admin.php:2189
+msgid "Only withdrawn attendants can be deleted, and only by retreat managers."
+msgstr ""
+
+#: includes/class-admin.php:2192
+#: includes/class-admin.php:3121
 msgid "Attendant deleted successfully."
 msgstr ""
 
-#: includes/class-admin.php:1790
-#: includes/class-admin.php:2433
+#: includes/class-admin.php:2194
+#: includes/class-admin.php:3123
 msgid "Error deleting attendant."
 msgstr ""
 
-#: includes/class-admin.php:1810
+#: includes/class-admin.php:2214
 msgid "Invalid retreat."
 msgstr ""
 
-#: includes/class-admin.php:1840
+#: includes/class-admin.php:2228
+msgid "This attendant has been withdrawn from the retreat and cannot be edited."
+msgstr ""
+
+#: includes/class-admin.php:2243
+#: includes/class-admin.php:2280
 msgid "Attendant updated successfully."
 msgstr ""
 
-#: includes/class-admin.php:1844
+#: includes/class-admin.php:2247
+#: includes/class-admin.php:2284
 msgid "Error updating attendant. Please check your data."
 msgstr ""
 
-#: includes/class-admin.php:1850
+#: includes/class-admin.php:2291
 msgid "Attendant created successfully."
 msgstr ""
 
-#: includes/class-admin.php:1854
+#: includes/class-admin.php:2295
 msgid "Error creating attendant. Please check your data."
 msgstr ""
 
-#: includes/class-admin.php:1877
+#: includes/class-admin.php:2361
 msgid "Please select a valid CSV file."
 msgstr ""
 
-#: includes/class-admin.php:1886
+#: includes/class-admin.php:2370
 msgid "CSV file is too large. Maximum size is 2MB."
 msgstr ""
 
-#: includes/class-admin.php:1896
+#: includes/class-admin.php:2380
 msgid "Unable to read CSV file."
 msgstr ""
 
-#: includes/class-admin.php:1913
+#: includes/class-admin.php:2399
 msgid "CSV file appears to be empty or invalid."
 msgstr ""
 
 #. translators: %s: List of missing field names
-#: includes/class-admin.php:1927
+#: includes/class-admin.php:2414
 #, php-format
 msgid "Required fields missing from CSV: %s"
 msgstr ""
 
 #. translators: %d: line number where the error occurred
-#: includes/class-admin.php:1950
+#: includes/class-admin.php:2437
 #, php-format
 msgid "Line %d: Invalid data format"
 msgstr ""
 
 #. translators: %d: line number where the error occurred
-#: includes/class-admin.php:1978
+#: includes/class-admin.php:2469
 #, php-format
 msgid "Line %d: Failed to update emergency contact for existing attendant"
 msgstr ""
 
 #. translators: %d: line number where the error occurred
-#: includes/class-admin.php:1987
+#: includes/class-admin.php:2480
 #, php-format
 msgid "Line %d: Failed to create attendant"
 msgstr ""
 
 #. translators: %d: Number of imported attendants
-#: includes/class-admin.php:1998
+#: includes/class-admin.php:2491
 #, php-format
 msgid "Successfully imported %d new attendants."
 msgstr ""
 
 #. translators: %d: Number of updated attendants
-#: includes/class-admin.php:2009
+#: includes/class-admin.php:2502
 #, php-format
 msgid "Successfully updated emergency contact information for %d existing attendants."
 msgstr ""
 
 #. translators: %d: Number of skipped attendants
-#: includes/class-admin.php:2020
+#: includes/class-admin.php:2513
 #, php-format
 msgid "%d rows were skipped due to data issues."
 msgstr ""
 
 #. translators: %d: Number of errors
-#: includes/class-admin.php:2030
+#: includes/class-admin.php:2523
 #, php-format
 msgid "%d rows had errors and were not imported."
 msgstr ""
 
-#: includes/class-admin.php:2036
+#: includes/class-admin.php:2529
 msgid "Error details:"
 msgstr ""
 
-#: includes/class-admin.php:2039
+#: includes/class-admin.php:2532
+#: includes/class-admin.php:2558
 msgid "...and more errors."
 msgstr ""
 
-#: includes/class-admin.php:2054
-#: includes/class-admin.php:2060
-#: includes/class-admin.php:3319
+#. translators: %d: Number of CSV rows that match withdrawn attendants
+#: includes/class-admin.php:2543
+#, php-format
+msgid "%d rows match withdrawn attendants and were not updated. Reactivate them first if you need to update their data."
+msgstr ""
+
+#. translators: %d: Number of custom field values that could not be imported
+#: includes/class-admin.php:2553
+#, php-format
+msgid "%d custom field values were not valid and were left unchanged."
+msgstr ""
+
+#: includes/class-admin.php:2571
+#: includes/class-admin.php:2577
+#: includes/class-admin.php:5403
 msgid "DD/MM/YYYY (Day/Month/Year)"
 msgstr ""
 
-#: includes/class-admin.php:2057
-#: includes/class-admin.php:3320
+#: includes/class-admin.php:2574
+#: includes/class-admin.php:5404
 msgid "MM/DD/YYYY (Month/Day/Year)"
 msgstr ""
 
 #. translators: %1$d: Number of ambiguous dates, %2$s: Current preference
-#: includes/class-admin.php:2066
+#: includes/class-admin.php:2583
 #, php-format
 msgid "Warning: %1$d ambiguous date(s) were interpreted using your current preference (%2$s)."
 msgstr ""
 
-#: includes/class-admin.php:2072
+#: includes/class-admin.php:2589
 msgid "Ambiguous dates found:"
 msgstr ""
 
-#: includes/class-admin.php:2075
+#: includes/class-admin.php:2592
 msgid "To avoid ambiguity in future imports, consider using YYYY-MM-DD format."
 msgstr ""
 
-#. translators: JSON string with list of allowed headers for field name.
-#: includes/class-admin.php:2097
-msgid "[\"name\", \"first name\"]"
-msgstr ""
-
-#. translators: JSON string with list of allowed headers for field surname
-#: includes/class-admin.php:2099
-msgid "[\"surname\", \"surnames\", \"last name\"]"
-msgstr ""
-
-#. translators: JSON string with list of allowed headers for field date_of_birth
-#: includes/class-admin.php:2101
-msgid "[\"date of birth\", \"birth date\", \"dob\", \"birthdate\"]"
-msgstr ""
-
-#. translators: JSON string with list of allowed headers for field emergency_contact_name
-#: includes/class-admin.php:2103
-msgid "[\"emergency contact name\", \"emergency name\", \"contact name\",\"emergency contact first name\", \"emergency first name\", \"contact first name\"]"
-msgstr ""
-
-#. translators: JSON string with list of allowed headers for field emergency_contact_surname
-#: includes/class-admin.php:2105
-msgid "[\"emergency contact surname\", \"emergency surname\", \"contact surname\", \"emergency contact last name\", \"emergency last name\", \"contact last name\"]"
-msgstr ""
-
-#. translators: JSON string with list of allowed headers for field emergency_contact_phone
-#: includes/class-admin.php:2107
-msgid "[\"emergency contact phone\", \"emergency phone\", \"contact phone\", \"phone\"]"
-msgstr ""
-
-#. translators: JSON string with list of allowed headers for field emergency_contact_email
-#: includes/class-admin.php:2109
-msgid "[\"emergency contact email\", \"emergency email\", \"contact email\", \"email\"]"
-msgstr ""
-
-#. translators: JSON string with list of allowed headers for field emergency_contact_relationship
-#: includes/class-admin.php:2111
-msgid "[\"emergency contact relationship\", \"relationship\", \"contact relationship\"]"
-msgstr ""
-
-#. translators: JSON string with list of allowed headers for field invited_by
-#: includes/class-admin.php:2113
-msgid "[\"invited by\", \"invited\", \"inviter\"]"
-msgstr ""
-
-#. translators: JSON string with list of allowed headers for field incompatibilities
-#: includes/class-admin.php:2115
-msgid "[\"incompatibilities\", \"incompatibility\", \"cannot be placed with\"]"
-msgstr ""
-
-#. translators: JSON string with list of allowed headers for field notes
-#: includes/class-admin.php:2117
-msgid "[\"notes\", \"note\", \"comments\", \"comment\"]"
-msgstr ""
-
-#: includes/class-admin.php:2172
-#: includes/class-admin.php:2696
-#: includes/class-admin.php:2802
-#: includes/class-admin.php:3087
-#: includes/class-admin.php:3280
-#: includes/class-attendant.php:488
+#: includes/class-admin.php:2632
+#: includes/class-admin.php:2831
+#: includes/class-admin.php:3693
+#: includes/class-admin.php:3811
+#: includes/class-admin.php:3852
+#: includes/class-admin.php:4142
+#: includes/class-admin.php:4454
+#: includes/class-attendant.php:556
 msgid "Surnames"
 msgstr ""
 
-#: includes/class-admin.php:2175
-#: includes/class-admin.php:2808
-#: includes/class-admin.php:3095
-#: includes/class-admin.php:3281
-#: includes/class-attendant.php:489
+#: includes/class-admin.php:2633
+#: includes/class-admin.php:2834
+#: includes/class-admin.php:3812
+#: includes/class-admin.php:3860
+#: includes/class-admin.php:4150
+#: includes/class-admin.php:4459
+#: includes/class-attendant.php:557
 msgid "Date of Birth"
 msgstr ""
 
-#: includes/class-admin.php:2178
-#: includes/class-admin.php:3103
-#: includes/class-admin.php:3282
-#: includes/class-attendant.php:490
+#: includes/class-admin.php:2634
+#: includes/class-admin.php:2837
+#: includes/class-admin.php:4158
+#: includes/class-attendant.php:558
 msgid "Emergency Contact Name"
 msgstr ""
 
-#: includes/class-admin.php:2181
-#: includes/class-admin.php:3111
-#: includes/class-admin.php:3283
-#: includes/class-attendant.php:491
+#: includes/class-admin.php:2635
+#: includes/class-admin.php:2840
+#: includes/class-admin.php:4166
+#: includes/class-attendant.php:559
 msgid "Emergency Contact Surname"
 msgstr ""
 
-#: includes/class-admin.php:2184
-#: includes/class-admin.php:3119
-#: includes/class-admin.php:3284
-#: includes/class-attendant.php:492
+#: includes/class-admin.php:2636
+#: includes/class-admin.php:2843
+#: includes/class-admin.php:4174
+#: includes/class-attendant.php:560
 msgid "Emergency Contact Phone"
 msgstr ""
 
-#: includes/class-admin.php:2460
-msgid "Confirmation text verification failed. Deletion cancelled for security."
+#: includes/class-admin.php:2637
+#: includes/class-admin.php:4183
+#: includes/class-attendant.php:561
+msgid "Emergency Contact Email"
 msgstr ""
 
-#: includes/class-admin.php:2465
-#: includes/class-admin.php:4322
-#: includes/class-admin.php:4911
-msgid "You do not have permission to perform this action."
+#: includes/class-admin.php:2638
+#: includes/class-admin.php:4192
+#: includes/class-admin.php:5370
+#: includes/class-attendant.php:562
+msgid "Emergency Contact Relationship"
 msgstr ""
 
-#. translators: %d: Number of attendants deleted
-#: includes/class-admin.php:2476
+#: includes/class-admin.php:2639
+#: includes/class-admin.php:3697
+#: includes/class-admin.php:3814
+#: includes/class-admin.php:3876
+#: includes/class-admin.php:4201
+#: includes/class-admin.php:4479
+#: includes/class-admin.php:5371
+#: includes/class-attendant.php:563
+msgid "Invited By"
+msgstr ""
+
+#: includes/class-admin.php:2640
+#: includes/class-admin.php:3701
+#: includes/class-admin.php:3815
+#: includes/class-admin.php:3884
+#: includes/class-admin.php:4210
+#: includes/class-admin.php:4484
+#: includes/class-admin.php:5372
+#: includes/class-attendant.php:564
+msgid "Incompatibilities"
+msgstr ""
+
+#: includes/class-admin.php:2641
+#: includes/class-admin.php:3710
+#: includes/class-admin.php:3893
+#: includes/class-admin.php:4220
+#: includes/class-admin.php:4490
+#: includes/class-attendant.php:569
+msgid "Notes"
+msgstr ""
+
+#. translators: JSON array of CSV column headers that map to the "name" field when importing attendants. Translate each value to the equivalent column header in your language. Keep the JSON format: ["value1", "value2"]. Example for Spanish: ["nombre", "nombre de pila"]
+#: includes/class-admin.php:2660
+msgid "[\"name\", \"first name\"]"
+msgstr ""
+
+#. translators: JSON array of CSV column headers that map to the "surnames" field when importing attendants. Translate each value to the equivalent column header in your language. Keep the JSON format: ["value1", "value2"]. Example for Spanish: ["apellido", "apellidos"]
+#: includes/class-admin.php:2664
+msgid "[\"surname\", \"surnames\", \"last name\"]"
+msgstr ""
+
+#. translators: JSON array of CSV column headers that map to the "date of birth" field when importing attendants. Translate each value to the equivalent column header in your language. Keep the JSON format: ["value1", "value2"]. Example for Spanish: ["fecha de nacimiento", "nacimiento"]
+#: includes/class-admin.php:2668
+msgid "[\"date of birth\", \"birth date\", \"dob\", \"birthdate\"]"
+msgstr ""
+
+#. translators: JSON array of CSV column headers that map to the "emergency contact name" field when importing attendants. Translate each value to the equivalent column header in your language. Keep the JSON format: ["value1", "value2"]. Example for Spanish: ["nombre del contacto de emergencia", "nombre de emergencia", "nombre del contacto"]
+#: includes/class-admin.php:2672
+msgid "[\"emergency contact name\", \"emergency name\", \"contact name\",\"emergency contact first name\", \"emergency first name\", \"contact first name\"]"
+msgstr ""
+
+#. translators: JSON array of CSV column headers that map to the "emergency contact surname" field when importing attendants. Translate each value to the equivalent column header in your language. Keep the JSON format: ["value1", "value2"]. Example for Spanish: ["apellido del contacto de emergencia", "apellido de emergencia", "apellido del contacto"]
+#: includes/class-admin.php:2676
+msgid "[\"emergency contact surname\", \"emergency surname\", \"contact surname\", \"emergency contact last name\", \"emergency last name\", \"contact last name\"]"
+msgstr ""
+
+#. translators: JSON array of CSV column headers that map to the "emergency contact phone" field when importing attendants. Translate each value to the equivalent column header in your language. Keep the JSON format: ["value1", "value2"]. Example for Spanish: ["teléfono de emergencia", "teléfono del contacto", "teléfono"]
+#: includes/class-admin.php:2680
+msgid "[\"emergency contact phone\", \"emergency phone\", \"contact phone\", \"phone\"]"
+msgstr ""
+
+#. translators: JSON array of CSV column headers that map to the "emergency contact email" field when importing attendants. Translate each value to the equivalent column header in your language. Keep the JSON format: ["value1", "value2"]. Example for Spanish: ["email de emergencia", "email del contacto", "email"]
+#: includes/class-admin.php:2684
+msgid "[\"emergency contact email\", \"emergency email\", \"contact email\", \"email\"]"
+msgstr ""
+
+#. translators: JSON array of CSV column headers that map to the "emergency contact relationship" field when importing attendants. Translate each value to the equivalent column header in your language. Keep the JSON format: ["value1", "value2"]. Example for Spanish: ["parentesco del contacto de emergencia", "parentesco", "relación"]
+#: includes/class-admin.php:2688
+msgid "[\"emergency contact relationship\", \"relationship\", \"contact relationship\"]"
+msgstr ""
+
+#. translators: JSON array of CSV column headers that map to the "invited by" field when importing attendants. Translate each value to the equivalent column header in your language. Keep the JSON format: ["value1", "value2"]. Example for Spanish: ["invitado por", "invitador"]
+#: includes/class-admin.php:2692
+msgid "[\"invited by\", \"invited\", \"inviter\"]"
+msgstr ""
+
+#. translators: JSON array of CSV column headers that map to the "incompatibilities" field when importing attendants. Translate each value to the equivalent column header in your language. Keep the JSON format: ["value1", "value2"]. Example for Spanish: ["incompatibilidades", "incompatibilidad", "no puede estar con"]
+#: includes/class-admin.php:2696
+msgid "[\"incompatibilities\", \"incompatibility\", \"cannot be placed with\"]"
+msgstr ""
+
+#. translators: JSON array of CSV column headers that map to the "notes" field when importing attendants. Translate each value to the equivalent column header in your language. Keep the JSON format: ["value1", "value2"]. Example for Spanish: ["notas", "nota", "comentarios", "comentario"]
+#: includes/class-admin.php:2700
+msgid "[\"notes\", \"note\", \"comments\", \"comment\"]"
+msgstr ""
+
+#. translators: 1: line number, 2: error message
+#: includes/class-admin.php:2804
 #, php-format
-msgid "Successfully deleted all %d attendants and their messages from this retreat."
+msgid "Line %1$d: %2$s"
 msgstr ""
 
-#: includes/class-admin.php:2481
-msgid "Error deleting attendants. Please try again."
+#: includes/class-admin.php:3117
+msgid "Only withdrawn attendants can be deleted. Withdraw the attendant first."
+msgstr ""
+
+#: includes/class-admin.php:3140
+msgid "This attendant has already been withdrawn."
+msgstr ""
+
+#: includes/class-admin.php:3144
+msgid "Error withdrawing the attendant. Please try again."
+msgstr ""
+
+#: includes/class-admin.php:3147
+msgid "Attendant withdrawn. You can find them in the \"Withdrawn attendants\" tab."
+msgstr ""
+
+#: includes/class-admin.php:3163
+msgid "This attendant has not been withdrawn."
+msgstr ""
+
+#: includes/class-admin.php:3167
+msgid "Error reactivating the attendant. Please try again."
+msgstr ""
+
+#: includes/class-admin.php:3170
+msgid "Attendant reactivated."
+msgstr ""
+
+#: includes/class-admin.php:3186
+#: includes/class-admin.php:4702
+#: includes/class-admin.php:5221
+#: includes/class-admin.php:5454
+msgid "Attendant not found."
+msgstr ""
+
+#: includes/class-admin.php:3221
+msgid "Confirmation text verification failed. Action cancelled for security."
+msgstr ""
+
+#: includes/class-admin.php:3226
+msgid "Error withdrawing attendants. Please try again."
+msgstr ""
+
+#. translators: %d: Number of withdrawn attendants
+#: includes/class-admin.php:3240
+#, php-format
+msgid "%d attendants have been withdrawn. You can find them in the \"Withdrawn attendants\" tab."
+msgstr ""
+
+#. translators: %s: name of the main language, e.g. "Español"
+#: includes/class-admin.php:3262
+#, php-format
+msgid "The texts above are written in the main language of the site (%s). Visitors can see the letters form in other languages; write here a version of these texts for each language you want. Empty fields use the automatic translation, if it is configured in the global settings, or the original text otherwise."
+msgstr ""
+
+#: includes/class-admin.php:3269
+msgid "Configure automatic translation"
+msgstr ""
+
+#: includes/class-admin.php:3286
+msgid "(written)"
+msgstr ""
+
+#: includes/class-admin.php:3292
+msgid "Translate automatically"
+msgstr ""
+
+#: includes/class-admin.php:3294
+msgid "Fills these fields from the texts above, so you can review them before saving."
+msgstr ""
+
+#: includes/class-admin.php:3335
+msgid "Language not supported."
+msgstr ""
+
+#: includes/class-admin.php:3344
+msgid "There are no texts to translate. Write the custom message or the legal disclaimer first."
+msgstr ""
+
+#: includes/class-admin.php:3379
+msgid "A retreat can only be emptied after its end date."
+msgstr ""
+
+#: includes/class-admin.php:3383
+msgid "Retreat name verification failed. Action cancelled for security."
+msgstr ""
+
+#: includes/class-admin.php:3390
+msgid "Error emptying the retreat. Please try again."
+msgstr ""
+
+#. translators: %d: Number of deleted attendants
+#: includes/class-admin.php:3404
+#, php-format
+msgid "Retreat emptied: %d attendants have been deleted together with their letters. The retreat and its settings are kept."
 msgstr ""
 
 #. translators: %1$s is the retreat name, %2$s is the current date (YYYY-MM-DD)
-#: includes/class-admin.php:2504
+#: includes/class-admin.php:3429
 #, php-format
 msgid "retreat-%1$s-attendants-%2$s.csv"
 msgstr ""
 
 #. translators: %s: Retreat name
-#: includes/class-admin.php:2632
+#: includes/class-admin.php:3601
 #, php-format
 msgid "Attendants for %s"
 msgstr ""
 
-#: includes/class-admin.php:2639
-#: includes/class-admin.php:3057
+#: includes/class-admin.php:3608
+#: includes/class-admin.php:4101
 msgid "Add New Attendant"
 msgstr ""
 
-#: includes/class-admin.php:2658
+#. translators: %d: number of active attendants
+#: includes/class-admin.php:3628
+#, php-format
+msgid "Attendants (%d)"
+msgstr ""
+
+#. translators: %d: number of withdrawn attendants
+#: includes/class-admin.php:3637
+#, php-format
+msgid "Withdrawn attendants (%d)"
+msgstr ""
+
+#: includes/class-admin.php:3652
 msgid "Search Attendants:"
 msgstr ""
 
-#: includes/class-admin.php:2660
+#: includes/class-admin.php:3654
 msgid "Search Attendants"
 msgstr ""
 
-#: includes/class-admin.php:2670
+#: includes/class-admin.php:3664
 msgid "Filters"
 msgstr ""
 
-#: includes/class-admin.php:2672
+#: includes/class-admin.php:3666
 msgid "(Active)"
 msgstr ""
 
-#: includes/class-admin.php:2700
-#: includes/class-admin.php:2820
-#: includes/class-admin.php:3146
-#: includes/class-admin.php:3287
-#: includes/class-attendant.php:495
-msgid "Invited By"
-msgstr ""
-
-#: includes/class-admin.php:2704
-#: includes/class-admin.php:2826
-#: includes/class-admin.php:3155
-#: includes/class-admin.php:3288
-#: includes/class-attendant.php:496
-msgid "Incompatibilities"
-msgstr ""
-
-#: includes/class-admin.php:2708
-#: includes/class-admin.php:2814
+#: includes/class-admin.php:3705
+#: includes/class-admin.php:3813
+#: includes/class-admin.php:3868
+#: includes/class-admin.php:4464
 msgid "Emergency Contact"
 msgstr ""
 
-#: includes/class-admin.php:2713
-#: includes/class-admin.php:2833
-#: includes/class-admin.php:3165
-#: includes/class-attendant.php:501
-msgid "Notes"
-msgstr ""
-
-#: includes/class-admin.php:2719
-#: includes/class-admin.php:2841
-#: includes/class-admin.php:3176
+#: includes/class-admin.php:3716
+#: includes/class-admin.php:3903
+#: includes/class-admin.php:4231
+#: includes/class-admin.php:4490
 msgid "Internal Notes"
 msgstr ""
 
-#: includes/class-admin.php:2726
+#: includes/class-admin.php:3723
 msgid "Apply Filters"
 msgstr ""
 
-#: includes/class-admin.php:2729
+#: includes/class-admin.php:3726
 msgid "Clear Filters"
 msgstr ""
 
 #. translators: %d: number of attendants
-#: includes/class-admin.php:2745
+#: includes/class-admin.php:3742
 #, php-format
 msgid "Total attendants: %d"
 msgstr ""
 
-#: includes/class-admin.php:2747
+#: includes/class-admin.php:3744
 msgid "Messages:"
 msgstr ""
 
 #. translators: 1: total messages count, 2: non-printed messages count
-#: includes/class-admin.php:2751
+#: includes/class-admin.php:3748
 #, php-format
 msgid "%1$d received (%2$d unprinted)"
 msgstr ""
 
-#: includes/class-admin.php:2758
+#: includes/class-admin.php:3759
 msgid "Export CSV"
 msgstr ""
 
-#: includes/class-admin.php:2761
-#: includes/class-admin.php:3270
+#: includes/class-admin.php:3762
+#: includes/class-admin.php:5334
 msgid "Import CSV"
 msgstr ""
 
-#: includes/class-admin.php:2772
-msgid "Delete All Attendants"
+#: includes/class-admin.php:3807
+#: includes/class-admin.php:5687
+msgid "Sort by:"
 msgstr ""
 
-#: includes/class-admin.php:2851
+#: includes/class-admin.php:3809
+#: includes/class-admin.php:5689
+msgid "Select..."
+msgstr ""
+
+#: includes/class-admin.php:3816
+#: includes/class-admin.php:3997
+#: includes/class-admin.php:4017
+#: includes/class-admin.php:4264
+#: includes/class-admin.php:4495
+msgid "Messages"
+msgstr ""
+
+#: includes/class-admin.php:3817
+#: includes/class-admin.php:3932
+#: includes/class-admin.php:4524
+msgid "Physical Letters"
+msgstr ""
+
+#: includes/class-admin.php:3818
+#: includes/class-admin.php:3940
+#: includes/class-admin.php:4529
+msgid "Total Letters"
+msgstr ""
+
+#: includes/class-admin.php:3830
+msgid "Drag the column headers by their handle to reorder the columns. The order is saved for everyone who uses this retreat."
+msgstr ""
+
+#: includes/class-admin.php:3832
+msgid "Restore default order"
+msgstr ""
+
+#: includes/class-admin.php:3915
 msgid "Messages (non-printed)"
 msgstr ""
 
-#: includes/class-admin.php:2853
+#: includes/class-admin.php:3917
 msgid "Messages (total)"
 msgstr ""
 
-#: includes/class-admin.php:2909
-#: includes/class-admin.php:2918
+#: includes/class-admin.php:3946
+#: includes/class-admin.php:4534
+msgid "Status"
+msgstr ""
+
+#: includes/class-admin.php:4002
+msgid "Reactivate"
+msgstr ""
+
+#: includes/class-admin.php:4005
+msgid "Delete Permanently"
+msgstr ""
+
+#: includes/class-admin.php:4030
+#: includes/class-admin.php:4289
+msgid "Generate Message URL"
+msgstr ""
+
+#: includes/class-admin.php:4034
+#: includes/class-admin.php:4296
+msgid "Copy Message URL"
+msgstr ""
+
+#: includes/class-admin.php:4041
+msgid "Withdraw"
+msgstr ""
+
+#: includes/class-admin.php:4052
+msgid "No attendants found matching your criteria."
+msgstr ""
+
+#: includes/class-admin.php:4054
+msgid "No attendants have been withdrawn from this retreat."
+msgstr ""
+
+#: includes/class-admin.php:4056
+msgid "No attendants found for this retreat."
+msgstr ""
+
+#: includes/class-admin.php:4059
+msgid "Add the first attendant"
+msgstr ""
+
+#: includes/class-admin.php:4072
+#: includes/class-admin.php:5815
+msgid "Note:"
+msgstr ""
+
+#. translators: %1$d: current page, %2$d: total pages, %3$d: items per page
+#: includes/class-admin.php:4076
+#, php-format
+msgid "Showing page %1$d of %2$d. There are more attendants available. Use the pagination controls above to view all %3$d attendants per page."
+msgstr ""
+
+#: includes/class-admin.php:4101
+msgid "Edit Attendant"
+msgstr ""
+
+#: includes/class-admin.php:4124
+msgid "As a message manager you can update the physical letters received, the custom fields you are allowed to edit and the contact log. The rest of the data is read-only."
+msgstr ""
+
+#: includes/class-admin.php:4166
+#: includes/class-admin.php:4183
+#: includes/class-admin.php:4192
+#: includes/class-admin.php:4201
+#: includes/class-admin.php:4210
+#: includes/class-admin.php:4220
+#: includes/class-admin.php:4231
+msgid "optional"
+msgstr ""
+
+#: includes/class-admin.php:4178
+msgid "Enter phone number with area code."
+msgstr ""
+
+#: includes/class-admin.php:4187
+msgid "Enter email address for emergency contact."
+msgstr ""
+
+#: includes/class-admin.php:4196
+msgid "Relationship to the emergency contact (e.g., husband, friend, daughter)."
+msgstr ""
+
+#: includes/class-admin.php:4205
+msgid "Name of the person who invited this attendant."
+msgstr ""
+
+#: includes/class-admin.php:4214
+msgid "Names of other attendants they should not be placed with."
+msgstr ""
+
+#: includes/class-admin.php:4224
+msgid "Optional notes for this attendant."
+msgstr ""
+
+#: includes/class-admin.php:4235
+msgid "Optional internal notes for this attendant. This field will NOT be imported or exported via CSV."
+msgstr ""
+
+#: includes/class-admin.php:4241
+msgid "Physical Letters Received"
+msgstr ""
+
+#: includes/class-admin.php:4245
+msgid "Number of paper letters received for this attendant outside the application. They are added to the messages received to compute the total letters."
+msgstr ""
+
+#. translators: %d: Number of messages
+#: includes/class-admin.php:4272
+#, php-format
+msgid "View %d message"
+msgid_plural "View %d messages"
+msgstr[0] ""
+msgstr[1] ""
+
+#: includes/class-admin.php:4279
+msgid "No messages received yet."
+msgstr ""
+
+#: includes/class-admin.php:4284
+#: includes/class-attendant.php:565
+msgid "Message URL"
+msgstr ""
+
+#: includes/class-admin.php:4292
+msgid "Generate a secure URL that can be shared with this attendant to receive confidential messages."
+msgstr ""
+
+#: includes/class-admin.php:4299
+msgid "Share this secure URL with the attendant to receive confidential messages."
+msgstr ""
+
+#: includes/class-admin.php:4308
+msgid "Update Attendant"
+msgstr ""
+
+#: includes/class-admin.php:4308
+msgid "Add Attendant"
+msgstr ""
+
+#: includes/class-admin.php:4372
+msgid "Drag to reorder"
+msgstr ""
+
+#: includes/class-admin.php:4407
+msgid "Error saving the column order."
+msgstr ""
+
+#: includes/class-admin.php:4432
 msgid "N/A"
 msgstr ""
 
-#: includes/class-admin.php:2928
-#: includes/class-admin.php:2939
+#: includes/class-admin.php:4433
 msgid "No notes"
 msgstr ""
 
 #. translators: %d: Number of messages
-#: includes/class-admin.php:2950
+#: includes/class-admin.php:4502
 #, php-format
 msgid "%d message"
 msgid_plural "%d messages"
@@ -1268,1336 +1828,1632 @@ msgstr[0] ""
 msgstr[1] ""
 
 #. translators: %d: Number of non-printed messages
-#: includes/class-admin.php:2957
+#: includes/class-admin.php:4509
 #, php-format
 msgid " (%d non-printed)"
 msgstr ""
 
-#: includes/class-admin.php:2964
+#: includes/class-admin.php:4518
 msgid "No messages"
 msgstr ""
 
-#: includes/class-admin.php:2976
-#: includes/class-admin.php:3197
-msgid "Messages"
+#: includes/class-admin.php:4536
+msgid "Withdrawn"
 msgstr ""
 
-#: includes/class-admin.php:2989
-#: includes/class-admin.php:3222
-msgid "Generate Message URL"
-msgstr ""
-
-#: includes/class-admin.php:2993
-#: includes/class-admin.php:3229
-msgid "Copy Message URL"
-msgstr ""
-
-#: includes/class-admin.php:3010
-msgid "No attendants found matching your criteria."
-msgstr ""
-
-#: includes/class-admin.php:3012
-msgid "No attendants found for this retreat."
-msgstr ""
-
-#: includes/class-admin.php:3015
-msgid "Add the first attendant"
-msgstr ""
-
-#: includes/class-admin.php:3028
-#: includes/class-admin.php:3651
-msgid "Note:"
-msgstr ""
-
-#. translators: %1$d: current page, %2$d: total pages, %3$d: items per page
-#: includes/class-admin.php:3032
+#. translators: 1: date of withdrawal, 2: user who withdrew the attendant
+#: includes/class-admin.php:4539
 #, php-format
-msgid "Showing page %1$d of %2$d. There are more attendants available. Use the pagination controls above to view all %3$d attendants per page."
+msgid "On %1$s by %2$s"
 msgstr ""
 
-#: includes/class-admin.php:3057
-msgid "Edit Attendant"
-msgstr ""
-
-#: includes/class-admin.php:3111
-#: includes/class-admin.php:3128
-#: includes/class-admin.php:3137
-#: includes/class-admin.php:3146
-#: includes/class-admin.php:3155
-#: includes/class-admin.php:3165
-#: includes/class-admin.php:3176
-msgid "optional"
-msgstr ""
-
-#: includes/class-admin.php:3123
-msgid "Enter phone number with area code."
-msgstr ""
-
-#: includes/class-admin.php:3128
-#: includes/class-admin.php:3285
-#: includes/class-attendant.php:493
-msgid "Emergency Contact Email"
-msgstr ""
-
-#: includes/class-admin.php:3132
-msgid "Enter email address for emergency contact."
-msgstr ""
-
-#: includes/class-admin.php:3137
-#: includes/class-admin.php:3286
-#: includes/class-attendant.php:494
-msgid "Emergency Contact Relationship"
-msgstr ""
-
-#: includes/class-admin.php:3141
-msgid "Relationship to the emergency contact (e.g., husband, friend, daughter)."
-msgstr ""
-
-#: includes/class-admin.php:3150
-msgid "Name of the person who invited this attendant."
-msgstr ""
-
-#: includes/class-admin.php:3159
-msgid "Names of other attendants they should not be placed with."
-msgstr ""
-
-#: includes/class-admin.php:3169
-msgid "Optional notes for this attendant."
-msgstr ""
-
-#: includes/class-admin.php:3180
-msgid "Optional internal notes for this attendant. This field will NOT be imported or exported via CSV."
-msgstr ""
-
-#. translators: %d: Number of messages
-#: includes/class-admin.php:3205
+#. translators: %d: number of contact log entries
+#: includes/class-admin.php:4551
 #, php-format
-msgid "View %d message"
-msgid_plural "View %d messages"
+msgid "%d entry"
+msgid_plural "%d entries"
 msgstr[0] ""
 msgstr[1] ""
 
-#: includes/class-admin.php:3212
-msgid "No messages received yet."
+#: includes/class-admin.php:4612
+msgid "Letters:"
 msgstr ""
 
-#: includes/class-admin.php:3217
-#: includes/class-attendant.php:497
-msgid "Message URL"
+#. translators: 1: total letters count, 2: letters received through the app, 3: physical letters count
+#: includes/class-admin.php:4614
+#, php-format
+msgid "%1$d in total (%2$d via app, %3$d physical)"
 msgstr ""
 
-#: includes/class-admin.php:3225
-msgid "Generate a secure URL that can be shared with this attendant to receive confidential messages."
+#: includes/class-admin.php:4633
+msgid "Click to edit"
 msgstr ""
 
-#: includes/class-admin.php:3232
-msgid "Share this secure URL with the attendant to receive confidential messages."
+#: includes/class-admin.php:4717
+msgid "You do not have permission to edit this field."
 msgstr ""
 
-#: includes/class-admin.php:3241
-msgid "Update Attendant"
+#: includes/class-admin.php:4728
+msgid "The number of physical letters must be a whole number, zero or greater."
 msgstr ""
 
-#: includes/class-admin.php:3241
-msgid "Add Attendant"
+#: includes/class-admin.php:4819
+msgid "— Select —"
 msgstr ""
 
-#: includes/class-admin.php:3262
+#: includes/class-admin.php:4848
+msgid "Custom Attendant Fields"
+msgstr ""
+
+#: includes/class-admin.php:4850
+msgid "Define additional fields for the attendants of this retreat. The slug identifies the field in CSV files and can be used as a placeholder in the message request template, e.g. [my_field]."
+msgstr ""
+
+#: includes/class-admin.php:4860
+msgid "Add Field"
+msgstr ""
+
+#: includes/class-admin.php:4881
+msgid "Retreat managers only"
+msgstr ""
+
+#: includes/class-admin.php:4882
+msgid "Retreat managers and message managers"
+msgstr ""
+
+#: includes/class-admin.php:4894
+msgid "Slug"
+msgstr ""
+
+#: includes/class-admin.php:4898
+#: includes/class-admin.php:5691
+#: includes/class-admin.php:5708
+#: includes/class-admin.php:5738
+msgid "Type"
+msgstr ""
+
+#: includes/class-admin.php:4908
+msgid "Options (one per line)"
+msgstr ""
+
+#: includes/class-admin.php:4914
+msgid "Visible to"
+msgstr ""
+
+#: includes/class-admin.php:4922
+msgid "Editable by"
+msgstr ""
+
+#: includes/class-admin.php:4933
+msgid "Show in attendants list"
+msgstr ""
+
+#: includes/class-admin.php:4937
+msgid "Sortable"
+msgstr ""
+
+#: includes/class-admin.php:4941
+msgid "Import from CSV"
+msgstr ""
+
+#: includes/class-admin.php:4945
+msgid "Export to CSV"
+msgstr ""
+
+#: includes/class-admin.php:4947
+msgid "Remove field"
+msgstr ""
+
+#: includes/class-admin.php:4964
+msgid "Record the contacts and conversations held with this attendant's contact person."
+msgstr ""
+
+#: includes/class-admin.php:4984
+#: includes/class-custom-field.php:95
+msgid "Date"
+msgstr ""
+
+#: includes/class-admin.php:4990
+msgid "Description"
+msgstr ""
+
+#: includes/class-admin.php:4995
+msgid "Add Entry"
+msgstr ""
+
+#: includes/class-admin.php:5059
+msgid "No contact log entries yet."
+msgstr ""
+
+#. translators: %d: number of deleted contact log entries
+#: includes/class-admin.php:5073
+#, php-format
+msgid "Deleted entries (%d)"
+msgstr ""
+
+#: includes/class-admin.php:5108
+msgid "Written on"
+msgstr ""
+
+#. translators: 1: date and time of the last edit, 2: user who made it
+#: includes/class-admin.php:5113
+#, php-format
+msgid "Last edited on %1$s by %2$s"
+msgstr ""
+
+#: includes/class-admin.php:5118
+msgid "(edited)"
+msgstr ""
+
+#. translators: 1: date and time of the deletion, 2: user who deleted the entry
+#: includes/class-admin.php:5125
+#, php-format
+msgid "Deleted on %1$s by %2$s"
+msgstr ""
+
+#. translators: %d: minutes left to edit the entry
+#: includes/class-admin.php:5144
+#, php-format
+msgid "(editable for %d more minute)"
+msgid_plural "(editable for %d more minutes)"
+msgstr[0] ""
+msgstr[1] ""
+
+#: includes/class-admin.php:5158
+msgid "Change history"
+msgstr ""
+
+#: includes/class-admin.php:5165
+msgid "Created"
+msgstr ""
+
+#: includes/class-admin.php:5166
+msgid "Edited"
+msgstr ""
+
+#: includes/class-admin.php:5167
+msgid "Deleted"
+msgstr ""
+
+#: includes/class-admin.php:5199
+#: includes/class-admin.php:6095
+#: includes/class-admin.php:6538
+#: includes/class-print-log.php:503
+msgid "Unknown User"
+msgstr ""
+
+#: includes/class-admin.php:5225
+#: includes/class-admin.php:5459
+#: includes/class-admin.php:6657
+msgid "You do not have permission to access this retreat."
+msgstr ""
+
+#: includes/class-admin.php:5247
+msgid "Please enter a valid date."
+msgstr ""
+
+#: includes/class-admin.php:5270
+#: includes/class-admin.php:5291
+msgid "Error saving the contact log entry."
+msgstr ""
+
+#: includes/class-admin.php:5287
+msgid "You cannot edit this entry."
+msgstr ""
+
+#: includes/class-admin.php:5307
+msgid "You cannot delete this entry."
+msgstr ""
+
+#: includes/class-admin.php:5311
+msgid "Error deleting the contact log entry."
+msgstr ""
+
+#: includes/class-admin.php:5326
 msgid "Import Attendants from CSV"
 msgstr ""
 
-#: includes/class-admin.php:3276
+#: includes/class-admin.php:5340
 msgid "CSV Import Instructions"
 msgstr ""
 
-#: includes/class-admin.php:3277
+#: includes/class-admin.php:5341
 msgid "Your CSV file should contain the following required columns. Column order is flexible and the system will automatically identify columns by their names:"
 msgstr ""
 
-#: includes/class-admin.php:3279
-msgid "(or \"Nombre\")"
+#. translators: %s: column name in English
+#: includes/class-admin.php:5361
+#, php-format
+msgid "(optional, or \"%s\")"
 msgstr ""
 
-#: includes/class-admin.php:3280
-msgid "(or \"Apellidos\")"
+#. translators: %s: column name in English
+#: includes/class-admin.php:5363
+#, php-format
+msgid "(or \"%s\")"
 msgstr ""
 
-#: includes/class-admin.php:3281
-msgid "(or \"Fecha de Nacimiento\")"
-msgstr ""
-
-#: includes/class-admin.php:3282
-msgid "(or \"Nombre del Contacto de Emergencia\")"
-msgstr ""
-
-#: includes/class-admin.php:3283
-msgid "(or \"Apellido del Contacto de Emergencia\")"
-msgstr ""
-
-#: includes/class-admin.php:3284
-msgid "(or \"Teléfono del Contacto de Emergencia\")"
-msgstr ""
-
-#: includes/class-admin.php:3285
-msgid "(optional, or \"Correo del Contacto de Emergencia\")"
-msgstr ""
-
-#: includes/class-admin.php:3286
-#: includes/class-admin.php:3287
-#: includes/class-admin.php:3288
+#: includes/class-admin.php:5365
+#: includes/class-admin.php:5370
+#: includes/class-admin.php:5371
+#: includes/class-admin.php:5372
 msgid "(optional)"
 msgstr ""
 
-#: includes/class-admin.php:3290
+#: includes/class-admin.php:5374
 msgid "Additional features:"
 msgstr ""
 
-#: includes/class-admin.php:3292
+#: includes/class-admin.php:5376
 msgid "Column order can be any order"
 msgstr ""
 
-#: includes/class-admin.php:3293
+#: includes/class-admin.php:5377
 msgid "Extra columns are allowed and will be ignored"
 msgstr ""
 
-#: includes/class-admin.php:3294
+#: includes/class-admin.php:5378
 msgid "Date formats supported: YYYY-MM-DD, DD/MM/YYYY, MM/DD/YYYY, DD-MM-YYYY, MM-DD-YYYY, DD.MM.YYYY"
 msgstr ""
 
-#: includes/class-admin.php:3295
-msgid "Column names can be in English or Spanish"
+#: includes/class-admin.php:5379
+msgid "Column names can be in English or in the language of the panel"
 msgstr ""
 
-#: includes/class-admin.php:3296
+#: includes/class-admin.php:5380
 msgid "The first row must contain column headers"
 msgstr ""
 
-#: includes/class-admin.php:3299
+#: includes/class-admin.php:5383
 msgid "Important Note about Date Formats:"
 msgstr ""
 
-#: includes/class-admin.php:3300
+#: includes/class-admin.php:5384
 msgid "For ambiguous dates like \"01/10/2025\", the system cannot determine if this means \"January 10th\" or \"October 1st\". To avoid confusion:"
 msgstr ""
 
-#: includes/class-admin.php:3302
+#: includes/class-admin.php:5386
 msgid "Use unambiguous formats like YYYY-MM-DD (2025-01-10)"
 msgstr ""
 
-#: includes/class-admin.php:3303
+#: includes/class-admin.php:5387
 msgid "Set your preferred date format below to ensure consistent interpretation"
 msgstr ""
 
-#: includes/class-admin.php:3314
+#: includes/class-admin.php:5398
 msgid "Date Format Preference"
 msgstr ""
 
-#: includes/class-admin.php:3323
+#: includes/class-admin.php:5407
 msgid "This preference is used to interpret ambiguous dates like \"01/10/2025\". Unambiguous dates are always parsed correctly regardless of this setting."
 msgstr ""
 
-#: includes/class-admin.php:3329
+#: includes/class-admin.php:5413
 msgid "CSV File"
 msgstr ""
 
-#: includes/class-admin.php:3333
+#: includes/class-admin.php:5417
 msgid "Select a CSV file to import. Maximum file size: 2MB."
 msgstr ""
 
-#: includes/class-admin.php:3340
+#: includes/class-admin.php:5424
 msgid "Import Attendants"
 msgstr ""
 
-#: includes/class-admin.php:3364
+#: includes/class-admin.php:5448
 msgid "Invalid attendant ID."
 msgstr ""
 
-#: includes/class-admin.php:3370
-msgid "Attendant not found."
-msgstr ""
-
-#: includes/class-admin.php:3391
+#: includes/class-admin.php:5480
 msgid "Failed to generate message URL."
 msgstr ""
 
-#: includes/class-admin.php:3397
+#: includes/class-admin.php:5486
 msgid "Message URL generated successfully."
 msgstr ""
 
 #. translators: %s: Attendant name
-#: includes/class-admin.php:3471
+#: includes/class-admin.php:5566
 #, php-format
 msgid "Messages for %s"
 msgstr ""
 
-#: includes/class-admin.php:3500
+#: includes/class-admin.php:5595
 msgid "Security Notice:"
 msgstr ""
 
-#: includes/class-admin.php:3500
+#: includes/class-admin.php:5595
 msgid "Message content is encrypted and can only be viewed when printed. This page shows metadata only for privacy and security compliance."
 msgstr ""
 
-#: includes/class-admin.php:3511
+#: includes/class-admin.php:5606
+msgid "This attendant has been withdrawn. You can return by email the letters whose sender gave their address; once returned, they are deleted from the system."
+msgstr ""
+
+#. translators: %d: number of letters that can be returned
+#: includes/class-admin.php:5612
+#, php-format
+msgid "Return all by email (%d)"
+msgstr ""
+
+#: includes/class-admin.php:5630
 msgid "All Types"
 msgstr ""
 
-#: includes/class-admin.php:3512
+#: includes/class-admin.php:5631
 msgid "Text Messages"
 msgstr ""
 
-#: includes/class-admin.php:3513
+#: includes/class-admin.php:5632
 msgid "Messages with Files"
 msgstr ""
 
-#: includes/class-admin.php:3516
+#: includes/class-admin.php:5635
 msgid "Filter"
 msgstr ""
 
-#: includes/class-admin.php:3520
+#: includes/class-admin.php:5639
 msgid "Search Messages:"
 msgstr ""
 
-#: includes/class-admin.php:3521
+#: includes/class-admin.php:5640
 msgid "Search by sender..."
 msgstr ""
 
-#: includes/class-admin.php:3522
+#: includes/class-admin.php:5641
 msgid "Search Messages"
 msgstr ""
 
 #. translators: %d: number of messages
-#: includes/class-admin.php:3533
+#: includes/class-admin.php:5652
 #, php-format
 msgid "Total messages: %d"
 msgstr ""
 
-#: includes/class-admin.php:3552
-#: includes/class-dfx-parish-retreat-letters.php:1509
+#: includes/class-admin.php:5690
+#: includes/class-admin.php:5702
+#: includes/class-admin.php:5732
+#: includes/class-dfx-parish-retreat-letters.php:1864
+#: includes/class-dfx-parish-retreat-letters.php:1983
+#: includes/class-dfx-parish-retreat-letters.php:2178
+#: includes/class-letter-return.php:331
 msgid "From"
 msgstr ""
 
-#: includes/class-admin.php:3553
-msgid "Type"
-msgstr ""
-
-#: includes/class-admin.php:3554
+#: includes/class-admin.php:5692
+#: includes/class-admin.php:5714
+#: includes/class-admin.php:5750
+#: includes/class-letter-return.php:334
 msgid "Submitted"
 msgstr ""
 
-#: includes/class-admin.php:3555
+#: includes/class-admin.php:5693
+#: includes/class-admin.php:5720
+#: includes/class-admin.php:5753
 msgid "Print Status"
 msgstr ""
 
-#: includes/class-admin.php:3563
+#: includes/class-admin.php:5733
 msgid "Anonymous"
 msgstr ""
 
-#: includes/class-admin.php:3566
-#: includes/class-dfx-parish-retreat-letters.php:637
+#: includes/class-admin.php:5740
+#: includes/class-dfx-parish-retreat-letters.php:665
 msgid "Text Message"
 msgstr ""
 
-#: includes/class-admin.php:3567
+#: includes/class-admin.php:5741
+#: includes/class-custom-field.php:92
 msgid "Text"
 msgstr ""
 
-#: includes/class-admin.php:3569
+#: includes/class-admin.php:5743
 msgid "Message with Files"
 msgstr ""
 
-#: includes/class-admin.php:3570
+#: includes/class-admin.php:5744
 msgid "Files"
 msgstr ""
 
-#: includes/class-admin.php:3581
+#: includes/class-admin.php:5764
+msgid "Print"
+msgstr ""
+
+#: includes/class-admin.php:5783
+msgid "Return by email"
+msgstr ""
+
+#: includes/class-admin.php:5786
+msgid "No email: cannot be returned"
+msgstr ""
+
+#: includes/class-admin.php:5802
+msgid "No messages found for your search/filter criteria."
+msgstr ""
+
+#: includes/class-admin.php:5804
+msgid "No confidential messages have been received yet."
+msgstr ""
+
+#. translators: %1$d: current page, %2$d: total pages, %3$d: items per page
+#: includes/class-admin.php:5819
+#, php-format
+msgid "Showing page %1$d of %2$d. There are more messages available. Use the pagination controls above to view all %3$d messages per page."
+msgstr ""
+
+#: includes/class-admin.php:5852
+#: includes/class-admin.php:5995
+msgid "Error deleting message."
+msgstr ""
+
+#: includes/class-admin.php:5869
+#: includes/class-admin.php:5978
+#: includes/class-admin.php:6084
+msgid "Invalid message ID."
+msgstr ""
+
+#: includes/class-admin.php:5912
 msgid "Printed"
 msgstr ""
 
 #. translators: %1$d: Print count, %2$s: First print date
-#: includes/class-admin.php:3586
+#: includes/class-admin.php:5917
 #, php-format
 msgid "Printed %1$d time, first: %2$s."
 msgid_plural "Printed %1$d times, first: %2$s."
 msgstr[0] ""
 msgstr[1] ""
 
-#: includes/class-admin.php:3601
+#: includes/class-admin.php:5932
 msgid "Click to view print history"
 msgstr ""
 
-#: includes/class-admin.php:3604
+#: includes/class-admin.php:5937
 msgid "Not Printed"
 msgstr ""
 
-#: includes/class-admin.php:3605
+#: includes/class-admin.php:5938
 msgid "Not printed"
 msgstr ""
 
-#: includes/class-admin.php:3610
-msgid "Print"
-msgstr ""
-
-#: includes/class-admin.php:3638
-msgid "No messages found for your search/filter criteria."
-msgstr ""
-
-#: includes/class-admin.php:3640
-msgid "No confidential messages have been received yet."
-msgstr ""
-
-#. translators: %1$d: current page, %2$d: total pages, %3$d: items per page
-#: includes/class-admin.php:3655
-#, php-format
-msgid "Showing page %1$d of %2$d. There are more messages available. Use the pagination controls above to view all %3$d messages per page."
-msgstr ""
-
-#: includes/class-admin.php:3688
-#: includes/class-admin.php:3773
-msgid "Error deleting message."
-msgstr ""
-
-#: includes/class-admin.php:3705
-#: includes/class-admin.php:3756
-#: includes/class-admin.php:3789
-msgid "Invalid message ID."
-msgstr ""
-
-#: includes/class-admin.php:3734
+#: includes/class-admin.php:5956
 msgid "Invalid file ID."
 msgstr ""
 
-#: includes/class-admin.php:3741
+#: includes/class-admin.php:5963
 msgid "File not found or access denied."
 msgstr ""
 
-#: includes/class-admin.php:3762
-#: includes/class-dfx-parish-retreat-letters.php:1281
+#: includes/class-admin.php:5984
+#: includes/class-admin.php:6015
+#: includes/class-dfx-parish-retreat-letters.php:1608
+#: includes/class-letter-return.php:53
 msgid "Message not found."
 msgstr ""
 
-#: includes/class-admin.php:3767
+#: includes/class-admin.php:5989
 msgid "You do not have permission to delete messages for this retreat."
 msgstr ""
 
-#: includes/class-admin.php:3800
-#: includes/class-admin.php:4243
-#: includes/class-print-log.php:478
-msgid "Unknown User"
+#: includes/class-admin.php:6019
+msgid "You do not have permission to manage messages for this retreat."
 msgstr ""
 
-#: includes/class-admin.php:3827
-#: includes/class-admin.php:3881
-#: includes/class-admin.php:3930
-#: includes/class-admin.php:3974
-#: includes/class-admin.php:4005
+#. translators: %s: email address
+#: includes/class-admin.php:6062
+#, php-format
+msgid "Letter returned to %s and deleted from the system."
+msgstr ""
+
+#: includes/class-admin.php:6066
+msgid "Remember to destroy the printed copy."
+msgstr ""
+
+#: includes/class-admin.php:6122
+#: includes/class-admin.php:6176
+#: includes/class-admin.php:6225
+#: includes/class-admin.php:6269
+#: includes/class-admin.php:6300
 msgid "Permission denied."
 msgstr ""
 
-#: includes/class-admin.php:3832
+#: includes/class-admin.php:6127
 msgid "Search term must be at least 2 characters."
 msgstr ""
 
-#: includes/class-admin.php:3877
-#: includes/class-admin.php:3926
-#: includes/class-admin.php:3970
-#: includes/class-admin.php:4001
+#: includes/class-admin.php:6172
+#: includes/class-admin.php:6221
+#: includes/class-admin.php:6265
+#: includes/class-admin.php:6296
 msgid "Invalid parameters."
 msgstr ""
 
 #. translators: %1$s: user's display name, %2$s: permission level name
-#: includes/class-admin.php:3895
+#: includes/class-admin.php:6190
 #, php-format
 msgid "Permission granted to %1$s as %2$s."
 msgstr ""
 
-#: includes/class-admin.php:3907
+#: includes/class-admin.php:6202
 msgid "Failed to grant permission."
 msgstr ""
 
-#: includes/class-admin.php:3935
+#: includes/class-admin.php:6230
 msgid "You cannot revoke your own permissions."
 msgstr ""
 
 #. translators: %s: user's display name
-#: includes/class-admin.php:3945
+#: includes/class-admin.php:6240
 #, php-format
 msgid "Permission revoked from %s."
 msgstr ""
 
-#: includes/class-admin.php:3950
+#: includes/class-admin.php:6245
 msgid "Failed to revoke permission."
 msgstr ""
 
-#: includes/class-admin.php:4012
+#: includes/class-admin.php:6307
 msgid "Invitation cancelled successfully."
 msgstr ""
 
-#: includes/class-admin.php:4014
+#: includes/class-admin.php:6309
 msgid "Failed to cancel invitation."
 msgstr ""
 
-#: includes/class-admin.php:4057
+#: includes/class-admin.php:6352
 msgid "Retention settings updated successfully."
 msgstr ""
 
-#: includes/class-admin.php:4059
+#: includes/class-admin.php:6354
 msgid "Error updating retention settings. Please check your values."
 msgstr ""
 
-#: includes/class-admin.php:4065
+#: includes/class-admin.php:6360
 msgid "Privacy cleanup completed successfully."
 msgstr ""
 
-#: includes/class-admin.php:4088
+#: includes/class-admin.php:6383
 msgid "Compliance Status Overview"
 msgstr ""
 
-#: includes/class-admin.php:4092
+#: includes/class-admin.php:6387
 msgid "Encryption"
 msgstr ""
 
-#: includes/class-admin.php:4093
+#: includes/class-admin.php:6388
 msgid "AES-256 encryption active"
 msgstr ""
 
-#: includes/class-admin.php:4093
+#: includes/class-admin.php:6388
 msgid "Encryption requirements not met"
 msgstr ""
 
-#: includes/class-admin.php:4098
+#: includes/class-admin.php:6393
 msgid "IP Anonymization"
 msgstr ""
 
-#: includes/class-admin.php:4099
+#: includes/class-admin.php:6394
 msgid "IPs anonymized after 30 days"
 msgstr ""
 
-#: includes/class-admin.php:4104
+#: includes/class-admin.php:6399
 msgid "Data Retention"
 msgstr ""
 
-#: includes/class-admin.php:4105
+#: includes/class-admin.php:6400
 msgid "Policy configured"
 msgstr ""
 
-#: includes/class-admin.php:4105
+#: includes/class-admin.php:6400
 msgid "Policy needs configuration"
 msgstr ""
 
-#: includes/class-admin.php:4110
+#: includes/class-admin.php:6405
 msgid "Audit Logging"
 msgstr ""
 
-#: includes/class-admin.php:4111
+#: includes/class-admin.php:6406
 msgid "All actions are logged"
 msgstr ""
 
-#: includes/class-admin.php:4118
+#: includes/class-admin.php:6413
 msgid "Data Statistics"
 msgstr ""
 
-#: includes/class-admin.php:4126
+#: includes/class-admin.php:6421
 msgid "Encrypted Files"
 msgstr ""
 
-#: includes/class-admin.php:4130
+#: includes/class-admin.php:6425
 msgid "Audit Log Entries"
 msgstr ""
 
-#: includes/class-admin.php:4133
+#: includes/class-admin.php:6428
 msgid "Never"
 msgstr ""
 
-#: includes/class-admin.php:4134
+#: includes/class-admin.php:6429
 msgid "Last Cleanup"
 msgstr ""
 
-#: includes/class-admin.php:4144
+#: includes/class-admin.php:6439
 msgid "Data Retention Policy"
 msgstr ""
 
-#: includes/class-admin.php:4149
+#: includes/class-admin.php:6444
 msgid "Message Retention Period"
 msgstr ""
 
-#: includes/class-admin.php:4153
+#: includes/class-admin.php:6448
 msgid "Number of days to keep confidential messages (30-3650 days). Set to 0 to keep indefinitely."
 msgstr ""
 
-#: includes/class-admin.php:4158
+#: includes/class-admin.php:6453
 msgid "Audit Log Retention Period"
 msgstr ""
 
-#: includes/class-admin.php:4162
+#: includes/class-admin.php:6457
 msgid "Number of days to keep audit logs (365-3650 days)."
 msgstr ""
 
-#: includes/class-admin.php:4167
+#: includes/class-admin.php:6462
 msgid "IP Address Anonymization"
 msgstr ""
 
-#: includes/class-admin.php:4170
+#: includes/class-admin.php:6465
 msgid "30 days (Fixed for GDPR compliance)"
 msgstr ""
 
-#: includes/class-admin.php:4171
+#: includes/class-admin.php:6466
 msgid "IP addresses are automatically anonymized after 30 days to comply with GDPR requirements."
 msgstr ""
 
-#: includes/class-admin.php:4178
+#: includes/class-admin.php:6473
 msgid "Update Retention Settings"
 msgstr ""
 
-#: includes/class-admin.php:4183
+#: includes/class-admin.php:6478
 msgid "Privacy Tools"
 msgstr ""
 
-#: includes/class-admin.php:4186
+#: includes/class-admin.php:6481
 msgid "Manual Cleanup"
 msgstr ""
 
-#: includes/class-admin.php:4187
+#: includes/class-admin.php:6482
 msgid "Run manual privacy cleanup to anonymize old IP addresses and clean up expired data."
 msgstr ""
 
-#: includes/class-admin.php:4191
+#: includes/class-admin.php:6486
 msgid "Run Cleanup Now"
 msgstr ""
 
-#: includes/class-admin.php:4191
+#: includes/class-admin.php:6486
 msgid "Are you sure you want to run the privacy cleanup?"
 msgstr ""
 
-#: includes/class-admin.php:4196
+#: includes/class-admin.php:6491
 msgid "Rate Limit Management"
 msgstr ""
 
-#: includes/class-admin.php:4197
+#: includes/class-admin.php:6492
 msgid "Reset message submission rate limits to allow users to submit messages again after encountering errors."
 msgstr ""
 
-#: includes/class-admin.php:4198
+#: includes/class-admin.php:6493
 msgid "Reset All Rate Limits"
 msgstr ""
 
-#: includes/class-admin.php:4202
+#: includes/class-admin.php:6497
 msgid "Personal Data Export/Erasure"
 msgstr ""
 
-#: includes/class-admin.php:4203
+#: includes/class-admin.php:6498
 msgid "Export or erase personal data by sender name for GDPR compliance."
 msgstr ""
 
-#: includes/class-admin.php:4207
+#: includes/class-admin.php:6502
 msgid "Export Personal Data"
 msgstr ""
 
-#: includes/class-admin.php:4208
-#: includes/class-admin.php:4214
+#: includes/class-admin.php:6503
+#: includes/class-admin.php:6509
 msgid "Enter sender name or email"
 msgstr ""
 
-#: includes/class-admin.php:4209
+#: includes/class-admin.php:6504
 msgid "Export Data"
 msgstr ""
 
-#: includes/class-admin.php:4213
+#: includes/class-admin.php:6508
 msgid "Erase Personal Data"
 msgstr ""
 
-#: includes/class-admin.php:4215
-msgid "Type ERASE to confirm"
+#. translators: %s: text to type, e.g. "ERASE ALL DATA"
+#: includes/class-admin.php:6510
+#, php-format
+msgid "Type %s to confirm"
 msgstr ""
 
-#: includes/class-admin.php:4223
+#: includes/class-admin.php:6518
 msgid "Recent Audit Activity"
 msgstr ""
 
-#: includes/class-admin.php:4227
+#: includes/class-admin.php:6522
+#: includes/class-admin.php:6532
 msgid "Date/Time"
 msgstr ""
 
-#: includes/class-admin.php:4228
+#: includes/class-admin.php:6523
+#: includes/class-admin.php:6533
 msgid "Event Type"
 msgstr ""
 
-#: includes/class-admin.php:4230
+#: includes/class-admin.php:6524
+#: includes/class-admin.php:6534
+#: includes/class-admin.php:7167
+#: includes/class-admin.php:7176
+msgid "User"
+msgstr ""
+
+#: includes/class-admin.php:6525
+#: includes/class-admin.php:6544
 msgid "Details"
 msgstr ""
 
-#: includes/class-admin.php:4245
+#: includes/class-admin.php:6540
 msgid "System"
 msgstr ""
 
-#: includes/class-admin.php:4254
+#: includes/class-admin.php:6549
 msgid "No additional details"
 msgstr ""
 
-#: includes/class-admin.php:4262
+#: includes/class-admin.php:6557
 msgid "No audit logs found."
 msgstr ""
 
-#: includes/class-admin.php:4292
+#: includes/class-admin.php:6587
 msgid "You do not have permission to reset rate limits."
 msgstr ""
 
 #. translators: %d: number of rate limits that were reset
-#: includes/class-admin.php:4300
+#: includes/class-admin.php:6595
 #, php-format
 msgid "Successfully reset %d rate limit(s)."
 msgstr ""
 
-#: includes/class-admin.php:4327
+#: includes/class-admin.php:6623
 msgid "Cannot remove database key: no encryption key is defined in wp-config.php."
 msgstr ""
 
-#: includes/class-admin.php:4333
+#: includes/class-admin.php:6629
 msgid "Database encryption key removed successfully. The plugin will now use the key from wp-config.php."
 msgstr ""
 
-#: includes/class-admin.php:4336
+#: includes/class-admin.php:6632
 msgid "Failed to remove the database encryption key. It may have already been removed."
 msgstr ""
 
-#: includes/class-admin.php:4356
+#: includes/class-admin.php:6652
 msgid "Invalid attendant or retreat ID."
 msgstr ""
 
-#: includes/class-admin.php:4361
-msgid "You do not have permission to access this retreat."
-msgstr ""
-
-#: includes/class-admin.php:4369
+#: includes/class-admin.php:6665
 msgid "Attendant or retreat not found."
 msgstr ""
 
-#: includes/class-admin.php:4374
+#: includes/class-admin.php:6670
 msgid "Attendant does not belong to this retreat."
 msgstr ""
 
-#: includes/class-admin.php:4379
+#: includes/class-admin.php:6675
 msgid "No message request template configured for this retreat."
 msgstr ""
 
-#: includes/class-admin.php:4611
+#: includes/class-admin.php:6917
 msgid "Reusable Block"
 msgstr ""
 
-#: includes/class-admin.php:4633
+#: includes/class-admin.php:6939
 msgid "Template Part"
 msgstr ""
 
-#: includes/class-admin.php:4650
+#: includes/class-admin.php:6956
 msgid "Block Pattern"
 msgstr ""
 
-#: includes/class-admin.php:4667
+#: includes/class-admin.php:6973
 msgid "Registered Pattern"
 msgstr ""
 
-#: includes/class-admin.php:4703
+#: includes/class-admin.php:7009
 msgid "No reusable blocks or patterns found - create one first"
 msgstr ""
 
 #. translators: %s: URL to WordPress documentation about reusable blocks
-#: includes/class-admin.php:4721
+#: includes/class-admin.php:7027
 #, php-format
 msgid "To create reusable blocks: Go to <strong>Appearance > Editor > Patterns</strong> or edit any page/post and create a block, then save it as a reusable block. For template parts, use <strong>Appearance > Editor > Patterns > Template Parts</strong>. For block patterns, use the Site Editor. <a href=\"%s\" target=\"_blank\">Learn more</a>"
 msgstr ""
 
-#: includes/class-admin.php:4737
+#: includes/class-admin.php:7043
 msgid "You do not have permission to access this page."
 msgstr ""
 
-#: includes/class-admin.php:4763
+#: includes/class-admin.php:7071
 msgid "Per-Retreat Customization"
 msgstr ""
 
-#: includes/class-admin.php:4767
+#: includes/class-admin.php:7075
 msgid "Allow individual retreats to customize headers, footers, and CSS"
 msgstr ""
 
-#: includes/class-admin.php:4768
+#: includes/class-admin.php:7076
 msgid "When disabled, all retreats will use the global default settings defined below."
 msgstr ""
 
-#: includes/class-admin.php:4775
+#: includes/class-admin.php:7083
 msgid "Default Header Block"
 msgstr ""
 
-#: includes/class-admin.php:4778
+#: includes/class-admin.php:7086
 msgid "Use default WordPress header"
 msgstr ""
 
-#: includes/class-admin.php:4779
+#: includes/class-admin.php:7087
 msgid "Select a reusable block, template part, or pattern to display as the default header in all retreat message form pages."
 msgstr ""
 
-#: includes/class-admin.php:4784
+#: includes/class-admin.php:7092
 msgid "Default Footer Block"
 msgstr ""
 
-#: includes/class-admin.php:4787
+#: includes/class-admin.php:7095
 msgid "Use default WordPress footer"
 msgstr ""
 
-#: includes/class-admin.php:4788
+#: includes/class-admin.php:7096
 msgid "Select a reusable block, template part, or pattern to display as the default footer in all retreat message form pages."
 msgstr ""
 
-#: includes/class-admin.php:4799
+#: includes/class-admin.php:7107
 msgid "Space-separated CSS class names to add to the &lt;body&gt; tag on all retreat message form pages."
 msgstr ""
 
-#: includes/class-admin.php:4806
+#: includes/class-admin.php:7113
+msgid "Add PDF Header"
+msgstr ""
+
+#: includes/class-admin.php:7117
+msgid "Add a From/To header to PDF letters when printing"
+msgstr ""
+
+#: includes/class-admin.php:7118
+msgid "Enabled by default. The From/To header is added on the recipient&#8217;s browser (no server memory cost). If the browser cannot do it, the unmodified PDF is printed."
+msgstr ""
+
+#: includes/class-admin.php:7124
+msgid "Google Cloud Translation API Key"
+msgstr ""
+
+#: includes/class-admin.php:7128
+msgid "The key is defined in wp-config.php (DFXPRL_GOOGLE_TRANSLATE_API_KEY)."
+msgstr ""
+
+#: includes/class-admin.php:7131
+msgid "Saved. Leave blank to keep it."
+msgstr ""
+
+#: includes/class-admin.php:7133
+msgid "Delete the saved key"
+msgstr ""
+
+#: includes/class-admin.php:7136
+msgid "Optional. The letters form can be shown in Spanish, Catalan, Basque, Galician, English, Portuguese, French, Italian and German. With this key, the texts configured for each retreat (custom message and legal disclaimer) are translated automatically into the language of the visitor when the retreat has no version written for that language. Each translation is done once and cached, and done again only if the original text changes. Only those retreat texts are sent to Google, never letters or personal data."
+msgstr ""
+
+#: includes/class-admin.php:7147
 msgid "Save Settings"
 msgstr ""
 
-#: includes/class-admin.php:4812
+#: includes/class-admin.php:7153
 msgid "User Management"
 msgstr ""
 
-#: includes/class-admin.php:4813
+#: includes/class-admin.php:7154
 msgid "Grant or revoke global retreat management permissions. Users with this permission can manage all retreats and create new ones."
 msgstr ""
 
-#: includes/class-admin.php:4822
+#: includes/class-admin.php:7163
 msgid "Current Global Retreat Managers"
 msgstr ""
 
-#: includes/class-admin.php:4843
+#: includes/class-admin.php:7184
 msgid "Are you sure you want to revoke global retreat management access from this user?"
 msgstr ""
 
-#: includes/class-admin.php:4844
+#: includes/class-admin.php:7185
 msgid "Revoke Access"
 msgstr ""
 
-#: includes/class-admin.php:4855
+#: includes/class-admin.php:7196
 msgid "Grant Global Retreat Management Access"
 msgstr ""
 
-#: includes/class-admin.php:4858
+#: includes/class-admin.php:7199
 msgid "No non-administrator users available."
 msgstr ""
 
-#: includes/class-admin.php:4867
+#: includes/class-admin.php:7208
 msgid "Select User"
 msgstr ""
 
-#: includes/class-admin.php:4880
+#: includes/class-admin.php:7221
 msgid "Select a user to grant global retreat management permissions."
 msgstr ""
 
-#: includes/class-admin.php:4895
+#: includes/class-admin.php:7236
 msgid "Per-Retreat Permissions"
 msgstr ""
 
-#: includes/class-admin.php:4896
+#: includes/class-admin.php:7237
 msgid "For retreat-specific permissions (individual retreat management), use the corresponding retreat edition page"
 msgstr ""
 
-#: includes/class-admin.php:4927
-#: includes/class-admin.php:4959
+#: includes/class-admin.php:7268
+#: includes/class-admin.php:7311
 msgid "Security check failed. Please try again."
 msgstr ""
 
-#: includes/class-admin.php:4945
+#: includes/class-admin.php:7297
 msgid "Global settings saved successfully."
 msgstr ""
 
-#: includes/class-admin.php:4947
+#: includes/class-admin.php:7299
 msgid "Error saving global settings. Please try again."
 msgstr ""
 
-#: includes/class-admin.php:4967
-#: includes/class-admin.php:5008
+#: includes/class-admin.php:7319
+#: includes/class-admin.php:7360
 msgid "Invalid action."
 msgstr ""
 
-#: includes/class-admin.php:4972
+#: includes/class-admin.php:7324
 msgid "Invalid user selected."
 msgstr ""
 
-#: includes/class-admin.php:4978
+#: includes/class-admin.php:7330
 msgid "User not found."
 msgstr ""
 
-#: includes/class-admin.php:4984
+#: includes/class-admin.php:7336
 msgid "Cannot modify permissions for administrators."
 msgstr ""
 
 #. translators: %s: User display name
-#: includes/class-admin.php:4992
+#: includes/class-admin.php:7344
 #, php-format
 msgid "Global retreat management access granted to %s."
 msgstr ""
 
-#: includes/class-admin.php:4994
+#: includes/class-admin.php:7346
 msgid "Failed to grant global retreat management access."
 msgstr ""
 
 #. translators: %s: User display name
-#: includes/class-admin.php:5001
+#: includes/class-admin.php:7353
 #, php-format
 msgid "Global retreat management access revoked from %s."
 msgstr ""
 
-#: includes/class-admin.php:5003
+#: includes/class-admin.php:7355
 msgid "Failed to revoke global retreat management access."
 msgstr ""
 
 #. translators: %1$s: Plugin name, %2$s: Author link
-#: includes/class-admin.php:5025
+#: includes/class-admin.php:7377
 #, php-format
 msgid "Retreat letters management features provided via %1$s plugin by %2$s. A.M.D.G."
 msgstr ""
 
-#: includes/class-admin.php:5027
+#: includes/class-admin.php:7379
 msgid "https://davefx.com/en/wordpress-plugins/"
 msgstr ""
 
-#: includes/class-attendant.php:579
+#: includes/class-attendant.php:665
 msgid "All fields are required."
 msgstr ""
 
-#: includes/class-attendant.php:588
+#: includes/class-attendant.php:674
+#: includes/class-attendant.php:779
 msgid "Invalid date of birth format. Please use YYYY-MM-DD."
 msgstr ""
 
-#: includes/class-attendant.php:597
+#: includes/class-attendant.php:683
 msgid "Invalid emergency contact phone number format."
 msgstr ""
 
-#: includes/class-attendant.php:606
+#: includes/class-attendant.php:692
 msgid "Invalid emergency contact email format."
 msgstr ""
 
-#: includes/class-attendant.php:622
+#: includes/class-attendant.php:708
 msgid "The specified retreat does not exist."
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:493
+#: includes/class-attendant.php:783
+msgid "This field cannot be edited."
+msgstr ""
+
+#: includes/class-custom-field.php:93
+msgid "Long text"
+msgstr ""
+
+#: includes/class-custom-field.php:94
+msgid "Number"
+msgstr ""
+
+#: includes/class-custom-field.php:96
+msgid "Yes/No"
+msgstr ""
+
+#: includes/class-custom-field.php:97
+msgid "Options list"
+msgstr ""
+
+#: includes/class-custom-field.php:202
+msgid "Custom field names cannot be empty."
+msgstr ""
+
+#. translators: %s: custom field slug
+#: includes/class-custom-field.php:216
+#, php-format
+msgid "The slug \"%s\" is reserved. Please choose a different one."
+msgstr ""
+
+#. translators: %s: custom field slug
+#: includes/class-custom-field.php:225
+#, php-format
+msgid "The slug \"%s\" is already used by another field of this retreat."
+msgstr ""
+
+#. translators: %s: custom field name
+#: includes/class-custom-field.php:234
+#, php-format
+msgid "The options list field \"%s\" needs at least one option."
+msgstr ""
+
+#. translators: %s: custom field name
+#: includes/class-custom-field.php:266
+#, php-format
+msgid "Error saving the custom field \"%s\"."
+msgstr ""
+
+#: includes/class-custom-field.php:472
+msgid "No"
+msgstr ""
+
+#. translators: 1: invalid value, 2: custom field name
+#: includes/class-custom-field.php:661
+#, php-format
+msgid "Invalid value \"%1$s\" for field \"%2$s\"."
+msgstr ""
+
+#: includes/class-dfx-parish-retreat-letters.php:524
+#: includes/class-dfx-parish-retreat-letters.php:1036
 msgid "Too many requests. Please wait before trying again."
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:494
+#: includes/class-dfx-parish-retreat-letters.php:525
 msgid "Rate Limit Exceeded"
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:605
+#: includes/class-dfx-parish-retreat-letters.php:648
+#: includes/class-form-languages.php:437
+msgid "Language"
+msgstr ""
+
+#: includes/class-dfx-parish-retreat-letters.php:649
 msgid "Send a Confidential Message"
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:608
-msgid "For Retreat Attendant"
-msgstr ""
-
-#: includes/class-dfx-parish-retreat-letters.php:628
-msgid "Your Name"
-msgstr ""
-
-#: includes/class-dfx-parish-retreat-letters.php:629
-msgid "Enter your name"
-msgstr ""
-
-#: includes/class-dfx-parish-retreat-letters.php:633
-msgid "Choose message type:"
-msgstr ""
-
-#: includes/class-dfx-parish-retreat-letters.php:641
-msgid "File Upload"
-msgstr ""
-
-#: includes/class-dfx-parish-retreat-letters.php:647
-msgid "Your Message"
-msgstr ""
-
 #: includes/class-dfx-parish-retreat-letters.php:650
-msgid "Bold"
+#: includes/class-dfx-parish-retreat-letters.php:1291
+msgid "Messages are no longer being accepted for this attendant."
 msgstr ""
 
 #: includes/class-dfx-parish-retreat-letters.php:651
-msgid "Italic"
+msgid "Your message has been received"
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:652
-msgid "Underline"
-msgstr ""
-
-#: includes/class-dfx-parish-retreat-letters.php:653
-msgid "Bullet List"
-msgstr ""
-
-#: includes/class-dfx-parish-retreat-letters.php:653
+#. translators: %s: attendant full name
 #: includes/class-dfx-parish-retreat-letters.php:654
+#, php-format
+msgid "Thank you. Your message for %s has been received and securely stored."
+msgstr ""
+
+#: includes/class-dfx-parish-retreat-letters.php:657
+msgid "You can now close this page."
+msgstr ""
+
+#: includes/class-dfx-parish-retreat-letters.php:658
+msgid "For Retreat Attendant"
+msgstr ""
+
+#: includes/class-dfx-parish-retreat-letters.php:660
+msgid "Your Name"
+msgstr ""
+
+#: includes/class-dfx-parish-retreat-letters.php:661
+msgid "Your Email"
+msgstr ""
+
+#: includes/class-dfx-parish-retreat-letters.php:662
+msgid "Repeat Your Email"
+msgstr ""
+
+#: includes/class-dfx-parish-retreat-letters.php:663
+msgid "Optional. It will only be used to let you know about any issue with your letter."
+msgstr ""
+
+#: includes/class-dfx-parish-retreat-letters.php:664
+msgid "Choose message type:"
+msgstr ""
+
+#: includes/class-dfx-parish-retreat-letters.php:666
+msgid "File Upload"
+msgstr ""
+
+#: includes/class-dfx-parish-retreat-letters.php:667
+msgid "Your Message"
+msgstr ""
+
+#: includes/class-dfx-parish-retreat-letters.php:668
 msgid "List"
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:654
-msgid "Numbered List"
-msgstr ""
-
-#: includes/class-dfx-parish-retreat-letters.php:655
+#: includes/class-dfx-parish-retreat-letters.php:669
+#: includes/class-dfx-parish-retreat-letters.php:711
 msgid "Undo"
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:656
+#: includes/class-dfx-parish-retreat-letters.php:670
+#: includes/class-dfx-parish-retreat-letters.php:712
 msgid "Redo"
 msgstr ""
 
+#: includes/class-dfx-parish-retreat-letters.php:671
+msgid "You can use the toolbar to format your text, create lists, and paste images. HTML is allowed but will be filtered for security."
+msgstr ""
+
+#: includes/class-dfx-parish-retreat-letters.php:672
+msgid "Attach Files"
+msgstr ""
+
+#: includes/class-dfx-parish-retreat-letters.php:674
+msgid "Security Check"
+msgstr ""
+
+#: includes/class-dfx-parish-retreat-letters.php:675
+msgid "Legal Disclaimer"
+msgstr ""
+
+#: includes/class-dfx-parish-retreat-letters.php:676
+msgid "Send Confidential Message"
+msgstr ""
+
+#: includes/class-dfx-parish-retreat-letters.php:678
+msgid "Privacy & Security"
+msgstr ""
+
+#: includes/class-dfx-parish-retreat-letters.php:679
+msgid "Your message will be encrypted and stored securely."
+msgstr ""
+
+#: includes/class-dfx-parish-retreat-letters.php:680
+msgid "Only authorized retreat administrators can access your message."
+msgstr ""
+
+#: includes/class-dfx-parish-retreat-letters.php:681
+msgid "Messages can only be viewed when printed - no content is displayed on screen."
+msgstr ""
+
+#: includes/class-dfx-parish-retreat-letters.php:682
+msgid "Your IP address will be anonymized after 30 days for privacy compliance."
+msgstr ""
+
+#: includes/class-dfx-parish-retreat-letters.php:683
+msgid "If you give your email, it is stored encrypted and will only be used to let you know about any issue with your letter."
+msgstr ""
+
+#: includes/class-dfx-parish-retreat-letters.php:684
+msgid "All data is handled in accordance with GDPR and Spanish privacy laws."
+msgstr ""
+
+#: includes/class-dfx-parish-retreat-letters.php:699
+msgid "I accept the terms and conditions stated above"
+msgstr ""
+
+#: includes/class-dfx-parish-retreat-letters.php:704
+msgid "Enter your name"
+msgstr ""
+
+#: includes/class-dfx-parish-retreat-letters.php:705
+msgid "name@example.com"
+msgstr ""
+
+#: includes/class-dfx-parish-retreat-letters.php:706
+msgid "Bold"
+msgstr ""
+
+#: includes/class-dfx-parish-retreat-letters.php:707
+msgid "Italic"
+msgstr ""
+
+#: includes/class-dfx-parish-retreat-letters.php:708
+msgid "Underline"
+msgstr ""
+
+#: includes/class-dfx-parish-retreat-letters.php:709
+msgid "Bullet List"
+msgstr ""
+
+#: includes/class-dfx-parish-retreat-letters.php:710
+msgid "Numbered List"
+msgstr ""
+
 #. translators: %s: attendant full name (name and surnames)
-#: includes/class-dfx-parish-retreat-letters.php:661
+#: includes/class-dfx-parish-retreat-letters.php:714
 #, php-format
 msgid "Write your confidential message for %s here..."
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:665
-msgid "You can use the toolbar to format your text, create lists, and paste images. HTML is allowed but will be filtered for security."
-msgstr ""
-
-#: includes/class-dfx-parish-retreat-letters.php:669
-msgid "Attach Files"
+#: includes/class-dfx-parish-retreat-letters.php:715
+msgid "Please enter the result"
 msgstr ""
 
 #. translators: %1$s: maximum size per file, %2$s: maximum combined size
-#: includes/class-dfx-parish-retreat-letters.php:680
+#: includes/class-dfx-parish-retreat-letters.php:738
 #, php-format
 msgid "Allowed file types: PDF, DOC, DOCX, TXT, JPG, PNG, GIF. Maximum %1$s per file, %2$s total."
 msgstr ""
 
 #. translators: %s: maximum size per file
-#: includes/class-dfx-parish-retreat-letters.php:687
+#: includes/class-dfx-parish-retreat-letters.php:746
 #, php-format
 msgid "Allowed file types: PDF, DOC, DOCX, TXT, JPG, PNG, GIF. Maximum %s per file."
 msgstr ""
 
 #. translators: %s: maximum combined size
-#: includes/class-dfx-parish-retreat-letters.php:693
+#: includes/class-dfx-parish-retreat-letters.php:753
 #, php-format
 msgid "Allowed file types: PDF, DOC, DOCX, TXT, JPG, PNG, GIF. Maximum %s total."
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:698
+#: includes/class-dfx-parish-retreat-letters.php:758
 msgid "Allowed file types: PDF, DOC, DOCX, TXT, JPG, PNG, GIF."
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:707
-msgid "Security Check"
+#: includes/class-dfx-parish-retreat-letters.php:987
+msgid "Automatic translation by Google."
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:709
-msgid "Please enter the result"
-msgstr ""
-
-#: includes/class-dfx-parish-retreat-letters.php:717
-msgid "Legal Disclaimer"
-msgstr ""
-
-#: includes/class-dfx-parish-retreat-letters.php:728
-msgid "I accept the terms and conditions stated above"
-msgstr ""
-
-#: includes/class-dfx-parish-retreat-letters.php:739
-msgid "Send Confidential Message"
-msgstr ""
-
-#: includes/class-dfx-parish-retreat-letters.php:741
-msgid "Sending..."
-msgstr ""
-
-#: includes/class-dfx-parish-retreat-letters.php:748
-msgid "Privacy & Security"
-msgstr ""
-
-#: includes/class-dfx-parish-retreat-letters.php:750
-msgid "Your message will be encrypted and stored securely."
-msgstr ""
-
-#: includes/class-dfx-parish-retreat-letters.php:751
-msgid "Only authorized retreat administrators can access your message."
-msgstr ""
-
-#: includes/class-dfx-parish-retreat-letters.php:752
-msgid "Messages can only be viewed when printed - no content is displayed on screen."
-msgstr ""
-
-#: includes/class-dfx-parish-retreat-letters.php:753
-msgid "Your IP address will be anonymized after 30 days for privacy compliance."
-msgstr ""
-
-#: includes/class-dfx-parish-retreat-letters.php:754
-msgid "All data is handled in accordance with GDPR and Spanish privacy laws."
-msgstr ""
-
-#: includes/class-dfx-parish-retreat-letters.php:831
+#: includes/class-dfx-parish-retreat-letters.php:998
 msgid "Please solve: "
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:832
+#: includes/class-dfx-parish-retreat-letters.php:999
 msgid "Remove"
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:833
+#: includes/class-dfx-parish-retreat-letters.php:1000
 msgid "Please enter a message."
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:834
+#: includes/class-dfx-parish-retreat-letters.php:1001
 msgid "Please select at least one file."
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:835
-#: includes/class-dfx-parish-retreat-letters.php:963
+#: includes/class-dfx-parish-retreat-letters.php:1002
+#: includes/class-dfx-parish-retreat-letters.php:1259
 msgid "Please complete the security check."
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:836
+#: includes/class-dfx-parish-retreat-letters.php:1003
 msgid "Please accept the legal disclaimer to proceed."
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:837
+#: includes/class-dfx-parish-retreat-letters.php:1004
+#: includes/class-dfx-parish-retreat-letters.php:1313
+msgid "The email addresses do not match. Please check them."
+msgstr ""
+
+#: includes/class-dfx-parish-retreat-letters.php:1005
+#: includes/class-dfx-parish-retreat-letters.php:1316
+msgid "The email address is not valid."
+msgstr ""
+
+#: includes/class-dfx-parish-retreat-letters.php:1006
 msgid "Your message has been sent successfully and securely stored."
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:838
+#: includes/class-dfx-parish-retreat-letters.php:1007
 msgid "An error occurred while sending your message."
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:839
+#: includes/class-dfx-parish-retreat-letters.php:1008
 msgid "The request timed out. Please check your connection and try again."
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:840
+#: includes/class-dfx-parish-retreat-letters.php:1009
 msgid "The request was cancelled. Please try again."
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:841
+#: includes/class-dfx-parish-retreat-letters.php:1010
 msgid "Cannot connect to the server. Please check your internet connection."
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:842
+#: includes/class-dfx-parish-retreat-letters.php:1011
 msgid "There was a problem with your request. Please refresh the page and try again."
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:843
+#: includes/class-dfx-parish-retreat-letters.php:1012
 msgid "Access denied. Please refresh the page and try again."
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:844
+#: includes/class-dfx-parish-retreat-letters.php:1013
 msgid "The uploaded files are too large. Please reduce the file size and try again."
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:845
+#: includes/class-dfx-parish-retreat-letters.php:1014
 msgid "A server error occurred. Please try again later or contact support if the problem persists."
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:846
+#: includes/class-dfx-parish-retreat-letters.php:1015
 msgid "There was a problem processing the server response. Please try again."
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:847
+#: includes/class-dfx-parish-retreat-letters.php:1016
 msgid "A network error occurred. Please try again."
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:954
+#: includes/class-dfx-parish-retreat-letters.php:1017
+msgid "The language could not be changed. Please try again."
+msgstr ""
+
+#: includes/class-dfx-parish-retreat-letters.php:1048
+msgid "Invalid request."
+msgstr ""
+
+#: includes/class-dfx-parish-retreat-letters.php:1250
 msgid "Too many submission attempts. Please wait before trying again."
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:968
+#: includes/class-dfx-parish-retreat-letters.php:1264
 msgid "Incorrect security answer."
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:974
+#: includes/class-dfx-parish-retreat-letters.php:1270
+#: includes/class-dfx-parish-retreat-letters.php:1287
 msgid "Invalid attendant."
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:994
+#: includes/class-dfx-parish-retreat-letters.php:1298
 msgid "You must accept the legal disclaimer to proceed."
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:1001
+#: includes/class-dfx-parish-retreat-letters.php:1305
 msgid "Sender name is required."
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:1007
+#: includes/class-dfx-parish-retreat-letters.php:1323
 msgid "Invalid message mode."
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:1021
+#: includes/class-dfx-parish-retreat-letters.php:1337
 msgid "Message content is required."
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:1027
+#: includes/class-dfx-parish-retreat-letters.php:1343
 msgid "At least one file is required."
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:1036
+#: includes/class-dfx-parish-retreat-letters.php:1352
 msgid "File upload message"
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:1051
+#: includes/class-dfx-parish-retreat-letters.php:1368
 msgid "Failed to save message."
 msgstr ""
 
 #. translators: %1$d: number of files received, %2$d: number of files expected, %3$s: maximum combined upload size
-#: includes/class-dfx-parish-retreat-letters.php:1069
+#: includes/class-dfx-parish-retreat-letters.php:1386
 #, php-format
 msgid "Only %1$d of %2$d files were received. The total file size likely exceeds the server upload limit of %3$s. Please reduce the file sizes or upload fewer files at once."
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:1085
+#: includes/class-dfx-parish-retreat-letters.php:1402
 msgid "No files could be uploaded."
 msgstr ""
 
 #. translators: %1$d: number of files uploaded, %2$d: number of files expected
-#: includes/class-dfx-parish-retreat-letters.php:1100
+#: includes/class-dfx-parish-retreat-letters.php:1417
 #, php-format
 msgid "Only %1$d of %2$d files could be uploaded. "
 msgstr ""
 
 #. translators: %s: maximum combined upload size
-#: includes/class-dfx-parish-retreat-letters.php:1111
+#: includes/class-dfx-parish-retreat-letters.php:1428
 #, php-format
 msgid "Some files may be too large or the total size exceeds the server limit of %s. Please reduce file sizes or upload fewer files."
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:1120
+#: includes/class-dfx-parish-retreat-letters.php:1437
 msgid "Message sent successfully."
 msgstr ""
 
 #. translators: %d: number of files uploaded
-#: includes/class-dfx-parish-retreat-letters.php:1126
+#: includes/class-dfx-parish-retreat-letters.php:1443
 #, php-format
 msgid "Message sent successfully with %d file(s)."
 msgstr ""
 
 #. translators: %s: comma-separated list of file names that failed to upload
-#: includes/class-dfx-parish-retreat-letters.php:1134
+#: includes/class-dfx-parish-retreat-letters.php:1451
+#: includes/class-dfx-parish-retreat-letters.php:1464
 #, php-format
 msgid "Note: Some files could not be uploaded: %s"
 msgstr ""
 
 #. translators: %s: file name
-#: includes/class-dfx-parish-retreat-letters.php:1177
+#: includes/class-dfx-parish-retreat-letters.php:1504
 #, php-format
 msgid "File \"%s\" exceeds the maximum upload size limit."
 msgstr ""
 
 #. translators: %s: file name
-#: includes/class-dfx-parish-retreat-letters.php:1184
+#: includes/class-dfx-parish-retreat-letters.php:1511
 #, php-format
 msgid "File \"%s\" is too large."
 msgstr ""
 
 #. translators: %s: file name
-#: includes/class-dfx-parish-retreat-letters.php:1191
+#: includes/class-dfx-parish-retreat-letters.php:1518
 #, php-format
 msgid "File \"%s\" was only partially uploaded. Please try again."
 msgstr ""
 
 #. translators: %1$s: file name, %2$d: error code number
-#: includes/class-dfx-parish-retreat-letters.php:1201
+#: includes/class-dfx-parish-retreat-letters.php:1528
 #, php-format
 msgid "File \"%1$s\" upload failed with error code %2$d."
 msgstr ""
 
 #. translators: %s: file name
-#: includes/class-dfx-parish-retreat-letters.php:1222
+#: includes/class-dfx-parish-retreat-letters.php:1549
 #, php-format
 msgid "File \"%s\" failed validation (unsupported type or too large)."
 msgstr ""
 
 #. translators: %s: file name
-#: includes/class-dfx-parish-retreat-letters.php:1242
+#: includes/class-dfx-parish-retreat-letters.php:1569
 #, php-format
 msgid "File \"%s\" could not be saved to database."
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:1263
+#: includes/class-dfx-parish-retreat-letters.php:1590
 msgid "Invalid print request."
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:1268
+#: includes/class-dfx-parish-retreat-letters.php:1595
 msgid "Print token expired or invalid."
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:1324
+#: includes/class-dfx-parish-retreat-letters.php:1670
+#: includes/class-dfx-parish-retreat-letters.php:1700
+#: includes/class-dfx-parish-retreat-letters.php:1853
 msgid "File not found."
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:1355
-msgid "ZIP functionality is not available on this server."
+#: includes/class-dfx-parish-retreat-letters.php:1710
+#: includes/class-dfx-parish-retreat-letters.php:1877
+msgid "Print PDF"
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:1361
-msgid "Unable to create temporary file for ZIP download."
-msgstr ""
-
-#: includes/class-dfx-parish-retreat-letters.php:1369
-msgid "Unable to create ZIP file."
-msgstr ""
-
-#: includes/class-dfx-parish-retreat-letters.php:1389
-msgid "Failed to generate ZIP file."
-msgstr ""
-
-#: includes/class-dfx-parish-retreat-letters.php:1419
-msgid "Unable to read ZIP file for download."
-msgstr ""
-
-#: includes/class-dfx-parish-retreat-letters.php:1487
+#: includes/class-dfx-parish-retreat-letters.php:1937
+#: includes/class-dfx-parish-retreat-letters.php:2155
 msgid "Print Message"
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:1500
-msgid "To"
+#. translators: %d: number of pages in the attached PDF
+#: includes/class-dfx-parish-retreat-letters.php:1991
+#, php-format
+msgid "Attached document: %d page"
+msgid_plural "Attached document: %d pages"
+msgstr[0] ""
+msgstr[1] ""
+
+#: includes/class-dfx-parish-retreat-letters.php:2017
+msgid "ZIP functionality is not available on this server."
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:1556
+#: includes/class-dfx-parish-retreat-letters.php:2023
+msgid "Unable to create temporary file for ZIP download."
+msgstr ""
+
+#: includes/class-dfx-parish-retreat-letters.php:2031
+msgid "Unable to create ZIP file."
+msgstr ""
+
+#: includes/class-dfx-parish-retreat-letters.php:2051
+msgid "Failed to generate ZIP file."
+msgstr ""
+
+#: includes/class-dfx-parish-retreat-letters.php:2081
+msgid "Unable to read ZIP file for download."
+msgstr ""
+
+#: includes/class-dfx-parish-retreat-letters.php:2225
 msgid "Word document content cannot be displayed for printing. Please download and print separately."
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:1557
+#: includes/class-dfx-parish-retreat-letters.php:2226
 msgid "File size:"
 msgstr ""
 
 #. translators: %1$s: file type, %2$s: formatted file size
-#: includes/class-dfx-parish-retreat-letters.php:1571
+#: includes/class-dfx-parish-retreat-letters.php:2240
 #, php-format
 msgid "File type: %1$s, Size: %2$s - Cannot display content for printing."
 msgstr ""
 
-#: includes/class-gdpr.php:179
+#: includes/class-dfx-parish-retreat-letters.php:2297
+msgid "Browser not supported"
+msgstr ""
+
+#: includes/class-dfx-parish-retreat-letters.php:2308
+msgid "Internet Explorer is not supported"
+msgstr ""
+
+#: includes/class-dfx-parish-retreat-letters.php:2310
+msgid "The print view cannot be displayed in Internet Explorer. Microsoft retired Internet Explorer in June 2022 and it no longer receives security updates."
+msgstr ""
+
+#: includes/class-dfx-parish-retreat-letters.php:2313
+msgid "Please reopen this page in one of the following modern browsers:"
+msgstr ""
+
+#: includes/class-form-languages.php:447
+msgid "Change"
+msgstr ""
+
+#: includes/class-gdpr.php:182
 msgid "Message content is encrypted and cannot be exported in plain text for security reasons."
 msgstr ""
 
-#: includes/class-gdpr.php:196
+#: includes/class-gdpr.php:199
 msgid "File content is encrypted and cannot be exported for security reasons."
 msgstr ""
 
 #. translators: %d: message ID number
-#: includes/class-gdpr.php:253
+#: includes/class-gdpr.php:257
 #, php-format
 msgid "Message ID %d could not be deleted due to system error"
 msgstr ""
 
-#: includes/class-gdpr.php:413
-#: includes/class-gdpr.php:447
+#: includes/class-gdpr.php:457
+#: includes/class-gdpr.php:491
 msgid "Insufficient permissions."
 msgstr ""
 
-#: includes/class-gdpr.php:418
-#: includes/class-gdpr.php:454
+#: includes/class-gdpr.php:462
+#: includes/class-gdpr.php:498
 msgid "Please provide an identifier (name or email)."
 msgstr ""
 
-#: includes/class-gdpr.php:458
-msgid "Please type \"ERASE\" to confirm data deletion."
-msgstr ""
-
 #. translators: %1$d: number of messages erased, %2$d: number of files erased
-#: includes/class-gdpr.php:466
+#: includes/class-gdpr.php:511
 #, php-format
 msgid "Data erasure completed. Erased %1$d messages and %2$d files."
 msgstr ""
@@ -2730,6 +3586,7 @@ msgid "You have been invited to participate in the management of the following r
 msgstr ""
 
 #: includes/class-invitations.php:801
+#: includes/class-letter-return.php:333
 msgid "Retreat"
 msgstr ""
 
@@ -2786,785 +3643,6 @@ msgstr ""
 msgid "For security, please change your password after your first login."
 msgstr ""
 
-#: includes/class-security.php:93
-msgid "DFX Parish Retreat Letters: OpenSSL extension is required for the confidential message system."
-msgstr ""
-
-#: includes/class-security.php:151
-msgid "DFX Parish Retreat Letters: The encryption key is stored in the database. For better security, please define DFXPRL_ENCRYPTION_KEY in wp-config.php."
-msgstr ""
-
-#: includes/class-security.php:153
-msgid "You can generate a secure key using the following code:"
-msgstr ""
-
-#: includes/class-security.php:155
-msgid "Place this line in your wp-config.php file to secure the key."
-msgstr ""
-
-#: includes/class-security.php:182
-msgid "DFX Parish Retreat Letters: Encryption Key Mismatch"
-msgstr ""
-
-#: includes/class-security.php:185
-msgid "The encryption key defined in wp-config.php does not match the one stored in the database."
-msgstr ""
-
-#: includes/class-security.php:188
-msgid "Warning:"
-msgstr ""
-
-#: includes/class-security.php:189
-msgid "Only the key defined in wp-config.php will be used. If any messages were already encrypted using the database key, they will become unreadable."
-msgstr ""
-
-#: includes/class-security.php:192
-msgid "You can either:"
-msgstr ""
-
-#: includes/class-security.php:195
-msgid "Update the key in wp-config.php to match the database key, or"
-msgstr ""
-
-#: includes/class-security.php:196
-msgid "Remove the key from the database to use the wp-config.php key (click the button below)"
-msgstr ""
-
-#: includes/class-security.php:200
-msgid "Remove Database Key and Use wp-config.php Key"
-msgstr ""
-
-#: includes/class-security.php:215
-msgid "Are you sure you want to remove the encryption key from the database? Any messages encrypted with the old key will become unreadable. This action cannot be undone."
-msgstr ""
-
-#: includes/class-security.php:216
-msgid "Removing..."
-msgstr ""
-
-#: includes/class-security.php:217
-msgid "An error occurred. Please try again."
-msgstr ""
-
-#: includes/class-admin.php
-msgid "Sort by:"
-msgstr ""
-
-#: includes/class-admin.php
-msgid "Select..."
-msgstr ""
-
-#. Plugin URI of the plugin
-#: dfx-parish-retreat-letters.php
-msgid "https://github.com/davefx/dfx-parish-retreat-letters"
-msgstr ""
-
-#: includes/class-admin.php:470
-msgid "Internet Explorer is not supported."
-msgstr ""
-
-#: includes/class-admin.php:471
-msgid "This plugin (including the letter print view) requires a modern browser. Please use Microsoft Edge, Google Chrome, Mozilla Firefox or Safari."
-msgstr ""
-
-#: includes/class-admin.php:974
-msgid "Error saving the contact log entry. Please try again."
-msgstr ""
-
-#: includes/class-admin.php:975
-#: includes/class-admin.php:4214
-msgid "Please enter a description."
-msgstr ""
-
-#: includes/class-admin.php:976
-msgid "Are you sure you want to delete this contact log entry?"
-msgstr ""
-
-#: includes/class-admin.php:977
-msgid "Save"
-msgstr ""
-
-#: includes/class-admin.php:978
-msgid "Removing this field will permanently delete its values for all attendants when the retreat is saved. Continue?"
-msgstr ""
-
-#: includes/class-admin.php:1502
-msgid "Custom fields:"
-msgstr ""
-
-#: includes/class-admin.php:1638
-msgid "Are you sure you want to revoke this permission?"
-msgstr ""
-
-#: includes/class-admin.php:1680
-msgid "Are you sure you want to cancel this invitation?"
-msgstr ""
-
-#. translators: %d: Number of custom field values that could not be imported
-#: includes/class-admin.php:2322
-#, php-format
-msgid "%d custom field values were not valid and were left unchanged."
-msgstr ""
-
-#. translators: 1: line number, 2: error message
-#: includes/class-admin.php:2518
-#, php-format
-msgid "Line %1$d: %2$s"
-msgstr ""
-
-#: includes/class-admin.php:3174
-msgid "Letters:"
-msgstr ""
-
-#. translators: 1: total letters count, 2: letters received through the app, 3: physical letters count
-#: includes/class-admin.php:3178
-#, php-format
-msgid "%1$d in total (%2$d via app, %3$d physical)"
-msgstr ""
-
-#: includes/class-admin.php:3232
-#: includes/class-admin.php:3317
-#: includes/class-admin.php:3437
-msgid "Total Letters"
-msgstr ""
-
-#. translators: 1: letters received through the app, 2: physical letters count
-#: includes/class-admin.php:3444
-#, php-format
-msgid "%1$d via app, %2$d physical"
-msgstr ""
-
-#: includes/class-admin.php:3575
-msgid "As a message manager you can update the physical letters received, the custom fields you are allowed to edit and the contact log. The rest of the data is read-only."
-msgstr ""
-
-#: includes/class-admin.php:3692
-msgid "Physical Letters Received"
-msgstr ""
-
-#: includes/class-admin.php:3696
-msgid "Number of paper letters received for this attendant outside the application. They are added to the messages received to compute the total letters."
-msgstr ""
-
-#: includes/class-admin.php:3817
-#: includes/class-custom-field.php:416
-#: includes/class-custom-field.php:472
-msgid "Yes"
-msgstr ""
-
-#: includes/class-admin.php:3830
-msgid "— Select —"
-msgstr ""
-
-#: includes/class-admin.php:3859
-msgid "Custom Attendant Fields"
-msgstr ""
-
-#: includes/class-admin.php:3861
-msgid "Define additional fields for the attendants of this retreat. The slug identifies the field in CSV files and can be used as a placeholder in the message request template, e.g. [my_field]."
-msgstr ""
-
-#: includes/class-admin.php:3871
-msgid "Add Field"
-msgstr ""
-
-#: includes/class-admin.php:3892
-msgid "Retreat managers only"
-msgstr ""
-
-#: includes/class-admin.php:3893
-msgid "Retreat managers and message managers"
-msgstr ""
-
-#: includes/class-admin.php:3905
-msgid "Slug"
-msgstr ""
-
-#: includes/class-admin.php:3919
-msgid "Options (one per line)"
-msgstr ""
-
-#: includes/class-admin.php:3925
-msgid "Visible to"
-msgstr ""
-
-#: includes/class-admin.php:3933
-msgid "Editable by"
-msgstr ""
-
-#: includes/class-admin.php:3944
-msgid "Show in attendants list"
-msgstr ""
-
-#: includes/class-admin.php:3948
-msgid "Sortable"
-msgstr ""
-
-#: includes/class-admin.php:3952
-msgid "Import from CSV"
-msgstr ""
-
-#: includes/class-admin.php:3956
-msgid "Export to CSV"
-msgstr ""
-
-#: includes/class-admin.php:3958
-msgid "Remove field"
-msgstr ""
-
-#: includes/class-admin.php:3975
-msgid "Contact Log"
-msgstr ""
-
-#: includes/class-admin.php:3976
-msgid "Record the contacts and conversations held with this attendant's contact person."
-msgstr ""
-
-#: includes/class-admin.php:3984
-msgid "Description"
-msgstr ""
-
-#: includes/class-admin.php:3988
-msgid "Add Entry"
-msgstr ""
-
-#: includes/class-admin.php:4022
-msgid "No contact log entries yet."
-msgstr ""
-
-#. translators: %d: number of deleted contact log entries
-#: includes/class-admin.php:4036
-#, php-format
-msgid "Deleted entries (%d)"
-msgstr ""
-
-#: includes/class-admin.php:4071
-msgid "Written on"
-msgstr ""
-
-#. translators: 1: date and time of the last edit, 2: user who made it
-#: includes/class-admin.php:4076
-#, php-format
-msgid "Last edited on %1$s by %2$s"
-msgstr ""
-
-#: includes/class-admin.php:4081
-msgid "(edited)"
-msgstr ""
-
-#. translators: 1: date and time of the deletion, 2: user who deleted the entry
-#: includes/class-admin.php:4088
-#, php-format
-msgid "Deleted on %1$s by %2$s"
-msgstr ""
-
-#. translators: %d: minutes left to edit the entry
-#: includes/class-admin.php:4107
-#, php-format
-msgid "(editable for %d more minute)"
-msgid_plural "(editable for %d more minutes)"
-msgstr[0] ""
-msgstr[1] ""
-
-#: includes/class-admin.php:4121
-msgid "Change history"
-msgstr ""
-
-#: includes/class-admin.php:4128
-msgid "Created"
-msgstr ""
-
-#: includes/class-admin.php:4129
-msgid "Edited"
-msgstr ""
-
-#: includes/class-admin.php:4130
-msgid "Deleted"
-msgstr ""
-
-#: includes/class-admin.php:4210
-msgid "Please enter a valid date."
-msgstr ""
-
-#: includes/class-admin.php:4233
-#: includes/class-admin.php:4254
-msgid "Error saving the contact log entry."
-msgstr ""
-
-#: includes/class-admin.php:4250
-msgid "You cannot edit this entry."
-msgstr ""
-
-#: includes/class-admin.php:4270
-msgid "You cannot delete this entry."
-msgstr ""
-
-#: includes/class-admin.php:4274
-msgid "Error deleting the contact log entry."
-msgstr ""
-
-#: includes/class-admin.php:5942
-msgid "Add PDF Header"
-msgstr ""
-
-#: includes/class-admin.php:5946
-msgid "Add a From/To header to PDF letters when printing"
-msgstr ""
-
-#: includes/class-admin.php:5947
-msgid "Enabled by default. The From/To header is added on the recipient&#8217;s browser (no server memory cost). If the browser cannot do it, the unmodified PDF is printed."
-msgstr ""
-
-#: includes/class-custom-field.php:93
-msgid "Long text"
-msgstr ""
-
-#: includes/class-custom-field.php:94
-msgid "Number"
-msgstr ""
-
-#: includes/class-custom-field.php:96
-msgid "Yes/No"
-msgstr ""
-
-#: includes/class-custom-field.php:97
-msgid "Options list"
-msgstr ""
-
-#: includes/class-custom-field.php:202
-msgid "Custom field names cannot be empty."
-msgstr ""
-
-#. translators: %s: custom field slug
-#: includes/class-custom-field.php:216
-#, php-format
-msgid "The slug \"%s\" is reserved. Please choose a different one."
-msgstr ""
-
-#. translators: %s: custom field slug
-#: includes/class-custom-field.php:225
-#, php-format
-msgid "The slug \"%s\" is already used by another field of this retreat."
-msgstr ""
-
-#. translators: %s: custom field name
-#: includes/class-custom-field.php:234
-#, php-format
-msgid "The options list field \"%s\" needs at least one option."
-msgstr ""
-
-#. translators: %s: custom field name
-#: includes/class-custom-field.php:266
-#, php-format
-msgid "Error saving the custom field \"%s\"."
-msgstr ""
-
-#: includes/class-custom-field.php:472
-msgid "No"
-msgstr ""
-
-#. translators: 1: invalid value, 2: custom field name
-#: includes/class-custom-field.php:661
-#, php-format
-msgid "Invalid value \"%1$s\" for field \"%2$s\"."
-msgstr ""
-
-#: includes/class-dfx-parish-retreat-letters.php:1389
-#: includes/class-dfx-parish-retreat-letters.php:1556
-msgid "Print PDF"
-msgstr ""
-
-#. translators: %d: number of pages in the attached PDF
-#: includes/class-dfx-parish-retreat-letters.php:1670
-#, php-format
-msgid "Attached document: %d page"
-msgid_plural "Attached document: %d pages"
-msgstr[0] ""
-msgstr[1] ""
-
-#: includes/class-dfx-parish-retreat-letters.php:1976
-msgid "Browser not supported"
-msgstr ""
-
-#: includes/class-dfx-parish-retreat-letters.php:1987
-msgid "Internet Explorer is not supported"
-msgstr ""
-
-#: includes/class-dfx-parish-retreat-letters.php:1989
-msgid "The print view cannot be displayed in Internet Explorer. Microsoft retired Internet Explorer in June 2022 and it no longer receives security updates."
-msgstr ""
-
-#: includes/class-dfx-parish-retreat-letters.php:1992
-msgid "Please reopen this page in one of the following modern browsers:"
-msgstr ""
-
-#: includes/class-admin.php:1010
-msgid "Error saving the column order. Please try again."
-msgstr ""
-
-#: includes/class-admin.php:3295
-msgid "Drag the column headers by their handle to reorder the columns. The order is saved for everyone who uses this retreat."
-msgstr ""
-
-#: includes/class-admin.php:3297
-msgid "Restore default order"
-msgstr ""
-
-#: includes/class-admin.php:3908
-msgid "Drag to reorder"
-msgstr ""
-
-#: includes/class-admin.php:3943
-msgid "Error saving the column order."
-msgstr ""
-
-#: includes/class-admin.php:1047
-#: includes/class-attendant.php:784
-msgid "This field is required."
-msgstr ""
-
-#: includes/class-admin.php:1048
-#: includes/class-admin.php:4175
-msgid "Error saving the field. Please try again."
-msgstr ""
-
-#. translators: %d: number of contact log entries
-#: includes/class-admin.php:3984
-#, php-format
-msgid "%d entry"
-msgid_plural "%d entries"
-msgstr[0] ""
-msgstr[1] ""
-
-#: includes/class-admin.php:3988
-msgid "Add entry"
-msgstr ""
-
-#: includes/class-admin.php:4074
-msgid "Click to edit"
-msgstr ""
-
-#: includes/class-admin.php:4095
-msgid "Click to edit the physical letters received"
-msgstr ""
-
-#: includes/class-admin.php:4153
-msgid "You do not have permission to edit this field."
-msgstr ""
-
-#: includes/class-admin.php:4164
-msgid "The number of physical letters must be a whole number, zero or greater."
-msgstr ""
-
-#: includes/class-attendant.php:780
-msgid "This field cannot be edited."
-msgstr ""
-
-#: includes/class-admin.php:3318
-#: includes/class-admin.php:3433
-#: includes/class-admin.php:4000
-msgid "Physical Letters"
-msgstr ""
-
-#: includes/class-admin.php:1021
-msgid "Permanently delete this attendant together with their messages, contact log and custom field values? This cannot be undone."
-msgstr ""
-
-#. translators: %s: attendant name
-#: includes/class-admin.php:1023
-#, php-format
-msgid "Withdraw %s from the retreat? They will move to the \"Withdrawn attendants\" tab, will not be editable and their message link will stop accepting letters. You can reactivate them at any time."
-msgstr ""
-
-#: includes/class-admin.php:1024
-msgid "Error updating the attendant. Please try again."
-msgstr ""
-
-#: includes/class-admin.php:1033
-msgid "Withdraw All Attendants - Confirmation Required"
-msgstr ""
-
-#. translators: %d: number of attendants
-#: includes/class-admin.php:1035
-#, php-format
-msgid "You are about to withdraw ALL %d attendants of this retreat."
-msgstr ""
-
-#: includes/class-admin.php:1036
-msgid "They will move to the \"Withdrawn attendants\" tab, will not be editable and their message links will stop accepting letters. Nothing is deleted: you can reactivate them one by one, or delete them permanently from that tab."
-msgstr ""
-
-#: includes/class-admin.php:1037
-#: includes/class-admin.php:3066
-msgid "WITHDRAW ALL ATTENDANTS"
-msgstr ""
-
-#: includes/class-admin.php:1040
-#: includes/class-admin.php:3451
-msgid "Withdraw All Attendants"
-msgstr ""
-
-#: includes/class-admin.php:1041
-msgid "Withdrawing..."
-msgstr ""
-
-#: includes/class-admin.php:2031
-msgid "This attendant has been withdrawn from the retreat and cannot be edited. Reactivate them from the \"Withdrawn attendants\" tab to edit their data."
-msgstr ""
-
-#: includes/class-admin.php:2032
-msgid "Withdrawn attendant"
-msgstr ""
-
-#: includes/class-admin.php:2090
-msgid "Only withdrawn attendants can be deleted, and only by retreat managers."
-msgstr ""
-
-#: includes/class-admin.php:2129
-msgid "This attendant has been withdrawn from the retreat and cannot be edited."
-msgstr ""
-
-#. translators: %d: Number of CSV rows that match withdrawn attendants
-#: includes/class-admin.php:2444
-#, php-format
-msgid "%d rows match withdrawn attendants and were not updated. Reactivate them first if you need to update their data."
-msgstr ""
-
-#: includes/class-admin.php:2963
-msgid "Only withdrawn attendants can be deleted. Withdraw the attendant first."
-msgstr ""
-
-#: includes/class-admin.php:2986
-msgid "This attendant has already been withdrawn."
-msgstr ""
-
-#: includes/class-admin.php:2990
-msgid "Error withdrawing the attendant. Please try again."
-msgstr ""
-
-#: includes/class-admin.php:2993
-msgid "Attendant withdrawn. You can find them in the \"Withdrawn attendants\" tab."
-msgstr ""
-
-#: includes/class-admin.php:3009
-msgid "This attendant has not been withdrawn."
-msgstr ""
-
-#: includes/class-admin.php:3013
-msgid "Error reactivating the attendant. Please try again."
-msgstr ""
-
-#: includes/class-admin.php:3016
-msgid "Attendant reactivated."
-msgstr ""
-
-#: includes/class-admin.php:3067
-msgid "Confirmation text verification failed. Action cancelled for security."
-msgstr ""
-
-#: includes/class-admin.php:3072
-msgid "Error withdrawing attendants. Please try again."
-msgstr ""
-
-#. translators: %d: Number of withdrawn attendants
-#: includes/class-admin.php:3086
-#, php-format
-msgid "%d attendants have been withdrawn. You can find them in the \"Withdrawn attendants\" tab."
-msgstr ""
-
-#. translators: %d: number of active attendants
-#: includes/class-admin.php:3307
-#, php-format
-msgid "Attendants (%d)"
-msgstr ""
-
-#. translators: %d: number of withdrawn attendants
-#: includes/class-admin.php:3316
-#, php-format
-msgid "Withdrawn attendants (%d)"
-msgstr ""
-
-#: includes/class-admin.php:3610
-#: includes/class-admin.php:4193
-msgid "Status"
-msgstr ""
-
-#: includes/class-admin.php:3661
-msgid "Reactivate"
-msgstr ""
-
-#: includes/class-admin.php:3664
-msgid "Delete Permanently"
-msgstr ""
-
-#: includes/class-admin.php:3700
-msgid "Withdraw"
-msgstr ""
-
-#: includes/class-admin.php:3713
-msgid "No attendants have been withdrawn from this retreat."
-msgstr ""
-
-#: includes/class-admin.php:4195
-msgid "Withdrawn"
-msgstr ""
-
-#. translators: 1: date of withdrawal, 2: user who withdrew the attendant
-#: includes/class-admin.php:4198
-#, php-format
-msgid "On %1$s by %2$s"
-msgstr ""
-
-#: includes/class-dfx-parish-retreat-letters.php:615
-#: includes/class-dfx-parish-retreat-letters.php:1015
-msgid "Messages are no longer being accepted for this attendant."
-msgstr ""
-
-#: includes/class-dfx-parish-retreat-letters.php:619
-msgid "Your message has been received"
-msgstr ""
-
-#. translators: %s: attendant full name
-#: includes/class-dfx-parish-retreat-letters.php:624
-#, php-format
-msgid "Thank you. Your message for %s has been received and securely stored."
-msgstr ""
-
-#: includes/class-dfx-parish-retreat-letters.php:630
-msgid "You can now close this page."
-msgstr ""
-
-#. translators: %d: number of letters that can still be returned by email
-#: includes/class-admin.php:1025
-#, php-format
-msgid "This attendant has %d letters that can still be returned to their senders by email. If you delete the attendant, they will be deleted without being returned."
-msgstr ""
-
-#: includes/class-admin.php:1026
-msgid "Return letter by email"
-msgstr ""
-
-#: includes/class-admin.php:1027
-msgid "Return all letters by email"
-msgstr ""
-
-#: includes/class-admin.php:1029
-msgid "Subject"
-msgstr ""
-
-#: includes/class-admin.php:1030
-msgid "Attachments"
-msgstr ""
-
-#: includes/class-admin.php:1031
-msgid "Recipients"
-msgstr ""
-
-#. translators: %d: number of times the letter was printed
-#: includes/class-admin.php:1033
-#, php-format
-msgid "This letter was printed %d times. Remember to destroy the printed copy."
-msgstr ""
-
-#: includes/class-admin.php:1034
-msgid "Each letter will be sent back to its sender with the configured email, and deleted once sent. Remember to destroy the printed copies."
-msgstr ""
-
-#: includes/class-admin.php:1035
-msgid "Send and delete the letter"
-msgstr ""
-
-#: includes/class-admin.php:1036
-msgid "Send and delete the letters"
-msgstr ""
-
-#: includes/class-admin.php:1038
-#: includes/class-letter-return.php:138
-#: includes/class-letter-return.php:147
-#: includes/class-letter-return.php:164
-msgid "The email could not be sent. The letter has not been deleted."
-msgstr ""
-
-#. translators: 1: number of returned letters, 2: number of letters that could not be returned
-#: includes/class-admin.php:1040
-#, php-format
-msgid "%1$d letters returned and deleted. %2$d could not be returned and have been kept."
-msgstr ""
-
-#: includes/class-admin.php:1635
-msgid "Letter Return Email Subject"
-msgstr ""
-
-#: includes/class-admin.php:1643
-msgid "Letter Return Email Text"
-msgstr ""
-
-#: includes/class-admin.php:1648
-msgid "Email sent to the sender of a letter when the attendant has been withdrawn, with the letter attached. After sending it, the letter is deleted. If left empty, the default text is used. Available placeholders:"
-msgstr ""
-
-#: includes/class-admin.php:1650
-msgid "(Sender name)"
-msgstr ""
-
-#: includes/class-admin.php:1657
-msgid "(Date the letter was sent)"
-msgstr ""
-
-#: includes/class-admin.php:5310
-msgid "This attendant has been withdrawn. You can return by email the letters whose sender gave their address; once returned, they are deleted from the system."
-msgstr ""
-
-#. translators: %d: number of letters that can be returned
-#: includes/class-admin.php:5316
-#, php-format
-msgid "Return all by email (%d)"
-msgstr ""
-
-#: includes/class-admin.php:5487
-msgid "Return by email"
-msgstr ""
-
-#: includes/class-admin.php:5490
-msgid "No email: cannot be returned"
-msgstr ""
-
-#: includes/class-admin.php:5723
-msgid "You do not have permission to manage messages for this retreat."
-msgstr ""
-
-#. translators: %s: email address
-#: includes/class-admin.php:5766
-#, php-format
-msgid "Letter returned to %s and deleted from the system."
-msgstr ""
-
-#: includes/class-admin.php:5770
-msgid "Remember to destroy the printed copy."
-msgstr ""
-
-#: includes/class-dfx-parish-retreat-letters.php:694
-msgid "Your Email"
-msgstr ""
-
-#: includes/class-dfx-parish-retreat-letters.php:695
-msgid "name@example.com"
-msgstr ""
-
-#: includes/class-dfx-parish-retreat-letters.php:696
-msgid "Repeat Your Email"
-msgstr ""
-
-#: includes/class-dfx-parish-retreat-letters.php:915
-#: includes/class-dfx-parish-retreat-letters.php:1097
-msgid "The email addresses do not match. Please check them."
-msgstr ""
-
-#: includes/class-dfx-parish-retreat-letters.php:916
-#: includes/class-dfx-parish-retreat-letters.php:1100
-msgid "The email address is not valid."
-msgstr ""
-
 #: includes/class-letter-return.php:58
 msgid "Only letters for withdrawn attendants can be returned."
 msgstr ""
@@ -3574,26 +3652,26 @@ msgid "The sender of this letter did not give an email address, so it cannot be 
 msgstr ""
 
 #. translators: %s: attendant full name
-#: includes/class-letter-return.php:226
-#: includes/class-letter-return.php:288
+#: includes/class-letter-return.php:246
+#: includes/class-letter-return.php:308
 #, php-format
 msgid "Letter for %s"
 msgstr ""
 
-#: includes/class-letter-return.php:234
-#: includes/class-letter-return.php:261
+#: includes/class-letter-return.php:254
+#: includes/class-letter-return.php:281
 msgid "The letter could not be decrypted."
 msgstr ""
 
-#: includes/class-letter-return.php:270
+#: includes/class-letter-return.php:290
 msgid "The files of this letter could not be found."
 msgstr ""
 
-#: includes/class-retreat.php:398
+#: includes/class-retreat.php:405
 msgid "Your letter for [attendant_name] [attendant_surnames]"
 msgstr ""
 
-#: includes/class-retreat.php:408
+#: includes/class-retreat.php:415
 msgid ""
 "Hello, [sender_name]:\n"
 "\n"
@@ -3606,61 +3684,72 @@ msgid ""
 "Kind regards."
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:700
-msgid "Optional. It will only be used to let you know about any issue with your letter."
+#: includes/class-security.php:93
+msgid "DFX Parish Retreat Letters: OpenSSL extension is required for the confidential message system."
 msgstr ""
 
-#: includes/class-dfx-parish-retreat-letters.php:825
-msgid "If you give your email, it is stored encrypted and will only be used to let you know about any issue with your letter."
+#: includes/class-security.php:157
+msgid "DFX Parish Retreat Letters: The encryption key is stored in the database. For better security, please define DFXPRL_ENCRYPTION_KEY in wp-config.php."
 msgstr ""
 
-#: includes/class-admin.php:1062
-msgid "Empty Retreat - Confirmation Required"
+#: includes/class-security.php:159
+msgid "You can generate a secure key using the following code:"
 msgstr ""
 
-#. translators: %d: number of attendants
-#: includes/class-admin.php:1064
+#: includes/class-security.php:161
+msgid "Place this line in your wp-config.php file to secure the key."
+msgstr ""
+
+#: includes/class-security.php:183
+msgid "DFX Parish Retreat Letters: Encryption Key Mismatch"
+msgstr ""
+
+#: includes/class-security.php:186
+msgid "The encryption key defined in wp-config.php does not match the one stored in the database."
+msgstr ""
+
+#: includes/class-security.php:189
+msgid "Warning:"
+msgstr ""
+
+#: includes/class-security.php:190
+msgid "Only the key defined in wp-config.php will be used. If any messages were already encrypted using the database key, they will become unreadable."
+msgstr ""
+
+#: includes/class-security.php:193
+msgid "You can either:"
+msgstr ""
+
+#: includes/class-security.php:196
+msgid "Update the key in wp-config.php to match the database key, or"
+msgstr ""
+
+#: includes/class-security.php:197
+msgid "Remove the key from the database to use the wp-config.php key (click the button below)"
+msgstr ""
+
+#: includes/class-security.php:201
+msgid "Remove Database Key and Use wp-config.php Key"
+msgstr ""
+
+#: includes/class-security.php:224
+msgid "Are you sure you want to remove the encryption key from the database? Any messages encrypted with the old key will become unreadable. This action cannot be undone."
+msgstr ""
+
+#: includes/class-security.php:225
+msgid "Removing..."
+msgstr ""
+
+#: includes/class-security.php:226
+msgid "An error occurred. Please try again."
+msgstr ""
+
+#: includes/class-translator.php:100
+msgid "Automatic translation is not configured."
+msgstr ""
+
+#. translators: %s: error message returned by Google
+#: includes/class-translator.php:134
 #, php-format
-msgid "You are about to permanently delete ALL %d attendants of this retreat, active and withdrawn."
-msgstr ""
-
-#: includes/class-admin.php:1065
-msgid "Their letters, files, print history, contact log and custom field values will also be deleted. The retreat, its settings, custom fields and managers are kept, so it can be reused. This cannot be undone."
-msgstr ""
-
-#. translators: %d: number of letters
-#: includes/class-admin.php:1067
-#, php-format
-msgid "Letters of withdrawn attendants that can still be returned to their senders by email: %d. If you empty the retreat, they will be deleted without being returned."
-msgstr ""
-
-#: includes/class-admin.php:1068
-msgid "To confirm, type the exact retreat name below:"
-msgstr ""
-
-#: includes/class-admin.php:1069
-#: includes/class-admin.php:3596
-msgid "Empty Retreat"
-msgstr ""
-
-#: includes/class-admin.php:1070
-msgid "Emptying..."
-msgstr ""
-
-#: includes/class-admin.php:3188
-msgid "A retreat can only be emptied after its end date."
-msgstr ""
-
-#: includes/class-admin.php:3192
-msgid "Retreat name verification failed. Action cancelled for security."
-msgstr ""
-
-#: includes/class-admin.php:3199
-msgid "Error emptying the retreat. Please try again."
-msgstr ""
-
-#. translators: %d: Number of deleted attendants
-#: includes/class-admin.php:3213
-#, php-format
-msgid "Retreat emptied: %d attendants have been deleted together with their letters. The retreat and its settings are kept."
+msgid "Google Cloud Translation error: %s"
 msgstr ""

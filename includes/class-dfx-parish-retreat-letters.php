@@ -234,6 +234,8 @@ class DFXPRL {
 		 * The class responsible for returning letters to their senders.
 		 */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-letter-return.php';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-form-languages.php';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-translator.php';
 
 		/**
 		 * The class responsible for GDPR compliance.
@@ -336,6 +338,8 @@ class DFXPRL {
 		add_filter( 'body_class', array( $this, 'add_message_form_body_class' ) );
 		add_action( 'wp_ajax_nopriv_dfxprl_submit_message', array( $this, 'handle_message_submission' ) );
 		add_action( 'wp_ajax_dfxprl_submit_message', array( $this, 'handle_message_submission' ) );
+		add_action( 'wp_ajax_nopriv_dfxprl_form_strings', array( $this, 'ajax_get_form_strings' ) );
+		add_action( 'wp_ajax_dfxprl_form_strings', array( $this, 'ajax_get_form_strings' ) );
 
 		// Schedule cleanup tasks
 		add_action( 'init', array( $this, 'schedule_cleanup_tasks' ) );
@@ -370,6 +374,9 @@ class DFXPRL {
 			false,
 			$plugin_dir . '/languages/'
 		);
+
+		// Fill in the texts that the language pack of translate.wordpress.org lacks
+		DFXPRL_Form_Languages::load_translations( determine_locale() );
 	}
 
 	/**
@@ -492,6 +499,18 @@ class DFXPRL {
 			return false;
 		}
 
+		// Show the page in the visitor's language, or in the one chosen in the selector,
+		// if the retreat has the multilingual form enabled
+		$locale = DFXPRL_Form_Languages::get_main_locale();
+		if ( DFXPRL_Form_Languages::is_enabled_for( $attendant ) ) {
+			$locale = DFXPRL_Form_Languages::detect_locale();
+			// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only language choice
+			if ( isset( $_GET['lang'] ) ) {
+				DFXPRL_Form_Languages::remember_locale( $locale );
+			}
+			DFXPRL_Form_Languages::switch_locale( $locale );
+		}
+
 		// Get retreat data for custom header/footer blocks
 		$retreat = $this->get_retreat_by_token( $token );
 
@@ -549,7 +568,9 @@ class DFXPRL {
 		if ( $sent && empty( $attendant->withdrawn_at ) ) {
 			$this->render_message_sent( $attendant );
 		} else {
-			$this->render_message_form( $attendant, $retreat );
+			$retreat_model = new DFXPRL_Retreat();
+			$texts         = DFXPRL_Form_Languages::get_retreat_texts( $retreat_model->get( $attendant->retreat_id ), $locale );
+			$this->render_message_form( $attendant, $retreat, $texts );
 		}
 
 		// Try to render custom footer, fallback to default
@@ -597,7 +618,7 @@ class DFXPRL {
 		$retreats_table = $this->database->get_retreats_table();
 
 		$attendant = $wpdb->get_row( $wpdb->prepare(
-			"SELECT a.*, r.name as retreat_name, r.location as retreat_location, r.start_date, r.end_date, r.custom_message, r.disclaimer_text, r.disclaimer_acceptance_text
+			"SELECT a.*, r.name as retreat_name, r.location as retreat_location, r.start_date, r.end_date, r.custom_message, r.disclaimer_text, r.disclaimer_acceptance_text, r.multilingual_enabled
 			 FROM `{$attendants_table}` a
 			 INNER JOIN `{$retreats_table}` r ON a.retreat_id = r.id
 			 WHERE a.message_url_token = %s", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
@@ -605,6 +626,152 @@ class DFXPRL {
 		) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
 
 		return $attendant;
+	}
+
+	/**
+	 * Get the texts of the public form pages in the current language.
+	 *
+	 * The pages print these texts inside elements marked with data-dfxprl-i18n
+	 * (contents) or data-dfxprl-i18n-placeholder / data-dfxprl-i18n-title (attributes),
+	 * so the language selector can replace them without reloading the page.
+	 *
+	 * @since 1.15.0
+	 * @param object $attendant Attendant object (with the retreat columns).
+	 * @param array  $texts     Retreat texts from DFXPRL_Form_Languages::get_retreat_texts(),
+	 *                          or an empty array on pages without the form.
+	 * @return array array( 'html' => key => safe HTML, 'attr' => key => plain text ).
+	 */
+	private function get_page_strings( $attendant, $texts = array() ) {
+		$full_name = trim( $attendant->name . ' ' . $attendant->surnames );
+
+		$html = array(
+			'language'         => esc_html__( 'Language', 'dfx-parish-retreat-letters' ),
+			'title'            => esc_html__( 'Send a Confidential Message', 'dfx-parish-retreat-letters' ),
+			'withdrawn'        => esc_html__( 'Messages are no longer being accepted for this attendant.', 'dfx-parish-retreat-letters' ),
+			'sent_title'       => esc_html__( 'Your message has been received', 'dfx-parish-retreat-letters' ),
+			'sent_thanks'      => sprintf(
+				/* translators: %s: attendant full name */
+				esc_html__( 'Thank you. Your message for %s has been received and securely stored.', 'dfx-parish-retreat-letters' ),
+				'<strong>' . esc_html( $full_name ) . '</strong>'
+			),
+			'sent_close'       => esc_html__( 'You can now close this page.', 'dfx-parish-retreat-letters' ),
+			'for_attendant'    => esc_html__( 'For Retreat Attendant', 'dfx-parish-retreat-letters' ),
+			'retreat_dates'    => esc_html( DFXPRL_Form_Languages::format_date( $attendant->start_date ) . ' - ' . DFXPRL_Form_Languages::format_date( $attendant->end_date ) ),
+			'your_name'        => esc_html__( 'Your Name', 'dfx-parish-retreat-letters' ),
+			'your_email'       => esc_html__( 'Your Email', 'dfx-parish-retreat-letters' ),
+			'repeat_email'     => esc_html__( 'Repeat Your Email', 'dfx-parish-retreat-letters' ),
+			'email_help'       => esc_html__( 'Optional. It will only be used to let you know about any issue with your letter.', 'dfx-parish-retreat-letters' ),
+			'choose_type'      => esc_html__( 'Choose message type:', 'dfx-parish-retreat-letters' ),
+			'text_message'     => esc_html__( 'Text Message', 'dfx-parish-retreat-letters' ),
+			'file_upload'      => esc_html__( 'File Upload', 'dfx-parish-retreat-letters' ),
+			'your_message'     => esc_html__( 'Your Message', 'dfx-parish-retreat-letters' ),
+			'list'             => esc_html__( 'List', 'dfx-parish-retreat-letters' ),
+			'undo'             => esc_html__( 'Undo', 'dfx-parish-retreat-letters' ),
+			'redo'             => esc_html__( 'Redo', 'dfx-parish-retreat-letters' ),
+			'editor_help'      => esc_html__( 'You can use the toolbar to format your text, create lists, and paste images. HTML is allowed but will be filtered for security.', 'dfx-parish-retreat-letters' ),
+			'attach_files'     => esc_html__( 'Attach Files', 'dfx-parish-retreat-letters' ),
+			'file_types'       => $this->get_file_types_help(),
+			'security_check'   => esc_html__( 'Security Check', 'dfx-parish-retreat-letters' ),
+			'legal_disclaimer' => esc_html__( 'Legal Disclaimer', 'dfx-parish-retreat-letters' ),
+			'submit'           => esc_html__( 'Send Confidential Message', 'dfx-parish-retreat-letters' ),
+			'sending'          => esc_html__( 'Sending...', 'dfx-parish-retreat-letters' ),
+			'privacy_title'    => esc_html__( 'Privacy & Security', 'dfx-parish-retreat-letters' ),
+			'privacy_1'        => esc_html__( 'Your message will be encrypted and stored securely.', 'dfx-parish-retreat-letters' ),
+			'privacy_2'        => esc_html__( 'Only authorized retreat administrators can access your message.', 'dfx-parish-retreat-letters' ),
+			'privacy_3'        => esc_html__( 'Messages can only be viewed when printed - no content is displayed on screen.', 'dfx-parish-retreat-letters' ),
+			'privacy_4'        => esc_html__( 'Your IP address will be anonymized after 30 days for privacy compliance.', 'dfx-parish-retreat-letters' ),
+			'privacy_5'        => esc_html__( 'If you give your email, it is stored encrypted and will only be used to let you know about any issue with your letter.', 'dfx-parish-retreat-letters' ),
+			'privacy_6'        => esc_html__( 'All data is handled in accordance with GDPR and Spanish privacy laws.', 'dfx-parish-retreat-letters' ),
+		);
+
+		if ( $texts ) {
+			$custom_message = $texts['custom_message'];
+			$disclaimer     = $texts['disclaimer_text'];
+			$acceptance     = $texts['disclaimer_acceptance_text'];
+
+			$html['custom_message'] = wp_kses_post( wpautop( $custom_message['text'] ) )
+				. $this->get_automatic_translation_note( $custom_message );
+			$html['disclaimer']     = wp_kses_post( wpautop( $disclaimer['text'] ) )
+				. $this->get_automatic_translation_note( $disclaimer['automatic'] ? $disclaimer : $acceptance );
+			$html['acceptance']     = esc_html(
+				'' !== trim( $acceptance['text'] )
+					? $acceptance['text']
+					: __( 'I accept the terms and conditions stated above', 'dfx-parish-retreat-letters' )
+			);
+		}
+
+		$attr = array(
+			'name_placeholder'    => __( 'Enter your name', 'dfx-parish-retreat-letters' ),
+			'email_placeholder'   => __( 'name@example.com', 'dfx-parish-retreat-letters' ),
+			'bold'                => __( 'Bold', 'dfx-parish-retreat-letters' ),
+			'italic'              => __( 'Italic', 'dfx-parish-retreat-letters' ),
+			'underline'           => __( 'Underline', 'dfx-parish-retreat-letters' ),
+			'bullet_list'         => __( 'Bullet List', 'dfx-parish-retreat-letters' ),
+			'numbered_list'       => __( 'Numbered List', 'dfx-parish-retreat-letters' ),
+			'undo'                => __( 'Undo', 'dfx-parish-retreat-letters' ),
+			'redo'                => __( 'Redo', 'dfx-parish-retreat-letters' ),
+			/* translators: %s: attendant full name (name and surnames) */
+			'message_placeholder' => sprintf( __( 'Write your confidential message for %s here...', 'dfx-parish-retreat-letters' ), $full_name ),
+			'captcha_placeholder' => __( 'Please enter the result', 'dfx-parish-retreat-letters' ),
+		);
+
+		return array(
+			'html' => $html,
+			'attr' => $attr,
+		);
+	}
+
+	/**
+	 * Get the help text with the allowed file types and sizes.
+	 *
+	 * @since 1.15.0
+	 * @return string Safe HTML.
+	 */
+	private function get_file_types_help() {
+		$max_per_file = $this->security->get_max_upload_size();
+		$max_combined = $this->security->get_max_combined_upload_size();
+
+		// Only display size limits if we can reliably determine them
+		if ( null !== $max_per_file && null !== $max_combined ) {
+			return sprintf(
+				/* translators: %1$s: maximum size per file, %2$s: maximum combined size */
+				esc_html__( 'Allowed file types: PDF, DOC, DOCX, TXT, JPG, PNG, GIF. Maximum %1$s per file, %2$s total.', 'dfx-parish-retreat-letters' ),
+				esc_html( $max_per_file ),
+				esc_html( $max_combined )
+			);
+		}
+		if ( null !== $max_per_file ) {
+			return sprintf(
+				/* translators: %s: maximum size per file */
+				esc_html__( 'Allowed file types: PDF, DOC, DOCX, TXT, JPG, PNG, GIF. Maximum %s per file.', 'dfx-parish-retreat-letters' ),
+				esc_html( $max_per_file )
+			);
+		}
+		if ( null !== $max_combined ) {
+			return sprintf(
+				/* translators: %s: maximum combined size */
+				esc_html__( 'Allowed file types: PDF, DOC, DOCX, TXT, JPG, PNG, GIF. Maximum %s total.', 'dfx-parish-retreat-letters' ),
+				esc_html( $max_combined )
+			);
+		}
+		// Server configuration unknown - just show allowed types
+		return esc_html__( 'Allowed file types: PDF, DOC, DOCX, TXT, JPG, PNG, GIF.', 'dfx-parish-retreat-letters' );
+	}
+
+	/**
+	 * Render the language selector with the text marked for live translation.
+	 *
+	 * Nothing is shown if the retreat does not have the multilingual form enabled.
+	 *
+	 * @since 1.15.0
+	 * @param object $attendant Attendant object (with the retreat columns).
+	 * @param array  $s         Texts from get_page_strings().
+	 */
+	private function render_language_selector( $attendant, $s ) {
+		if ( ! DFXPRL_Form_Languages::is_enabled_for( $attendant ) ) {
+			return;
+		}
+		DFXPRL_Form_Languages::render_selector( '<span data-dfxprl-i18n="language">' . $s['html']['language'] . '</span>' );
 	}
 
 	/**
@@ -617,25 +784,21 @@ class DFXPRL {
 	 * @param object $attendant Attendant object.
 	 */
 	private function render_message_sent( $attendant ) {
+		$s = $this->get_page_strings( $attendant );
+		// phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped -- The html texts of get_page_strings() are escaped
 		?>
 		<div class="dfxprl-message-form-container">
 			<div class="dfxprl-message-form-content dfxprl-message-sent">
+				<?php $this->render_language_selector( $attendant, $s ); ?>
 				<div class="dfxprl-message-sent-icon" aria-hidden="true">&#10003;</div>
-				<h1><?php esc_html_e( 'Your message has been received', 'dfx-parish-retreat-letters' ); ?></h1>
-				<p>
-					<?php
-					printf(
-						/* translators: %s: attendant full name */
-						esc_html__( 'Thank you. Your message for %s has been received and securely stored.', 'dfx-parish-retreat-letters' ),
-						'<strong>' . esc_html( trim( $attendant->name . ' ' . $attendant->surnames ) ) . '</strong>' // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped above
-					);
-					?>
-				</p>
+				<h1 data-dfxprl-i18n="sent_title"><?php echo $s['html']['sent_title']; ?></h1>
+				<p data-dfxprl-i18n="sent_thanks"><?php echo $s['html']['sent_thanks']; ?></p>
 				<p class="dfxprl-message-sent-retreat"><?php echo esc_html( $attendant->retreat_name ); ?></p>
-				<p><?php esc_html_e( 'You can now close this page.', 'dfx-parish-retreat-letters' ); ?></p>
+				<p data-dfxprl-i18n="sent_close"><?php echo $s['html']['sent_close']; ?></p>
 			</div>
 		</div>
 		<?php
+		// phpcs:enable WordPress.Security.EscapeOutput.OutputNotEscaped
 	}
 
 	/**
@@ -644,37 +807,55 @@ class DFXPRL {
 	 * @since 1.2.0
 	 * @param object $attendant Attendant object.
 	 * @param object|null $retreat Retreat object (optional, for custom CSS).
+	 * @param array $texts Retreat texts in the language of the form, from DFXPRL_Form_Languages::get_retreat_texts().
 	 */
-	private function render_message_form( $attendant, $retreat = null ) {
+	private function render_message_form( $attendant, $retreat = null, $texts = array() ) {
+		// phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped -- The html texts of get_page_strings() are escaped
+
 		// Withdrawn attendants no longer receive messages; the link works again if they are reactivated
 		if ( ! empty( $attendant->withdrawn_at ) ) {
+			$s = $this->get_page_strings( $attendant );
 			?>
 			<div class="dfxprl-message-form-container">
 				<div class="dfxprl-message-form-content">
-					<h1><?php esc_html_e( 'Send a Confidential Message', 'dfx-parish-retreat-letters' ); ?></h1>
+					<?php $this->render_language_selector( $attendant, $s ); ?>
+					<h1 data-dfxprl-i18n="title"><?php echo $s['html']['title']; ?></h1>
 					<div class="dfxprl-notice info">
-						<p><?php esc_html_e( 'Messages are no longer being accepted for this attendant.', 'dfx-parish-retreat-letters' ); ?></p>
+						<p data-dfxprl-i18n="withdrawn"><?php echo $s['html']['withdrawn']; ?></p>
 					</div>
 				</div>
 			</div>
 			<?php
 			return;
 		}
+
+		foreach ( DFXPRL_Form_Languages::RETREAT_FIELDS as $field ) {
+			if ( ! isset( $texts[ $field ] ) ) {
+				$texts[ $field ] = array(
+					'text'      => (string) $attendant->$field,
+					'automatic' => false,
+				);
+			}
+		}
+		$s = $this->get_page_strings( $attendant, $texts );
+		$h = $s['html'];
+		$a = array_map( 'esc_attr', $s['attr'] );
 		?>
 		<div class="dfxprl-message-form-container">
 			<div class="dfxprl-message-form-content">
-				<h1><?php esc_html_e( 'Send a Confidential Message', 'dfx-parish-retreat-letters' ); ?></h1>
+				<?php $this->render_language_selector( $attendant, $s ); ?>
+				<h1 data-dfxprl-i18n="title"><?php echo $h['title']; ?></h1>
 
 				<div class="dfxprl-retreat-info">
-					<h2><?php esc_html_e( 'For Retreat Attendant', 'dfx-parish-retreat-letters' ); ?></h2>
+					<h2 data-dfxprl-i18n="for_attendant"><?php echo $h['for_attendant']; ?></h2>
 					<p><strong><?php echo esc_html( $attendant->name . ' ' . $attendant->surnames ); ?></strong></p>
 					<p><?php echo esc_html( $attendant->retreat_name ); ?> - <?php echo esc_html( $attendant->retreat_location ); ?></p>
-					<p><?php echo esc_html( date_i18n( get_option( 'date_format' ), strtotime( $attendant->start_date ) ) ); ?> - <?php echo esc_html( date_i18n( get_option( 'date_format' ), strtotime( $attendant->end_date ) ) ); ?></p>
+					<p data-dfxprl-i18n="retreat_dates"><?php echo $h['retreat_dates']; ?></p>
 				</div>
 
-				<?php if ( ! empty( $attendant->custom_message ) ) : ?>
-				<div class="dfxprl-custom-message">
-					<?php echo wp_kses_post( wpautop( $attendant->custom_message ) ); ?>
+				<?php if ( '' !== trim( $texts['custom_message']['text'] ) ) : ?>
+				<div class="dfxprl-custom-message" data-dfxprl-i18n="custom_message">
+					<?php echo $h['custom_message']; ?>
 				</div>
 				<?php endif; ?>
 
@@ -684,121 +865,83 @@ class DFXPRL {
 					<?php wp_nonce_field( 'dfxprl_submit_message', 'message_nonce' ); ?>
 					<input type="hidden" name="action" value="dfxprl_submit_message">
 					<input type="hidden" name="attendant_id" value="<?php echo esc_attr( $attendant->id ); ?>">
+					<input type="hidden" name="dfxprl_lang" value="<?php echo esc_attr( DFXPRL_Form_Languages::get_current_locale() ); ?>">
 
 					<div class="dfxprl-form-group">
-						<label for="sender_name"><?php esc_html_e( 'Your Name', 'dfx-parish-retreat-letters' ); ?> <span class="required">*</span></label>
-						<input type="text" id="sender_name" name="sender_name" required maxlength="255" placeholder="<?php esc_attr_e( 'Enter your name', 'dfx-parish-retreat-letters' ); ?>">
+						<label for="sender_name"><span data-dfxprl-i18n="your_name"><?php echo $h['your_name']; ?></span> <span class="required">*</span></label>
+						<input type="text" id="sender_name" name="sender_name" required maxlength="255" placeholder="<?php echo $a['name_placeholder']; ?>" data-dfxprl-i18n-placeholder="name_placeholder">
 					</div>
 
 					<div class="dfxprl-form-group dfxprl-email-group">
-						<label for="sender_email"><?php esc_html_e( 'Your Email', 'dfx-parish-retreat-letters' ); ?></label>
-						<input type="email" id="sender_email" name="sender_email" maxlength="254" autocomplete="email" placeholder="<?php esc_attr_e( 'name@example.com', 'dfx-parish-retreat-letters' ); ?>">
+						<label for="sender_email" data-dfxprl-i18n="your_email"><?php echo $h['your_email']; ?></label>
+						<input type="email" id="sender_email" name="sender_email" maxlength="254" autocomplete="email" placeholder="<?php echo $a['email_placeholder']; ?>" data-dfxprl-i18n-placeholder="email_placeholder">
 						<div class="dfxprl-email-confirm">
-							<label for="sender_email_confirm"><?php esc_html_e( 'Repeat Your Email', 'dfx-parish-retreat-letters' ); ?></label>
+							<label for="sender_email_confirm" data-dfxprl-i18n="repeat_email"><?php echo $h['repeat_email']; ?></label>
 							<input type="email" id="sender_email_confirm" name="sender_email_confirm" maxlength="254" autocomplete="off">
 						</div>
-						<p class="dfxprl-field-help"><?php esc_html_e( 'Optional. It will only be used to let you know about any issue with your letter.', 'dfx-parish-retreat-letters' ); ?></p>
+						<p class="dfxprl-field-help" data-dfxprl-i18n="email_help"><?php echo $h['email_help']; ?></p>
 					</div>
 
 					<div class="dfxprl-message-mode">
-						<h3><?php esc_html_e( 'Choose message type:', 'dfx-parish-retreat-letters' ); ?></h3>
+						<h3 data-dfxprl-i18n="choose_type"><?php echo $h['choose_type']; ?></h3>
 						<div class="dfxprl-mode-selector">
 							<label>
 								<input type="radio" name="message_mode" value="text" checked>
-								<?php esc_html_e( 'Text Message', 'dfx-parish-retreat-letters' ); ?>
+								<span data-dfxprl-i18n="text_message"><?php echo $h['text_message']; ?></span>
 							</label>
 							<label>
 								<input type="radio" name="message_mode" value="file">
-								<?php esc_html_e( 'File Upload', 'dfx-parish-retreat-letters' ); ?>
+								<span data-dfxprl-i18n="file_upload"><?php echo $h['file_upload']; ?></span>
 							</label>
 						</div>
 					</div>
 
 					<div class="dfxprl-form-group" id="dfxprl-text-group">
-						<label for="message_content"><?php esc_html_e( 'Your Message', 'dfx-parish-retreat-letters' ); ?> <span class="required">*</span></label>
+						<label for="message_content"><span data-dfxprl-i18n="your_message"><?php echo $h['your_message']; ?></span> <span class="required">*</span></label>
 						<div id="dfxprl-editor-container">
 							<div class="dfxprl-editor-toolbar">
-								<button type="button" data-command="bold" title="<?php esc_attr_e( 'Bold', 'dfx-parish-retreat-letters' ); ?>"><strong>B</strong></button>
-								<button type="button" data-command="italic" title="<?php esc_attr_e( 'Italic', 'dfx-parish-retreat-letters' ); ?>"><em>I</em></button>
-								<button type="button" data-command="underline" title="<?php esc_attr_e( 'Underline', 'dfx-parish-retreat-letters' ); ?>"><u>U</u></button>
-								<button type="button" data-command="insertUnorderedList" title="<?php esc_attr_e( 'Bullet List', 'dfx-parish-retreat-letters' ); ?>">• <?php esc_html_e( 'List', 'dfx-parish-retreat-letters' ); ?></button>
-								<button type="button" data-command="insertOrderedList" title="<?php esc_attr_e( 'Numbered List', 'dfx-parish-retreat-letters' ); ?>">1. <?php esc_html_e( 'List', 'dfx-parish-retreat-letters' ); ?></button>
-								<button type="button" data-command="undo" title="<?php esc_attr_e( 'Undo', 'dfx-parish-retreat-letters' ); ?>"><?php esc_html_e( 'Undo', 'dfx-parish-retreat-letters' ); ?></button>
-								<button type="button" data-command="redo" title="<?php esc_attr_e( 'Redo', 'dfx-parish-retreat-letters' ); ?>"><?php esc_html_e( 'Redo', 'dfx-parish-retreat-letters' ); ?></button>
+								<button type="button" data-command="bold" title="<?php echo $a['bold']; ?>" data-dfxprl-i18n-title="bold"><strong>B</strong></button>
+								<button type="button" data-command="italic" title="<?php echo $a['italic']; ?>" data-dfxprl-i18n-title="italic"><em>I</em></button>
+								<button type="button" data-command="underline" title="<?php echo $a['underline']; ?>" data-dfxprl-i18n-title="underline"><u>U</u></button>
+								<button type="button" data-command="insertUnorderedList" title="<?php echo $a['bullet_list']; ?>" data-dfxprl-i18n-title="bullet_list">• <span data-dfxprl-i18n="list"><?php echo $h['list']; ?></span></button>
+								<button type="button" data-command="insertOrderedList" title="<?php echo $a['numbered_list']; ?>" data-dfxprl-i18n-title="numbered_list">1. <span data-dfxprl-i18n="list"><?php echo $h['list']; ?></span></button>
+								<button type="button" data-command="undo" title="<?php echo $a['undo']; ?>" data-dfxprl-i18n-title="undo"><span data-dfxprl-i18n="undo"><?php echo $h['undo']; ?></span></button>
+								<button type="button" data-command="redo" title="<?php echo $a['redo']; ?>" data-dfxprl-i18n-title="redo"><span data-dfxprl-i18n="redo"><?php echo $h['redo']; ?></span></button>
 							</div>
-							<div id="message_content" contenteditable="true" class="dfxprl-editor" placeholder="<?php
-								$attendant_full_name = trim( esc_html( $attendant->name ) . ' ' . esc_html( $attendant->surnames ) );
-								/* translators: %s: attendant full name (name and surnames) */
-								echo esc_attr( sprintf( __( 'Write your confidential message for %s here...', 'dfx-parish-retreat-letters' ), $attendant_full_name ) );
-							?>"></div>
+							<div id="message_content" contenteditable="true" class="dfxprl-editor" placeholder="<?php echo $a['message_placeholder']; ?>" data-dfxprl-i18n-placeholder="message_placeholder"></div>
 							<textarea id="message_content_hidden" name="message_content" style="display: none;"></textarea>
 						</div>
-						<p class="dfxprl-help-text"><?php esc_html_e( 'You can use the toolbar to format your text, create lists, and paste images. HTML is allowed but will be filtered for security.', 'dfx-parish-retreat-letters' ); ?></p>
+						<p class="dfxprl-help-text" data-dfxprl-i18n="editor_help"><?php echo $h['editor_help']; ?></p>
 					</div>
 
 					<div class="dfxprl-form-group" id="dfxprl-file-group" style="display: none;">
-						<label for="message_files"><?php esc_html_e( 'Attach Files', 'dfx-parish-retreat-letters' ); ?> <span class="required">*</span></label>
+						<label for="message_files"><span data-dfxprl-i18n="attach_files"><?php echo $h['attach_files']; ?></span> <span class="required">*</span></label>
 						<input type="file" id="message_files" name="message_files[]" multiple accept=".pdf,.doc,.docx,.txt,.jpg,.jpeg,.png,.gif">
-						<p class="dfxprl-help-text">
-							<?php
-							$max_per_file = $this->security->get_max_upload_size();
-							$max_combined = $this->security->get_max_combined_upload_size();
-
-							// Only display size limits if we can reliably determine them
-							if ( $max_per_file !== null && $max_combined !== null ) {
-								printf(
-									/* translators: %1$s: maximum size per file, %2$s: maximum combined size */
-									esc_html__( 'Allowed file types: PDF, DOC, DOCX, TXT, JPG, PNG, GIF. Maximum %1$s per file, %2$s total.', 'dfx-parish-retreat-letters' ),
-									esc_html( $max_per_file ),
-									esc_html( $max_combined )
-								);
-							} elseif ( $max_per_file !== null ) {
-								printf(
-									/* translators: %s: maximum size per file */
-									esc_html__( 'Allowed file types: PDF, DOC, DOCX, TXT, JPG, PNG, GIF. Maximum %s per file.', 'dfx-parish-retreat-letters' ),
-									esc_html( $max_per_file )
-								);
-							} elseif ( $max_combined !== null ) {
-								printf(
-									/* translators: %s: maximum combined size */
-									esc_html__( 'Allowed file types: PDF, DOC, DOCX, TXT, JPG, PNG, GIF. Maximum %s total.', 'dfx-parish-retreat-letters' ),
-									esc_html( $max_combined )
-								);
-							} else {
-								// Server configuration unknown - just show allowed types
-								esc_html_e( 'Allowed file types: PDF, DOC, DOCX, TXT, JPG, PNG, GIF.', 'dfx-parish-retreat-letters' );
-							}
-							?>
-						</p>
+						<p class="dfxprl-help-text" data-dfxprl-i18n="file_types"><?php echo $h['file_types']; ?></p>
 						<div id="dfxprl-file-list"></div>
 					</div>
 
 					<div class="dfxprl-form-group">
 						<div class="dfxprl-captcha-container">
-							<label for="captcha_answer"><?php esc_html_e( 'Security Check', 'dfx-parish-retreat-letters' ); ?> <span class="required">*</span></label>
+							<label for="captcha_answer"><span data-dfxprl-i18n="security_check"><?php echo $h['security_check']; ?></span> <span class="required">*</span></label>
 							<div id="dfxprl-captcha-question"></div>
-							<input type="text" id="captcha_answer" name="captcha_answer" required autocomplete="off" placeholder="<?php esc_html_e( 'Please enter the result', 'dfx-parish-retreat-letters' );?>">
+							<input type="text" id="captcha_answer" name="captcha_answer" required autocomplete="off" placeholder="<?php echo $a['captcha_placeholder']; ?>" data-dfxprl-i18n-placeholder="captcha_placeholder">
 							<input type="hidden" id="captcha_token" name="captcha_token">
 						</div>
 					</div>
 
-					<?php if ( ! empty( $attendant->disclaimer_text ) ) : ?>
+					<?php if ( '' !== trim( $texts['disclaimer_text']['text'] ) ) : ?>
 					<div class="dfxprl-form-group">
 						<div class="dfxprl-disclaimer-container">
-							<h3><?php esc_html_e( 'Legal Disclaimer', 'dfx-parish-retreat-letters' ); ?></h3>
-							<div class="dfxprl-disclaimer-text">
-								<?php echo wp_kses_post( wpautop( $attendant->disclaimer_text ) ); ?>
+							<h3 data-dfxprl-i18n="legal_disclaimer"><?php echo $h['legal_disclaimer']; ?></h3>
+							<div class="dfxprl-disclaimer-text" data-dfxprl-i18n="disclaimer">
+								<?php echo $h['disclaimer']; ?>
 							</div>
 							<div class="dfxprl-disclaimer-acceptance">
 								<label class="dfxprl-checkbox-label">
 									<input type="checkbox" id="disclaimer_accepted" name="disclaimer_accepted" required>
 									<span class="required">*</span>
-									<?php
-									$acceptance_text = ! empty( $attendant->disclaimer_acceptance_text )
-										? $attendant->disclaimer_acceptance_text
-										: __( 'I accept the terms and conditions stated above', 'dfx-parish-retreat-letters' );
-									echo esc_html( $acceptance_text );
-									?>
+									<span data-dfxprl-i18n="acceptance"><?php echo $h['acceptance']; ?></span>
 								</label>
 							</div>
 						</div>
@@ -807,33 +950,123 @@ class DFXPRL {
 
 					<div class="dfxprl-form-group">
 						<button type="submit" id="dfxprl-submit-btn" class="dfxprl-submit-button">
-							<span class="dfxprl-submit-text"><?php esc_html_e( 'Send Confidential Message', 'dfx-parish-retreat-letters' ); ?></span>
-							<span class="dfxprl-loading-spinner" style="display: none;">
-								<?php esc_html_e( 'Sending...', 'dfx-parish-retreat-letters' ); ?>
-							</span>
+							<span class="dfxprl-submit-text" data-dfxprl-i18n="submit"><?php echo $h['submit']; ?></span>
+							<span class="dfxprl-loading-spinner" style="display: none;" data-dfxprl-i18n="sending"><?php echo $h['sending']; ?></span>
 						</button>
 					</div>
 				</form>
 
 				<div class="dfxprl-privacy-notice">
-					<h3><?php esc_html_e( 'Privacy & Security', 'dfx-parish-retreat-letters' ); ?></h3>
+					<h3 data-dfxprl-i18n="privacy_title"><?php echo $h['privacy_title']; ?></h3>
 					<ul>
-						<li><?php esc_html_e( 'Your message will be encrypted and stored securely.', 'dfx-parish-retreat-letters' ); ?></li>
-						<li><?php esc_html_e( 'Only authorized retreat administrators can access your message.', 'dfx-parish-retreat-letters' ); ?></li>
-						<li><?php esc_html_e( 'Messages can only be viewed when printed - no content is displayed on screen.', 'dfx-parish-retreat-letters' ); ?></li>
-						<li><?php esc_html_e( 'Your IP address will be anonymized after 30 days for privacy compliance.', 'dfx-parish-retreat-letters' ); ?></li>
-						<li><?php esc_html_e( 'If you give your email, it is stored encrypted and will only be used to let you know about any issue with your letter.', 'dfx-parish-retreat-letters' ); ?></li>
-						<li><?php esc_html_e( 'All data is handled in accordance with GDPR and Spanish privacy laws.', 'dfx-parish-retreat-letters' ); ?></li>
+						<?php for ( $i = 1; $i <= 6; $i++ ) : ?>
+						<li data-dfxprl-i18n="privacy_<?php echo (int) $i; ?>"><?php echo $h[ 'privacy_' . $i ]; ?></li>
+						<?php endfor; ?>
 					</ul>
 				</div>
 			</div>
 		</div>
 
 		<?php
+		// phpcs:enable WordPress.Security.EscapeOutput.OutputNotEscaped
 		// Styles for message form are properly enqueued via enqueue_public_scripts()
 		// from assets/css/message-form.css with custom CSS via wp_add_inline_style()
 	}
 
+	/**
+	 * Get the note that tells the sender that a retreat text was translated automatically.
+	 *
+	 * @since 1.15.0
+	 * @param array $text Text from DFXPRL_Form_Languages::get_retreat_texts().
+	 * @return string Safe HTML, empty if the text was not translated automatically.
+	 */
+	private function get_automatic_translation_note( $text ) {
+		if ( empty( $text['automatic'] ) ) {
+			return '';
+		}
+		return '<p class="dfxprl-automatic-translation">' . esc_html__( 'Automatic translation by Google.', 'dfx-parish-retreat-letters' ) . '</p>';
+	}
+
+	/**
+	 * Get the texts used by the form script, in the current language.
+	 *
+	 * @since 1.15.0
+	 * @return array Key => text.
+	 */
+	private function get_script_strings() {
+		return array(
+			'captchaPrefix'               => __( 'Please solve: ', 'dfx-parish-retreat-letters' ),
+			'remove'                      => __( 'Remove', 'dfx-parish-retreat-letters' ),
+			'pleaseEnterMessage'          => __( 'Please enter a message.', 'dfx-parish-retreat-letters' ),
+			'pleaseSelectFile'            => __( 'Please select at least one file.', 'dfx-parish-retreat-letters' ),
+			'pleaseCompleteSecurityCheck' => __( 'Please complete the security check.', 'dfx-parish-retreat-letters' ),
+			'pleaseAcceptDisclaimer'      => __( 'Please accept the legal disclaimer to proceed.', 'dfx-parish-retreat-letters' ),
+			'emailsDoNotMatch'            => __( 'The email addresses do not match. Please check them.', 'dfx-parish-retreat-letters' ),
+			'invalidEmail'                => __( 'The email address is not valid.', 'dfx-parish-retreat-letters' ),
+			'successMessage'              => __( 'Your message has been sent successfully and securely stored.', 'dfx-parish-retreat-letters' ),
+			'errorSendingMessage'         => __( 'An error occurred while sending your message.', 'dfx-parish-retreat-letters' ),
+			'requestTimeout'              => __( 'The request timed out. Please check your connection and try again.', 'dfx-parish-retreat-letters' ),
+			'requestCancelled'            => __( 'The request was cancelled. Please try again.', 'dfx-parish-retreat-letters' ),
+			'cannotConnectToServer'       => __( 'Cannot connect to the server. Please check your internet connection.', 'dfx-parish-retreat-letters' ),
+			'problemWithRequest'          => __( 'There was a problem with your request. Please refresh the page and try again.', 'dfx-parish-retreat-letters' ),
+			'accessDenied'                => __( 'Access denied. Please refresh the page and try again.', 'dfx-parish-retreat-letters' ),
+			'uploadedFilesTooLarge'       => __( 'The uploaded files are too large. Please reduce the file size and try again.', 'dfx-parish-retreat-letters' ),
+			'serverError'                 => __( 'A server error occurred. Please try again later or contact support if the problem persists.', 'dfx-parish-retreat-letters' ),
+			'problemProcessingResponse'   => __( 'There was a problem processing the server response. Please try again.', 'dfx-parish-retreat-letters' ),
+			'networkError'                => __( 'A network error occurred. Please try again.', 'dfx-parish-retreat-letters' ),
+			'languageNotChanged'          => __( 'The language could not be changed. Please try again.', 'dfx-parish-retreat-letters' ),
+		);
+	}
+
+	/**
+	 * Send the texts of a public form page in another language, for the language selector.
+	 *
+	 * Only the texts are sent, so the page changes language without reloading and
+	 * without losing what the sender has written.
+	 *
+	 * @since 1.15.0
+	 */
+	public function ajax_get_form_strings() {
+		nocache_headers();
+
+		if ( ! is_user_logged_in() ) {
+			$ip_address = $this->security->get_user_ip();
+			if ( ! $this->security->check_rate_limit( $ip_address, 30, 60 ) ) {
+				$this->security->log_rate_limit_violation( $ip_address, 'message_form_access' );
+				wp_send_json_error( array( 'message' => __( 'Too many requests. Please wait before trying again.', 'dfx-parish-retreat-letters' ) ), 429 );
+			}
+		}
+
+		// phpcs:disable WordPress.Security.NonceVerification.Missing -- Public read-only texts, protected by the attendant token
+		$token  = sanitize_text_field( wp_unslash( $_POST['token'] ?? '' ) );
+		$locale = DFXPRL_Form_Languages::match_locale( sanitize_text_field( wp_unslash( $_POST['lang'] ?? '' ) ) );
+		$sent   = ! empty( $_POST['sent'] );
+		// phpcs:enable WordPress.Security.NonceVerification.Missing
+
+		$attendant = ( '' !== $token && preg_match( '/^[a-zA-Z0-9]+$/', $token ) ) ? $this->get_attendant_by_token( $token ) : null;
+		if ( ! $attendant || ! $locale || ! DFXPRL_Form_Languages::is_enabled_for( $attendant ) ) {
+			wp_send_json_error( array( 'message' => __( 'Invalid request.', 'dfx-parish-retreat-letters' ) ), 400 );
+		}
+
+		DFXPRL_Form_Languages::remember_locale( $locale );
+		DFXPRL_Form_Languages::switch_locale( $locale );
+
+		// The retreat texts (which may need Google) are only shown on the form itself
+		$texts = array();
+		if ( ! $sent && empty( $attendant->withdrawn_at ) ) {
+			$retreat_model = new DFXPRL_Retreat();
+			$texts         = DFXPRL_Form_Languages::get_retreat_texts( $retreat_model->get( $attendant->retreat_id ), $locale );
+		}
+
+		$strings = $this->get_page_strings( $attendant, $texts );
+		wp_send_json_success( array(
+			'locale' => $locale,
+			'lang'   => str_replace( '_', '-', $locale ),
+			'html'   => $strings['html'],
+			'attr'   => $strings['attr'],
+			'i18n'   => $this->get_script_strings(),
+		) );
+	}
 
 	/**
 	 * Enqueue scripts and styles for the public message form.
@@ -869,7 +1102,8 @@ class DFXPRL {
 		// Also try without the site path for root installations
 		$root_pattern = '#^/messages/([a-zA-Z0-9]+)(/sent)?/?$#';
 
-		$is_message_url = preg_match( $pattern, $request_uri ) || preg_match( $root_pattern, $request_uri );
+		$matches        = array();
+		$is_message_url = preg_match( $pattern, $request_uri, $matches ) || preg_match( $root_pattern, $request_uri, $matches );
 
 		if ( $is_message_url ) {
 			// Enqueue jQuery (dependency for our script)
@@ -899,27 +1133,9 @@ class DFXPRL {
 				'dfxprlMessageForm',
 				array(
 					'ajaxurl' => admin_url( 'admin-ajax.php' ),
-					'i18n'    => array(
-						'captchaPrefix'              => __( 'Please solve: ', 'dfx-parish-retreat-letters' ),
-						'remove'                     => __( 'Remove', 'dfx-parish-retreat-letters' ),
-						'pleaseEnterMessage'         => __( 'Please enter a message.', 'dfx-parish-retreat-letters' ),
-						'pleaseSelectFile'           => __( 'Please select at least one file.', 'dfx-parish-retreat-letters' ),
-						'pleaseCompleteSecurityCheck' => __( 'Please complete the security check.', 'dfx-parish-retreat-letters' ),
-						'pleaseAcceptDisclaimer'     => __( 'Please accept the legal disclaimer to proceed.', 'dfx-parish-retreat-letters' ),
-						'emailsDoNotMatch'           => __( 'The email addresses do not match. Please check them.', 'dfx-parish-retreat-letters' ),
-						'invalidEmail'               => __( 'The email address is not valid.', 'dfx-parish-retreat-letters' ),
-						'successMessage'             => __( 'Your message has been sent successfully and securely stored.', 'dfx-parish-retreat-letters' ),
-						'errorSendingMessage'        => __( 'An error occurred while sending your message.', 'dfx-parish-retreat-letters' ),
-						'requestTimeout'             => __( 'The request timed out. Please check your connection and try again.', 'dfx-parish-retreat-letters' ),
-						'requestCancelled'           => __( 'The request was cancelled. Please try again.', 'dfx-parish-retreat-letters' ),
-						'cannotConnectToServer'      => __( 'Cannot connect to the server. Please check your internet connection.', 'dfx-parish-retreat-letters' ),
-						'problemWithRequest'         => __( 'There was a problem with your request. Please refresh the page and try again.', 'dfx-parish-retreat-letters' ),
-						'accessDenied'               => __( 'Access denied. Please refresh the page and try again.', 'dfx-parish-retreat-letters' ),
-						'uploadedFilesTooLarge'      => __( 'The uploaded files are too large. Please reduce the file size and try again.', 'dfx-parish-retreat-letters' ),
-						'serverError'                => __( 'A server error occurred. Please try again later or contact support if the problem persists.', 'dfx-parish-retreat-letters' ),
-						'problemProcessingResponse'  => __( 'There was a problem processing the server response. Please try again.', 'dfx-parish-retreat-letters' ),
-						'networkError'               => __( 'A network error occurred. Please try again.', 'dfx-parish-retreat-letters' ),
-					),
+					'token'   => $matches[1] ?? '',
+					'sent'    => ! empty( $matches[2] ),
+					'i18n'    => $this->get_script_strings(),
 				)
 			);
 		}
@@ -1014,6 +1230,12 @@ class DFXPRL {
 	 * @since 1.2.0
 	 */
 	public function handle_message_submission() {
+		// Answer in the language the form was shown in
+		$locale = DFXPRL_Form_Languages::match_locale( sanitize_text_field( wp_unslash( $_POST['dfxprl_lang'] ?? '' ) ) );
+		if ( $locale ) {
+			DFXPRL_Form_Languages::switch_locale( $locale );
+		}
+
 		// Verify nonce
 		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['message_nonce'] ?? '' ) ), 'dfxprl_submit_message' ) ) {
 			wp_send_json_error( array( 'message' => __( 'Security check failed.', 'dfx-parish-retreat-letters' ) ) );
@@ -1242,7 +1464,9 @@ class DFXPRL {
 				__( 'Note: Some files could not be uploaded: %s', 'dfx-parish-retreat-letters' ),
 				implode( ', ', $upload_result['errors'] )
 			) : '',
-			'redirect' => home_url( '/messages/' . $retreat_data->message_url_token . '/sent/' ),
+			'redirect' => $locale
+				? add_query_arg( 'lang', $locale, home_url( '/messages/' . $retreat_data->message_url_token . '/sent/' ) )
+				: home_url( '/messages/' . $retreat_data->message_url_token . '/sent/' ),
 		) );
 	}
 

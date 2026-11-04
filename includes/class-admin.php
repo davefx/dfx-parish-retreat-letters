@@ -167,6 +167,7 @@ class DFXPRL_Admin {
 		add_action( 'wp_ajax_dfxprl_delete_attendant', array( $this, 'ajax_delete_attendant' ) );
 		add_action( 'wp_ajax_dfxprl_withdraw_all_attendants', array( $this, 'ajax_withdraw_all_attendants' ) );
 		add_action( 'wp_ajax_dfxprl_empty_retreat', array( $this, 'ajax_empty_retreat' ) );
+		add_action( 'wp_ajax_dfxprl_translate_form_texts', array( $this, 'ajax_translate_form_texts' ) );
 		add_action( 'wp_ajax_dfxprl_withdraw_attendant', array( $this, 'ajax_withdraw_attendant' ) );
 		add_action( 'wp_ajax_dfxprl_reactivate_attendant', array( $this, 'ajax_reactivate_attendant' ) );
 		add_action( 'wp_ajax_dfxprl_export_attendants_csv', array( $this, 'ajax_export_attendants_csv' ) );
@@ -1068,6 +1069,9 @@ class DFXPRL_Admin {
 					'typeRetreatNameToEmpty' => __( 'To confirm, type the exact retreat name below:', 'dfx-parish-retreat-letters' ),
 					'emptyRetreatButton' => __( 'Empty Retreat', 'dfx-parish-retreat-letters' ),
 					'emptyingRetreat' => __( 'Emptying...', 'dfx-parish-retreat-letters' ),
+					'translating' => __( 'Translating...', 'dfx-parish-retreat-letters' ),
+					'translateOverwrite' => __( 'This language already has texts written. Replace them with the automatic translation?', 'dfx-parish-retreat-letters' ),
+					'translateError' => __( 'The texts could not be translated. Please try again.', 'dfx-parish-retreat-letters' ),
 					'deleteButton' => __( 'Delete Forever', 'dfx-parish-retreat-letters' ),
 					'cancelButton' => __( 'Cancel', 'dfx-parish-retreat-letters' ),
 					'deleting' => __( 'Deleting...', 'dfx-parish-retreat-letters' ),
@@ -1272,6 +1276,9 @@ class DFXPRL_Admin {
 			'message_request_template'   => sanitize_textarea_field( wp_unslash( $_POST['message_request_template'] ?? '' ) ),
 			'return_email_subject'       => sanitize_text_field( wp_unslash( $_POST['return_email_subject'] ?? '' ) ),
 			'return_email_template'      => sanitize_textarea_field( wp_unslash( $_POST['return_email_template'] ?? '' ) ),
+			'multilingual_enabled'       => isset( $_POST['multilingual_enabled'] ) ? 1 : 0,
+			// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Sanitized by DFXPRL_Form_Languages::sanitize_manual_translations()
+			'form_translations'          => isset( $_POST['form_translations'] ) && is_array( $_POST['form_translations'] ) ? wp_unslash( $_POST['form_translations'] ) : array(),
 		);
 
 		// Keep the default texts unsaved, so they follow the plugin's default (and its translation)
@@ -1573,6 +1580,26 @@ class DFXPRL_Admin {
 										<td>
 											<input type="text" id="disclaimer_acceptance_text" name="disclaimer_acceptance_text" value="<?php echo esc_attr( $retreat->disclaimer_acceptance_text ?? '' ); ?>" class="large-text" placeholder="<?php esc_attr_e( 'I accept the terms and conditions', 'dfx-parish-retreat-letters' ); ?>">
 											<p class="description"><?php esc_html_e( 'This text will appear next to the disclaimer acceptance checkbox. Only used if disclaimer text is provided.', 'dfx-parish-retreat-letters' ); ?></p>
+										</td>
+									</tr>
+									<tr>
+										<th scope="row">
+											<label for="multilingual_enabled"><?php esc_html_e( 'Multilingual Form', 'dfx-parish-retreat-letters' ); ?></label>
+										</th>
+										<td>
+											<label>
+												<input type="checkbox" id="multilingual_enabled" name="multilingual_enabled" value="1" <?php checked( ! $retreat || DFXPRL_Form_Languages::is_enabled_for( $retreat ) ); ?>>
+												<?php esc_html_e( 'Let senders see the letters form in their language', 'dfx-parish-retreat-letters' ); ?>
+											</label>
+											<p class="description"><?php esc_html_e( 'When disabled, the form is always shown in the main language of the site, without language selector or automatic translation.', 'dfx-parish-retreat-letters' ); ?></p>
+										</td>
+									</tr>
+									<tr class="dfxprl-form-translations-row"<?php echo ( $retreat && ! DFXPRL_Form_Languages::is_enabled_for( $retreat ) ) ? ' style="display: none;"' : ''; ?>>
+										<th scope="row">
+											<?php esc_html_e( 'Translations of These Texts', 'dfx-parish-retreat-letters' ); ?>
+										</th>
+										<td>
+											<?php $this->render_form_translations_fields( $retreat ); ?>
 										</td>
 									</tr>
 									<tr>
@@ -2572,6 +2599,50 @@ class DFXPRL_Admin {
 	}
 
 	/**
+	 * English CSV column names that are always accepted when importing attendants.
+	 *
+	 * The same lists, translated, are in create_field_mapping().
+	 *
+	 * @since 1.15.0
+	 * @var array
+	 */
+	const IMPORT_COLUMN_ALIASES = array(
+		'name'                           => array( 'name', 'first name' ),
+		'surnames'                       => array( 'surname', 'surnames', 'last name' ),
+		'date_of_birth'                  => array( 'date of birth', 'birth date', 'dob', 'birthdate' ),
+		'emergency_contact_name'         => array( 'emergency contact name', 'emergency name', 'contact name', 'emergency contact first name', 'emergency first name', 'contact first name' ),
+		'emergency_contact_surname'      => array( 'emergency contact surname', 'emergency surname', 'contact surname', 'emergency contact last name', 'emergency last name', 'contact last name' ),
+		'emergency_contact_phone'        => array( 'emergency contact phone', 'emergency phone', 'contact phone', 'phone' ),
+		'emergency_contact_email'        => array( 'emergency contact email', 'emergency email', 'contact email', 'email' ),
+		'emergency_contact_relationship' => array( 'emergency contact relationship', 'relationship', 'contact relationship' ),
+		'invited_by'                     => array( 'invited by', 'invited', 'inviter' ),
+		'incompatibilities'              => array( 'incompatibilities', 'incompatibility', 'cannot be placed with' ),
+		'notes'                          => array( 'notes', 'note', 'comments', 'comment' ),
+	);
+
+	/**
+	 * Names of the CSV columns for importing attendants, in the language of the panel.
+	 *
+	 * @since 1.15.0
+	 * @return array Field => label.
+	 */
+	private function get_import_column_labels() {
+		return array(
+			'name'                           => __( 'Name', 'dfx-parish-retreat-letters' ),
+			'surnames'                       => __( 'Surnames', 'dfx-parish-retreat-letters' ),
+			'date_of_birth'                  => __( 'Date of Birth', 'dfx-parish-retreat-letters' ),
+			'emergency_contact_name'         => __( 'Emergency Contact Name', 'dfx-parish-retreat-letters' ),
+			'emergency_contact_surname'      => __( 'Emergency Contact Surname', 'dfx-parish-retreat-letters' ),
+			'emergency_contact_phone'        => __( 'Emergency Contact Phone', 'dfx-parish-retreat-letters' ),
+			'emergency_contact_email'        => __( 'Emergency Contact Email', 'dfx-parish-retreat-letters' ),
+			'emergency_contact_relationship' => __( 'Emergency Contact Relationship', 'dfx-parish-retreat-letters' ),
+			'invited_by'                     => __( 'Invited By', 'dfx-parish-retreat-letters' ),
+			'incompatibilities'              => __( 'Incompatibilities', 'dfx-parish-retreat-letters' ),
+			'notes'                          => __( 'Notes', 'dfx-parish-retreat-letters' ),
+		);
+	}
+
+	/**
 	 * Create field mapping from CSV headers.
 	 *
 	 * @since 1.0.0
@@ -2628,6 +2699,17 @@ class DFXPRL_Admin {
 			   Example for Spanish: ["notas", "nota", "comentarios", "comentario"] */
 			'notes' => json_decode( __('["notes", "note", "comments", "comment"]', 'dfx-parish-retreat-letters' ), true ),
 		);
+
+		// The English names and the column labels of the panel are always accepted too,
+		// so a file keeps importing whatever the language of the panel is
+		$field_labels = $this->get_import_column_labels();
+		foreach ( $field_mappings as $field => $names ) {
+			$field_mappings[ $field ] = array_values( array_unique( array_merge(
+				is_array( $names ) ? $names : array(),
+				self::IMPORT_COLUMN_ALIASES[ $field ],
+				array( $field_labels[ $field ] )
+			) ) );
+		}
 
 		// Normalize headers (lowercase, trim)
 		$normalized_headers = array_map( function( $header ) {
@@ -3159,6 +3241,115 @@ class DFXPRL_Admin {
 				$withdrawn
 			),
 		) );
+	}
+
+	/**
+	 * Render the fields to write the retreat texts of the letters form in each language.
+	 *
+	 * @since 1.15.0
+	 * @param object|null $retreat Retreat being edited, or null for a new one.
+	 */
+	private function render_form_translations_fields( $retreat ) {
+		$main_locale  = DFXPRL_Form_Languages::get_main_locale();
+		$languages    = DFXPRL_Form_Languages::get_languages();
+		$translations = $retreat ? DFXPRL_Form_Languages::get_manual_translations( $retreat ) : array();
+		$can_translate = DFXPRL_Translator::get_instance()->is_configured();
+		?>
+		<p class="description">
+			<?php
+			printf(
+				/* translators: %s: name of the main language, e.g. "Español" */
+				esc_html__( 'The texts above are written in the main language of the site (%s). Visitors can see the letters form in other languages; write here a version of these texts for each language you want. Empty fields use the automatic translation, if it is configured in the global settings, or the original text otherwise.', 'dfx-parish-retreat-letters' ),
+				esc_html( $languages[ $main_locale ] )
+			);
+			?>
+		</p>
+		<?php if ( ! $can_translate && $this->permissions->current_user_can_manage_plugin() ) : ?>
+			<p class="description">
+				<a href="<?php echo esc_url( admin_url( 'admin.php?page=dfxprl-global-settings' ) ); ?>"><?php esc_html_e( 'Configure automatic translation', 'dfx-parish-retreat-letters' ); ?></a>
+			</p>
+		<?php endif; ?>
+		<div class="dfxprl-form-translations">
+			<?php foreach ( $languages as $locale => $name ) : ?>
+				<?php
+				if ( $locale === $main_locale ) {
+					continue;
+				}
+				$values  = $translations[ $locale ] ?? array();
+				$prefix  = 'form_translations[' . $locale . ']';
+				$id_base = 'form_translations_' . $locale;
+				?>
+				<details class="dfxprl-form-translation" data-locale="<?php echo esc_attr( $locale ); ?>" style="margin: 8px 0; padding: 6px 10px; border: 1px solid #c3c4c7; background: #fff;">
+					<summary style="cursor: pointer; font-weight: 600;">
+						<?php echo esc_html( $name ); ?>
+						<?php if ( $values ) : ?>
+							<span class="description" style="font-weight: normal;"><?php esc_html_e( '(written)', 'dfx-parish-retreat-letters' ); ?></span>
+						<?php endif; ?>
+					</summary>
+					<?php if ( $can_translate ) : ?>
+						<p>
+							<button type="button" class="button dfxprl-translate-form-texts" data-locale="<?php echo esc_attr( $locale ); ?>" data-retreat-id="<?php echo esc_attr( $retreat->id ?? 0 ); ?>">
+								<?php esc_html_e( 'Translate automatically', 'dfx-parish-retreat-letters' ); ?>
+							</button>
+							<span class="description"><?php esc_html_e( 'Fills these fields from the texts above, so you can review them before saving.', 'dfx-parish-retreat-letters' ); ?></span>
+						</p>
+					<?php endif; ?>
+					<p>
+						<label for="<?php echo esc_attr( $id_base . '_custom_message' ); ?>"><?php esc_html_e( 'Custom Message for Letter Senders', 'dfx-parish-retreat-letters' ); ?></label>
+						<textarea id="<?php echo esc_attr( $id_base . '_custom_message' ); ?>" name="<?php echo esc_attr( $prefix . '[custom_message]' ); ?>" data-field="custom_message" rows="4" class="large-text" lang="<?php echo esc_attr( str_replace( '_', '-', $locale ) ); ?>"><?php echo esc_textarea( $values['custom_message'] ?? '' ); ?></textarea>
+					</p>
+					<p>
+						<label for="<?php echo esc_attr( $id_base . '_disclaimer_text' ); ?>"><?php esc_html_e( 'Legal Disclaimer Text', 'dfx-parish-retreat-letters' ); ?></label>
+						<textarea id="<?php echo esc_attr( $id_base . '_disclaimer_text' ); ?>" name="<?php echo esc_attr( $prefix . '[disclaimer_text]' ); ?>" data-field="disclaimer_text" rows="4" class="large-text" lang="<?php echo esc_attr( str_replace( '_', '-', $locale ) ); ?>"><?php echo esc_textarea( $values['disclaimer_text'] ?? '' ); ?></textarea>
+					</p>
+					<p>
+						<label for="<?php echo esc_attr( $id_base . '_disclaimer_acceptance_text' ); ?>"><?php esc_html_e( 'Disclaimer Acceptance Text', 'dfx-parish-retreat-letters' ); ?></label>
+						<input type="text" id="<?php echo esc_attr( $id_base . '_disclaimer_acceptance_text' ); ?>" name="<?php echo esc_attr( $prefix . '[disclaimer_acceptance_text]' ); ?>" data-field="disclaimer_acceptance_text" class="large-text" lang="<?php echo esc_attr( str_replace( '_', '-', $locale ) ); ?>" value="<?php echo esc_attr( $values['disclaimer_acceptance_text'] ?? '' ); ?>">
+					</p>
+				</details>
+			<?php endforeach; ?>
+		</div>
+		<?php
+	}
+
+	/**
+	 * AJAX handler that translates the retreat texts of the letters form into a language,
+	 * to fill the translation fields of the retreat form.
+	 *
+	 * @since 1.15.0
+	 */
+	public function ajax_translate_form_texts() {
+		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ?? '' ) ), 'dfxprl_retreats_nonce' ) ) {
+			wp_send_json_error( array( 'message' => __( 'Security check failed.', 'dfx-parish-retreat-letters' ) ) );
+		}
+
+		// Editing a retreat requires managing it; creating one requires managing the plugin
+		$retreat_id = absint( $_POST['retreat_id'] ?? 0 );
+		$allowed    = $retreat_id ? $this->permissions->current_user_can_manage_retreat( $retreat_id ) : $this->permissions->current_user_can_manage_plugin();
+		if ( ! $allowed ) {
+			wp_send_json_error( array( 'message' => __( 'You do not have permission to perform this action.', 'dfx-parish-retreat-letters' ) ) );
+		}
+
+		$locale = DFXPRL_Form_Languages::match_locale( sanitize_text_field( wp_unslash( $_POST['locale'] ?? '' ) ) );
+		if ( ! $locale || $locale === DFXPRL_Form_Languages::get_main_locale() ) {
+			wp_send_json_error( array( 'message' => __( 'Language not supported.', 'dfx-parish-retreat-letters' ) ) );
+		}
+
+		$texts = array(
+			'custom_message'             => wp_kses_post( wp_unslash( $_POST['custom_message'] ?? '' ) ),
+			'disclaimer_text'            => wp_kses_post( wp_unslash( $_POST['disclaimer_text'] ?? '' ) ),
+			'disclaimer_acceptance_text' => sanitize_text_field( wp_unslash( $_POST['disclaimer_acceptance_text'] ?? '' ) ),
+		);
+		if ( '' === trim( implode( '', $texts ) ) ) {
+			wp_send_json_error( array( 'message' => __( 'There are no texts to translate. Write the custom message or the legal disclaimer first.', 'dfx-parish-retreat-letters' ) ) );
+		}
+
+		$translated = DFXPRL_Translator::get_instance()->translate_retreat_texts( $texts, $locale );
+		if ( is_wp_error( $translated ) ) {
+			wp_send_json_error( array( 'message' => $translated->get_error_message() ) );
+		}
+
+		wp_send_json_success( array( 'translations' => $translated ) );
 	}
 
 	/**
@@ -5149,13 +5340,33 @@ class DFXPRL_Admin {
 				<p><strong><?php esc_html_e( 'CSV Import Instructions', 'dfx-parish-retreat-letters' ); ?></strong></p>
 				<p><?php esc_html_e( 'Your CSV file should contain the following required columns. Column order is flexible and the system will automatically identify columns by their names:', 'dfx-parish-retreat-letters' ); ?></p>
 				<ul>
-					<li><strong><?php esc_html_e( 'Name', 'dfx-parish-retreat-letters' ); ?></strong> <?php esc_html_e( '(or "Nombre")', 'dfx-parish-retreat-letters' ); ?></li>
-					<li><strong><?php esc_html_e( 'Surnames', 'dfx-parish-retreat-letters' ); ?></strong> <?php esc_html_e( '(or "Apellidos")', 'dfx-parish-retreat-letters' ); ?></li>
-					<li><strong><?php esc_html_e( 'Date of Birth', 'dfx-parish-retreat-letters' ); ?></strong> <?php esc_html_e( '(or "Fecha de Nacimiento")', 'dfx-parish-retreat-letters' ); ?></li>
-					<li><strong><?php esc_html_e( 'Emergency Contact Name', 'dfx-parish-retreat-letters' ); ?></strong> <?php esc_html_e( '(or "Nombre del Contacto de Emergencia")', 'dfx-parish-retreat-letters' ); ?></li>
-					<li><strong><?php esc_html_e( 'Emergency Contact Surname', 'dfx-parish-retreat-letters' ); ?></strong> <?php esc_html_e( '(or "Apellido del Contacto de Emergencia")', 'dfx-parish-retreat-letters' ); ?></li>
-					<li><strong><?php esc_html_e( 'Emergency Contact Phone', 'dfx-parish-retreat-letters' ); ?></strong> <?php esc_html_e( '(or "Teléfono del Contacto de Emergencia")', 'dfx-parish-retreat-letters' ); ?></li>
-					<li><strong><?php esc_html_e( 'Emergency Contact Email', 'dfx-parish-retreat-letters' ); ?></strong> <?php esc_html_e( '(optional, or "Correo del Contacto de Emergencia")', 'dfx-parish-retreat-letters' ); ?></li>
+					<?php
+					// Columns can also be named in English: show it when the panel is in another language
+					$labels         = $this->get_import_column_labels();
+					$show_english   = 0 !== strpos( determine_locale(), 'en' );
+					$english_names  = array(
+						'name'                      => 'Name',
+						'surnames'                  => 'Surnames',
+						'date_of_birth'             => 'Date of Birth',
+						'emergency_contact_name'    => 'Emergency Contact Name',
+						'emergency_contact_surname' => 'Emergency Contact Surname',
+						'emergency_contact_phone'   => 'Emergency Contact Phone',
+						'emergency_contact_email'   => 'Emergency Contact Email',
+					);
+					foreach ( $english_names as $field => $english ) :
+						$optional = 'emergency_contact_email' === $field;
+						if ( $show_english && $labels[ $field ] !== $english ) {
+							$hint = $optional
+								/* translators: %s: column name in English */
+								? sprintf( __( '(optional, or "%s")', 'dfx-parish-retreat-letters' ), $english )
+								/* translators: %s: column name in English */
+								: sprintf( __( '(or "%s")', 'dfx-parish-retreat-letters' ), $english );
+						} else {
+							$hint = $optional ? __( '(optional)', 'dfx-parish-retreat-letters' ) : '';
+						}
+						?>
+					<li><strong><?php echo esc_html( $labels[ $field ] ); ?></strong> <?php echo esc_html( $hint ); ?></li>
+					<?php endforeach; ?>
 					<li><strong><?php esc_html_e( 'Emergency Contact Relationship', 'dfx-parish-retreat-letters' ); ?></strong> <?php esc_html_e( '(optional)', 'dfx-parish-retreat-letters' ); ?></li>
 					<li><strong><?php esc_html_e( 'Invited By', 'dfx-parish-retreat-letters' ); ?></strong> <?php esc_html_e( '(optional)', 'dfx-parish-retreat-letters' ); ?></li>
 					<li><strong><?php esc_html_e( 'Incompatibilities', 'dfx-parish-retreat-letters' ); ?></strong> <?php esc_html_e( '(optional)', 'dfx-parish-retreat-letters' ); ?></li>
@@ -5165,7 +5376,7 @@ class DFXPRL_Admin {
 					<li><?php esc_html_e( 'Column order can be any order', 'dfx-parish-retreat-letters' ); ?></li>
 					<li><?php esc_html_e( 'Extra columns are allowed and will be ignored', 'dfx-parish-retreat-letters' ); ?></li>
 					<li><?php esc_html_e( 'Date formats supported: YYYY-MM-DD, DD/MM/YYYY, MM/DD/YYYY, DD-MM-YYYY, MM-DD-YYYY, DD.MM.YYYY', 'dfx-parish-retreat-letters' ); ?></li>
-					<li><?php esc_html_e( 'Column names can be in English or Spanish', 'dfx-parish-retreat-letters' ); ?></li>
+					<li><?php esc_html_e( 'Column names can be in English or in the language of the panel', 'dfx-parish-retreat-letters' ); ?></li>
 					<li><?php esc_html_e( 'The first row must contain column headers', 'dfx-parish-retreat-letters' ); ?></li>
 				</ul>
 				<div class="notice notice-warning">
@@ -6296,7 +6507,7 @@ class DFXPRL_Admin {
 						<div class="dfxprl-gdpr-erase">
 							<h4><?php esc_html_e( 'Erase Personal Data', 'dfx-parish-retreat-letters' ); ?></h4>
 							<input type="text" id="erase-identifier" placeholder="<?php esc_attr_e( 'Enter sender name or email', 'dfx-parish-retreat-letters' ); ?>">
-							<input type="text" id="erase-confirm" placeholder="<?php esc_attr_e( 'Type ERASE to confirm', 'dfx-parish-retreat-letters' ); ?>">
+							<input type="text" id="erase-confirm" placeholder="<?php echo esc_attr( sprintf( /* translators: %s: text to type, e.g. "ERASE ALL DATA" */ __( 'Type %s to confirm', 'dfx-parish-retreat-letters' ), __( 'ERASE ALL DATA', 'dfx-parish-retreat-letters' ) ) ); ?>">
 							<button type="button" id="erase-data-btn" class="button button-link-delete"><?php esc_html_e( 'Erase Data', 'dfx-parish-retreat-letters' ); ?></button>
 						</div>
 					</div>
@@ -6841,6 +7052,7 @@ class DFXPRL_Admin {
 		$body_classes = $this->global_settings->get_body_classes();
 		$per_retreat_customization_enabled = $this->global_settings->is_per_retreat_customization_enabled();
 		$pdf_header_enabled = $this->global_settings->is_pdf_header_enabled();
+		$translator = DFXPRL_Translator::get_instance();
 
 		?>
 		<div class="wrap">
@@ -6904,6 +7116,28 @@ class DFXPRL_Admin {
 								<input type="checkbox" id="enable_pdf_header" name="enable_pdf_header" value="1" <?php checked( $pdf_header_enabled ); ?>>
 								<label for="enable_pdf_header"><?php esc_html_e( 'Add a From/To header to PDF letters when printing', 'dfx-parish-retreat-letters' ); ?></label>
 								<p class="description"><?php esc_html_e( 'Enabled by default. The From/To header is added on the recipient&#8217;s browser (no server memory cost). If the browser cannot do it, the unmodified PDF is printed.', 'dfx-parish-retreat-letters' ); ?></p>
+							</td>
+						</tr>
+
+						<tr>
+							<th scope="row">
+								<label for="google_translate_api_key"><?php esc_html_e( 'Google Cloud Translation API Key', 'dfx-parish-retreat-letters' ); ?></label>
+							</th>
+							<td>
+								<?php if ( defined( 'DFXPRL_GOOGLE_TRANSLATE_API_KEY' ) && DFXPRL_GOOGLE_TRANSLATE_API_KEY ) : ?>
+									<p><?php esc_html_e( 'The key is defined in wp-config.php (DFXPRL_GOOGLE_TRANSLATE_API_KEY).', 'dfx-parish-retreat-letters' ); ?></p>
+								<?php else : ?>
+									<input type="password" id="google_translate_api_key" name="google_translate_api_key" class="regular-text" autocomplete="off" value=""
+										placeholder="<?php echo $translator->is_configured() ? esc_attr__( 'Saved. Leave blank to keep it.', 'dfx-parish-retreat-letters' ) : ''; ?>">
+									<?php if ( $translator->is_configured() ) : ?>
+										<label><input type="checkbox" name="delete_google_translate_api_key" value="1"> <?php esc_html_e( 'Delete the saved key', 'dfx-parish-retreat-letters' ); ?></label>
+									<?php endif; ?>
+								<?php endif; ?>
+								<p class="description"><?php esc_html_e( 'Optional. The letters form can be shown in Spanish, Catalan, Basque, Galician, English, Portuguese, French, Italian and German. With this key, the texts configured for each retreat (custom message and legal disclaimer) are translated automatically into the language of the visitor when the retreat has no version written for that language. Each translation is done once and cached, and done again only if the original text changes. Only those retreat texts are sent to Google, never letters or personal data.', 'dfx-parish-retreat-letters' ); ?></p>
+								<?php $translation_error = get_transient( DFXPRL_Translator::ERROR_TRANSIENT ); ?>
+								<?php if ( $translation_error ) : ?>
+									<p class="description" style="color: #d63638;"><?php echo esc_html( $translation_error ); ?></p>
+								<?php endif; ?>
 							</td>
 						</tr>
 					</tbody>
@@ -7049,6 +7283,15 @@ class DFXPRL_Admin {
 		$success = $this->global_settings->set_default_header( $default_header ) && $success;
 		$success = $this->global_settings->set_default_footer( $default_footer ) && $success;
 		$success = $this->global_settings->set_body_classes( $body_classes ) && $success;
+
+		// The saved API key is never shown: a blank field keeps it
+		$api_key = trim( sanitize_text_field( wp_unslash( $_POST['google_translate_api_key'] ?? '' ) ) );
+		if ( '' !== $api_key ) {
+			$success = $this->global_settings->set( 'google_translate_api_key', $api_key ) && $success;
+			delete_transient( DFXPRL_Translator::ERROR_TRANSIENT );
+		} elseif ( isset( $_POST['delete_google_translate_api_key'] ) ) {
+			$this->global_settings->delete( 'google_translate_api_key' );
+		}
 
 		if ( $success ) {
 			$this->add_admin_notice( __( 'Global settings saved successfully.', 'dfx-parish-retreat-letters' ), 'success' );

@@ -73,8 +73,10 @@ class DFXPRL_Retreat {
 				'message_request_template'   => $sanitized_data['message_request_template'],
 				'return_email_subject'       => $sanitized_data['return_email_subject'],
 				'return_email_template'      => $sanitized_data['return_email_template'],
+				'multilingual_enabled'       => $sanitized_data['multilingual_enabled'],
+				'form_translations'          => $sanitized_data['form_translations'],
 			),
-			array( '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%d', '%d', '%s', '%s', '%s' )
+			array( '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%d', '%d', '%s', '%s', '%s', '%d', '%s' )
 		);
 
 		if ( ! $result ) {
@@ -146,9 +148,11 @@ class DFXPRL_Retreat {
 				'message_request_template'   => $sanitized_data['message_request_template'],
 				'return_email_subject'       => $sanitized_data['return_email_subject'],
 				'return_email_template'      => $sanitized_data['return_email_template'],
+				'multilingual_enabled'       => $sanitized_data['multilingual_enabled'],
+				'form_translations'          => $sanitized_data['form_translations'],
 			),
 			array( 'id' => $id ),
-			array( '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%d', '%d', '%s', '%s', '%s' ),
+			array( '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%d', '%d', '%s', '%s', '%s', '%d', '%s' ),
 			array( '%d' )
 		);
 
@@ -385,6 +389,9 @@ class DFXPRL_Retreat {
 			'message_request_template'   => sanitize_textarea_field( $data['message_request_template'] ?? '' ),
 			'return_email_subject'       => sanitize_text_field( $data['return_email_subject'] ?? '' ),
 			'return_email_template'      => sanitize_textarea_field( $data['return_email_template'] ?? '' ),
+			// The multilingual form is enabled unless it is explicitly disabled
+			'multilingual_enabled'       => isset( $data['multilingual_enabled'] ) ? (int) (bool) $data['multilingual_enabled'] : 1,
+			'form_translations'          => DFXPRL_Form_Languages::sanitize_manual_translations( $data['form_translations'] ?? null ),
 		);
 	}
 
