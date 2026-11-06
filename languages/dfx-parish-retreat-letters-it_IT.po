@@ -2408,11 +2408,11 @@ msgid "Enabled by default. The From/To header is added on the recipient&#8217;s 
 msgstr "Abilitato in modo predefinito. L'intestazione Da/A viene aggiunta nel browser di chi stampa (senza consumo di memoria sul server). Se il browser non riesce a farlo, viene stampato il PDF senza modifiche."
 
 #: includes/class-admin.php:7124
-msgid "Google Cloud Translation API Key"
-msgstr "Chiave API di Google Cloud Translation"
+msgid "DeepL API Key"
+msgstr "Chiave API di DeepL"
 
 #: includes/class-admin.php:7128
-msgid "The key is defined in wp-config.php (DFXPRL_GOOGLE_TRANSLATE_API_KEY)."
+msgid "The key is defined in wp-config.php (DFXPRL_DEEPL_API_KEY)."
 msgstr "La chiave è definita in wp-config.php (DFXPRL_GOOGLE_TRANSLATE_API_KEY)."
 
 #: includes/class-admin.php:7131
@@ -2424,8 +2424,8 @@ msgid "Delete the saved key"
 msgstr "Elimina la chiave salvata"
 
 #: includes/class-admin.php:7136
-msgid "Optional. The letters form can be shown in Spanish, Catalan, Basque, Galician, English, Portuguese, French, Italian and German. With this key, the texts configured for each retreat (custom message and legal disclaimer) are translated automatically into the language of the visitor when the retreat has no version written for that language. Each translation is done once and cached, and done again only if the original text changes. Only those retreat texts are sent to Google, never letters or personal data."
-msgstr "Facoltativa. Il modulo delle lettere può essere mostrato in spagnolo, catalano, basco, galiziano, inglese, portoghese, francese, italiano e tedesco. Con questa chiave, i testi configurati per ogni ritiro (messaggio personalizzato e note legali) vengono tradotti automaticamente nella lingua del visitatore quando il ritiro non ha una versione scritta per quella lingua. Ogni traduzione viene eseguita una sola volta e memorizzata nella cache, e viene ripetuta solo se il testo originale cambia. A Google vengono inviati solo questi testi dei ritiri, mai lettere o dati personali."
+msgid "Optional. The letters form can be shown in Spanish, Catalan, Basque, Galician, English, Portuguese, French, Italian and German. With this key, the texts configured for each retreat (custom message and legal disclaimer) are translated automatically into the language of the visitor when the retreat has no version written for that language. Each translation is done once and cached, and done again only if the original text changes. Only those retreat texts are sent to DeepL, never letters or personal data. The free plan, DeepL API Free, translates up to 500,000 characters a month."
+msgstr "Facoltativa. Il modulo delle lettere può essere mostrato in spagnolo, catalano, basco, galiziano, inglese, portoghese, francese, italiano e tedesco. Con questa chiave, i testi configurati per ogni ritiro (messaggio personalizzato e note legali) vengono tradotti automaticamente nella lingua del visitatore quando il ritiro non ha una versione scritta per quella lingua. Ogni traduzione viene eseguita una sola volta e memorizzata nella cache, e viene ripetuta solo se il testo originale cambia. A DeepL vengono inviati solo questi testi dei ritiri, mai lettere o dati personali. Il piano gratuito, DeepL API Free, traduce fino a 500.000 caratteri al mese."
 
 #: includes/class-admin.php:7147
 msgid "Save Settings"
@@ -2619,7 +2619,7 @@ msgstr "Troppe richieste. Attendi un momento prima di riprovare."
 msgid "Rate Limit Exceeded"
 msgstr "Limite di richieste superato"
 
-#: includes/class-dfx-parish-retreat-letters.php:648 includes/class-form-languages.php:437
+#: includes/class-dfx-parish-retreat-letters.php:648 includes/class-form-languages.php:452
 msgid "Language"
 msgstr "Lingua"
 
@@ -2802,8 +2802,8 @@ msgid "Allowed file types: PDF, DOC, DOCX, TXT, JPG, PNG, GIF."
 msgstr "Tipi di file consentiti: PDF, DOC, DOCX, TXT, JPG, PNG, GIF."
 
 #: includes/class-dfx-parish-retreat-letters.php:987
-msgid "Automatic translation by Google."
-msgstr "Traduzione automatica di Google."
+msgid "Automatic translation by DeepL."
+msgstr "Traduzione automatica di DeepL."
 
 #: includes/class-dfx-parish-retreat-letters.php:998
 msgid "Please solve: "
@@ -3077,7 +3077,7 @@ msgstr "La vista di stampa non può essere mostrata in Internet Explorer. Micros
 msgid "Please reopen this page in one of the following modern browsers:"
 msgstr "Riapri questa pagina in uno dei seguenti browser moderni:"
 
-#: includes/class-form-languages.php:447
+#: includes/class-form-languages.php:462
 msgid "Change"
 msgstr "Cambia"
 
@@ -3397,12 +3397,12 @@ msgstr "Rimozione in corso..."
 msgid "An error occurred. Please try again."
 msgstr "Si è verificato un errore. Riprova."
 
-#: includes/class-translator.php:100
+#: includes/class-translator.php:126
 msgid "Automatic translation is not configured."
 msgstr "La traduzione automatica non è configurata."
 
-#. translators: %s: error message returned by Google
-#: includes/class-translator.php:134
+#. translators: %s: error message returned by DeepL
+#: includes/class-translator.php:171
 #, php-format
-msgid "Google Cloud Translation error: %s"
-msgstr "Errore di Google Cloud Translation: %s"
+msgid "DeepL error: %s"
+msgstr "Errore di DeepL: %s"

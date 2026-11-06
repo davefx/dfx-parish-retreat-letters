@@ -1,6 +1,6 @@
 <?php
 /**
- * Automatic translation of the retreat texts with Google Cloud Translation
+ * Automatic translation of the retreat texts with DeepL
  *
  * @link       https://github.com/davefx/dfx-parish-retreat-letters
  * @since      1.15.0
@@ -10,10 +10,14 @@
  */
 
 /**
- * Automatic translation of the retreat texts with Google Cloud Translation (API v2).
+ * Automatic translation of the retreat texts with DeepL (API v2).
+ *
+ * The free plan, DeepL API Free, translates 500,000 characters a month; its keys end in
+ * ":fx" and use their own endpoint. DeepL replaced Google Cloud Translation in 26.11.05,
+ * because its translations are better.
  *
  * Only the texts configured for a retreat (custom message, legal disclaimer and its
- * acceptance text) are sent to Google: never letters or personal data. Translations
+ * acceptance text) are sent to DeepL: never letters or personal data. Translations
  * are cached in the retreat, together with a hash of the original text, so each text
  * is translated once per language and again only when it changes.
  *
@@ -24,12 +28,20 @@
 class DFXPRL_Translator {
 
 	/**
-	 * Google Cloud Translation API endpoint.
+	 * DeepL API endpoint for paid keys.
 	 *
-	 * @since 1.15.0
+	 * @since 26.11.05
 	 * @var string
 	 */
-	const ENDPOINT = 'https://translation.googleapis.com/language/translate/v2';
+	const ENDPOINT = 'https://api.deepl.com/v2/translate';
+
+	/**
+	 * DeepL API endpoint for DeepL API Free keys (ending in ":fx").
+	 *
+	 * @since 26.11.05
+	 * @var string
+	 */
+	const ENDPOINT_FREE = 'https://api-free.deepl.com/v2/translate';
 
 	/**
 	 * Transient set after a failed request, to stop retrying on every page view for a while.
@@ -61,19 +73,30 @@ class DFXPRL_Translator {
 	}
 
 	/**
-	 * Get the Google Cloud Translation API key.
+	 * Get the DeepL API key.
 	 *
-	 * It can be defined in wp-config.php as DFXPRL_GOOGLE_TRANSLATE_API_KEY, or saved in
-	 * the global settings.
+	 * It can be defined in wp-config.php as DFXPRL_DEEPL_API_KEY, or saved in the global
+	 * settings.
 	 *
 	 * @since 1.15.0
 	 * @return string
 	 */
 	public function get_api_key() {
-		if ( defined( 'DFXPRL_GOOGLE_TRANSLATE_API_KEY' ) && DFXPRL_GOOGLE_TRANSLATE_API_KEY ) {
-			return (string) DFXPRL_GOOGLE_TRANSLATE_API_KEY;
+		if ( defined( 'DFXPRL_DEEPL_API_KEY' ) && DFXPRL_DEEPL_API_KEY ) {
+			return (string) DFXPRL_DEEPL_API_KEY;
 		}
-		return (string) DFXPRL_GlobalSettings::get_instance()->get( 'google_translate_api_key', '' );
+		return (string) DFXPRL_GlobalSettings::get_instance()->get( 'deepl_api_key', '' );
+	}
+
+	/**
+	 * Get the DeepL endpoint for an API key: the free one for DeepL API Free keys.
+	 *
+	 * @since 26.11.05
+	 * @param string $api_key API key.
+	 * @return string
+	 */
+	public static function get_endpoint( $api_key ) {
+		return ':fx' === substr( (string) $api_key, -3 ) ? self::ENDPOINT_FREE : self::ENDPOINT;
 	}
 
 	/**
@@ -87,7 +110,10 @@ class DFXPRL_Translator {
 	}
 
 	/**
-	 * Translate texts with Google Cloud Translation.
+	 * Translate texts with DeepL.
+	 *
+	 * Catalan, Basque and Galician only work with DeepL's quality model, which is the
+	 * default one (no model is requested), and without formality.
 	 *
 	 * @since 1.15.0
 	 * @param array  $texts         Key => text. Texts may contain HTML.
@@ -107,17 +133,28 @@ class DFXPRL_Translator {
 			return array();
 		}
 
+		$request = array(
+			'text'         => array_values( $texts ),
+			// The source language without variant (EN, PT); the target with it (EN-US, PT-PT)
+			'source_lang'  => strtok( DFXPRL_Form_Languages::get_translation_code( $source_locale ), '-' ),
+			'target_lang'  => DFXPRL_Form_Languages::get_translation_code( $target_locale ),
+			'tag_handling' => 'html',
+		);
+		$formality = DFXPRL_Form_Languages::get_formality( $target_locale );
+		if ( $formality ) {
+			$request['formality'] = $formality;
+		}
+
+		$api_key  = $this->get_api_key();
 		$response = wp_remote_post(
-			add_query_arg( 'key', rawurlencode( $this->get_api_key() ), self::ENDPOINT ),
+			self::get_endpoint( $api_key ),
 			array(
 				'timeout' => 15,
-				'headers' => array( 'Content-Type' => 'application/json; charset=utf-8' ),
-				'body'    => wp_json_encode( array(
-					'q'      => array_values( $texts ),
-					'source' => DFXPRL_Form_Languages::get_translation_code( $source_locale ),
-					'target' => DFXPRL_Form_Languages::get_translation_code( $target_locale ),
-					'format' => 'html',
-				) ),
+				'headers' => array(
+					'Content-Type'  => 'application/json; charset=utf-8',
+					'Authorization' => 'DeepL-Auth-Key ' . $api_key,
+				),
+				'body'    => wp_json_encode( $request ),
 			)
 		);
 
@@ -126,19 +163,19 @@ class DFXPRL_Translator {
 		}
 
 		$body = json_decode( wp_remote_retrieve_body( $response ), true );
-		if ( 200 !== wp_remote_retrieve_response_code( $response ) || empty( $body['data']['translations'] ) ) {
-			$message = $body['error']['message'] ?? wp_remote_retrieve_response_message( $response );
+		if ( 200 !== wp_remote_retrieve_response_code( $response ) || empty( $body['translations'] ) ) {
+			$message = $body['message'] ?? wp_remote_retrieve_response_message( $response );
 			return new WP_Error(
 				'translation_failed',
-				/* translators: %s: error message returned by Google */
-				sprintf( __( 'Google Cloud Translation error: %s', 'dfx-parish-retreat-letters' ), $message )
+				/* translators: %s: error message returned by DeepL */
+				sprintf( __( 'DeepL error: %s', 'dfx-parish-retreat-letters' ), $message )
 			);
 		}
 
 		$translated = array();
 		foreach ( array_keys( $texts ) as $index => $key ) {
-			if ( isset( $body['data']['translations'][ $index ]['translatedText'] ) ) {
-				$translated[ $key ] = $body['data']['translations'][ $index ]['translatedText'];
+			if ( isset( $body['translations'][ $index ]['text'] ) ) {
+				$translated[ $key ] = $body['translations'][ $index ]['text'];
 			}
 		}
 		return $translated;
@@ -168,9 +205,9 @@ class DFXPRL_Translator {
 	}
 
 	/**
-	 * Get automatic translations of retreat texts, from the cache or from Google.
+	 * Get automatic translations of retreat texts, from the cache or from DeepL.
 	 *
-	 * Texts that cannot be translated (no API key, or Google fails) are left out, so the
+	 * Texts that cannot be translated (no API key, or DeepL fails) are left out, so the
 	 * caller shows the original text.
 	 *
 	 * @since 1.15.0
@@ -263,13 +300,14 @@ class DFXPRL_Translator {
 	 * Hash of an original text, to know when its cached translation is outdated.
 	 *
 	 * The main language is part of the hash, so changing the site language also
-	 * invalidates the cache.
+	 * invalidates the cache. So is the translation service: the translations cached
+	 * from Google before 26.11.05 are done again with DeepL.
 	 *
 	 * @since 1.15.0
 	 * @param string $text Original text.
 	 * @return string
 	 */
 	private function hash_text( $text ) {
-		return md5( DFXPRL_Form_Languages::get_main_locale() . "\n" . $text );
+		return md5( 'deepl' . "\n" . DFXPRL_Form_Languages::get_main_locale() . "\n" . $text );
 	}
 }

@@ -53,21 +53,25 @@ class DFXPRL_Form_Languages {
 	const RETREAT_FIELDS = array( 'custom_message', 'disclaimer_text', 'disclaimer_acceptance_text' );
 
 	/**
-	 * Supported languages: WordPress locale => array( native name, Google Translate code ).
+	 * Supported languages: WordPress locale => array( native name, DeepL code, DeepL formality ).
+	 *
+	 * The formality follows the translations of the plugin in each language (informal in
+	 * Spanish, Italian and German; formal in Portuguese and French). DeepL does not support
+	 * it in Catalan, Basque, Galician or English.
 	 *
 	 * @since 1.15.0
 	 * @var array
 	 */
 	const LANGUAGES = array(
-		'es_ES' => array( 'Español', 'es' ),
-		'ca'    => array( 'Català', 'ca' ),
-		'eu'    => array( 'Euskara', 'eu' ),
-		'gl_ES' => array( 'Galego', 'gl' ),
-		'en_US' => array( 'English', 'en' ),
-		'pt_PT' => array( 'Português', 'pt-PT' ),
-		'fr_FR' => array( 'Français', 'fr' ),
-		'it_IT' => array( 'Italiano', 'it' ),
-		'de_DE' => array( 'Deutsch', 'de' ),
+		'es_ES' => array( 'Español', 'ES', 'prefer_less' ),
+		'ca'    => array( 'Català', 'CA', '' ),
+		'eu'    => array( 'Euskara', 'EU', '' ),
+		'gl_ES' => array( 'Galego', 'GL', '' ),
+		'en_US' => array( 'English', 'EN-US', '' ),
+		'pt_PT' => array( 'Português', 'PT-PT', 'prefer_more' ),
+		'fr_FR' => array( 'Français', 'FR', 'prefer_more' ),
+		'it_IT' => array( 'Italiano', 'IT', 'prefer_less' ),
+		'de_DE' => array( 'Deutsch', 'DE', 'prefer_less' ),
 	);
 
 	/**
@@ -91,14 +95,25 @@ class DFXPRL_Form_Languages {
 	}
 
 	/**
-	 * Get the Google Translate code of a supported locale.
+	 * Get the DeepL code of a supported locale.
 	 *
 	 * @since 1.15.0
 	 * @param string $locale Locale.
 	 * @return string
 	 */
 	public static function get_translation_code( $locale ) {
-		return self::LANGUAGES[ $locale ][1] ?? 'en';
+		return self::LANGUAGES[ $locale ][1] ?? 'EN-US';
+	}
+
+	/**
+	 * Get the DeepL formality for a supported locale.
+	 *
+	 * @since 26.11.05
+	 * @param string $locale Locale.
+	 * @return string Empty if DeepL does not support formality in that language.
+	 */
+	public static function get_formality( $locale ) {
+		return self::LANGUAGES[ $locale ][2] ?? '';
 	}
 
 	/**

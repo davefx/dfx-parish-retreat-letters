@@ -61,6 +61,8 @@ function dfxprl_uninstall() {
 	// Clean up any remaining options
 	delete_option( 'dfxprl_db_version' );
 	delete_option( 'dfxprl_encryption_key' );
+	delete_option( 'dfxprl_global_deepl_api_key' );
+	// Saved before 26.11.05, when the automatic translation used Google
 	delete_option( 'dfxprl_global_google_translate_api_key' );
 	delete_transient( 'dfxprl_translation_error' );
 	delete_transient( 'dfxprl_admin_notices' );

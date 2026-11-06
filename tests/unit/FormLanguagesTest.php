@@ -84,6 +84,28 @@ class FormLanguagesTest extends \PHPUnit\Framework\TestCase {
 		$this->assertStringContainsString( 'store_cache_entries(', $source );
 	}
 
+	public function test_automatic_translation_uses_deepl() {
+		$source = file_get_contents( dirname( __DIR__, 2 ) . '/includes/class-translator.php' );
+		$this->assertStringContainsString( "'Authorization' => 'DeepL-Auth-Key ' . \$api_key", $source, 'The key goes in a header, not in the URL' );
+		$this->assertStringContainsString( "'tag_handling' => 'html'", $source );
+		$this->assertStringNotContainsString( 'googleapis', $source );
+		// Translations cached from Google are done again with DeepL
+		$this->assertStringContainsString( "md5( 'deepl' . ", $source );
+
+		require_once dirname( __DIR__, 2 ) . '/includes/class-translator.php';
+		$this->assertSame( DFXPRL_Translator::ENDPOINT_FREE, DFXPRL_Translator::get_endpoint( 'abc-123:fx' ) );
+		$this->assertSame( DFXPRL_Translator::ENDPOINT, DFXPRL_Translator::get_endpoint( 'abc-123' ) );
+
+		// DeepL codes, and the formality of the plugin translations where DeepL supports it
+		$this->assertSame( 'PT-PT', DFXPRL_Form_Languages::get_translation_code( 'pt_PT' ) );
+		$this->assertSame( 'EN-US', DFXPRL_Form_Languages::get_translation_code( 'en_US' ) );
+		$this->assertSame( 'prefer_more', DFXPRL_Form_Languages::get_formality( 'fr_FR' ) );
+		$this->assertSame( 'prefer_less', DFXPRL_Form_Languages::get_formality( 'de_DE' ) );
+		foreach ( array( 'ca', 'eu', 'gl_ES', 'en_US' ) as $locale ) {
+			$this->assertSame( '', DFXPRL_Form_Languages::get_formality( $locale ), $locale );
+		}
+	}
+
 	public function test_translate_button_checks_nonce_and_permissions() {
 		$source = $this->get_method_source( 'includes/class-admin.php', 'ajax_translate_form_texts' );
 		$this->assertStringContainsString( "wp_verify_nonce( sanitize_text_field( wp_unslash( \$_POST['nonce'] ?? '' ) ), 'dfxprl_retreats_nonce' )", $source );

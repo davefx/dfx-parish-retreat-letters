@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-11-04T11:09:40+00:00\n"
+"POT-Creation-Date: 2026-11-05T06:40:36+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: dfx-parish-retreat-letters\n"
@@ -2734,11 +2734,11 @@ msgid "Enabled by default. The From/To header is added on the recipient&#8217;s 
 msgstr ""
 
 #: includes/class-admin.php:7124
-msgid "Google Cloud Translation API Key"
+msgid "DeepL API Key"
 msgstr ""
 
 #: includes/class-admin.php:7128
-msgid "The key is defined in wp-config.php (DFXPRL_GOOGLE_TRANSLATE_API_KEY)."
+msgid "The key is defined in wp-config.php (DFXPRL_DEEPL_API_KEY)."
 msgstr ""
 
 #: includes/class-admin.php:7131
@@ -2750,7 +2750,7 @@ msgid "Delete the saved key"
 msgstr ""
 
 #: includes/class-admin.php:7136
-msgid "Optional. The letters form can be shown in Spanish, Catalan, Basque, Galician, English, Portuguese, French, Italian and German. With this key, the texts configured for each retreat (custom message and legal disclaimer) are translated automatically into the language of the visitor when the retreat has no version written for that language. Each translation is done once and cached, and done again only if the original text changes. Only those retreat texts are sent to Google, never letters or personal data."
+msgid "Optional. The letters form can be shown in Spanish, Catalan, Basque, Galician, English, Portuguese, French, Italian and German. With this key, the texts configured for each retreat (custom message and legal disclaimer) are translated automatically into the language of the visitor when the retreat has no version written for that language. Each translation is done once and cached, and done again only if the original text changes. Only those retreat texts are sent to DeepL, never letters or personal data. The free plan, DeepL API Free, translates up to 500,000 characters a month."
 msgstr ""
 
 #: includes/class-admin.php:7147
@@ -2950,7 +2950,7 @@ msgid "Rate Limit Exceeded"
 msgstr ""
 
 #: includes/class-dfx-parish-retreat-letters.php:648
-#: includes/class-form-languages.php:437
+#: includes/class-form-languages.php:452
 msgid "Language"
 msgstr ""
 
@@ -3136,7 +3136,7 @@ msgid "Allowed file types: PDF, DOC, DOCX, TXT, JPG, PNG, GIF."
 msgstr ""
 
 #: includes/class-dfx-parish-retreat-letters.php:987
-msgid "Automatic translation by Google."
+msgid "Automatic translation by DeepL."
 msgstr ""
 
 #: includes/class-dfx-parish-retreat-letters.php:998
@@ -3424,7 +3424,7 @@ msgstr ""
 msgid "Please reopen this page in one of the following modern browsers:"
 msgstr ""
 
-#: includes/class-form-languages.php:447
+#: includes/class-form-languages.php:462
 msgid "Change"
 msgstr ""
 
@@ -3744,12 +3744,12 @@ msgstr ""
 msgid "An error occurred. Please try again."
 msgstr ""
 
-#: includes/class-translator.php:100
+#: includes/class-translator.php:126
 msgid "Automatic translation is not configured."
 msgstr ""
 
-#. translators: %s: error message returned by Google
-#: includes/class-translator.php:134
+#. translators: %s: error message returned by DeepL
+#: includes/class-translator.php:171
 #, php-format
-msgid "Google Cloud Translation error: %s"
+msgid "DeepL error: %s"
 msgstr ""

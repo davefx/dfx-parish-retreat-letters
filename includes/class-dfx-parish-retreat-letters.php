@@ -984,7 +984,7 @@ class DFXPRL {
 		if ( empty( $text['automatic'] ) ) {
 			return '';
 		}
-		return '<p class="dfxprl-automatic-translation">' . esc_html__( 'Automatic translation by Google.', 'dfx-parish-retreat-letters' ) . '</p>';
+		return '<p class="dfxprl-automatic-translation">' . esc_html__( 'Automatic translation by DeepL.', 'dfx-parish-retreat-letters' ) . '</p>';
 	}
 
 	/**
@@ -1051,7 +1051,7 @@ class DFXPRL {
 		DFXPRL_Form_Languages::remember_locale( $locale );
 		DFXPRL_Form_Languages::switch_locale( $locale );
 
-		// The retreat texts (which may need Google) are only shown on the form itself
+		// The retreat texts (which may need DeepL) are only shown on the form itself
 		$texts = array();
 		if ( ! $sent && empty( $attendant->withdrawn_at ) ) {
 			$retreat_model = new DFXPRL_Retreat();

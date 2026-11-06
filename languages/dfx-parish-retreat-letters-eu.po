@@ -2408,11 +2408,11 @@ msgid "Enabled by default. The From/To header is added on the recipient&#8217;s 
 msgstr "Modu lehenetsian gaituta. Nork/Nori goiburua hartzailearen nabigatzailean gehitzen da (zerbitzariaren memoriarik kontsumitu gabe). Nabigatzaileak ezin badu egin, PDFa aldatu gabe inprimatzen da."
 
 #: includes/class-admin.php:7124
-msgid "Google Cloud Translation API Key"
-msgstr "Google Cloud Translation API gakoa"
+msgid "DeepL API Key"
+msgstr "DeepL API gakoa"
 
 #: includes/class-admin.php:7128
-msgid "The key is defined in wp-config.php (DFXPRL_GOOGLE_TRANSLATE_API_KEY)."
+msgid "The key is defined in wp-config.php (DFXPRL_DEEPL_API_KEY)."
 msgstr "Gakoa wp-config.php fitxategian dago definituta (DFXPRL_GOOGLE_TRANSLATE_API_KEY)."
 
 #: includes/class-admin.php:7131
@@ -2424,8 +2424,8 @@ msgid "Delete the saved key"
 msgstr "Ezabatu gordetako gakoa"
 
 #: includes/class-admin.php:7136
-msgid "Optional. The letters form can be shown in Spanish, Catalan, Basque, Galician, English, Portuguese, French, Italian and German. With this key, the texts configured for each retreat (custom message and legal disclaimer) are translated automatically into the language of the visitor when the retreat has no version written for that language. Each translation is done once and cached, and done again only if the original text changes. Only those retreat texts are sent to Google, never letters or personal data."
-msgstr "Aukerakoa. Gutunen inprimakia gaztelaniaz, katalanez, euskaraz, galegoz, ingelesez, portugesez, frantsesez, italieraz eta alemanez erakuts daiteke. Gako honekin, erretiro bakoitzean konfiguratutako testuak (mezu pertsonalizatua eta lege-oharra) automatikoki itzultzen dira bisitariaren hizkuntzara, erretiroak hizkuntza horretarako idatzitako bertsiorik ez duenean. Itzulpen bakoitza behin egiten da eta cachean gordetzen da, eta jatorrizko testua aldatzen bada soilik egiten da berriro. Erretiroko testu horiek soilik bidaltzen zaizkio Googleri, inoiz ez gutunak edo datu pertsonalak."
+msgid "Optional. The letters form can be shown in Spanish, Catalan, Basque, Galician, English, Portuguese, French, Italian and German. With this key, the texts configured for each retreat (custom message and legal disclaimer) are translated automatically into the language of the visitor when the retreat has no version written for that language. Each translation is done once and cached, and done again only if the original text changes. Only those retreat texts are sent to DeepL, never letters or personal data. The free plan, DeepL API Free, translates up to 500,000 characters a month."
+msgstr "Aukerakoa. Gutunen inprimakia gaztelaniaz, katalanez, euskaraz, galegoz, ingelesez, portugesez, frantsesez, italieraz eta alemanez erakuts daiteke. Gako honekin, erretiro bakoitzean konfiguratutako testuak (mezu pertsonalizatua eta lege-oharra) automatikoki itzultzen dira bisitariaren hizkuntzara, erretiroak hizkuntza horretarako idatzitako bertsiorik ez duenean. Itzulpen bakoitza behin egiten da eta cachean gordetzen da, eta jatorrizko testua aldatzen bada soilik egiten da berriro. Erretiroko testu horiek soilik bidaltzen zaizkio DeepLi, inoiz ez gutunak edo datu pertsonalak. Doako planak, DeepL API Freek, hilean 500.000 karaktere arte itzultzen ditu."
 
 #: includes/class-admin.php:7147
 msgid "Save Settings"
@@ -2619,7 +2619,7 @@ msgstr "Eskaera gehiegi. Itxaron pixka bat berriro saiatu aurretik."
 msgid "Rate Limit Exceeded"
 msgstr "Eskaeren muga gainditu da"
 
-#: includes/class-dfx-parish-retreat-letters.php:648 includes/class-form-languages.php:437
+#: includes/class-dfx-parish-retreat-letters.php:648 includes/class-form-languages.php:452
 msgid "Language"
 msgstr "Hizkuntza"
 
@@ -2802,8 +2802,8 @@ msgid "Allowed file types: PDF, DOC, DOCX, TXT, JPG, PNG, GIF."
 msgstr "Onartutako fitxategi motak: PDF, DOC, DOCX, TXT, JPG, PNG, GIF."
 
 #: includes/class-dfx-parish-retreat-letters.php:987
-msgid "Automatic translation by Google."
-msgstr "Googleren itzulpen automatikoa."
+msgid "Automatic translation by DeepL."
+msgstr "DeepLen itzulpen automatikoa."
 
 #: includes/class-dfx-parish-retreat-letters.php:998
 msgid "Please solve: "
@@ -3077,7 +3077,7 @@ msgstr "Inprimatzeko ikuspegia ezin da Internet Explorerren bistaratu. Microsoft
 msgid "Please reopen this page in one of the following modern browsers:"
 msgstr "Ireki berriro orrialde hau nabigatzaile moderno hauetako batean:"
 
-#: includes/class-form-languages.php:447
+#: includes/class-form-languages.php:462
 msgid "Change"
 msgstr "Aldatu"
 
@@ -3397,12 +3397,12 @@ msgstr "Kentzen..."
 msgid "An error occurred. Please try again."
 msgstr "Errore bat gertatu da. Saiatu berriro."
 
-#: includes/class-translator.php:100
+#: includes/class-translator.php:126
 msgid "Automatic translation is not configured."
 msgstr "Itzulpen automatikoa ez dago konfiguratuta."
 
-#. translators: %s: error message returned by Google
-#: includes/class-translator.php:134
+#. translators: %s: error message returned by DeepL
+#: includes/class-translator.php:171
 #, php-format
-msgid "Google Cloud Translation error: %s"
-msgstr "Google Cloud Translation errorea: %s"
+msgid "DeepL error: %s"
+msgstr "DeepL errorea: %s"

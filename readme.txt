@@ -3,7 +3,7 @@ Contributors: davefx
 Tags: parish, retreat, letters, confidential, GDPR
 Requires at least: 5.0
 Tested up to: 7.1
-Stable tag: 26.11.04
+Stable tag: 26.11.05
 Requires PHP: 7.4
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
@@ -51,7 +51,7 @@ DFX Parish Retreat Letters lets your parish manage the full lifecycle of confide
 * The form URL includes the attendant's initials as a suffix for easy identification when sharing links, without exposing the full name.
 * **Rate limiting** (20 requests per hour per IP) prevents abuse.
 * The form is **multilingual**: senders see it in their browser's language, or choose one from a selector, among Spanish, Catalan, Basque, Galician, English, Portuguese, French, Italian and German. Changing the language does not reload the page, so nothing written is lost. It can be disabled per retreat.
-* The retreat texts (custom message and legal disclaimer) can have a version written for each language, or be translated automatically with **Google Cloud Translation** (optional; each translation is cached and only those texts are sent to Google).
+* The retreat texts (custom message and legal disclaimer) can have a version written for each language, or be translated automatically with **DeepL** (optional; the free plan, DeepL API Free, is enough; each translation is cached and only those texts are sent to DeepL).
 
 = Secure message access and printing =
 
@@ -113,7 +113,7 @@ Under **Retreats > Global Settings** you can configure:
 * Default header and footer blocks for the message submission form (overridable per retreat).
 * Default body CSS classes for the submission form page.
 * Encryption key management (including the option to remove a database-stored key in favour of the `wp-config.php` constant).
-* The Google Cloud Translation API key for the automatic translation of the retreat texts (it can also be defined in `wp-config.php` as `DFXPRL_GOOGLE_TRANSLATE_API_KEY`).
+* The DeepL API key for the automatic translation of the retreat texts (it can also be defined in `wp-config.php` as `DFXPRL_DEEPL_API_KEY`). A key of the free plan, DeepL API Free (up to 500,000 characters a month), is enough.
 
 = Internationalisation =
 
@@ -121,6 +121,13 @@ Under **Retreats > Global Settings** you can configure:
 * When the site has a language pack from translate.wordpress.org, its translations take precedence, and the files bundled with the plugin fill in any texts the pack does not translate yet.
 * A `.pot` template file is included so you can add your own language.
 * The public submission form uses informal Spanish ("tú") for a friendlier tone.
+
+== External services ==
+
+This plugin can connect to the **DeepL API** to translate the texts configured for each retreat (custom message, legal disclaimer and its acceptance text) into the language of the visitor of the letters form. It is optional and only used when a DeepL API key is configured in the global settings (or in `wp-config.php`).
+
+* **What is sent and when:** the original text of those retreat fields and the target language, the first time a visitor views the letters form in a language for which the retreat has no version written (or when a manager presses "Translate automatically"). The result is cached, so each text is sent once per language and again only if it changes. Letters, names, email addresses and any other personal data are never sent.
+* **Service provider:** DeepL SE. [Terms and conditions](https://www.deepl.com/pro-license) · [Privacy policy](https://www.deepl.com/privacy).
 
 == Installation ==
 
@@ -177,6 +184,11 @@ By default it is generated automatically and stored in the WordPress database (`
 Yes. The best place is [translate.wordpress.org](https://translate.wordpress.org/projects/wp-plugins/dfx-parish-retreat-letters/), so the translation reaches every site as a language pack. A `.pot` translation template is also included in the `languages/` directory.
 
 ## Changelog
+
+### 26.11.05
+
+- Change: the automatic translation of the per-retreat texts now uses DeepL instead of Google Cloud Translation, for noticeably better translations. Set a DeepL API key in the global settings (the free DeepL API plan covers 500,000 characters a month). Only the retreat texts are ever sent for translation, never letters or personal data.
+- New: translations now follow each language's formality (informal in Spanish, Italian and German; formal in Portuguese and French).
 
 ### 26.11.04
 

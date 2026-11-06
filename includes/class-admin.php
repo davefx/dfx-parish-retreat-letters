@@ -7121,19 +7121,19 @@ class DFXPRL_Admin {
 
 						<tr>
 							<th scope="row">
-								<label for="google_translate_api_key"><?php esc_html_e( 'Google Cloud Translation API Key', 'dfx-parish-retreat-letters' ); ?></label>
+								<label for="deepl_api_key"><?php esc_html_e( 'DeepL API Key', 'dfx-parish-retreat-letters' ); ?></label>
 							</th>
 							<td>
-								<?php if ( defined( 'DFXPRL_GOOGLE_TRANSLATE_API_KEY' ) && DFXPRL_GOOGLE_TRANSLATE_API_KEY ) : ?>
-									<p><?php esc_html_e( 'The key is defined in wp-config.php (DFXPRL_GOOGLE_TRANSLATE_API_KEY).', 'dfx-parish-retreat-letters' ); ?></p>
+								<?php if ( defined( 'DFXPRL_DEEPL_API_KEY' ) && DFXPRL_DEEPL_API_KEY ) : ?>
+									<p><?php esc_html_e( 'The key is defined in wp-config.php (DFXPRL_DEEPL_API_KEY).', 'dfx-parish-retreat-letters' ); ?></p>
 								<?php else : ?>
-									<input type="password" id="google_translate_api_key" name="google_translate_api_key" class="regular-text" autocomplete="off" value=""
+									<input type="password" id="deepl_api_key" name="deepl_api_key" class="regular-text" autocomplete="off" value=""
 										placeholder="<?php echo $translator->is_configured() ? esc_attr__( 'Saved. Leave blank to keep it.', 'dfx-parish-retreat-letters' ) : ''; ?>">
 									<?php if ( $translator->is_configured() ) : ?>
-										<label><input type="checkbox" name="delete_google_translate_api_key" value="1"> <?php esc_html_e( 'Delete the saved key', 'dfx-parish-retreat-letters' ); ?></label>
+										<label><input type="checkbox" name="delete_deepl_api_key" value="1"> <?php esc_html_e( 'Delete the saved key', 'dfx-parish-retreat-letters' ); ?></label>
 									<?php endif; ?>
 								<?php endif; ?>
-								<p class="description"><?php esc_html_e( 'Optional. The letters form can be shown in Spanish, Catalan, Basque, Galician, English, Portuguese, French, Italian and German. With this key, the texts configured for each retreat (custom message and legal disclaimer) are translated automatically into the language of the visitor when the retreat has no version written for that language. Each translation is done once and cached, and done again only if the original text changes. Only those retreat texts are sent to Google, never letters or personal data.', 'dfx-parish-retreat-letters' ); ?></p>
+								<p class="description"><?php esc_html_e( 'Optional. The letters form can be shown in Spanish, Catalan, Basque, Galician, English, Portuguese, French, Italian and German. With this key, the texts configured for each retreat (custom message and legal disclaimer) are translated automatically into the language of the visitor when the retreat has no version written for that language. Each translation is done once and cached, and done again only if the original text changes. Only those retreat texts are sent to DeepL, never letters or personal data. The free plan, DeepL API Free, translates up to 500,000 characters a month.', 'dfx-parish-retreat-letters' ); ?></p>
 								<?php $translation_error = get_transient( DFXPRL_Translator::ERROR_TRANSIENT ); ?>
 								<?php if ( $translation_error ) : ?>
 									<p class="description" style="color: #d63638;"><?php echo esc_html( $translation_error ); ?></p>
@@ -7285,12 +7285,12 @@ class DFXPRL_Admin {
 		$success = $this->global_settings->set_body_classes( $body_classes ) && $success;
 
 		// The saved API key is never shown: a blank field keeps it
-		$api_key = trim( sanitize_text_field( wp_unslash( $_POST['google_translate_api_key'] ?? '' ) ) );
+		$api_key = trim( sanitize_text_field( wp_unslash( $_POST['deepl_api_key'] ?? '' ) ) );
 		if ( '' !== $api_key ) {
-			$success = $this->global_settings->set( 'google_translate_api_key', $api_key ) && $success;
+			$success = $this->global_settings->set( 'deepl_api_key', $api_key ) && $success;
 			delete_transient( DFXPRL_Translator::ERROR_TRANSIENT );
-		} elseif ( isset( $_POST['delete_google_translate_api_key'] ) ) {
-			$this->global_settings->delete( 'google_translate_api_key' );
+		} elseif ( isset( $_POST['delete_deepl_api_key'] ) ) {
+			$this->global_settings->delete( 'deepl_api_key' );
 		}
 
 		if ( $success ) {

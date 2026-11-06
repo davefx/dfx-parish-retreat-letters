@@ -2408,11 +2408,11 @@ msgid "Enabled by default. The From/To header is added on the recipient&#8217;s 
 msgstr "Activado por defecto. A cabeceira «De/Para» engádese no navegador do destinatario (sen consumir memoria do servidor). Se o navegador non pode facelo, imprímese o PDF sen modificar."
 
 #: includes/class-admin.php:7124
-msgid "Google Cloud Translation API Key"
-msgstr "Clave da API de Google Cloud Translation"
+msgid "DeepL API Key"
+msgstr "Clave da API de DeepL"
 
 #: includes/class-admin.php:7128
-msgid "The key is defined in wp-config.php (DFXPRL_GOOGLE_TRANSLATE_API_KEY)."
+msgid "The key is defined in wp-config.php (DFXPRL_DEEPL_API_KEY)."
 msgstr "A clave está definida en wp-config.php (DFXPRL_GOOGLE_TRANSLATE_API_KEY)."
 
 #: includes/class-admin.php:7131
@@ -2424,8 +2424,8 @@ msgid "Delete the saved key"
 msgstr "Eliminar a clave gardada"
 
 #: includes/class-admin.php:7136
-msgid "Optional. The letters form can be shown in Spanish, Catalan, Basque, Galician, English, Portuguese, French, Italian and German. With this key, the texts configured for each retreat (custom message and legal disclaimer) are translated automatically into the language of the visitor when the retreat has no version written for that language. Each translation is done once and cached, and done again only if the original text changes. Only those retreat texts are sent to Google, never letters or personal data."
-msgstr "Opcional. O formulario das cartas pódese mostrar en español, catalán, éuscaro, galego, inglés, portugués, francés, italiano e alemán. Con esta clave, os textos configurados para cada retiro (mensaxe personalizada e aviso legal) tradúcense automaticamente ao idioma do visitante cando o retiro non ten unha versión escrita nese idioma. Cada tradución faise unha soa vez e gárdase na caché, e só se volve facer se cambia o texto orixinal. A Google só se envían eses textos do retiro, nunca cartas nin datos persoais."
+msgid "Optional. The letters form can be shown in Spanish, Catalan, Basque, Galician, English, Portuguese, French, Italian and German. With this key, the texts configured for each retreat (custom message and legal disclaimer) are translated automatically into the language of the visitor when the retreat has no version written for that language. Each translation is done once and cached, and done again only if the original text changes. Only those retreat texts are sent to DeepL, never letters or personal data. The free plan, DeepL API Free, translates up to 500,000 characters a month."
+msgstr "Opcional. O formulario das cartas pódese mostrar en español, catalán, éuscaro, galego, inglés, portugués, francés, italiano e alemán. Con esta clave, os textos configurados para cada retiro (mensaxe personalizada e aviso legal) tradúcense automaticamente ao idioma do visitante cando o retiro non ten unha versión escrita nese idioma. Cada tradución faise unha soa vez e gárdase na caché, e só se volve facer se cambia o texto orixinal. A DeepL só se envían eses textos do retiro, nunca cartas nin datos persoais. O plan gratuíto, DeepL API Free, traduce ata 500.000 caracteres ao mes."
 
 #: includes/class-admin.php:7147
 msgid "Save Settings"
@@ -2619,7 +2619,7 @@ msgstr "Demasiadas solicitudes. Agarda un pouco antes de tentalo de novo."
 msgid "Rate Limit Exceeded"
 msgstr "Superouse o límite de solicitudes"
 
-#: includes/class-dfx-parish-retreat-letters.php:648 includes/class-form-languages.php:437
+#: includes/class-dfx-parish-retreat-letters.php:648 includes/class-form-languages.php:452
 msgid "Language"
 msgstr "Idioma"
 
@@ -2802,8 +2802,8 @@ msgid "Allowed file types: PDF, DOC, DOCX, TXT, JPG, PNG, GIF."
 msgstr "Tipos de ficheiro permitidos: PDF, DOC, DOCX, TXT, JPG, PNG, GIF."
 
 #: includes/class-dfx-parish-retreat-letters.php:987
-msgid "Automatic translation by Google."
-msgstr "Tradución automática de Google."
+msgid "Automatic translation by DeepL."
+msgstr "Tradución automática de DeepL."
 
 #: includes/class-dfx-parish-retreat-letters.php:998
 msgid "Please solve: "
@@ -3077,7 +3077,7 @@ msgstr "A vista de impresión non se pode mostrar en Internet Explorer. Microsof
 msgid "Please reopen this page in one of the following modern browsers:"
 msgstr "Volve abrir esta páxina nalgún destes navegadores modernos:"
 
-#: includes/class-form-languages.php:447
+#: includes/class-form-languages.php:462
 msgid "Change"
 msgstr "Cambiar"
 
@@ -3397,12 +3397,12 @@ msgstr "Eliminando..."
 msgid "An error occurred. Please try again."
 msgstr "Produciuse un erro. Téntao de novo."
 
-#: includes/class-translator.php:100
+#: includes/class-translator.php:126
 msgid "Automatic translation is not configured."
 msgstr "A tradución automática non está configurada."
 
-#. translators: %s: error message returned by Google
-#: includes/class-translator.php:134
+#. translators: %s: error message returned by DeepL
+#: includes/class-translator.php:171
 #, php-format
-msgid "Google Cloud Translation error: %s"
-msgstr "Erro de Google Cloud Translation: %s"
+msgid "DeepL error: %s"
+msgstr "Erro de DeepL: %s"

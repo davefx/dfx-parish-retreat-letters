@@ -2408,11 +2408,11 @@ msgid "Enabled by default. The From/To header is added on the recipient&#8217;s 
 msgstr "Activat per defecte. La capçalera De/Per a s'afegeix al navegador del destinatari (sense cost de memòria al servidor). Si el navegador no ho pot fer, s'imprimeix el PDF sense modificar."
 
 #: includes/class-admin.php:7124
-msgid "Google Cloud Translation API Key"
-msgstr "Clau de l'API de Google Cloud Translation"
+msgid "DeepL API Key"
+msgstr "Clau de l'API de DeepL"
 
 #: includes/class-admin.php:7128
-msgid "The key is defined in wp-config.php (DFXPRL_GOOGLE_TRANSLATE_API_KEY)."
+msgid "The key is defined in wp-config.php (DFXPRL_DEEPL_API_KEY)."
 msgstr "La clau està definida al wp-config.php (DFXPRL_GOOGLE_TRANSLATE_API_KEY)."
 
 #: includes/class-admin.php:7131
@@ -2424,8 +2424,8 @@ msgid "Delete the saved key"
 msgstr "Suprimeix la clau desada"
 
 #: includes/class-admin.php:7136
-msgid "Optional. The letters form can be shown in Spanish, Catalan, Basque, Galician, English, Portuguese, French, Italian and German. With this key, the texts configured for each retreat (custom message and legal disclaimer) are translated automatically into the language of the visitor when the retreat has no version written for that language. Each translation is done once and cached, and done again only if the original text changes. Only those retreat texts are sent to Google, never letters or personal data."
-msgstr "Opcional. El formulari de cartes es pot mostrar en castellà, català, basc, gallec, anglès, portuguès, francès, italià i alemany. Amb aquesta clau, els textos configurats per a cada recés (missatge personalitzat i avís legal) es tradueixen automàticament a l'idioma del visitant quan el recés no té cap versió escrita en aquell idioma. Cada traducció es fa una sola vegada i es desa a la memòria cau, i només es torna a fer si el text original canvia. A Google només s'envien aquests textos del recés, mai cartes ni dades personals."
+msgid "Optional. The letters form can be shown in Spanish, Catalan, Basque, Galician, English, Portuguese, French, Italian and German. With this key, the texts configured for each retreat (custom message and legal disclaimer) are translated automatically into the language of the visitor when the retreat has no version written for that language. Each translation is done once and cached, and done again only if the original text changes. Only those retreat texts are sent to DeepL, never letters or personal data. The free plan, DeepL API Free, translates up to 500,000 characters a month."
+msgstr "Opcional. El formulari de cartes es pot mostrar en castellà, català, basc, gallec, anglès, portuguès, francès, italià i alemany. Amb aquesta clau, els textos configurats per a cada recés (missatge personalitzat i avís legal) es tradueixen automàticament a l'idioma del visitant quan el recés no té cap versió escrita en aquell idioma. Cada traducció es fa una sola vegada i es desa a la memòria cau, i només es torna a fer si el text original canvia. A DeepL només s'envien aquests textos del recés, mai cartes ni dades personals. El pla gratuït, DeepL API Free, tradueix fins a 500.000 caràcters al mes."
 
 #: includes/class-admin.php:7147
 msgid "Save Settings"
@@ -2619,7 +2619,7 @@ msgstr "Massa sol·licituds. Espereu una mica abans de tornar-ho a provar."
 msgid "Rate Limit Exceeded"
 msgstr "S'ha superat el límit de sol·licituds"
 
-#: includes/class-dfx-parish-retreat-letters.php:648 includes/class-form-languages.php:437
+#: includes/class-dfx-parish-retreat-letters.php:648 includes/class-form-languages.php:452
 msgid "Language"
 msgstr "Idioma"
 
@@ -2802,8 +2802,8 @@ msgid "Allowed file types: PDF, DOC, DOCX, TXT, JPG, PNG, GIF."
 msgstr "Tipus de fitxer permesos: PDF, DOC, DOCX, TXT, JPG, PNG, GIF."
 
 #: includes/class-dfx-parish-retreat-letters.php:987
-msgid "Automatic translation by Google."
-msgstr "Traducció automàtica de Google."
+msgid "Automatic translation by DeepL."
+msgstr "Traducció automàtica de DeepL."
 
 #: includes/class-dfx-parish-retreat-letters.php:998
 msgid "Please solve: "
@@ -3077,7 +3077,7 @@ msgstr "La vista d'impressió no es pot mostrar a l'Internet Explorer. Microsoft
 msgid "Please reopen this page in one of the following modern browsers:"
 msgstr "Torneu a obrir aquesta pàgina en un dels navegadors moderns següents:"
 
-#: includes/class-form-languages.php:447
+#: includes/class-form-languages.php:462
 msgid "Change"
 msgstr "Canvia"
 
@@ -3397,12 +3397,12 @@ msgstr "S'està eliminant..."
 msgid "An error occurred. Please try again."
 msgstr "S'ha produït un error. Torneu-ho a provar."
 
-#: includes/class-translator.php:100
+#: includes/class-translator.php:126
 msgid "Automatic translation is not configured."
 msgstr "La traducció automàtica no està configurada."
 
-#. translators: %s: error message returned by Google
-#: includes/class-translator.php:134
+#. translators: %s: error message returned by DeepL
+#: includes/class-translator.php:171
 #, php-format
-msgid "Google Cloud Translation error: %s"
-msgstr "Error de Google Cloud Translation: %s"
+msgid "DeepL error: %s"
+msgstr "Error de DeepL: %s"
