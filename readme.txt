@@ -3,7 +3,7 @@ Contributors: davefx
 Tags: parish, retreat, letters, confidential, GDPR
 Requires at least: 5.0
 Tested up to: 7.1
-Stable tag: 26.11.05
+Stable tag: 26.11.06.2
 Requires PHP: 7.4
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
@@ -184,6 +184,15 @@ By default it is generated automatically and stored in the WordPress database (`
 Yes. The best place is [translate.wordpress.org](https://translate.wordpress.org/projects/wp-plugins/dfx-parish-retreat-letters/), so the translation reaches every site as a language pack. A `.pot` translation template is also included in the `languages/` directory.
 
 ## Changelog
+
+### 26.11.06.2
+
+- Fix: when adding or editing an attendant by hand, if a field failed validation the whole form came back empty and every value had to be typed again. The form now keeps what was entered (including the custom fields) and only the offending field needs fixing.
+
+### 26.11.06.1
+
+- New: in the attendants list, the header row with the column names now stays fixed at the top while scrolling, so it is always clear which column is which.
+- Fix: after importing a CSV of attendants, the admin page came back blank with no feedback. The import ran, but its result (how many were added, updated or skipped) was never shown. The result notice is now displayed on the import page.
 
 ### 26.11.05
 

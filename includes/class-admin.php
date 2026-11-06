@@ -744,6 +744,34 @@ class DFXPRL_Admin {
 		background: #fff;
 		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 	}
+	/* Freeze the header row of the attendants list when scrolling the page.
+	   The selector must out-rank two existing position rules on these cells:
+	   WordPress core (.wp-list-table th.sortable, position relative) and the
+	   plugin drag rule (.dfxprl-attendants-table[data-retreat-id] th[data-column],
+	   position relative, specificity 0,3,1). The data-retreat-id variant below
+	   matches and wins; the plain one covers the table when column reordering is
+	   not available (no data-retreat-id attribute). */
+	.wp-list-table.dfxprl-attendants-table thead th,
+	.wp-list-table.dfxprl-attendants-table[data-retreat-id] thead th {
+		position: -webkit-sticky;
+		position: sticky;
+		top: 32px; /* sit just below the fixed WordPress admin bar */
+		z-index: 11;
+		background: #f6f7f7;
+	}
+	.wp-list-table.dfxprl-attendants-table thead th.sorted {
+		background: #f0f0f1;
+	}
+	/* While reordering columns, drop the stickiness so jQuery UI measures offsets correctly */
+	.wp-list-table.dfxprl-attendants-table.dfxprl-reordering[data-retreat-id] thead th {
+		position: static;
+	}
+	@media screen and (max-width: 782px) {
+		.wp-list-table.dfxprl-attendants-table thead th,
+		.wp-list-table.dfxprl-attendants-table[data-retreat-id] thead th {
+			top: 46px; /* the admin bar is taller on small screens */
+		}
+	}
 	/* Inline editing in the attendants list */
 	.dfxprl-attendants-table td.dfxprl-inline-editable {
 		cursor: pointer;
@@ -2160,12 +2188,9 @@ class DFXPRL_Admin {
 			wp_die( esc_html__( 'You do not have permission to import attendants for this retreat.', 'dfx-parish-retreat-letters' ) );
 		}
 
-		// Handle form submission
-		if ( isset( $_SERVER['REQUEST_METHOD'] ) && $_SERVER['REQUEST_METHOD'] === 'POST' ) {
-			// Form submission already handled in admin_init, just return to prevent double processing
-			return;
-		}
-
+		// Any form submission was already processed in admin_init. Render the page
+		// regardless of the request method so the import result notices are shown;
+		// returning early on POST left the admin body blank with no feedback.
 		$this->render_csv_import_page( $retreat );
 	}
 
@@ -4090,6 +4115,47 @@ class DFXPRL_Admin {
 	}
 
 	/**
+	 * Whether the current request is a failed attendant add/edit submission.
+	 *
+	 * A successful submission redirects and exits in admin_init, so if we reach
+	 * the add/edit page body on a POST with a valid nonce the submission failed
+	 * validation and we are re-rendering the form in the same request. The
+	 * values the user already typed are still in $_POST.
+	 *
+	 * @since 26.11.06.2
+	 * @return bool
+	 */
+	private function is_failed_attendant_submission() {
+		if ( ! isset( $_SERVER['REQUEST_METHOD'] ) || 'POST' !== $_SERVER['REQUEST_METHOD'] ) {
+			return false;
+		}
+		return (bool) wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['_wpnonce'] ?? '' ) ), 'dfxprl_attendants_add_edit' );
+	}
+
+	/**
+	 * Resolve the value to show for a core attendant field.
+	 *
+	 * On a failed submission the form is re-rendered in the same request, so we
+	 * repopulate each field from what the user just submitted instead of wiping
+	 * everything (or falling back to the stored value when editing). A field
+	 * that was not submitted at all (e.g. a disabled read-only field for message
+	 * managers) falls back to the stored attendant value.
+	 *
+	 * @since 26.11.06.2
+	 * @param object|null $attendant Stored attendant, or null when adding.
+	 * @param string      $key       Field name.
+	 * @param string      $default   Value to use when nothing is available.
+	 * @return string
+	 */
+	private function attendant_form_value( $attendant, $key, $default = '' ) {
+		if ( $this->is_failed_attendant_submission() && isset( $_POST[ $key ] ) ) {
+			// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- nonce verified in is_failed_attendant_submission(); sanitized here
+			return sanitize_textarea_field( wp_unslash( $_POST[ $key ] ) );
+		}
+		return $attendant->$key ?? $default;
+	}
+
+	/**
 	 * Render the attendant add/edit page.
 	 *
 	 * @since 1.0.0
@@ -4103,7 +4169,20 @@ class DFXPRL_Admin {
 		// Message managers can open the page but only change letters, custom fields they may edit and the contact log
 		$can_edit_core = $this->permissions->current_user_can_manage_retreat( $retreat->id );
 		$custom_fields = $this->custom_field_model->get_viewable_by_retreat( $retreat->id );
-		$custom_values = $is_edit ? $this->custom_field_model->get_values( $attendant->id ) : array();
+		// On a failed submission, repopulate the custom fields from what was just submitted (keyed by field id);
+		// otherwise use the stored values when editing, or nothing when adding.
+		if ( $this->is_failed_attendant_submission() ) {
+			// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- nonce verified in is_failed_attendant_submission(); sanitized per field below
+			$submitted_custom = isset( $_POST['custom_field'] ) && is_array( $_POST['custom_field'] ) ? wp_unslash( $_POST['custom_field'] ) : array();
+			$custom_values = array();
+			foreach ( $custom_fields as $field ) {
+				if ( isset( $submitted_custom[ $field->slug ] ) && is_string( $submitted_custom[ $field->slug ] ) ) {
+					$custom_values[ $field->id ] = sanitize_textarea_field( $submitted_custom[ $field->slug ] );
+				}
+			}
+		} else {
+			$custom_values = $is_edit ? $this->custom_field_model->get_values( $attendant->id ) : array();
+		}
 		?>
 		<div class="wrap">
 			<h1><?php echo esc_html( $title ); ?></h1>
@@ -4134,7 +4213,7 @@ class DFXPRL_Admin {
 								<label for="name"><?php esc_html_e( 'Name', 'dfx-parish-retreat-letters' ); ?> <span class="description">(<?php esc_html_e( 'required', 'dfx-parish-retreat-letters' ); ?>)</span></label>
 							</th>
 							<td>
-								<input type="text" id="name" name="name"<?php disabled( ! $can_edit_core ); ?> value="<?php echo esc_attr( $attendant->name ?? '' ); ?>" class="regular-text" required>
+								<input type="text" id="name" name="name"<?php disabled( ! $can_edit_core ); ?> value="<?php echo esc_attr( $this->attendant_form_value( $attendant, 'name' ) ); ?>" class="regular-text" required>
 							</td>
 						</tr>
 						<tr>
@@ -4142,7 +4221,7 @@ class DFXPRL_Admin {
 								<label for="surnames"><?php esc_html_e( 'Surnames', 'dfx-parish-retreat-letters' ); ?> <span class="description">(<?php esc_html_e( 'required', 'dfx-parish-retreat-letters' ); ?>)</span></label>
 							</th>
 							<td>
-								<input type="text" id="surnames" name="surnames"<?php disabled( ! $can_edit_core ); ?> value="<?php echo esc_attr( $attendant->surnames ?? '' ); ?>" class="regular-text" required>
+								<input type="text" id="surnames" name="surnames"<?php disabled( ! $can_edit_core ); ?> value="<?php echo esc_attr( $this->attendant_form_value( $attendant, 'surnames' ) ); ?>" class="regular-text" required>
 							</td>
 						</tr>
 						<tr>
@@ -4150,7 +4229,7 @@ class DFXPRL_Admin {
 								<label for="date_of_birth"><?php esc_html_e( 'Date of Birth', 'dfx-parish-retreat-letters' ); ?> <span class="description">(<?php esc_html_e( 'required', 'dfx-parish-retreat-letters' ); ?>)</span></label>
 							</th>
 							<td>
-								<input type="date" id="date_of_birth" name="date_of_birth"<?php disabled( ! $can_edit_core ); ?> value="<?php echo esc_attr( $attendant->date_of_birth ?? '' ); ?>" required>
+								<input type="date" id="date_of_birth" name="date_of_birth"<?php disabled( ! $can_edit_core ); ?> value="<?php echo esc_attr( $this->attendant_form_value( $attendant, 'date_of_birth' ) ); ?>" required>
 							</td>
 						</tr>
 						<tr>
@@ -4158,7 +4237,7 @@ class DFXPRL_Admin {
 								<label for="emergency_contact_name"><?php esc_html_e( 'Emergency Contact Name', 'dfx-parish-retreat-letters' ); ?> <span class="description">(<?php esc_html_e( 'required', 'dfx-parish-retreat-letters' ); ?>)</span></label>
 							</th>
 							<td>
-								<input type="text" id="emergency_contact_name" name="emergency_contact_name"<?php disabled( ! $can_edit_core ); ?> value="<?php echo esc_attr( $attendant->emergency_contact_name ?? '' ); ?>" class="regular-text" required>
+								<input type="text" id="emergency_contact_name" name="emergency_contact_name"<?php disabled( ! $can_edit_core ); ?> value="<?php echo esc_attr( $this->attendant_form_value( $attendant, 'emergency_contact_name' ) ); ?>" class="regular-text" required>
 							</td>
 						</tr>
 						<tr>
@@ -4166,7 +4245,7 @@ class DFXPRL_Admin {
 								<label for="emergency_contact_surname"><?php esc_html_e( 'Emergency Contact Surname', 'dfx-parish-retreat-letters' ); ?> <span class="description">(<?php esc_html_e( 'optional', 'dfx-parish-retreat-letters' ); ?>)</span></label>
 							</th>
 							<td>
-								<input type="text" id="emergency_contact_surname" name="emergency_contact_surname"<?php disabled( ! $can_edit_core ); ?> value="<?php echo esc_attr( $attendant->emergency_contact_surname ?? '' ); ?>" class="regular-text">
+								<input type="text" id="emergency_contact_surname" name="emergency_contact_surname"<?php disabled( ! $can_edit_core ); ?> value="<?php echo esc_attr( $this->attendant_form_value( $attendant, 'emergency_contact_surname' ) ); ?>" class="regular-text">
 							</td>
 						</tr>
 						<tr>
@@ -4174,7 +4253,7 @@ class DFXPRL_Admin {
 								<label for="emergency_contact_phone"><?php esc_html_e( 'Emergency Contact Phone', 'dfx-parish-retreat-letters' ); ?> <span class="description">(<?php esc_html_e( 'required', 'dfx-parish-retreat-letters' ); ?>)</span></label>
 							</th>
 							<td>
-								<input type="tel" id="emergency_contact_phone" name="emergency_contact_phone"<?php disabled( ! $can_edit_core ); ?> value="<?php echo esc_attr( $attendant->emergency_contact_phone ?? '' ); ?>" class="regular-text" required>
+								<input type="tel" id="emergency_contact_phone" name="emergency_contact_phone"<?php disabled( ! $can_edit_core ); ?> value="<?php echo esc_attr( $this->attendant_form_value( $attendant, 'emergency_contact_phone' ) ); ?>" class="regular-text" required>
 								<p class="description"><?php esc_html_e( 'Enter phone number with area code.', 'dfx-parish-retreat-letters' ); ?></p>
 							</td>
 						</tr>
@@ -4183,7 +4262,7 @@ class DFXPRL_Admin {
 								<label for="emergency_contact_email"><?php esc_html_e( 'Emergency Contact Email', 'dfx-parish-retreat-letters' ); ?> <span class="description">(<?php esc_html_e( 'optional', 'dfx-parish-retreat-letters' ); ?>)</span></label>
 							</th>
 							<td>
-								<input type="email" id="emergency_contact_email" name="emergency_contact_email"<?php disabled( ! $can_edit_core ); ?> value="<?php echo esc_attr( $attendant->emergency_contact_email ?? '' ); ?>" class="regular-text">
+								<input type="email" id="emergency_contact_email" name="emergency_contact_email"<?php disabled( ! $can_edit_core ); ?> value="<?php echo esc_attr( $this->attendant_form_value( $attendant, 'emergency_contact_email' ) ); ?>" class="regular-text">
 								<p class="description"><?php esc_html_e( 'Enter email address for emergency contact.', 'dfx-parish-retreat-letters' ); ?></p>
 							</td>
 						</tr>
@@ -4192,7 +4271,7 @@ class DFXPRL_Admin {
 								<label for="emergency_contact_relationship"><?php esc_html_e( 'Emergency Contact Relationship', 'dfx-parish-retreat-letters' ); ?> <span class="description">(<?php esc_html_e( 'optional', 'dfx-parish-retreat-letters' ); ?>)</span></label>
 							</th>
 							<td>
-								<input type="text" id="emergency_contact_relationship" name="emergency_contact_relationship"<?php disabled( ! $can_edit_core ); ?> value="<?php echo esc_attr( $attendant->emergency_contact_relationship ?? '' ); ?>" class="regular-text">
+								<input type="text" id="emergency_contact_relationship" name="emergency_contact_relationship"<?php disabled( ! $can_edit_core ); ?> value="<?php echo esc_attr( $this->attendant_form_value( $attendant, 'emergency_contact_relationship' ) ); ?>" class="regular-text">
 								<p class="description"><?php esc_html_e( 'Relationship to the emergency contact (e.g., husband, friend, daughter).', 'dfx-parish-retreat-letters' ); ?></p>
 							</td>
 						</tr>
@@ -4201,7 +4280,7 @@ class DFXPRL_Admin {
 								<label for="invited_by"><?php esc_html_e( 'Invited By', 'dfx-parish-retreat-letters' ); ?> <span class="description">(<?php esc_html_e( 'optional', 'dfx-parish-retreat-letters' ); ?>)</span></label>
 							</th>
 							<td>
-								<input type="text" id="invited_by" name="invited_by"<?php disabled( ! $can_edit_core ); ?> value="<?php echo esc_attr( $attendant->invited_by ?? '' ); ?>" class="regular-text">
+								<input type="text" id="invited_by" name="invited_by"<?php disabled( ! $can_edit_core ); ?> value="<?php echo esc_attr( $this->attendant_form_value( $attendant, 'invited_by' ) ); ?>" class="regular-text">
 								<p class="description"><?php esc_html_e( 'Name of the person who invited this attendant.', 'dfx-parish-retreat-letters' ); ?></p>
 							</td>
 						</tr>
@@ -4210,7 +4289,7 @@ class DFXPRL_Admin {
 								<label for="incompatibilities"><?php esc_html_e( 'Incompatibilities', 'dfx-parish-retreat-letters' ); ?> <span class="description">(<?php esc_html_e( 'optional', 'dfx-parish-retreat-letters' ); ?>)</span></label>
 							</th>
 							<td>
-								<textarea id="incompatibilities" name="incompatibilities"<?php disabled( ! $can_edit_core ); ?> rows="3" class="large-text"><?php echo esc_textarea( $attendant->incompatibilities ?? '' ); ?></textarea>
+								<textarea id="incompatibilities" name="incompatibilities"<?php disabled( ! $can_edit_core ); ?> rows="3" class="large-text"><?php echo esc_textarea( $this->attendant_form_value( $attendant, 'incompatibilities' ) ); ?></textarea>
 								<p class="description"><?php esc_html_e( 'Names of other attendants they should not be placed with.', 'dfx-parish-retreat-letters' ); ?></p>
 							</td>
 						</tr>
@@ -4220,7 +4299,7 @@ class DFXPRL_Admin {
 								<label for="notes"><?php esc_html_e( 'Notes', 'dfx-parish-retreat-letters' ); ?> <span class="description">(<?php esc_html_e( 'optional', 'dfx-parish-retreat-letters' ); ?>)</span></label>
 							</th>
 							<td>
-								<textarea id="notes" name="notes"<?php disabled( ! $can_edit_core ); ?> rows="4" class="large-text"><?php echo esc_textarea( $attendant->notes ?? '' ); ?></textarea>
+								<textarea id="notes" name="notes"<?php disabled( ! $can_edit_core ); ?> rows="4" class="large-text"><?php echo esc_textarea( $this->attendant_form_value( $attendant, 'notes' ) ); ?></textarea>
 								<p class="description"><?php esc_html_e( 'Optional notes for this attendant.', 'dfx-parish-retreat-letters' ); ?></p>
 							</td>
 						</tr>
@@ -4231,7 +4310,7 @@ class DFXPRL_Admin {
 								<label for="internal_notes"><?php esc_html_e( 'Internal Notes', 'dfx-parish-retreat-letters' ); ?> <span class="description">(<?php esc_html_e( 'optional', 'dfx-parish-retreat-letters' ); ?>)</span></label>
 							</th>
 							<td>
-								<textarea id="internal_notes" name="internal_notes"<?php disabled( ! $can_edit_core ); ?> rows="4" class="large-text"><?php echo esc_textarea( $attendant->internal_notes ?? '' ); ?></textarea>
+								<textarea id="internal_notes" name="internal_notes"<?php disabled( ! $can_edit_core ); ?> rows="4" class="large-text"><?php echo esc_textarea( $this->attendant_form_value( $attendant, 'internal_notes' ) ); ?></textarea>
 								<p class="description"><?php esc_html_e( 'Optional internal notes for this attendant. This field will NOT be imported or exported via CSV.', 'dfx-parish-retreat-letters' ); ?></p>
 							</td>
 						</tr>
@@ -4241,7 +4320,7 @@ class DFXPRL_Admin {
 								<label for="physical_letters"><?php esc_html_e( 'Physical Letters Received', 'dfx-parish-retreat-letters' ); ?></label>
 							</th>
 							<td>
-								<input type="number" id="physical_letters" name="physical_letters" min="0" step="1" value="<?php echo esc_attr( (int) ( $attendant->physical_letters ?? 0 ) ); ?>" class="small-text">
+								<input type="number" id="physical_letters" name="physical_letters" min="0" step="1" value="<?php echo esc_attr( (int) $this->attendant_form_value( $attendant, 'physical_letters', '0' ) ); ?>" class="small-text">
 								<p class="description"><?php esc_html_e( 'Number of paper letters received for this attendant outside the application. They are added to the messages received to compute the total letters.', 'dfx-parish-retreat-letters' ); ?></p>
 							</td>
 						</tr>

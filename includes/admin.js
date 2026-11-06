@@ -322,7 +322,7 @@
             });
         });
 
-        // Fill the translations of the retreat texts of a language with Google Cloud Translation
+        // Fill the translations of the retreat texts of a language with DeepL
         // The translations of the retreat texts are only used by the multilingual form
         $('#multilingual_enabled').on('change', function() {
             $('.dfxprl-form-translations-row').toggle(this.checked);
@@ -1561,6 +1561,10 @@
             helper: 'clone',
             start: function(e, ui) {
                 ui.placeholder.width(ui.item.width()).html('&nbsp;');
+                $table.addClass('dfxprl-reordering');
+            },
+            stop: function() {
+                $table.removeClass('dfxprl-reordering');
             },
             update: function() {
                 var order = currentOrder();
