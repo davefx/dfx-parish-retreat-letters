@@ -3,7 +3,7 @@ Contributors: davefx
 Tags: parish, retreat, letters, confidential, GDPR
 Requires at least: 5.0
 Tested up to: 7.1
-Stable tag: 26.11.06.2
+Stable tag: 26.11.06.3
 Requires PHP: 7.4
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
@@ -184,6 +184,11 @@ By default it is generated automatically and stored in the WordPress database (`
 Yes. The best place is [translate.wordpress.org](https://translate.wordpress.org/projects/wp-plugins/dfx-parish-retreat-letters/), so the translation reaches every site as a language pack. A `.pot` translation template is also included in the `languages/` directory.
 
 ## Changelog
+
+### 26.11.06.3
+
+- Fix: saving on the Privacy & Compliance page (updating retention or running the cleanup) came back to a blank admin page. The action ran, but no result was shown. The page and its result notice are now displayed.
+- Fix: when adding or editing a retreat, an error (for example an end date earlier than the start date) came back to a blank admin page and lost the whole form. The error is now shown and the form keeps what was entered.
 
 ### 26.11.06.2
 

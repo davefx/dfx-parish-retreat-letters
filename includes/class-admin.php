@@ -1239,13 +1239,76 @@ class DFXPRL_Admin {
 			}
 		}
 
-		// Handle form submission
-		if ( isset( $_SERVER['REQUEST_METHOD'] ) && $_SERVER['REQUEST_METHOD'] === 'POST' ) {
-			// Form submission already handled in admin_init, just return to prevent double processing
-			return;
-		}
-
+		// Any form submission was already processed in admin_init. On success it redirects and
+		// exits there; if it failed validation it falls through to here, so we render the page
+		// (with the error notice and the values already typed) instead of returning a blank body.
 		$this->render_add_edit_page( $retreat );
+	}
+
+	/**
+	 * Whether the current request is a failed retreat add/edit submission.
+	 *
+	 * A successful submission redirects and exits in admin_init, so if we reach the
+	 * retreat add/edit page body on a POST with a valid nonce the submission failed
+	 * validation (e.g. the end date is before the start date) and we are re-rendering
+	 * the form in the same request, with the submitted values still in $_POST.
+	 *
+	 * @since 26.11.06.3
+	 * @return bool
+	 */
+	private function is_failed_retreat_submission() {
+		if ( ! isset( $_SERVER['REQUEST_METHOD'] ) || 'POST' !== $_SERVER['REQUEST_METHOD'] ) {
+			return false;
+		}
+		return (bool) wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['_wpnonce'] ?? '' ) ), 'dfxprl_retreats_add_edit' );
+	}
+
+	/**
+	 * Value for a retreat form field, preferring what was just submitted on a failed save.
+	 *
+	 * The value is escaped at every output site (esc_attr/esc_textarea), so the raw
+	 * submitted string is returned unmodified to preserve exactly what the user typed
+	 * (including the HTML allowed in some fields).
+	 *
+	 * @since 26.11.06.3
+	 * @param string $post_key POST key.
+	 * @param string $fallback Value to use when there is no submission to restore.
+	 * @return string
+	 */
+	private function retreat_form_value_or( $post_key, $fallback ) {
+		if ( $this->is_failed_retreat_submission() && isset( $_POST[ $post_key ] ) ) {
+			// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- nonce verified above; the value is escaped with esc_attr()/esc_textarea() at every output site
+			return (string) wp_unslash( $_POST[ $post_key ] );
+		}
+		return $fallback;
+	}
+
+	/**
+	 * Value for a stored retreat field, preferring what was just submitted on a failed save.
+	 *
+	 * @since 26.11.06.3
+	 * @param object|null $retreat Stored retreat, or null when adding.
+	 * @param string      $key     Field name (also the POST key).
+	 * @param string      $default Value when nothing is available.
+	 * @return string
+	 */
+	private function retreat_form_value( $retreat, $key, $default = '' ) {
+		return $this->retreat_form_value_or( $key, $retreat->$key ?? $default );
+	}
+
+	/**
+	 * Whether a retreat form checkbox should be checked, preferring the submitted state on a failed save.
+	 *
+	 * @since 26.11.06.3
+	 * @param string $post_key POST key of the checkbox.
+	 * @param bool   $stored   Checked state derived from the stored retreat.
+	 * @return bool
+	 */
+	private function retreat_form_checked( $post_key, $stored ) {
+		if ( $this->is_failed_retreat_submission() ) {
+			return isset( $_POST[ $post_key ] ); // phpcs:ignore WordPress.Security.NonceVerification.Missing -- nonce verified in is_failed_retreat_submission()
+		}
+		return $stored;
 	}
 
 	/**
@@ -1556,7 +1619,7 @@ class DFXPRL_Admin {
 											<label for="name"><?php esc_html_e( 'Retreat Name', 'dfx-parish-retreat-letters' ); ?> <span class="description">(<?php esc_html_e( 'required', 'dfx-parish-retreat-letters' ); ?>)</span></label>
 										</th>
 										<td>
-											<input type="text" id="name" name="name" value="<?php echo esc_attr( $retreat->name ?? '' ); ?>" class="regular-text" required>
+											<input type="text" id="name" name="name" value="<?php echo esc_attr( $this->retreat_form_value( $retreat, 'name' ) ); ?>" class="regular-text" required>
 										</td>
 									</tr>
 									<tr>
@@ -1564,7 +1627,7 @@ class DFXPRL_Admin {
 											<label for="location"><?php esc_html_e( 'Location', 'dfx-parish-retreat-letters' ); ?> <span class="description">(<?php esc_html_e( 'required', 'dfx-parish-retreat-letters' ); ?>)</span></label>
 										</th>
 										<td>
-											<input type="text" id="location" name="location" value="<?php echo esc_attr( $retreat->location ?? '' ); ?>" class="regular-text" required>
+											<input type="text" id="location" name="location" value="<?php echo esc_attr( $this->retreat_form_value( $retreat, 'location' ) ); ?>" class="regular-text" required>
 										</td>
 									</tr>
 									<tr>
@@ -1572,7 +1635,7 @@ class DFXPRL_Admin {
 											<label for="start_date"><?php esc_html_e( 'Start Date', 'dfx-parish-retreat-letters' ); ?> <span class="description">(<?php esc_html_e( 'required', 'dfx-parish-retreat-letters' ); ?>)</span></label>
 										</th>
 										<td>
-											<input type="date" id="start_date" name="start_date" value="<?php echo esc_attr( $retreat->start_date ?? '' ); ?>" required>
+											<input type="date" id="start_date" name="start_date" value="<?php echo esc_attr( $this->retreat_form_value( $retreat, 'start_date' ) ); ?>" required>
 										</td>
 									</tr>
 									<tr>
@@ -1580,7 +1643,7 @@ class DFXPRL_Admin {
 											<label for="end_date"><?php esc_html_e( 'End Date', 'dfx-parish-retreat-letters' ); ?> <span class="description">(<?php esc_html_e( 'required', 'dfx-parish-retreat-letters' ); ?>)</span></label>
 										</th>
 										<td>
-											<input type="date" id="end_date" name="end_date" value="<?php echo esc_attr( $retreat->end_date ?? '' ); ?>" required>
+											<input type="date" id="end_date" name="end_date" value="<?php echo esc_attr( $this->retreat_form_value( $retreat, 'end_date' ) ); ?>" required>
 										</td>
 									</tr>
 									<tr>
@@ -1588,7 +1651,7 @@ class DFXPRL_Admin {
 											<label for="custom_message"><?php esc_html_e( 'Custom Message for Letter Senders', 'dfx-parish-retreat-letters' ); ?></label>
 										</th>
 										<td>
-											<textarea id="custom_message" name="custom_message" rows="5" class="large-text" placeholder="<?php esc_attr_e( 'Optional message that will be displayed to senders in the letters form.', 'dfx-parish-retreat-letters' ); ?>"><?php echo esc_textarea( $retreat->custom_message ?? '' ); ?></textarea>
+											<textarea id="custom_message" name="custom_message" rows="5" class="large-text" placeholder="<?php esc_attr_e( 'Optional message that will be displayed to senders in the letters form.', 'dfx-parish-retreat-letters' ); ?>"><?php echo esc_textarea( $this->retreat_form_value( $retreat, 'custom_message' ) ); ?></textarea>
 											<p class="description"><?php esc_html_e( 'This message will be displayed before the message submission form for all attendants of this retreat. HTML is allowed.', 'dfx-parish-retreat-letters' ); ?></p>
 										</td>
 									</tr>
@@ -1597,7 +1660,7 @@ class DFXPRL_Admin {
 											<label for="disclaimer_text"><?php esc_html_e( 'Legal Disclaimer Text', 'dfx-parish-retreat-letters' ); ?></label>
 										</th>
 										<td>
-											<textarea id="disclaimer_text" name="disclaimer_text" rows="5" class="large-text" placeholder="<?php esc_attr_e( 'Optional legal disclaimer that users must accept before submitting messages.', 'dfx-parish-retreat-letters' ); ?>"><?php echo esc_textarea( $retreat->disclaimer_text ?? '' ); ?></textarea>
+											<textarea id="disclaimer_text" name="disclaimer_text" rows="5" class="large-text" placeholder="<?php esc_attr_e( 'Optional legal disclaimer that users must accept before submitting messages.', 'dfx-parish-retreat-letters' ); ?>"><?php echo esc_textarea( $this->retreat_form_value( $retreat, 'disclaimer_text' ) ); ?></textarea>
 											<p class="description"><?php esc_html_e( 'If provided, this disclaimer will be displayed in the message form and users must accept it to submit messages. HTML is allowed.', 'dfx-parish-retreat-letters' ); ?></p>
 										</td>
 									</tr>
@@ -1606,7 +1669,7 @@ class DFXPRL_Admin {
 											<label for="disclaimer_acceptance_text"><?php esc_html_e( 'Disclaimer Acceptance Text', 'dfx-parish-retreat-letters' ); ?></label>
 										</th>
 										<td>
-											<input type="text" id="disclaimer_acceptance_text" name="disclaimer_acceptance_text" value="<?php echo esc_attr( $retreat->disclaimer_acceptance_text ?? '' ); ?>" class="large-text" placeholder="<?php esc_attr_e( 'I accept the terms and conditions', 'dfx-parish-retreat-letters' ); ?>">
+											<input type="text" id="disclaimer_acceptance_text" name="disclaimer_acceptance_text" value="<?php echo esc_attr( $this->retreat_form_value( $retreat, 'disclaimer_acceptance_text' ) ); ?>" class="large-text" placeholder="<?php esc_attr_e( 'I accept the terms and conditions', 'dfx-parish-retreat-letters' ); ?>">
 											<p class="description"><?php esc_html_e( 'This text will appear next to the disclaimer acceptance checkbox. Only used if disclaimer text is provided.', 'dfx-parish-retreat-letters' ); ?></p>
 										</td>
 									</tr>
@@ -1616,7 +1679,7 @@ class DFXPRL_Admin {
 										</th>
 										<td>
 											<label>
-												<input type="checkbox" id="multilingual_enabled" name="multilingual_enabled" value="1" <?php checked( ! $retreat || DFXPRL_Form_Languages::is_enabled_for( $retreat ) ); ?>>
+												<input type="checkbox" id="multilingual_enabled" name="multilingual_enabled" value="1" <?php checked( $this->retreat_form_checked( 'multilingual_enabled', ! $retreat || DFXPRL_Form_Languages::is_enabled_for( $retreat ) ) ); ?>>
 												<?php esc_html_e( 'Let senders see the letters form in their language', 'dfx-parish-retreat-letters' ); ?>
 											</label>
 											<p class="description"><?php esc_html_e( 'When disabled, the form is always shown in the main language of the site, without language selector or automatic translation.', 'dfx-parish-retreat-letters' ); ?></p>
@@ -1636,7 +1699,7 @@ class DFXPRL_Admin {
 										</th>
 										<td>
 											<label>
-												<input type="checkbox" id="notes_enabled" name="notes_enabled" value="1" <?php checked( ! empty( $retreat->notes_enabled ) ); ?>>
+												<input type="checkbox" id="notes_enabled" name="notes_enabled" value="1" <?php checked( $this->retreat_form_checked( 'notes_enabled', ! empty( $retreat->notes_enabled ) ) ); ?>>
 												<?php esc_html_e( 'Enable optional notes field for attendants', 'dfx-parish-retreat-letters' ); ?>
 											</label>
 											<p class="description"><?php esc_html_e( 'When enabled, an optional notes field will be available for each attendant and displayed in the attendants list.', 'dfx-parish-retreat-letters' ); ?></p>
@@ -1648,7 +1711,7 @@ class DFXPRL_Admin {
 										</th>
 										<td>
 											<label>
-												<input type="checkbox" id="internal_notes_enabled" name="internal_notes_enabled" value="1" <?php checked( ! empty( $retreat->internal_notes_enabled ) ); ?>>
+												<input type="checkbox" id="internal_notes_enabled" name="internal_notes_enabled" value="1" <?php checked( $this->retreat_form_checked( 'internal_notes_enabled', ! empty( $retreat->internal_notes_enabled ) ) ); ?>>
 												<?php esc_html_e( 'Enable optional internal notes field for attendants', 'dfx-parish-retreat-letters' ); ?>
 											</label>
 											<p class="description"><?php esc_html_e( 'When enabled, an optional internal notes field will be available for each attendant. This field will NOT be imported or exported via CSV.', 'dfx-parish-retreat-letters' ); ?></p>
@@ -1659,7 +1722,7 @@ class DFXPRL_Admin {
 											<label for="message_request_template"><?php esc_html_e( 'Message Request Template', 'dfx-parish-retreat-letters' ); ?></label>
 										</th>
 										<td>
-											<textarea id="message_request_template" name="message_request_template" rows="8" class="large-text" placeholder="<?php esc_attr_e( 'Template for requesting messages from emergency contacts...', 'dfx-parish-retreat-letters' ); ?>"><?php echo esc_textarea( $retreat->message_request_template ?? '' ); ?></textarea>
+											<textarea id="message_request_template" name="message_request_template" rows="8" class="large-text" placeholder="<?php esc_attr_e( 'Template for requesting messages from emergency contacts...', 'dfx-parish-retreat-letters' ); ?>"><?php echo esc_textarea( $this->retreat_form_value( $retreat, 'message_request_template' ) ); ?></textarea>
 											<p class="description">
 												<?php esc_html_e( 'Template message to request letters from emergency contacts. Available placeholders:', 'dfx-parish-retreat-letters' ); ?>
 												<br>
@@ -1705,7 +1768,7 @@ class DFXPRL_Admin {
 											<label for="return_email_subject"><?php esc_html_e( 'Letter Return Email Subject', 'dfx-parish-retreat-letters' ); ?></label>
 										</th>
 										<td>
-											<input type="text" id="return_email_subject" name="return_email_subject" class="large-text" maxlength="255" value="<?php echo esc_attr( DFXPRL_Retreat::get_return_email_subject( $retreat ?? (object) array() ) ); ?>">
+											<input type="text" id="return_email_subject" name="return_email_subject" class="large-text" maxlength="255" value="<?php echo esc_attr( $this->retreat_form_value_or( 'return_email_subject', DFXPRL_Retreat::get_return_email_subject( $retreat ?? (object) array() ) ) ); ?>">
 										</td>
 									</tr>
 									<tr>
@@ -1713,7 +1776,7 @@ class DFXPRL_Admin {
 											<label for="return_email_template"><?php esc_html_e( 'Letter Return Email Text', 'dfx-parish-retreat-letters' ); ?></label>
 										</th>
 										<td>
-											<textarea id="return_email_template" name="return_email_template" rows="12" class="large-text"><?php echo esc_textarea( DFXPRL_Retreat::get_return_email_template( $retreat ?? (object) array() ) ); ?></textarea>
+											<textarea id="return_email_template" name="return_email_template" rows="12" class="large-text"><?php echo esc_textarea( $this->retreat_form_value_or( 'return_email_template', DFXPRL_Retreat::get_return_email_template( $retreat ?? (object) array() ) ) ); ?></textarea>
 											<p class="description">
 												<?php esc_html_e( 'Email sent to the sender of a letter when the attendant has been withdrawn, with the letter attached. After sending it, the letter is deleted. If left empty, the default text is used. Available placeholders:', 'dfx-parish-retreat-letters' ); ?>
 												<br>
@@ -1763,7 +1826,7 @@ class DFXPRL_Admin {
 											<label for="body_classes"><?php esc_html_e( 'Additional Body Classes', 'dfx-parish-retreat-letters' ); ?></label>
 										</th>
 										<td>
-											<input type="text" id="body_classes" name="body_classes" class="regular-text" value="<?php echo esc_attr( $retreat->body_classes ?? '' ); ?>">
+											<input type="text" id="body_classes" name="body_classes" class="regular-text" value="<?php echo esc_attr( $this->retreat_form_value( $retreat, 'body_classes' ) ); ?>">
 											<p class="description"><?php esc_html_e( 'Space-separated CSS class names to add to the &lt;body&gt; tag on this retreat\'s message form page. Leave empty to use only the global default classes.', 'dfx-parish-retreat-letters' ); ?></p>
 										</td>
 									</tr>
@@ -6395,12 +6458,9 @@ class DFXPRL_Admin {
 	 * @since 1.2.0
 	 */
 	public function privacy_compliance_page() {
-		// Handle form submissions
-		if ( isset( $_SERVER['REQUEST_METHOD'] ) && $_SERVER['REQUEST_METHOD'] === 'POST' ) {
-			// Form submission already handled in admin_init, just return to prevent double processing
-			return;
-		}
-
+		// Any form submission was already processed in admin_init, which never redirects here.
+		// Render the page regardless of the request method so its result notices are shown;
+		// returning early on POST left the admin body blank on every submission.
 		$compliance_status = $this->gdpr->get_privacy_compliance_status();
 		$retention_settings = $this->gdpr->get_retention_settings();
 		$recent_audit_logs = $this->gdpr->get_audit_logs( array( 'limit' => 10 ) );
