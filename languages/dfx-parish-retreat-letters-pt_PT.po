@@ -3406,3 +3406,27 @@ msgstr "A tradução automática não está configurada."
 #, php-format
 msgid "DeepL error: %s"
 msgstr "Erro do DeepL: %s"
+
+#: includes/class-admin.php:1008 includes/class-admin.php:2021 includes/class-permissions.php:86
+msgid "Read Only"
+msgstr "Só leitura"
+
+#: includes/class-admin.php:4109
+msgid "View"
+msgstr "Ver"
+
+#: includes/class-admin.php:4243
+msgid "Attendant"
+msgstr "Participante"
+
+#: includes/class-admin.php:4282
+msgid "You have read-only access to this retreat: you can see the attendant's data and contact log, but not change them."
+msgstr "Tem acesso só de leitura a este retiro: pode ver os dados do participante e o registo de contactos, mas não os pode alterar."
+
+#: includes/class-admin.php:4484
+msgid "Back to Attendants"
+msgstr "Voltar aos participantes"
+
+#: includes/class-admin.php:5715 includes/class-admin.php:6111
+msgid "You do not have permission to access the messages of this retreat."
+msgstr "Não tem permissão para aceder às mensagens deste retiro."

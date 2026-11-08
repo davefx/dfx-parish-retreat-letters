@@ -38,7 +38,7 @@ class DFXPRL_Database {
 	 * @since 1.0.0
 	 * @var string
 	 */
-	const DB_VERSION = '1.15.0';
+	const DB_VERSION = '1.16.0';
 
 	/**
 	 * The database version option name.
@@ -341,7 +341,7 @@ class DFXPRL_Database {
 			id mediumint(9) NOT NULL AUTO_INCREMENT,
 			user_id bigint(20) unsigned NOT NULL,
 			retreat_id mediumint(9) NOT NULL,
-			permission_level enum('manager','message_manager') NOT NULL DEFAULT 'message_manager',
+			permission_level enum('manager','message_manager','read_only') NOT NULL DEFAULT 'message_manager',
 			granted_by bigint(20) unsigned NOT NULL,
 			granted_at datetime DEFAULT CURRENT_TIMESTAMP,
 			revoked_at datetime DEFAULT NULL,
@@ -364,7 +364,7 @@ class DFXPRL_Database {
 			retreat_id mediumint(9) NOT NULL,
 			email varchar(255) NOT NULL,
 			name varchar(255) NOT NULL,
-			permission_level enum('manager','message_manager') NOT NULL DEFAULT 'message_manager',
+			permission_level enum('manager','message_manager','read_only') NOT NULL DEFAULT 'message_manager',
 			token varchar(255) NOT NULL,
 			invited_by bigint(20) unsigned NOT NULL,
 			invited_at datetime DEFAULT CURRENT_TIMESTAMP,
@@ -392,7 +392,7 @@ class DFXPRL_Database {
 			user_id bigint(20) unsigned NOT NULL,
 			retreat_id mediumint(9) NOT NULL,
 			action enum('granted','revoked','invitation_sent','invitation_accepted','invitation_cancelled') NOT NULL,
-			permission_level enum('manager','message_manager') NOT NULL,
+			permission_level enum('manager','message_manager','read_only') NOT NULL,
 			performed_by bigint(20) unsigned NOT NULL,
 			performed_at datetime DEFAULT CURRENT_TIMESTAMP,
 			details text DEFAULT NULL,

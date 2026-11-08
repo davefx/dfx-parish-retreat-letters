@@ -89,6 +89,7 @@ html += '<div class="dfxprl-search-result-item" data-user-id="' + user.id + '">'
 '<option value="">' + dfxprlRetreatEdit.i18n.selectRole + '</option>' +
 '<option value="manager">' + dfxprlRetreatEdit.i18n.retreatManager + '</option>' +
 '<option value="message_manager">' + dfxprlRetreatEdit.i18n.messageManager + '</option>' +
+'<option value="read_only">' + dfxprlRetreatEdit.i18n.readOnly + '</option>' +
 '</select>' +
 '<button class="button button-small dfxprl-grant-btn" data-user-id="' + user.id + '">' + dfxprlRetreatEdit.i18n.grant + '</button>' +
 '</div>';

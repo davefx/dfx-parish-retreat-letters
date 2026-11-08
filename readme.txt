@@ -3,7 +3,7 @@ Contributors: davefx
 Tags: parish, retreat, letters, confidential, GDPR
 Requires at least: 5.0
 Tested up to: 7.1
-Stable tag: 26.11.06.3
+Stable tag: 26.11.08
 Requires PHP: 7.4
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
@@ -60,9 +60,9 @@ DFX Parish Retreat Letters lets your parish manage the full lifecycle of confide
 * Each print action is recorded in a **print log** (user, timestamp, IP address). The log is visible from the attendant's message list.
 * Multiple images in a single message are laid out so they do not split across pages.
 
-= Three-tier permission system =
+= Permission system =
 
-The plugin uses three access levels, each scoped to specific retreats:
+The plugin uses four access levels, each scoped to specific retreats:
 
 **Plugin Administrators** (WordPress users with the `manage_retreat_plugin` capability, automatically granted to WordPress Administrators):
 
@@ -84,9 +84,15 @@ The plugin uses three access levels, each scoped to specific retreats:
 * Cannot edit attendants, retreat details, or permissions.
 * All print actions are logged.
 
+**Read Only** (assigned per retreat):
+
+* Can see the retreat's attendants, the custom fields open to message managers, the letter counts and the contact log.
+* Can never change anything: no editing, withdrawing or deleting attendants, no contact log entries, no message URLs, no CSV import or export.
+* Cannot open, print or download letters, and cannot see the retreat settings or permissions.
+
 = User invitations =
 
-* Invite any email address to become a Retreat Manager or Message Manager for a specific retreat directly from the retreat's **Access Management** tab.
+* Invite any email address to become a Retreat Manager, Message Manager or Read Only user for a specific retreat directly from the retreat's **Access Management** tab.
 * The invitee receives an email with a secure, time-limited token link.
 * If the email address already belongs to a WordPress user, they are granted the role immediately on acceptance. If not, a new WordPress account is created for them.
 * Pending invitations can be cancelled at any time. Expired invitations are cleaned up automatically.
@@ -184,6 +190,12 @@ By default it is generated automatically and stored in the WordPress database (`
 Yes. The best place is [translate.wordpress.org](https://translate.wordpress.org/projects/wp-plugins/dfx-parish-retreat-letters/), so the translation reaches every site as a language pack. A `.pot` translation template is also included in the `languages/` directory.
 
 ## Changelog
+
+### 26.11.08
+
+- New: **Read Only** access level for a retreat. Read-only users see the attendants list (active and withdrawn), the letter counts, the custom fields open to message managers and the contact log, and can open each attendant's page with every field locked. They can never change anything, cannot open, print or download letters, cannot export or import attendants, and cannot see the retreat settings or its permissions. It can be granted to existing users or by invitation from the retreat's Access Management box.
+- Security: the confidential messages page, deleting a letter from it, printing a letter and viewing its print log did not check that the user had access to that retreat's messages, so a manager of one retreat could reach the letters of another. They now require being a manager or message manager of the letter's retreat.
+- Change: in the retreats list, the retreat name opens its settings only for retreat managers; for everyone else it opens the attendants list.
 
 ### 26.11.06.3
 

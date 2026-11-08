@@ -23,6 +23,7 @@
             <file>./tests/unit/LetterReturnTest.php</file>
             <file>./tests/unit/EmptyRetreatTest.php</file>
             <file>./tests/unit/FormLanguagesTest.php</file>
+            <file>./tests/unit/ReadOnlyAccessTest.php</file>
         </testsuite>
         <testsuite name="basic">
             <file>./tests/unit/BasicInfrastructureTest.php</file>

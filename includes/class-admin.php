@@ -526,6 +526,10 @@ class DFXPRL_Admin {
 			background: #fff3cd;
 			color: #856404;
 		}
+		.permission-badge.permission-read_only {
+			background: #e2e3e5;
+			color: #383d41;
+		}
 		.dfxprl-permissions-list, .dfxprl-invitations-list {
 			margin-bottom: 15px;
 		}
@@ -1001,6 +1005,7 @@ class DFXPRL_Admin {
 						'selectRole'               => __( 'Select role...', 'dfx-parish-retreat-letters' ),
 						'retreatManager'           => __( 'Retreat Manager', 'dfx-parish-retreat-letters' ),
 						'messageManager'           => __( 'Message Manager', 'dfx-parish-retreat-letters' ),
+						'readOnly'                 => __( 'Read Only', 'dfx-parish-retreat-letters' ),
 						'grant'                    => __( 'Grant', 'dfx-parish-retreat-letters' ),
 						'pleaseSelectRole'         => __( 'Please select a role.', 'dfx-parish-retreat-letters' ),
 						'failedToGrantPermission'  => __( 'Failed to grant permission. Please try again.', 'dfx-parish-retreat-letters' ),
@@ -1525,7 +1530,13 @@ class DFXPRL_Admin {
 								<tr>
 									<td data-colname="<?php esc_attr_e( 'Name', 'dfx-parish-retreat-letters' ); ?>">
 										<strong>
-											<a href="<?php echo esc_url( admin_url( 'admin.php?page=dfxprl-retreats-add&edit=' . $retreat->id ) ); ?>">
+											<?php
+											// Only retreat managers can open the settings; the rest go to the attendants
+											$retreat_url = $this->permissions->current_user_can_manage_retreat( $retreat->id )
+												? admin_url( 'admin.php?page=dfxprl-retreats-add&edit=' . $retreat->id )
+												: admin_url( 'admin.php?page=dfxprl-retreats&action=attendants&retreat_id=' . $retreat->id );
+											?>
+											<a href="<?php echo esc_url( $retreat_url ); ?>">
 												<?php echo esc_html( $retreat->name ); ?>
 											</a>
 										</strong>
@@ -1899,10 +1910,7 @@ class DFXPRL_Admin {
 									<div class="dfxprl-permission-role">
 										<span class="permission-badge permission-<?php echo esc_attr( $permission->permission_level ); ?>">
 											<?php
-											echo esc_html( $permission->permission_level === 'manager'
-												? __( 'Retreat Manager', 'dfx-parish-retreat-letters' )
-												: __( 'Message Manager', 'dfx-parish-retreat-letters' )
-											);
+											echo esc_html( DFXPRL_Permissions::get_permission_level_label( $permission->permission_level ) );
 											?>
 										</span>
 									</div>
@@ -1944,10 +1952,7 @@ class DFXPRL_Admin {
 									<div class="dfxprl-invitation-role">
 										<span class="permission-badge permission-<?php echo esc_attr( $invitation->permission_level ); ?>">
 											<?php
-											echo esc_html( $invitation->permission_level === 'manager'
-												? __( 'Retreat Manager', 'dfx-parish-retreat-letters' )
-												: __( 'Message Manager', 'dfx-parish-retreat-letters' )
-											);
+											echo esc_html( DFXPRL_Permissions::get_permission_level_label( $invitation->permission_level ) );
 											?>
 										</span>
 									</div>
@@ -2013,6 +2018,7 @@ class DFXPRL_Admin {
 										<option value=""><?php esc_html_e( 'Select role...', 'dfx-parish-retreat-letters' ); ?></option>
 										<option value="manager"><?php esc_html_e( 'Retreat Manager', 'dfx-parish-retreat-letters' ); ?></option>
 										<option value="message_manager"><?php esc_html_e( 'Message Manager', 'dfx-parish-retreat-letters' ); ?></option>
+										<option value="read_only"><?php esc_html_e( 'Read Only', 'dfx-parish-retreat-letters' ); ?></option>
 									</select>
 								</div>
 								<button type="submit" class="button button-primary">
@@ -2204,8 +2210,8 @@ class DFXPRL_Admin {
 			wp_die( esc_html__( 'Invalid retreat or attendant ID.', 'dfx-parish-retreat-letters' ) );
 		}
 
-		// Check permissions - message managers get a restricted version of the page
-		if ( ! $this->permissions->current_user_can_manage_messages( $retreat_id ) ) {
+		// Check permissions - message managers get a restricted version of the page, read-only users one with nothing editable
+		if ( ! $this->permissions->current_user_can_view_retreat( $retreat_id ) ) {
 			wp_die( esc_html__( 'You do not have permission to edit attendants for this retreat.', 'dfx-parish-retreat-letters' ) );
 		}
 
@@ -4098,6 +4104,10 @@ class DFXPRL_Admin {
 											<a href="<?php echo esc_url( admin_url( 'admin.php?page=dfxprl-retreats&action=edit_attendant&retreat_id=' . $retreat->id . '&attendant_id=' . $attendant->id ) ); ?>" class="button button-small">
 												<?php esc_html_e( 'Edit', 'dfx-parish-retreat-letters' ); ?>
 											</a>
+										<?php elseif ( $this->permissions->current_user_can_view_retreat( $retreat->id ) ) : ?>
+											<a href="<?php echo esc_url( admin_url( 'admin.php?page=dfxprl-retreats&action=edit_attendant&retreat_id=' . $retreat->id . '&attendant_id=' . $attendant->id ) ); ?>" class="button button-small">
+												<?php esc_html_e( 'View', 'dfx-parish-retreat-letters' ); ?>
+											</a>
 										<?php endif; ?>
 
 										<?php if ( $this->permissions->current_user_can_manage_messages( $retreat->id ) ) : ?>
@@ -4227,7 +4237,13 @@ class DFXPRL_Admin {
 	 */
 	private function render_attendant_add_edit_page( $retreat, $attendant = null ) {
 		$is_edit = ! is_null( $attendant );
-		$title = $is_edit ? __( 'Edit Attendant', 'dfx-parish-retreat-letters' ) : __( 'Add New Attendant', 'dfx-parish-retreat-letters' );
+		// Read-only users can look at the attendant's data and contact log, never change them or reach the letters
+		$read_only = $this->permissions->current_user_is_read_only( $retreat->id );
+		if ( $read_only ) {
+			$title = __( 'Attendant', 'dfx-parish-retreat-letters' );
+		} else {
+			$title = $is_edit ? __( 'Edit Attendant', 'dfx-parish-retreat-letters' ) : __( 'Add New Attendant', 'dfx-parish-retreat-letters' );
+		}
 
 		// Message managers can open the page but only change letters, custom fields they may edit and the contact log
 		$can_edit_core = $this->permissions->current_user_can_manage_retreat( $retreat->id );
@@ -4256,12 +4272,16 @@ class DFXPRL_Admin {
 				<a href="<?php echo esc_url( admin_url( 'admin.php?page=dfxprl-retreats' ) ); ?>"><?php esc_html_e( 'Retreats', 'dfx-parish-retreat-letters' ); ?></a>
 				&gt; <a href="<?php echo esc_url( admin_url( 'admin.php?page=dfxprl-retreats&action=attendants&retreat_id=' . $retreat->id ) ); ?>"><?php echo esc_html( $retreat->name ); ?></a>
 				&gt; <?php esc_html_e( 'Attendants', 'dfx-parish-retreat-letters' ); ?>
-				&gt; <?php echo esc_html( $is_edit ? __( 'Edit', 'dfx-parish-retreat-letters' ) : __( 'Add New', 'dfx-parish-retreat-letters' ) ); ?>
+				&gt; <?php echo esc_html( $read_only ? trim( $attendant->name . ' ' . $attendant->surnames ) : ( $is_edit ? __( 'Edit', 'dfx-parish-retreat-letters' ) : __( 'Add New', 'dfx-parish-retreat-letters' ) ) ); ?>
 			</p>
 
 			<?php $this->display_admin_notices(); ?>
 
-			<?php if ( ! $can_edit_core ) : ?>
+			<?php if ( $read_only ) : ?>
+				<div class="notice notice-info inline">
+					<p><?php esc_html_e( 'You have read-only access to this retreat: you can see the attendant\'s data and contact log, but not change them.', 'dfx-parish-retreat-letters' ); ?></p>
+				</div>
+			<?php elseif ( ! $can_edit_core ) : ?>
 				<div class="notice notice-info inline">
 					<p><?php esc_html_e( 'As a message manager you can update the physical letters received, the custom fields you are allowed to edit and the contact log. The rest of the data is read-only.', 'dfx-parish-retreat-letters' ); ?></p>
 				</div>
@@ -4383,7 +4403,7 @@ class DFXPRL_Admin {
 								<label for="physical_letters"><?php esc_html_e( 'Physical Letters Received', 'dfx-parish-retreat-letters' ); ?></label>
 							</th>
 							<td>
-								<input type="number" id="physical_letters" name="physical_letters" min="0" step="1" value="<?php echo esc_attr( (int) $this->attendant_form_value( $attendant, 'physical_letters', '0' ) ); ?>" class="small-text">
+								<input type="number" id="physical_letters" name="physical_letters"<?php disabled( $read_only ); ?> min="0" step="1" value="<?php echo esc_attr( (int) $this->attendant_form_value( $attendant, 'physical_letters', '0' ) ); ?>" class="small-text">
 								<p class="description"><?php esc_html_e( 'Number of paper letters received for this attendant outside the application. They are added to the messages received to compute the total letters.', 'dfx-parish-retreat-letters' ); ?></p>
 							</td>
 						</tr>
@@ -4405,7 +4425,17 @@ class DFXPRL_Admin {
 							<tr>
 								<th scope="row"><?php esc_html_e( 'Messages', 'dfx-parish-retreat-letters' ); ?></th>
 								<td>
-									<?php if ( $message_count > 0 ) : ?>
+									<?php if ( $message_count > 0 && $read_only ) : ?>
+										<p>
+											<?php
+											printf(
+												/* translators: %d: Number of messages */
+												esc_html( _n( '%d message', '%d messages', $message_count, 'dfx-parish-retreat-letters' ) ),
+												esc_html( $message_count )
+											);
+											?>
+										</p>
+									<?php elseif ( $message_count > 0 ) : ?>
 										<p>
 											<a href="<?php echo esc_url( admin_url( 'admin.php?page=dfxprl-messages&attendant_id=' . $attendant->id ) ); ?>" class="button">
 												<?php
@@ -4422,6 +4452,7 @@ class DFXPRL_Admin {
 									<?php endif; ?>
 								</td>
 							</tr>
+							<?php if ( ! $read_only ) : ?>
 							<tr>
 								<th scope="row"><?php esc_html_e( 'Message URL', 'dfx-parish-retreat-letters' ); ?></th>
 								<td>
@@ -4442,15 +4473,22 @@ class DFXPRL_Admin {
 									<?php endif; ?>
 								</td>
 							</tr>
+							<?php endif; ?>
 						</tbody>
 					</table>
 				<?php endif; ?>
 
 				<p class="submit">
-					<input type="submit" name="submit" id="submit" class="button button-primary" value="<?php echo esc_attr( $is_edit ? __( 'Update Attendant', 'dfx-parish-retreat-letters' ) : __( 'Add Attendant', 'dfx-parish-retreat-letters' ) ); ?>">
-					<a href="<?php echo esc_url( admin_url( 'admin.php?page=dfxprl-retreats&action=attendants&retreat_id=' . $retreat->id ) ); ?>" class="button">
-						<?php esc_html_e( 'Cancel', 'dfx-parish-retreat-letters' ); ?>
-					</a>
+					<?php if ( $read_only ) : ?>
+						<a href="<?php echo esc_url( admin_url( 'admin.php?page=dfxprl-retreats&action=attendants&retreat_id=' . $retreat->id ) ); ?>" class="button">
+							<?php esc_html_e( 'Back to Attendants', 'dfx-parish-retreat-letters' ); ?>
+						</a>
+					<?php else : ?>
+						<input type="submit" name="submit" id="submit" class="button button-primary" value="<?php echo esc_attr( $is_edit ? __( 'Update Attendant', 'dfx-parish-retreat-letters' ) : __( 'Add Attendant', 'dfx-parish-retreat-letters' ) ); ?>">
+						<a href="<?php echo esc_url( admin_url( 'admin.php?page=dfxprl-retreats&action=attendants&retreat_id=' . $retreat->id ) ); ?>" class="button">
+							<?php esc_html_e( 'Cancel', 'dfx-parish-retreat-letters' ); ?>
+						</a>
+					<?php endif; ?>
 				</p>
 			</form>
 
@@ -4635,9 +4673,11 @@ class DFXPRL_Admin {
 
 			case 'messages':
 				$label = __( 'Messages', 'dfx-parish-retreat-letters' );
+				// Read-only users see how many letters there are, without a link to them
+				$messages_link = $this->permissions->current_user_can_manage_messages( $retreat->id );
 				if ( $message_count > 0 ) :
 					?>
-					<a href="<?php echo esc_url( admin_url( 'admin.php?page=dfxprl-messages&attendant_id=' . $attendant->id ) ); ?>">
+					<<?php echo $messages_link ? 'a href="' . esc_url( admin_url( 'admin.php?page=dfxprl-messages&attendant_id=' . $attendant->id ) ) . '"' : 'span'; ?>>
 						<?php
 						printf(
 							/* translators: %d: Number of messages */
@@ -4653,7 +4693,7 @@ class DFXPRL_Admin {
 							);
 						}
 						?>
-					</a>
+					<?php echo $messages_link ? '</a>' : '</span>'; ?>
 					<?php
 				else :
 					?>
@@ -5120,6 +5160,7 @@ class DFXPRL_Admin {
 		ob_start();
 		?>
 		<div class="dfxprl-attendant-log" data-attendant-id="<?php echo esc_attr( $attendant->id ); ?>">
+			<?php if ( $this->permissions->current_user_can_manage_messages( $retreat->id ) ) : ?>
 			<div class="dfxprl-log-new">
 				<p>
 					<label>
@@ -5137,6 +5178,7 @@ class DFXPRL_Admin {
 					<button type="button" class="button button-secondary dfxprl-log-add"><?php esc_html_e( 'Add Entry', 'dfx-parish-retreat-letters' ); ?></button>
 				</p>
 			</div>
+			<?php endif; ?>
 
 			<div class="dfxprl-log-entries">
 				<?php echo $this->render_attendant_log_entries( $retreat->id, $attendant->id ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Escaped while building the HTML ?>
@@ -5169,7 +5211,7 @@ class DFXPRL_Admin {
 	 * @since 1.12.0
 	 */
 	public function ajax_log_get() {
-		$attendant = $this->get_log_request_attendant( absint( $_POST['attendant_id'] ?? 0 ) ); // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce verified in get_log_request_attendant()
+		$attendant = $this->get_log_request_attendant( absint( $_POST['attendant_id'] ?? 0 ), true ); // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce verified in get_log_request_attendant()
 		$retreat = $this->retreat_model->get( $attendant->retreat_id );
 
 		wp_send_json_success( array( 'html' => $this->render_attendant_log_panel( $retreat, $attendant ) ) );
@@ -5350,10 +5392,11 @@ class DFXPRL_Admin {
 	 * Sends a JSON error (and stops) when the request is not valid.
 	 *
 	 * @since 1.11.0
-	 * @param int $attendant_id Attendant ID.
+	 * @param int  $attendant_id Attendant ID.
+	 * @param bool $for_reading  Whether the request only reads the log (read-only users allowed).
 	 * @return object Attendant object.
 	 */
-	private function get_log_request_attendant( $attendant_id ) {
+	private function get_log_request_attendant( $attendant_id, $for_reading = false ) {
 		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ?? '' ) ), 'dfxprl_retreats_nonce' ) ) {
 			wp_send_json_error( array( 'message' => __( 'Security check failed.', 'dfx-parish-retreat-letters' ) ) );
 		}
@@ -5363,7 +5406,11 @@ class DFXPRL_Admin {
 			wp_send_json_error( array( 'message' => __( 'Attendant not found.', 'dfx-parish-retreat-letters' ) ) );
 		}
 
-		if ( ! $this->permissions->current_user_can_manage_messages( $attendant->retreat_id ) ) {
+		// Read-only users can read the contact log, never write to it
+		$allowed = $for_reading
+			? $this->permissions->current_user_can_view_retreat( $attendant->retreat_id )
+			: $this->permissions->current_user_can_manage_messages( $attendant->retreat_id );
+		if ( ! $allowed ) {
 			wp_send_json_error( array( 'message' => __( 'You do not have permission to access this retreat.', 'dfx-parish-retreat-letters' ) ) );
 		}
 
@@ -5661,6 +5708,11 @@ class DFXPRL_Admin {
 		if ( ! $attendant ) {
 			wp_safe_redirect( admin_url( 'admin.php?page=dfxprl-retreats' ) );
 			exit;
+		}
+
+		// Only the retreat's managers and message managers can see its letters (never read-only users)
+		if ( ! $this->permissions->current_user_can_manage_messages( $attendant->retreat_id ) ) {
+			wp_die( esc_html__( 'You do not have permission to access the messages of this retreat.', 'dfx-parish-retreat-letters' ) );
 		}
 
 		// Get messages with metadata
@@ -5988,6 +6040,10 @@ class DFXPRL_Admin {
 		$message_id = absint( $_POST['message_id'] ?? 0 );
 
 		if ( $action === 'delete' && $message_id ) {
+			$message = $this->message_model->get( $message_id );
+			if ( ! $message || ! $this->permissions->current_user_can_manage_messages( $message->retreat_id ) ) {
+				wp_die( esc_html__( 'You do not have permission to delete messages for this retreat.', 'dfx-parish-retreat-letters' ) );
+			}
 			if ( $this->message_model->delete( $message_id ) ) {
 				$this->add_admin_notice( __( 'Message deleted successfully.', 'dfx-parish-retreat-letters' ), 'success' );
 			} else {
@@ -6011,6 +6067,8 @@ class DFXPRL_Admin {
 			wp_send_json_error( array( 'message' => __( 'Invalid message ID.', 'dfx-parish-retreat-letters' ) ) );
 		}
 
+		$this->require_message_access( $message_id );
+
 		// Generate a secure token for the print URL
 		$print_token = wp_generate_password( 32, false );
 
@@ -6033,6 +6091,25 @@ class DFXPRL_Admin {
 			'print_status_html' => $print_status_html,
 			'print_count'       => $print_count,
 		) );
+	}
+
+	/**
+	 * Stop an AJAX request unless the current user can manage the messages of the message's retreat.
+	 *
+	 * Read-only users never get past this check.
+	 *
+	 * @since 26.11.08
+	 * @param int $message_id Message ID.
+	 */
+	private function require_message_access( $message_id ) {
+		$message = $this->message_model->get( $message_id );
+		if ( ! $message ) {
+			wp_send_json_error( array( 'message' => __( 'Message not found.', 'dfx-parish-retreat-letters' ) ) );
+		}
+
+		if ( ! $this->permissions->current_user_can_manage_messages( $message->retreat_id ) ) {
+			wp_send_json_error( array( 'message' => __( 'You do not have permission to access the messages of this retreat.', 'dfx-parish-retreat-letters' ) ) );
+		}
 	}
 
 	/**
@@ -6226,6 +6303,8 @@ class DFXPRL_Admin {
 			wp_send_json_error( array( 'message' => __( 'Invalid message ID.', 'dfx-parish-retreat-letters' ) ) );
 		}
 
+		$this->require_message_access( $message_id );
+
 		// Get print logs for this message
 		$print_log_model = new DFXPRL_PrintLog();
 		$print_logs = $print_log_model->get_by_message( $message_id, array( 'per_page' => 100 ) );
@@ -6281,7 +6360,8 @@ class DFXPRL_Admin {
 		foreach ( $users as $user ) {
 			// Skip users who already have permissions for this retreat
 			if ( $this->permissions->user_has_retreat_permission( $user->ID, $retreat_id, 'manager' ) ||
-				 $this->permissions->user_has_retreat_permission( $user->ID, $retreat_id, 'message_manager' ) ) {
+				 $this->permissions->user_has_retreat_permission( $user->ID, $retreat_id, 'message_manager' ) ||
+				 $this->permissions->user_has_retreat_permission( $user->ID, $retreat_id, 'read_only' ) ) {
 				continue;
 			}
 
@@ -6310,7 +6390,7 @@ class DFXPRL_Admin {
 		$user_id = absint( $_POST['user_id'] ?? 0 );
 		$permission_level = sanitize_text_field( wp_unslash( $_POST['permission_level'] ?? '' ) );
 
-		if ( ! $retreat_id || ! $user_id || ! in_array( $permission_level, array( 'manager', 'message_manager' ), true ) ) {
+		if ( ! $retreat_id || ! $user_id || ! DFXPRL_Permissions::is_valid_permission_level( $permission_level ) ) {
 			wp_send_json_error( array( 'message' => __( 'Invalid parameters.', 'dfx-parish-retreat-letters' ) ) );
 		}
 
@@ -6322,9 +6402,7 @@ class DFXPRL_Admin {
 
 		if ( $result ) {
 			$user = get_user_by( 'id', $user_id );
-			$permission_name = $permission_level === 'manager'
-				? __( 'Retreat Manager', 'dfx-parish-retreat-letters' )
-				: __( 'Message Manager', 'dfx-parish-retreat-letters' );
+			$permission_name = DFXPRL_Permissions::get_permission_level_label( $permission_level );
 
 			wp_send_json_success( array(
 				'message' => sprintf(
@@ -6359,7 +6437,7 @@ class DFXPRL_Admin {
 		$user_id = absint( $_POST['user_id'] ?? 0 );
 		$permission_level = sanitize_text_field( wp_unslash( $_POST['permission_level'] ?? '' ) );
 
-		if ( ! $retreat_id || ! $user_id || ! in_array( $permission_level, array( 'manager', 'message_manager' ), true ) ) {
+		if ( ! $retreat_id || ! $user_id || ! DFXPRL_Permissions::is_valid_permission_level( $permission_level ) ) {
 			wp_send_json_error( array( 'message' => __( 'Invalid parameters.', 'dfx-parish-retreat-letters' ) ) );
 		}
 
@@ -6403,7 +6481,7 @@ class DFXPRL_Admin {
 		$name = sanitize_text_field( wp_unslash( $_POST['name'] ?? '' ) );
 		$permission_level = sanitize_text_field( wp_unslash( $_POST['permission_level'] ?? '' ) );
 
-		if ( ! $retreat_id || ! $email || ! $name || ! in_array( $permission_level, array( 'manager', 'message_manager' ), true ) ) {
+		if ( ! $retreat_id || ! $email || ! $name || ! DFXPRL_Permissions::is_valid_permission_level( $permission_level ) ) {
 			wp_send_json_error( array( 'message' => __( 'Invalid parameters.', 'dfx-parish-retreat-letters' ) ) );
 		}
 

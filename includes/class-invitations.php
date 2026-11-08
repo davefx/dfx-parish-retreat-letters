@@ -165,7 +165,7 @@ class DFXPRL_Invitations {
 			);
 		}
 
-		if ( ! in_array( $permission_level, array( 'manager', 'message_manager' ), true ) ) {
+		if ( ! DFXPRL_Permissions::is_valid_permission_level( $permission_level ) ) {
 			return array(
 				'success' => false,
 				'message' => __( 'Invalid permission level.', 'dfx-parish-retreat-letters' ),
@@ -556,9 +556,7 @@ class DFXPRL_Invitations {
 	 * @param string $error_message Optional error message.
 	 */
 	private function render_invitation_page( $invitation, $retreat, $error_message = null ) {
-		$permission_name = $invitation->permission_level === 'manager' 
-			? __( 'Retreat Manager', 'dfx-parish-retreat-letters' )
-			: __( 'Message Manager', 'dfx-parish-retreat-letters' );
+		$permission_name = DFXPRL_Permissions::get_permission_level_label( $invitation->permission_level );
 
 		// Enqueue invitation page styles
 		add_action( 'wp_head', array( $this, 'output_invitation_styles' ), 100 );
@@ -769,9 +767,7 @@ class DFXPRL_Invitations {
 			return false;
 		}
 
-		$permission_name = $permission_level === 'manager' 
-			? __( 'Retreat Manager', 'dfx-parish-retreat-letters' )
-			: __( 'Message Manager', 'dfx-parish-retreat-letters' );
+		$permission_name = DFXPRL_Permissions::get_permission_level_label( $permission_level );
 
 		$invitation_url = home_url( "/retreat-invitation/{$token}" );
 		

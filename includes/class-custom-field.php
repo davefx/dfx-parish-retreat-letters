@@ -515,6 +515,11 @@ class DFXPRL_Custom_Field {
 	 * @return bool
 	 */
 	public function current_user_can_view( $field, $retreat_id ) {
+		// Read-only users see the fields open to message managers, but can never edit them
+		if ( self::ACCESS_MESSAGE_MANAGER === $field->view_permission && DFXPRL_Permissions::get_instance()->current_user_can_view_retreat( $retreat_id ) ) {
+			return true;
+		}
+
 		return $this->current_user_has_access( $field->view_permission, $retreat_id );
 	}
 

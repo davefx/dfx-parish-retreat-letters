@@ -49,7 +49,7 @@ function dfxprl_uninstall() {
 				// Remove any dynamic retreat-specific capabilities
 				if ( isset( $role_data['capabilities'] ) && is_array( $role_data['capabilities'] ) ) {
 					foreach ( $role_data['capabilities'] as $cap => $value ) {
-						if ( strpos( $cap, 'manage_retreat_' ) === 0 || strpos( $cap, 'manage_retreat_messages_' ) === 0 ) {
+						if ( strpos( $cap, 'manage_retreat_' ) === 0 || strpos( $cap, 'manage_retreat_messages_' ) === 0 || preg_match( '/^view_retreat_\d+$/', $cap ) ) {
 							$role->remove_cap( $cap );
 						}
 					}

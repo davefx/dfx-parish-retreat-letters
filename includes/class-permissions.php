@@ -18,6 +18,7 @@
  * - Plugin Administrators (global access)
  * - Retreat Managers (retreat-specific control)
  * - Message Managers (message-only access)
+ * - Read-only users (can look at a retreat's attendants, never change anything or read letters)
  *
  * @since      1.3.0
  * @package    DFXPRL
@@ -47,6 +48,46 @@ class DFXPRL_Permissions {
 	 */
 	const PERMISSION_MANAGER = 'manager';
 	const PERMISSION_MESSAGE_MANAGER = 'message_manager';
+	const PERMISSION_READ_ONLY = 'read_only';
+
+	/**
+	 * Get the permission levels that can be granted on a retreat.
+	 *
+	 * @since 26.11.08
+	 * @return array<int, string>
+	 */
+	public static function get_permission_levels() {
+		return array( self::PERMISSION_MANAGER, self::PERMISSION_MESSAGE_MANAGER, self::PERMISSION_READ_ONLY );
+	}
+
+	/**
+	 * Check whether a value is a permission level that can be granted on a retreat.
+	 *
+	 * @since 26.11.08
+	 * @param mixed $permission_level Value to check.
+	 * @return bool
+	 */
+	public static function is_valid_permission_level( $permission_level ) {
+		return in_array( $permission_level, self::get_permission_levels(), true );
+	}
+
+	/**
+	 * Get the translated name of a permission level.
+	 *
+	 * @since 26.11.08
+	 * @param string $permission_level Permission level.
+	 * @return string
+	 */
+	public static function get_permission_level_label( $permission_level ) {
+		switch ( $permission_level ) {
+			case self::PERMISSION_MANAGER:
+				return __( 'Retreat Manager', 'dfx-parish-retreat-letters' );
+			case self::PERMISSION_READ_ONLY:
+				return __( 'Read Only', 'dfx-parish-retreat-letters' );
+			default:
+				return __( 'Message Manager', 'dfx-parish-retreat-letters' );
+		}
+	}
 
 	/**
 	 * Get the single instance of the class.
@@ -135,7 +176,26 @@ class DFXPRL_Permissions {
 	 */
 	public function current_user_can_view_retreat( $retreat_id ) {
 		// Any level of permission allows viewing
-		return $this->current_user_can_manage_messages( $retreat_id );
+		if ( $this->current_user_can_manage_messages( $retreat_id ) ) {
+			return true;
+		}
+
+		return $this->user_has_retreat_permission( get_current_user_id(), $retreat_id, self::PERMISSION_READ_ONLY );
+	}
+
+	/**
+	 * Check if the current user can only look at a retreat, without changing anything.
+	 *
+	 * True for read-only users who have no other permission on the retreat. They can see its
+	 * attendants (with the custom fields open to message managers) and the contact log, but never
+	 * change any data, read or print letters, or export attendants.
+	 *
+	 * @since 26.11.08
+	 * @param int $retreat_id Retreat ID.
+	 * @return bool
+	 */
+	public function current_user_is_read_only( $retreat_id ) {
+		return $this->current_user_can_view_retreat( $retreat_id ) && ! $this->current_user_can_manage_messages( $retreat_id );
 	}
 
 	/**
@@ -199,7 +259,7 @@ class DFXPRL_Permissions {
 	 */
 	public function grant_permission( $user_id, $retreat_id, $permission_level, $granted_by ) {
 		// Validate permission level
-		if ( ! in_array( $permission_level, array( self::PERMISSION_MANAGER, self::PERMISSION_MESSAGE_MANAGER ), true ) ) {
+		if ( ! self::is_valid_permission_level( $permission_level ) ) {
 			return false;
 		}
 
@@ -407,6 +467,8 @@ class DFXPRL_Permissions {
 	private function get_dynamic_capability_name( $retreat_id, $permission_level ) {
 		if ( $permission_level === self::PERMISSION_MANAGER ) {
 			return "manage_retreat_{$retreat_id}";
+		} elseif ( $permission_level === self::PERMISSION_READ_ONLY ) {
+			return "view_retreat_{$retreat_id}";
 		} else {
 			return "manage_retreat_messages_{$retreat_id}";
 		}
