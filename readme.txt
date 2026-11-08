@@ -3,7 +3,7 @@ Contributors: davefx
 Tags: parish, retreat, letters, confidential, GDPR
 Requires at least: 5.0
 Tested up to: 7.1
-Stable tag: 26.11.08
+Stable tag: 26.11.08.1
 Requires PHP: 7.4
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
@@ -87,7 +87,8 @@ The plugin uses four access levels, each scoped to specific retreats:
 **Read Only** (assigned per retreat):
 
 * Can see the retreat's attendants, the custom fields open to message managers, the letter counts and the contact log.
-* Can never change anything: no editing, withdrawing or deleting attendants, no contact log entries, no message URLs, no CSV import or export.
+* Can get each attendant's letters URL and invitation message to share them. An existing URL is never replaced; an attendant without one gets it generated.
+* Can never change anything else: no editing, withdrawing or deleting attendants, no contact log entries, no CSV import or export.
 * Cannot open, print or download letters, and cannot see the retreat settings or permissions.
 
 = User invitations =
@@ -190,6 +191,10 @@ By default it is generated automatically and stored in the WordPress database (`
 Yes. The best place is [translate.wordpress.org](https://translate.wordpress.org/projects/wp-plugins/dfx-parish-retreat-letters/), so the translation reaches every site as a language pack. A `.pot` translation template is also included in the `languages/` directory.
 
 ## Changelog
+
+### 26.11.08.1
+
+- Change: **Read Only** users can now get each attendant's letters URL (**Copy Message URL**, or **Generate Message URL** when the attendant has none yet) and their **Invitation Message**, from the attendants list and the attendant page, to share them with family and friends. They never replace an existing URL, so links already shared keep working.
 
 ### 26.11.08
 

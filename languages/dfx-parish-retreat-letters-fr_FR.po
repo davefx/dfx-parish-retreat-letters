@@ -3419,9 +3419,9 @@ msgstr "Voir"
 msgid "Attendant"
 msgstr "Participant"
 
-#: includes/class-admin.php:4282
-msgid "You have read-only access to this retreat: you can see the attendant's data and contact log, but not change them."
-msgstr "Vous avez un accès en lecture seule à cette retraite : vous pouvez consulter les données du participant et son journal des contacts, mais pas les modifier."
+#: includes/class-admin.php:4283
+msgid "You have read-only access to this retreat: you can see the attendant's data and contact log and get their letters URL, but not change anything."
+msgstr "Vous avez un accès en lecture seule à cette retraite : vous pouvez consulter les données du participant et son journal des contacts et obtenir son URL pour les lettres, mais vous ne pouvez rien modifier."
 
 #: includes/class-admin.php:4484
 msgid "Back to Attendants"

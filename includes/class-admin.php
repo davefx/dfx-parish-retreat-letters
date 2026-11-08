@@ -4116,7 +4116,8 @@ class DFXPRL_Admin {
 											</a>
 										<?php endif; ?>
 
-										<?php if ( $this->permissions->current_user_can_manage_messages( $retreat->id ) ) : ?>
+										<?php // Read-only users can also get the letters URL and the invitation, to share them ?>
+										<?php if ( $this->permissions->current_user_can_view_retreat( $retreat->id ) ) : ?>
 											<?php if ( ! empty( $retreat->message_request_template ) ) : ?>
 												<button type="button" class="button button-small dfxprl-show-invitation-message" data-attendant-id="<?php echo esc_attr( $attendant->id ); ?>" data-retreat-id="<?php echo esc_attr( $retreat->id ); ?>">
 													<?php esc_html_e( 'Invitation Message', 'dfx-parish-retreat-letters' ); ?>
@@ -4279,7 +4280,7 @@ class DFXPRL_Admin {
 
 			<?php if ( $read_only ) : ?>
 				<div class="notice notice-info inline">
-					<p><?php esc_html_e( 'You have read-only access to this retreat: you can see the attendant\'s data and contact log, but not change them.', 'dfx-parish-retreat-letters' ); ?></p>
+					<p><?php esc_html_e( 'You have read-only access to this retreat: you can see the attendant\'s data and contact log and get their letters URL, but not change anything.', 'dfx-parish-retreat-letters' ); ?></p>
 				</div>
 			<?php elseif ( ! $can_edit_core ) : ?>
 				<div class="notice notice-info inline">
@@ -4452,7 +4453,6 @@ class DFXPRL_Admin {
 									<?php endif; ?>
 								</td>
 							</tr>
-							<?php if ( ! $read_only ) : ?>
 							<tr>
 								<th scope="row"><?php esc_html_e( 'Message URL', 'dfx-parish-retreat-letters' ); ?></th>
 								<td>
@@ -4473,7 +4473,6 @@ class DFXPRL_Admin {
 									<?php endif; ?>
 								</td>
 							</tr>
-							<?php endif; ?>
 						</tbody>
 					</table>
 				<?php endif; ?>
@@ -5643,9 +5642,20 @@ class DFXPRL_Admin {
 			wp_send_json_error( array( 'message' => __( 'Attendant not found.', 'dfx-parish-retreat-letters' ) ) );
 		}
 
-		// Check permissions
-		if ( ! $this->permissions->current_user_can_manage_messages( $attendant->retreat_id ) ) {
+		// Check permissions: read-only users can also get the URL, so they can share it
+		if ( ! $this->permissions->current_user_can_view_retreat( $attendant->retreat_id ) ) {
 			wp_send_json_error( array( 'message' => __( 'You do not have permission to access this retreat.', 'dfx-parish-retreat-letters' ) ) );
+		}
+
+		// Read-only users never replace an existing URL (that would break the link already shared):
+		// they get the current one, and only an attendant without one gets it generated
+		if ( ! empty( $attendant->message_url_token ) && $this->permissions->current_user_is_read_only( $attendant->retreat_id ) ) {
+			wp_send_json_success( array(
+				'message'            => __( 'Message URL generated successfully.', 'dfx-parish-retreat-letters' ),
+				'url'                => home_url( '/messages/' . $attendant->message_url_token ),
+				'attendant_name'     => $attendant->name ?? '',
+				'attendant_surnames' => $attendant->surnames ?? '',
+			) );
 		}
 
 		// Generate unique token
@@ -6869,8 +6879,8 @@ class DFXPRL_Admin {
 			wp_send_json_error( array( 'message' => __( 'Invalid attendant or retreat ID.', 'dfx-parish-retreat-letters' ) ) );
 		}
 
-		// Check permissions
-		if ( ! $this->permissions->current_user_can_manage_messages( $retreat_id ) ) {
+		// Check permissions (read-only users can also copy the invitation, which only reads data)
+		if ( ! $this->permissions->current_user_can_view_retreat( $retreat_id ) ) {
 			wp_send_json_error( array( 'message' => __( 'You do not have permission to access this retreat.', 'dfx-parish-retreat-letters' ) ) );
 		}
 

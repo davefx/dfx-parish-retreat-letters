@@ -150,7 +150,7 @@ class ReadOnlyAccessTest extends TestCase {
 		$form = $this->get_method_source( 'includes/class-admin.php', 'render_attendant_add_edit_page' );
 		$this->assertStringContainsString( '$read_only = $this->permissions->current_user_is_read_only( $retreat->id );', $form );
 		$this->assertStringContainsString( 'name="physical_letters"<?php disabled( $read_only ); ?>', $form );
-		$this->assertStringContainsString( '<?php if ( ! $read_only ) : ?>', $form, 'No message URL for read-only users' );
+		$this->assertStringNotContainsString( '<?php if ( ! $read_only ) : ?>', $form, 'Read-only users see the message URL' );
 		$this->assertMatchesRegularExpression( '/if \( \$read_only \) : \?>\s*<a href="[^"]*" class="button">\s*<\?php esc_html_e\( \'Back to Attendants\'/', $form, 'No submit button for read-only users' );
 
 		// Saving still requires managing the retreat or its messages
@@ -170,6 +170,21 @@ class ReadOnlyAccessTest extends TestCase {
 		$this->assertStringContainsString( 'current_user_can_manage_messages( $retreat->id ) ) : ?>' . "\n\t\t\t" . '<div class="dfxprl-log-new">', $panel );
 	}
 
+	public function test_read_only_can_get_the_letters_url_and_invitation_without_replacing_it() {
+		$generate = $this->get_method_source( 'includes/class-admin.php', 'ajax_generate_message_url' );
+		$this->assertStringContainsString( 'current_user_can_view_retreat( $attendant->retreat_id )', $generate );
+		// An existing URL is returned as is to read-only users, never replaced
+		$guard = strpos( $generate, "! empty( \$attendant->message_url_token ) && \$this->permissions->current_user_is_read_only( \$attendant->retreat_id )" );
+		$this->assertNotFalse( $guard );
+		$this->assertLessThan( strpos( $generate, 'generate_unique_message_token()' ), $guard, 'The existing URL is returned before a new token is generated' );
+
+		$invitation = $this->get_method_source( 'includes/class-admin.php', 'ajax_get_invitation_message' );
+		$this->assertStringContainsString( 'current_user_can_view_retreat( $retreat_id )', $invitation );
+
+		// The list buttons are shown to read-only users
+		$this->assertStringContainsString( "<?php if ( \$this->permissions->current_user_can_view_retreat( \$retreat->id ) ) : ?>\n\t\t\t\t\t\t\t\t\t\t\t<?php if ( ! empty( \$retreat->message_request_template ) ) : ?>", $this->get_source( 'includes/class-admin.php' ) );
+	}
+
 	public function test_read_only_sees_message_manager_fields_and_edits_none() {
 		$view = $this->get_method_source( 'includes/class-custom-field.php', 'current_user_can_view' );
 		$this->assertStringContainsString( 'self::ACCESS_MESSAGE_MANAGER === $field->view_permission && DFXPRL_Permissions::get_instance()->current_user_can_view_retreat( $retreat_id )', $view );
@@ -183,7 +198,8 @@ class ReadOnlyAccessTest extends TestCase {
 		preg_match_all( "/'wp_ajax_dfxprl_(\w+)', array\( \\\$this, '(\w+)' \)/", $admin, $matches );
 		$this->assertNotEmpty( $matches[2] );
 
-		$read_handlers = array( 'ajax_log_get' );
+		// Handlers that read-only users may use: they only read, or (the letters URL) create it once when missing
+		$read_handlers = array( 'ajax_log_get', 'ajax_generate_message_url', 'ajax_get_invitation_message' );
 		foreach ( $matches[2] as $method ) {
 			if ( in_array( $method, $read_handlers, true ) ) {
 				continue;
