@@ -1,0 +1,421 @@
+<div class="dfxprl-manual" lang="es">
+
+<h1>Manual de DFX Cartas de retiros parroquiales</h1>
+
+<p class="dfxprl-manual-lead">Este plugin sirve para recoger, guardar e imprimir las cartas que familiares y amigos escriben a las personas que hacen un retiro parroquial. Cada asistente tiene un enlace privado; quien quiera escribirle abre ese enlace, escribe su carta o adjunta archivos, y la carta queda cifrada hasta el momento de imprimirla. Nadie puede leerla en pantalla.</p>
+
+<nav class="dfxprl-manual-toc" aria-label="Índice">
+<h2>Índice</h2>
+<ol>
+<li><a href="#como-funciona">Cómo funciona</a></li>
+<li><a href="#perfiles">Perfiles y permisos</a></li>
+<li><a href="#primeros-pasos">Primeros pasos</a></li>
+<li><a href="#retiros">Retiros</a></li>
+<li><a href="#acceso">Gestión de acceso e invitaciones</a></li>
+<li><a href="#asistentes">Asistentes</a></li>
+<li><a href="#csv">Importar y exportar asistentes (CSV)</a></li>
+<li><a href="#formulario">El formulario de cartas</a></li>
+<li><a href="#mensajes">Mensajes confidenciales: imprimir, borrar y devolver</a></li>
+<li><a href="#bajas">Bajas, reactivaciones y fin del retiro</a></li>
+<li><a href="#ajustes-globales">Ajustes globales</a></li>
+<li><a href="#privacidad">Privacidad y cumplimiento</a></li>
+<li><a href="#seguridad">Seguridad y cifrado</a></li>
+<li><a href="#calendario">Un retiro de principio a fin</a></li>
+<li><a href="#faq">Preguntas frecuentes y problemas</a></li>
+</ol>
+</nav>
+
+<h2 id="como-funciona">1. Cómo funciona</h2>
+
+<ol>
+<li><strong>Creas un retiro</strong> con su nombre, lugar y fechas, y das de alta a los asistentes (uno a uno o importando un CSV).</li>
+<li><strong>Cada asistente tiene una URL privada</strong> para recibir cartas. La copias desde la lista de asistentes y se la pasas a sus familiares y amigos, normalmente a través de su contacto de emergencia.</li>
+<li><strong>Quien escribe abre el enlace</strong> en cualquier navegador, sin registrarse. Escribe su carta con un editor de texto sencillo o adjunta fotos y documentos, resuelve una suma de seguridad y la envía.</li>
+<li><strong>La carta se guarda cifrada.</strong> En el panel solo se ve quién la envía, cuándo y de qué tipo es; nunca su contenido.</li>
+<li><strong>Las personas autorizadas imprimen las cartas</strong> durante el retiro. Cada impresión queda registrada con el usuario, la fecha y la dirección IP.</li>
+<li><strong>Las cartas se entregan</strong> a cada asistente en el momento que el equipo decida.</li>
+</ol>
+
+<p>Todo está en el menú <strong>Retiros</strong> del escritorio de WordPress. No hace falta crear páginas ni entradas: el formulario de cartas lo sirve el propio plugin.</p>
+
+<h2 id="perfiles">2. Perfiles y permisos</h2>
+
+<p>Los permisos se dan <strong>por retiro</strong>: una persona puede ser gestora de un retiro y no ver nada de otro. Hay cuatro niveles.</p>
+
+<table class="dfxprl-manual-table">
+<thead>
+<tr><th>Qué se puede hacer</th><th>Administrador del plugin</th><th>Gestor de retiro</th><th>Gestor de mensajes</th><th>Solo lectura</th></tr>
+</thead>
+<tbody>
+<tr><td>Crear y borrar retiros</td><td>Sí</td><td>No</td><td>No</td><td>No</td></tr>
+<tr><td>Editar la configuración del retiro y sus campos personalizados</td><td>Sí</td><td>Sí</td><td>No</td><td>No</td></tr>
+<tr><td>Dar y quitar permisos, enviar invitaciones</td><td>Sí</td><td>Sí</td><td>No</td><td>No</td></tr>
+<tr><td>Ver la lista de asistentes y el recuento de cartas</td><td>Sí</td><td>Sí</td><td>Sí</td><td>Sí</td></tr>
+<tr><td>Añadir, editar, dar de baja y reactivar asistentes</td><td>Sí</td><td>Sí</td><td>No</td><td>No</td></tr>
+<tr><td>Importar y exportar CSV</td><td>Sí</td><td>Sí</td><td>No</td><td>No</td></tr>
+<tr><td>Anotar cartas físicas recibidas</td><td>Sí</td><td>Sí</td><td>Sí</td><td>No</td></tr>
+<tr><td>Escribir en el historial de contactos</td><td>Sí</td><td>Sí</td><td>Sí</td><td>No (solo lo lee)</td></tr>
+<tr><td>Copiar la URL de mensajes y el mensaje de invitación</td><td>Sí</td><td>Sí</td><td>Sí</td><td>Sí</td></tr>
+<tr><td>Abrir, imprimir y borrar cartas</td><td>Sí</td><td>Sí</td><td>Sí</td><td>No</td></tr>
+<tr><td>Devolver cartas por email</td><td>Sí</td><td>Sí</td><td>Sí</td><td>No</td></tr>
+<tr><td>Vaciar el retiro cuando ha terminado</td><td>Sí</td><td>Sí</td><td>No</td><td>No</td></tr>
+<tr><td>Ajustes globales y Privacidad y cumplimiento</td><td>Sí</td><td>No</td><td>No</td><td>No</td></tr>
+</tbody>
+</table>
+
+<h3>Administrador del plugin</h3>
+<p>Lo son los administradores de WordPress y los usuarios a los que se da el permiso global de gestión de retiros en <strong>Retiros &gt; Ajustes globales &gt; Gestión de usuarios</strong>. Ven todos los retiros y son los únicos que pueden crear y borrar retiros o tocar los ajustes globales y la privacidad.</p>
+
+<h3>Gestor de retiro</h3>
+<p>Tiene el control completo de su retiro: configuración, asistentes, cartas y permisos. No ve otros retiros ni los ajustes globales.</p>
+
+<h3>Gestor de mensajes</h3>
+<p>Es el perfil de quien se encarga de las cartas: las imprime, las borra si hace falta y las devuelve por email cuando un asistente se da de baja. Ve la lista de asistentes y puede abrir la ficha de cada uno en modo restringido, donde solo puede cambiar las cartas físicas recibidas, los campos personalizados que tenga permitidos y el historial de contactos.</p>
+
+<h3>Solo lectura</h3>
+<p>Pensado para quien necesita consultar sin tocar nada; por ejemplo, la persona que reparte los enlaces a las familias. Ve los asistentes (activos y dados de baja), los recuentos de cartas, los campos personalizados abiertos a los gestores de mensajes y el historial de contactos. Puede copiar la URL de mensajes de cada asistente y su mensaje de invitación; si un asistente aún no tiene URL, se le genera, pero nunca se sustituye una que ya exista, así que los enlaces ya repartidos siguen funcionando.</p>
+<p>No puede cambiar nada más: ni editar, ni dar de baja, ni importar o exportar, ni escribir en el historial. Tampoco puede abrir, imprimir ni descargar cartas, ni ver la configuración del retiro o sus permisos. En la lista de asistentes verá el botón <strong>Ver</strong> en lugar de <strong>Editar</strong>.</p>
+
+<h2 id="primeros-pasos">3. Primeros pasos</h2>
+
+<ol>
+<li>Instala y activa el plugin desde <strong>Plugins</strong>. Las tablas que necesita se crean solas.</li>
+<li>Comprueba que la web usa <strong>HTTPS</strong>. Las URL de mensajes llevan un código secreto y no deben viajar sin cifrar.</li>
+<li>Guarda la clave de cifrado en <code>wp-config.php</code>. Al activarse, el plugin genera una clave y la guarda en la base de datos, y muestra un aviso con la línea que tienes que copiar:
+<pre>define( 'DFXPRL_ENCRYPTION_KEY', 'una-cadena-larga-y-aleatoria' );</pre>
+Así la clave no está en el mismo sitio que los datos cifrados. Hazlo <strong>antes de recibir cartas</strong>: lo que se cifre con una clave solo se puede leer con esa misma clave (ver <a href="#seguridad">Seguridad y cifrado</a>).</li>
+<li>Revisa <strong>Retiros &gt; Ajustes globales</strong>: cabecera y pie del formulario de cartas, encabezado de los PDF y, si quieres traducción automática, la clave de DeepL.</li>
+<li>Revisa <strong>Retiros &gt; Privacidad y cumplimiento</strong> y ajusta los plazos de conservación a lo que diga tu política de protección de datos.</li>
+<li>Crea tu primer retiro.</li>
+</ol>
+
+<h2 id="retiros">4. Retiros</h2>
+
+<h3>La lista de retiros</h3>
+<p>En <strong>Retiros &gt; Todos los retiros</strong> aparecen los retiros a los que tienes acceso, con su ubicación, fechas y número de asistentes activos. Puedes buscar por nombre. Según tu perfil verás estos botones:</p>
+<ul>
+<li><strong>Editar</strong>: abre la configuración del retiro (gestores de retiro).</li>
+<li><strong>Asistentes</strong>: abre la lista de asistentes.</li>
+<li><strong>Eliminar</strong>: borra el retiro (solo administradores del plugin; ver más abajo).</li>
+</ul>
+<p>Al pulsar el nombre del retiro, los gestores de retiro van a la configuración; el resto, a la lista de asistentes.</p>
+
+<h3>Crear o editar un retiro</h3>
+<p>Los administradores del plugin crean retiros desde <strong>Retiros &gt; Añadir nuevo</strong>. Estos son los campos:</p>
+
+<dl class="dfxprl-manual-fields">
+<dt>Nombre del retiro, Ubicación, Fecha de inicio, Fecha de fin</dt>
+<dd>Datos básicos. El nombre y las fechas son obligatorios, y la fecha de fin no puede ser anterior a la de inicio.</dd>
+
+<dt>Mensaje personalizado para remitentes de cartas</dt>
+<dd>Texto que verá quien escribe, antes del formulario. Sirve para explicar qué es la carta, cuándo se entregará o qué tono conviene. Admite HTML.</dd>
+
+<dt>Texto de advertencia legal y Texto de aceptación de la advertencia</dt>
+<dd>Si escribes una advertencia legal, el formulario la muestra con una casilla que hay que marcar para poder enviar. El texto de aceptación es lo que aparece junto a esa casilla (por defecto, «Acepto los términos y condiciones»).</dd>
+
+<dt>Formulario multilingüe</dt>
+<dd>Activado, quien escribe ve el formulario en el idioma de su navegador o el que elija en un selector (español, catalán, euskera, gallego, inglés, portugués, francés, italiano y alemán). Desactivado, el formulario sale siempre en el idioma principal del sitio. Ver <a href="#traducciones">Traducciones de los textos del retiro</a>.</dd>
+
+<dt>Activar campo de notas</dt>
+<dd>Añade a cada asistente un campo de notas que se ve en la lista y entra en la importación y exportación CSV.</dd>
+
+<dt>Activar campo de notas internas</dt>
+<dd>Igual, pero estas notas <strong>nunca</strong> se importan ni se exportan por CSV. Úsalo para lo que no deba salir del panel.</dd>
+
+<dt>Plantilla de solicitud de mensaje</dt>
+<dd>Texto que el equipo envía a la familia o al contacto de emergencia para pedirle que escriba y anime a otros a hacerlo. Admite marcadores que se sustituyen por los datos de cada asistente: <code>[attendant_name]</code>, <code>[attendant_surnames]</code>, <code>[emergency_contact_name]</code>, <code>[messages_url]</code>, <code>[retreat_name]</code>, <code>[retreat_start_date]</code> y los demás que se listan bajo el campo, incluidos los de los campos personalizados (<code>[slug]</code>). Si la plantilla tiene texto, en la lista de asistentes aparece el botón <strong>Mensaje de invitación</strong>.</dd>
+
+<dt>Asunto del email de devolución y Texto del email de devolución</dt>
+<dd>Email que se envía a quien escribió una carta cuando el asistente se da de baja y se le devuelve la carta. Admite marcadores como <code>[sender_name]</code>, <code>[attendant_name]</code>, <code>[retreat_name]</code> o la fecha de envío. Si lo dejas vacío se usa un texto por defecto. Ver <a href="#devolver">Devolver cartas por email</a>.</dd>
+
+<dt>Bloque de cabecera personalizado, Bloque de pie de página personalizado</dt>
+<dd>Bloque reutilizable, parte de plantilla o patrón que se muestra arriba y abajo del formulario de cartas de este retiro. Si no eliges ninguno se usa el de los ajustes globales. Estos campos solo aparecen si en los ajustes globales está activada la <strong>Personalización por retiro</strong>.</dd>
+
+<dt>Clases adicionales del body</dt>
+<dd>Clases CSS, separadas por espacios, que se añaden a la etiqueta <code>&lt;body&gt;</code> del formulario de este retiro. Sirven para darle un aspecto distinto desde el tema o desde el CSS adicional del sitio.</dd>
+</dl>
+
+<p>Guarda con <strong>Añadir retiro</strong> o <strong>Actualizar retiro</strong>. Desde la misma pantalla, <strong>Gestionar asistentes</strong> lleva a la lista de asistentes.</p>
+
+<h3 id="traducciones">Traducciones de los textos del retiro</h3>
+<p>El mensaje personalizado, la advertencia legal y su texto de aceptación se escriben en el idioma principal del sitio. Si el formulario es multilingüe, en <strong>Traducciones de estos textos</strong> puedes escribir una versión para cada idioma. Las pestañas marcadas como «(escrito)» ya tienen texto.</p>
+<ul>
+<li><strong>Traducir automáticamente</strong> rellena los campos de ese idioma a partir del original para que los revises antes de guardar. Necesita una clave de DeepL en los ajustes globales.</li>
+<li>Si un idioma se deja vacío, el formulario usa la traducción automática de DeepL (si está configurada) o, si no, el texto original.</li>
+<li>Cada traducción automática se hace una vez y se guarda; solo se repite si cambias el original. A DeepL solo se envían estos textos del retiro, nunca cartas ni datos personales.</li>
+</ul>
+
+<h3 id="campos-personalizados">Campos personalizados del asistente</h3>
+<p>Cada retiro puede añadir sus propios campos a la ficha de los asistentes (por ejemplo, talla de camiseta, grupo, alergias o si necesita transporte). Pulsa <strong>Añadir campo</strong> y rellena:</p>
+<ul>
+<li><strong>Nombre</strong> y <strong>Slug</strong>: el slug identifica el campo en los CSV y en la plantilla de solicitud, como <code>[mi_campo]</code>.</li>
+<li><strong>Tipo</strong>: texto, texto largo, número, fecha, sí/no o lista de opciones (una opción por línea).</li>
+<li><strong>Visible para</strong> y <strong>Editable por</strong>: solo para gestores del retiro, o también para gestores de mensajes. Los usuarios de solo lectura ven los campos visibles para los gestores de mensajes, pero no pueden editarlos.</li>
+<li><strong>Mostrar en la lista de asistentes</strong> y <strong>Ordenable</strong>.</li>
+<li><strong>Importar desde CSV</strong> y <strong>Exportar a CSV</strong>.</li>
+</ul>
+<p><strong>Quitar campo</strong> borra sus valores para todos los asistentes al guardar el retiro. Se pide confirmación.</p>
+
+<h3>Borrar un retiro</h3>
+<p>Solo los administradores del plugin pueden hacerlo, desde <strong>Eliminar</strong> en la lista de retiros. Se borran el retiro, todos sus asistentes y todas sus cartas, sin vuelta atrás. Para confirmarlo hay que escribir el nombre exacto del retiro. Si quieres reutilizar el retiro con su configuración, usa mejor <a href="#vaciar">Vaciar retiro</a>.</p>
+
+<h2 id="acceso">5. Gestión de acceso e invitaciones</h2>
+
+<p>En la pantalla de edición del retiro, el cuadro <strong>Gestión de acceso</strong> muestra quién tiene permiso y permite darlo.</p>
+
+<h3>Permisos actuales</h3>
+<p>Lista de usuarios con su perfil y quién se lo dio. <strong>Revocar</strong> lo quita. No puedes revocar tus propios permisos.</p>
+
+<h3>Dar acceso a un usuario que ya existe</h3>
+<ol>
+<li>En <strong>Otorgar acceso &gt; Usuarios existentes</strong>, busca por nombre de usuario, email o nombre (al menos dos letras).</li>
+<li>Elige el usuario y el perfil: <strong>Gestor de retiro</strong>, <strong>Gestor de mensajes</strong> o <strong>Solo lectura</strong>.</li>
+<li>Pulsa <strong>Otorgar</strong>.</li>
+</ol>
+
+<h3>Invitar a alguien nuevo</h3>
+<ol>
+<li>En <strong>Invitar nuevos usuarios</strong>, escribe su email y elige el perfil.</li>
+<li>Pulsa <strong>Enviar invitación</strong>. Le llega un email con un enlace que caduca a los 7 días.</li>
+<li>Al abrir el enlace completa su nombre y pulsa <strong>Aceptar invitación</strong>. Si su email ya era de un usuario de la web, recibe el permiso sin más; si no, se le crea una cuenta y recibe sus datos de acceso por email.</li>
+</ol>
+<p>Las invitaciones aún sin aceptar aparecen en <strong>Invitaciones pendientes</strong>, con su fecha de caducidad, y se pueden cancelar. Las caducadas se limpian solas.</p>
+
+<p>Dar un permiso, quitarlo y cada paso de una invitación quedan anotados en el registro de auditoría.</p>
+
+<h2 id="asistentes">6. Asistentes</h2>
+
+<h3>La lista de asistentes</h3>
+<p>Se abre con el botón <strong>Asistentes</strong> del retiro. Arriba se ve el total de asistentes y el resumen de cartas: cuántos mensajes se han recibido, cuántos faltan por imprimir y el total contando las cartas físicas.</p>
+<p>Hay dos pestañas: <strong>Asistentes</strong> (los activos) y <strong>Asistentes dados de baja</strong>.</p>
+
+<h4>Columnas</h4>
+<ul>
+<li><strong>Nombre</strong>, <strong>Apellidos</strong>, <strong>Fecha de nacimiento</strong>, <strong>Contacto de emergencia</strong>, <strong>Invita</strong>, <strong>Incompatibilidades</strong>, <strong>Notas</strong> y <strong>Notas internas</strong> (si están activadas), y los campos personalizados marcados para la lista.</li>
+<li><strong>Mensajes</strong>: cartas recibidas por la web y, entre paréntesis, las que faltan por imprimir. Al pulsar la cabecera varias veces se ordena por total o por pendientes de imprimir.</li>
+<li><strong>Cartas físicas</strong>: cartas en papel recibidas fuera de la web.</li>
+<li><strong>Total de cartas</strong>: la suma de las dos anteriores.</li>
+<li><strong>Historial de contactos</strong>: un icono de libreta con el número de entradas. Al pulsarlo se abre el historial en una ventana.</li>
+</ul>
+<p>Las cabeceras quedan fijas al bajar por la lista. En pantallas estrechas la tabla se convierte en fichas y aparece un desplegable <strong>Ordenar por</strong>.</p>
+
+<h4>Buscar, filtrar y ordenar</h4>
+<p>El buscador busca en nombre, apellidos, contacto de emergencia, invita e incompatibilidades. En <strong>Filtros</strong> puedes filtrar por cada uno de esos campos y por las notas y notas internas; pulsa <strong>Aplicar filtros</strong> o <strong>Limpiar filtros</strong>. Pulsa la cabecera de una columna para ordenar por ella.</p>
+<p>En <strong>Filtros</strong> salen también los campos personalizados del retiro que puedes ver. Los de texto se filtran por su contenido; los de tipo <strong>Lista de opciones</strong> y <strong>Sí/No</strong>, con un desplegable; los números y las fechas, con un intervalo <strong>Desde</strong>–<strong>Hasta</strong> en el que puedes rellenar solo uno de los dos extremos.</p>
+
+<h4>Reordenar columnas</h4>
+<p>Los gestores de retiro pueden arrastrar las cabeceras desde su asa (aparece al pasar el ratón por encima). El orden se guarda para todos los que usan ese retiro. <strong>Restaurar el orden por defecto</strong> lo devuelve a como estaba.</p>
+
+<h4>Edición en línea</h4>
+<p>Pulsa una celda para editarla sin abrir la ficha: <kbd>Intro</kbd> guarda, <kbd>Esc</kbd> cancela y, en textos largos, <kbd>Ctrl</kbd>+<kbd>Intro</kbd> guarda. Los gestores de retiro pueden editar nombre, apellidos, fecha de nacimiento, invita, incompatibilidades y notas; gestores de retiro y de mensajes pueden editar las cartas físicas; los campos personalizados siguen su permiso de edición.</p>
+
+<h4>Botones de cada asistente</h4>
+<ul>
+<li><strong>Editar</strong> (o <strong>Ver</strong> para solo lectura): abre la ficha.</li>
+<li><strong>Mensajes</strong>: abre sus cartas (gestores de retiro y de mensajes).</li>
+<li><strong>Mensaje de invitación</strong>: muestra la plantilla de solicitud rellenada con sus datos y su enlace, lista para copiar y pegar en un email o en WhatsApp. Solo aparece si el retiro tiene plantilla.</li>
+<li><strong>Generar URL de mensajes</strong> o <strong>Copiar URL de mensajes</strong>: ver más abajo.</li>
+<li><strong>Dar de baja</strong>: ver <a href="#bajas">Bajas</a> (gestores de retiro).</li>
+</ul>
+
+<h3>Añadir o editar un asistente</h3>
+<p>Pulsa <strong>Añadir nuevo asistente</strong> o <strong>Editar</strong> en su fila. Los campos son:</p>
+<ul>
+<li><strong>Nombre</strong>, <strong>Apellidos</strong> y <strong>Fecha de nacimiento</strong> (obligatorios).</li>
+<li><strong>Contacto de emergencia</strong>: nombre (obligatorio), apellido, teléfono (obligatorio), email y relación con el asistente. Esta persona suele ser quien recibe el enlace para las cartas.</li>
+<li><strong>Invita</strong>: quién le invitó al retiro.</li>
+<li><strong>Incompatibilidades</strong>: asistentes con los que no conviene ponerle, por ejemplo en la misma mesa o habitación.</li>
+<li><strong>Notas</strong> y <strong>Notas internas</strong>, si el retiro las tiene activadas.</li>
+<li>Los <strong>campos personalizados</strong> del retiro.</li>
+<li><strong>Cartas físicas recibidas</strong>: número de cartas en papel recibidas fuera de la web.</li>
+</ul>
+<p>La ficha también muestra el número de mensajes recibidos (con enlace a ellos), la <strong>URL de mensajes</strong> y el <strong>Historial de contactos</strong>. Si un campo no pasa la validación, el formulario conserva todo lo escrito y solo hay que corregir ese campo.</p>
+<p>Los gestores de mensajes abren la ficha en modo restringido: solo pueden cambiar las cartas físicas, los campos personalizados que tengan permitidos y el historial de contactos. Los usuarios de solo lectura la ven con todo bloqueado y un botón <strong>Volver a los asistentes</strong>.</p>
+
+<h3 id="url">La URL de mensajes</h3>
+<p>Cada asistente tiene una dirección única, del estilo <code>https://tuparroquia.org/messages/código-secreto</code>, que es la puerta para escribirle. El código es aleatorio y no se puede adivinar.</p>
+<ul>
+<li>Si el asistente aún no tiene, pulsa <strong>Generar URL de mensajes</strong>.</li>
+<li><strong>Copiar URL de mensajes</strong> la copia al portapapeles con las iniciales del asistente al final (por ejemplo, <code>…/messages/código/#JGP</code>), para saber de quién es el enlace sin mostrar su nombre.</li>
+<li>Comparte el enlace solo con quien deba escribir. Cualquiera que lo tenga puede enviar cartas a ese asistente.</li>
+<li>La URL sigue valiendo hasta que el asistente se da de baja o se borra.</li>
+</ul>
+
+<h3 id="historial">Historial de contactos</h3>
+<p>Sirve para que el equipo anote las llamadas y conversaciones con la persona de contacto de cada asistente: «Llamada a su madre el martes, enviará el enlace a los hermanos», etc. Se abre desde la columna <strong>Historial de contactos</strong> de la lista o desde la ficha.</p>
+<ul>
+<li>Gestores de retiro y de mensajes pueden añadir entradas con fecha y descripción (<strong>Añadir entrada</strong>).</li>
+<li>Quien escribe una entrada puede editarla durante 15 minutos y borrarla en cualquier momento. Las editadas se marcan como «(editado)».</li>
+<li>Los gestores de retiro pueden editar o borrar cualquier entrada y ver el <strong>Historial de cambios</strong> completo, incluidas las entradas borradas.</li>
+<li>Los usuarios de solo lectura lo pueden leer, pero no escribir.</li>
+</ul>
+
+<h2 id="csv">7. Importar y exportar asistentes (CSV)</h2>
+
+<h3>Importar</h3>
+<p>En la lista de asistentes, pulsa <strong>Importar CSV</strong>. El archivo:</p>
+<ul>
+<li>Debe tener los nombres de las columnas en la primera fila. Pueden estar en cualquier orden, en inglés o en el idioma del panel, y las columnas que no se reconocen se ignoran.</li>
+<li>Necesita estas columnas: <strong>Nombre</strong>, <strong>Apellidos</strong>, <strong>Fecha de nacimiento</strong>, <strong>Nombre del contacto de emergencia</strong> y <strong>Teléfono del contacto de emergencia</strong>.</li>
+<li>Puede tener además: apellido, email y relación del contacto de emergencia, invita, incompatibilidades, notas y los campos personalizados marcados para importar (por su slug).</li>
+<li>Puede pesar 2 MB como máximo.</li>
+</ul>
+<p><strong>Fechas.</strong> Se aceptan AAAA-MM-DD, DD/MM/AAAA, MM/DD/AAAA, DD-MM-AAAA, MM-DD-AAAA y DD.MM.AAAA. Una fecha como 01/10/2025 puede ser el 1 de octubre o el 10 de enero; elige en <strong>Preferencia de formato de fecha</strong> cómo interpretarlas, o mejor usa AAAA-MM-DD. Al terminar, el resultado avisa de las fechas ambiguas que encontró.</p>
+<p><strong>Asistentes que ya existen.</strong> Si una fila coincide con un asistente del retiro (mismo nombre, apellidos y fecha de nacimiento), no se duplica: se actualizan los datos de su contacto de emergencia y sus campos personalizados. Las filas que coinciden con asistentes dados de baja se dejan como estaban.</p>
+<p>Al terminar se muestra cuántos asistentes se han añadido, cuántos actualizado y qué filas tenían errores, con su número de línea.</p>
+
+<h3>Exportar</h3>
+<p><strong>Exportar CSV</strong> descarga los asistentes activos con sus datos, su URL de mensajes, el número de mensajes y los campos personalizados marcados para exportar. Las notas internas no se exportan nunca. Ten en cuenta que el archivo contiene datos personales y las URL privadas: guárdalo con cuidado y bórralo cuando ya no lo necesites.</p>
+
+<h2 id="formulario">8. El formulario de cartas</h2>
+
+<p>Es la página que ve quien abre la URL de mensajes de un asistente. No necesita cuenta en la web.</p>
+
+<ul>
+<li>Arriba aparecen el nombre del asistente y el <strong>mensaje personalizado</strong> del retiro.</li>
+<li>Si el formulario es multilingüe, hay un selector de <strong>Idioma</strong>. Cambiar de idioma no recarga la página, así que no se pierde lo escrito.</li>
+<li>Quien escribe pone su nombre y, si quiere, su email (dos veces, para evitar erratas). El email se guarda cifrado y solo se usa para avisarle de algún problema con su carta, como la devolución si el asistente no llega a ir al retiro.</li>
+<li>Elige el tipo de mensaje:
+<ul>
+<li><strong>Mensaje de texto</strong>: un editor con negrita, cursiva, subrayado, listas y deshacer/rehacer. Se pueden pegar imágenes y texto copiado de Word o Google Docs.</li>
+<li><strong>Subida de archivos</strong>: fotos o documentos (PDF, DOC, DOCX, TXT, JPG, PNG, GIF). El formulario muestra el tamaño máximo que admite el servidor.</li>
+</ul></li>
+<li>Resuelve la <strong>verificación de seguridad</strong>, una suma sencilla. Los usuarios que han iniciado sesión en la web no la ven.</li>
+<li>Si el retiro tiene advertencia legal, hay que marcar la casilla de aceptación; el botón de envío no se activa hasta entonces.</li>
+<li>Tras pulsar <strong>Enviar mensaje confidencial</strong> se muestra una página que confirma que la carta se ha recibido.</li>
+</ul>
+
+<p>Para evitar abusos, cada dirección IP puede enviar un número limitado de cartas por hora. Si alguien se queda bloqueado tras varios errores, un administrador puede quitar el bloqueo en <strong>Privacidad y cumplimiento &gt; Restablecer todos los límites de solicitudes</strong>.</p>
+<p>Si el asistente se ha dado de baja, el formulario muestra «Ya no se aceptan mensajes para este asistente». Una dirección con un código que no existe da error 404.</p>
+
+<h2 id="mensajes">9. Mensajes confidenciales: imprimir, borrar y devolver</h2>
+
+<h3>La lista de mensajes</h3>
+<p>Se abre con el botón <strong>Mensajes</strong> de cada asistente. Por seguridad, <strong>nunca muestra el contenido</strong> de las cartas, solo sus datos: remitente, tipo (texto o archivos), fecha de envío y estado de impresión. Puedes filtrar por tipo, buscar por remitente y ordenar por cualquiera de esas columnas, incluido el estado de impresión (primero las no impresas).</p>
+
+<h3>Imprimir</h3>
+<ol>
+<li>Pulsa <strong>Imprimir</strong> en la carta.</li>
+<li>Se abre una pestaña nueva con la carta lista para imprimir: el destinatario, el remitente y el contenido. Se descifra en ese momento.</li>
+<li>Se abre el diálogo de impresión del navegador. Al cerrarlo, la pestaña se cierra sola.</li>
+</ol>
+<ul>
+<li>Las cartas con varias imágenes se maquetan para que ninguna imagen se parta entre dos páginas.</li>
+<li>Si la carta es un único PDF, al imprimirlo se le añade arriba un encabezado «De/Para» para saber de quién y para quién es (se puede desactivar en los ajustes globales).</li>
+<li>Si hay varios archivos y alguno no es una imagen, se descargan todos juntos en un ZIP. Los documentos Word no se pueden mostrar en la vista de impresión: hay que descargarlos e imprimirlos aparte.</li>
+<li>Usa un navegador actual (Edge, Chrome, Firefox o Safari). Internet Explorer no está soportado y no muestra las cartas.</li>
+</ul>
+
+<h3>Historial de impresión</h3>
+<p>El estado de cada carta dice si se ha impreso, cuántas veces y cuándo por primera vez. Al pulsarlo se ve el historial completo: quién la imprimió, cuándo y desde qué IP. Imprime cada carta una sola vez si es posible y guarda las copias en papel con cuidado.</p>
+
+<h3>Borrar una carta</h3>
+<p><strong>Eliminar</strong> borra la carta, sus archivos y su historial de impresión. No se puede deshacer.</p>
+
+<h3 id="devolver">Devolver cartas por email</h3>
+<p>Cuando un asistente se da de baja (por ejemplo, porque al final no va al retiro), sus cartas se pueden devolver a quienes las escribieron, siempre que dejaran su email:</p>
+<ul>
+<li><strong>Devolver por email</strong> devuelve una carta; <strong>Devolver todas por email</strong>, todas las que se pueden devolver.</li>
+<li>Antes de enviar se muestra una vista previa con el destinatario, el asunto, el texto y los adjuntos. Las cartas de texto se adjuntan como documento HTML; las de archivos, con los archivos originales.</li>
+<li>Al enviarse el email, la carta se borra del sistema. Si el envío falla, la carta se conserva.</li>
+<li>Si la carta ya se había impreso, se recuerda que hay que destruir la copia en papel.</li>
+<li>Las cartas sin email aparecen como «Sin email: no se puede devolver».</li>
+</ul>
+<p>El asunto y el texto del email se configuran en cada retiro (ver <a href="#retiros">Retiros</a>).</p>
+
+<h2 id="bajas">10. Bajas, reactivaciones y fin del retiro</h2>
+
+<h3>Dar de baja a un asistente</h3>
+<p>Si alguien no va a ir al retiro, pulsa <strong>Dar de baja</strong> en su fila. El asistente:</p>
+<ul>
+<li>pasa a la pestaña <strong>Asistentes dados de baja</strong>, con la fecha y el usuario que lo dio de baja;</li>
+<li>ya no se puede editar;</li>
+<li>deja de aceptar cartas por su URL;</li>
+<li>conserva sus cartas, que se pueden imprimir o devolver por email, y su historial de contactos, que sigue abierto.</li>
+</ul>
+<p>No se borra nada. Desde esa pestaña puedes <strong>Volver a dar de alta</strong> al asistente o <strong>Borrar permanentemente</strong>. Solo se pueden borrar asistentes dados de baja; si aún tiene cartas que se podrían devolver, se avisa antes de borrarlas.</p>
+
+<h3>Dar de baja a todos los asistentes</h3>
+<p><strong>Dar de baja a todos los asistentes</strong> hace lo mismo con todo el retiro. Para confirmarlo hay que escribir «DAR DE BAJA A TODOS LOS ASISTENTES».</p>
+
+<h3 id="vaciar">Vaciar el retiro</h3>
+<p>Cuando el retiro ha terminado, los gestores de retiro ven el botón <strong>Vaciar retiro</strong>. Borra definitivamente a todos los asistentes, activos y dados de baja, con sus cartas, archivos, historial de impresión, historial de contactos y valores de los campos personalizados. El retiro se queda con su configuración, sus campos personalizados y sus gestores, listo para la siguiente edición.</p>
+<p>Para confirmarlo hay que escribir el nombre exacto del retiro. Si quedan cartas de asistentes dados de baja que aún se podrían devolver, se avisa antes.</p>
+
+<h2 id="ajustes-globales">11. Ajustes globales</h2>
+<p>En <strong>Retiros &gt; Ajustes globales</strong>, solo para administradores del plugin:</p>
+<dl class="dfxprl-manual-fields">
+<dt>Personalización por retiro</dt>
+<dd>Si está activada, cada retiro puede tener su propia cabecera, pie y clases del body. Si no, todos usan los valores de esta página.</dd>
+<dt>Bloque de cabecera por defecto y Bloque de pie de página por defecto</dt>
+<dd>Bloque reutilizable, parte de plantilla o patrón que se muestra en el formulario de cartas. Se crean en <strong>Apariencia &gt; Editor &gt; Patrones</strong>. Si no eliges ninguno, se usan la cabecera y el pie del tema.</dd>
+<dt>Clases adicionales del body</dt>
+<dd>Clases CSS para la etiqueta <code>&lt;body&gt;</code> de todos los formularios de cartas. La página siempre lleva además la clase <code>dfxprl-message-form</code>.</dd>
+<dt>Añadir encabezado al PDF</dt>
+<dd>Añade el encabezado «De/Para» a las cartas en PDF al imprimirlas. Lo hace el navegador de quien imprime, sin cargar el servidor. Está activado por defecto.</dd>
+<dt>Clave de API de DeepL</dt>
+<dd>Opcional. Permite traducir automáticamente los textos de cada retiro al idioma de quien abre el formulario. Basta con el plan gratuito, DeepL API Free (500.000 caracteres al mes). También se puede definir en <code>wp-config.php</code> como <code>DFXPRL_DEEPL_API_KEY</code>.</dd>
+<dt>Gestión de usuarios</dt>
+<dd>Da o quita el permiso global de gestión de retiros. Quien lo tiene es administrador del plugin: ve todos los retiros y puede crear otros nuevos. Los permisos de cada retiro se dan desde su pantalla de edición.</dd>
+</dl>
+
+<h2 id="privacidad">12. Privacidad y cumplimiento</h2>
+<p>En <strong>Retiros &gt; Privacidad y cumplimiento</strong>, solo para administradores del plugin:</p>
+<ul>
+<li><strong>Resumen del estado de cumplimiento</strong>: cifrado, anonimización de IP, política de conservación y registro de auditoría, con estadísticas de los datos guardados.</li>
+<li><strong>Política de retención de datos</strong>: cuántos días se guardan las cartas (de 30 a 3650; 0 para no borrarlas nunca) y el registro de auditoría (de 365 a 3650). Lo que pasa de ese plazo se borra solo. Las IP de quienes escriben se anonimizan siempre a los 30 días.</li>
+<li><strong>Limpieza manual</strong>: ejecuta ahora la limpieza que se hace cada día de forma automática.</li>
+<li><strong>Gestión de límites de solicitudes</strong>: desbloquea a quien haya superado el límite de envíos.</li>
+<li><strong>Exportación/borrado de datos personales</strong>: busca por nombre o email del remitente para atender el derecho de acceso y portabilidad o el derecho de supresión del RGPD. Para borrar hay que escribir «BORRAR TODOS LOS DATOS». El contenido de las cartas no se exporta en claro, porque está cifrado.</li>
+<li><strong>Actividad de auditoría reciente</strong>: los últimos eventos registrados. El registro guarda identificadores e iniciales, nunca el contenido de las cartas.</li>
+</ul>
+
+<h2 id="seguridad">13. Seguridad y cifrado</h2>
+<ul>
+<li>El contenido de las cartas y sus archivos se cifra con AES-256 y se autentica con HMAC-SHA256 antes de guardarse. El email de quien escribe también se guarda cifrado.</li>
+<li>Las cartas solo se descifran al imprimirlas o devolverlas por email. No hay vista previa en pantalla, para que nadie pueda leerlas por encima del hombro.</li>
+<li>La clave de cifrado se genera al activar el plugin. Muévela a <code>wp-config.php</code> como <code>DFXPRL_ENCRYPTION_KEY</code> y guarda una copia en lugar seguro: <strong>si se pierde la clave, las cartas no se pueden recuperar</strong>.</li>
+<li>Si la clave de <code>wp-config.php</code> y la de la base de datos no coinciden, se muestra un aviso. Puedes cambiar la de <code>wp-config.php</code> para que coincida o pulsar <strong>Eliminar clave de base de datos y emplear clave de wp-config.php</strong>. Lo que se cifrara con la clave antigua ya no se podrá leer.</li>
+<li>Se registran en el registro de auditoría los permisos, invitaciones y operaciones sobre retiros, asistentes y cartas.</li>
+</ul>
+
+<h2 id="calendario">14. Un retiro de principio a fin</h2>
+<ol>
+<li><strong>Semanas antes.</strong> Crea el retiro (o vacía el del año anterior), escribe el mensaje para los remitentes, la advertencia legal y la plantilla de solicitud. Da acceso al equipo con el perfil que necesite cada uno.</li>
+<li><strong>Inscripciones.</strong> Da de alta a los asistentes o impórtalos desde un CSV.</li>
+<li><strong>Petición de cartas.</strong> Para cada asistente, copia el <strong>Mensaje de invitación</strong> y envíaselo a su contacto de emergencia. Anota en el historial de contactos a quién has llamado o escrito.</li>
+<li><strong>Seguimiento.</strong> Mira en la lista quién tiene pocas cartas (ordena por <strong>Total de cartas</strong>) y vuelve a contactar si hace falta. Apunta las cartas en papel en <strong>Cartas físicas</strong>.</li>
+<li><strong>Bajas.</strong> Si alguien no va, dalo de baja y devuelve sus cartas por email.</li>
+<li><strong>Durante el retiro.</strong> Imprime las cartas (ordena por <strong>Mensajes</strong> para ver las pendientes de imprimir) y prepara la entrega.</li>
+<li><strong>Después.</strong> Destruye las copias que sobren y pulsa <strong>Vaciar retiro</strong> para borrar los datos personales y dejar el retiro listo para la próxima vez.</li>
+</ol>
+
+<h2 id="faq">15. Preguntas frecuentes y problemas</h2>
+
+<h4>¿Quién puede leer las cartas?</h4>
+<p>Nadie en pantalla. Solo se ven al imprimirlas, y solo pueden imprimirlas los administradores del plugin y los gestores de retiro y de mensajes de ese retiro. Cada impresión queda registrada.</p>
+
+<h4>Un familiar dice que el enlace no funciona.</h4>
+<p>Comprueba que ha copiado la dirección completa y que el asistente no está dado de baja. Si ve «Demasiadas solicitudes», espera una hora o restablece los límites desde <strong>Privacidad y cumplimiento</strong>.</p>
+
+<h4>Al enviar archivos sale un error de tamaño.</h4>
+<p>El límite lo pone el servidor y aparece en el formulario. Hay que enviar archivos más pequeños o menos de una vez. Quien administre el alojamiento puede subir los límites de PHP (<code>upload_max_filesize</code> y <code>post_max_size</code>).</p>
+
+<h4>No me aparece el botón Mensaje de invitación.</h4>
+<p>Solo aparece si el retiro tiene una <strong>Plantilla de solicitud de mensaje</strong>.</p>
+
+<h4>No puedo editar a un asistente.</h4>
+<p>O está dado de baja (reactívalo primero) o tu perfil no lo permite: los gestores de mensajes solo editan algunos campos y los usuarios de solo lectura no editan nada.</p>
+
+<h4>No veo el botón Vaciar retiro.</h4>
+<p>Solo aparece a los gestores de retiro y cuando ya ha pasado la fecha de fin del retiro.</p>
+
+<h4>He perdido la clave de cifrado.</h4>
+<p>Las cartas cifradas con ella no se pueden recuperar. Por eso conviene guardar una copia de <code>wp-config.php</code> o de la clave en un lugar seguro.</p>
+
+<h4>¿El formulario está en mi idioma?</h4>
+<p>El formulario está traducido a español, catalán, euskera, gallego, inglés, portugués, francés, italiano y alemán. Los textos propios de cada retiro hay que escribirlos o traducirlos (ver <a href="#traducciones">Traducciones</a>).</p>
+
+<p class="dfxprl-manual-footer">¿Has encontrado un error o echas algo en falta? Cuéntalo en <a href="https://github.com/davefx/dfx-parish-retreat-letters/issues" target="_blank" rel="noopener">GitHub</a> o en el <a href="https://wordpress.org/support/plugin/dfx-parish-retreat-letters/" target="_blank" rel="noopener">foro de soporte de WordPress.org</a>.</p>
+
+</div>

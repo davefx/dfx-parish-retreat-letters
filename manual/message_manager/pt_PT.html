@@ -1,0 +1,193 @@
+<div class="dfxprl-manual" lang="pt-PT">
+
+<h1>Manual do gestor de mensagens</h1>
+
+<p class="dfxprl-manual-lead">É gestor de mensagens de um ou mais retiros: trata das cartas. Imprime-as para serem entregues durante o retiro, elimina-as se for preciso e devolve-as por email a quem as escreveu quando um participante acaba por não ir. Também vê os participantes, regista as cartas em papel e mantém o registo de contactos com as famílias. As cartas chegam cifradas e ninguém as pode ler no ecrã: só se veem ao serem impressas.</p>
+
+<nav class="dfxprl-manual-toc" aria-label="Índice">
+<h2>Índice</h2>
+<ol>
+<li><a href="#como-funciona">Como funciona</a></li>
+<li><a href="#tu-perfil">O que pode fazer</a></li>
+<li><a href="#asistentes">Participantes</a></li>
+<li><a href="#formulario">O formulário de cartas</a></li>
+<li><a href="#mensajes">Mensagens confidenciais: imprimir, eliminar e devolver</a></li>
+<li><a href="#bajas">Participantes desistentes</a></li>
+<li><a href="#calendario">As cartas, do princípio ao fim</a></li>
+<li><a href="#faq">Perguntas frequentes e problemas</a></li>
+</ol>
+</nav>
+
+<h2 id="como-funciona">1. Como funciona</h2>
+
+<ol>
+<li><strong>Cada participante tem um URL privado</strong> para receber cartas. A equipa envia-o aos familiares e amigos, normalmente através do contacto de emergência.</li>
+<li><strong>Quem escreve abre a ligação</strong> em qualquer navegador, sem precisar de se registar. Escreve a carta ou anexa fotografias e documentos, e envia-a.</li>
+<li><strong>A carta é guardada cifrada.</strong> No painel só se vê quem a enviou, quando e de que tipo é; nunca o seu conteúdo.</li>
+<li><strong>É o gestor de mensagens quem imprime as cartas</strong> durante o retiro. Cada impressão fica registada com o utilizador, a data e o endereço IP.</li>
+<li><strong>As cartas são entregues</strong> a cada participante no momento que a equipa decidir.</li>
+</ol>
+
+<p>Está tudo no menu <strong>Retiros</strong> do painel de administração do WordPress. Em <strong>Todos os retiros</strong> vê os retiros em que tem alguma permissão; clique em <strong>Participantes</strong> ou no nome do retiro para entrar.</p>
+
+<h2 id="tu-perfil">2. O que pode fazer</h2>
+
+<p>As permissões são dadas <strong>por retiro</strong>: noutro retiro pode ter outro perfil ou nenhum. Nos retiros em que é gestor de mensagens:</p>
+
+<ul>
+<li><strong>Pode</strong>:
+<ul>
+<li>ver a lista de participantes, ativos e desistentes, com as contagens de cartas;</li>
+<li>abrir, imprimir, eliminar e devolver as cartas por email;</li>
+<li>registar as cartas em papel recebidas;</li>
+<li>alterar os campos personalizados que o gestor do retiro tenha aberto aos gestores de mensagens;</li>
+<li>escrever no registo de contactos;</li>
+<li>copiar o URL para mensagens e a mensagem de convite de cada participante.</li>
+</ul></li>
+<li><strong>Não pode</strong>: alterar a configuração do retiro, conceder permissões, adicionar, editar, marcar como desistentes ou reativar participantes, importar ou exportar CSV, nem esvaziar o retiro. Para isso, fale com o gestor do retiro.</li>
+</ul>
+
+<h2 id="asistentes">3. Participantes</h2>
+
+<h3>A lista de participantes</h3>
+<p>No topo vê-se o total de participantes e o resumo das cartas: quantas mensagens foram recebidas, quantas faltam imprimir e o total contando com as cartas físicas. Há dois separadores: <strong>Participantes</strong> (os ativos) e <strong>Participantes desistentes</strong>.</p>
+
+<h4>Colunas</h4>
+<ul>
+<li>Os dados do participante: <strong>Nome próprio</strong>, <strong>Apelidos</strong>, <strong>Contacto de emergência</strong> e os restantes que o retiro tenha ativados, incluindo os campos personalizados visíveis para si.</li>
+<li><strong>Mensagens</strong>: cartas recebidas pelo site e, entre parênteses, as que faltam imprimir. Clicando várias vezes no cabeçalho, ordena-se pelo total ou pelas que faltam imprimir.</li>
+<li><strong>Cartas físicas</strong>: cartas em papel recebidas fora do site.</li>
+<li><strong>Total de cartas</strong>: a soma das duas anteriores.</li>
+<li><strong>Registo de contactos</strong>: um ícone de caderno com o número de entradas. Ao clicar, o registo abre-se numa janela.</li>
+</ul>
+<p>Os cabeçalhos ficam fixos ao percorrer a lista. Em ecrãs estreitos, a tabela transforma-se em fichas e aparece uma lista pendente <strong>Ordenar por</strong>.</p>
+
+<h4>Pesquisar, filtrar e ordenar</h4>
+<p>A caixa de pesquisa procura no nome próprio, apelidos, contacto de emergência, convidado por e incompatibilidades. Em <strong>Filtros</strong> pode filtrar por cada um desses campos e pelas notas; clique em <strong>Aplicar filtros</strong> ou <strong>Limpar filtros</strong>. Clique no cabeçalho de uma coluna para ordenar por ela.</p>
+<p>Em <strong>Filtros</strong> aparecem também os campos personalizados do retiro que pode ver. Os de texto filtram-se pelo seu conteúdo; os do tipo <strong>Lista de opções</strong> e <strong>Sim/Não</strong>, com uma lista pendente; os números e as datas, com um intervalo <strong>De</strong>–<strong>Até</strong> em que pode preencher apenas um dos extremos.</p>
+
+<h4>Edição direta</h4>
+<p>Pode alterar sem abrir a ficha as <strong>Cartas físicas</strong> e os campos personalizados que lhe são permitidos: clique na célula, escreva e prima <kbd>Enter</kbd> para guardar ou <kbd>Esc</kbd> para cancelar.</p>
+
+<h4>Botões de cada participante</h4>
+<ul>
+<li><strong>Editar</strong>: abre a ficha em modo restrito (ver mais abaixo).</li>
+<li><strong>Mensagens</strong>: abre as suas cartas.</li>
+<li><strong>Mensagem de convite</strong>: mostra o modelo de pedido preenchido com os dados e a ligação do participante, pronto a copiar e colar num email ou no WhatsApp. Só aparece se o retiro tiver modelo.</li>
+<li><strong>Gerar URL para mensagens</strong> ou <strong>Copiar URL para mensagens</strong>: ver mais abaixo.</li>
+</ul>
+
+<h3>A ficha do participante</h3>
+<p>Abre-se em modo restrito: vê todos os dados, mas só pode alterar as <strong>Cartas físicas recebidas</strong>, os campos personalizados que lhe são permitidos e o <strong>Registo de contactos</strong>. A ficha mostra também o número de mensagens recebidas, com ligação para elas, e o <strong>URL para mensagens</strong>.</p>
+
+<h3 id="url">O URL para mensagens</h3>
+<p>Cada participante tem um endereço único, do género <code>https://suaparoquia.pt/messages/codigo-secreto</code>, que é a porta de entrada para lhe escrever. O código é aleatório e não se consegue adivinhar.</p>
+<ul>
+<li>Se o participante ainda não tiver um, clique em <strong>Gerar URL para mensagens</strong>.</li>
+<li><strong>Copiar URL para mensagens</strong> copia-o para a área de transferência com as iniciais do participante no fim (por exemplo, <code>…/messages/codigo/#JGP</code>), para saber de quem é a ligação sem mostrar o nome.</li>
+<li>Partilhe a ligação apenas com quem deva escrever. Qualquer pessoa que a tenha pode enviar cartas a esse participante.</li>
+</ul>
+
+<h3 id="historial">Registo de contactos</h3>
+<p>Serve para a equipa anotar as chamadas e conversas com a pessoa de contacto de cada participante: «Liguei à mãe na terça-feira, vai enviar a ligação aos irmãos», etc. Abre-se a partir da coluna <strong>Registo de contactos</strong> da lista ou da ficha.</p>
+<ul>
+<li>Acrescente entradas com data e descrição com <strong>Adicionar entrada</strong>.</li>
+<li>Pode corrigir as suas entradas durante 15 minutos e apagá-las em qualquer momento. As entradas editadas ficam marcadas com «(editado)».</li>
+<li>As entradas de outras pessoas só podem ser alteradas pelo gestor do retiro.</li>
+</ul>
+
+<h2 id="formulario">4. O formulário de cartas</h2>
+
+<p>É a página que vê quem abre o URL para mensagens de um participante. Não é preciso ter conta no site. Convém conhecê-lo bem para poder ajudar as famílias.</p>
+
+<ul>
+<li>No topo aparecem o nome do participante e a mensagem que a equipa preparou para quem escreve.</li>
+<li>Pode haver um seletor de <strong>Idioma</strong>. Mudar de idioma não recarrega a página, por isso não se perde o que já foi escrito.</li>
+<li>Quem escreve indica o seu nome e, se quiser, o seu email (duas vezes, para evitar gralhas). O email é guardado cifrado e só é usado para o avisar de algum problema com a carta, como a devolução se o participante acabar por não ir ao retiro.</li>
+<li>Escolhe o tipo de mensagem:
+<ul>
+<li><strong>Mensagem de texto</strong>: um editor com negrito, itálico, sublinhado, listas e anular/refazer. É possível colar imagens e texto copiado do Word ou do Google Docs.</li>
+<li><strong>Envio de ficheiros</strong>: fotografias ou documentos (PDF, DOC, DOCX, TXT, JPG, PNG, GIF). O formulário mostra o tamanho máximo que o servidor aceita.</li>
+</ul></li>
+<li>Resolve a <strong>Verificação de segurança</strong>, uma soma simples.</li>
+<li>Se o retiro tiver aviso legal, é preciso assinalar a caixa de aceitação; o botão de envio só fica ativo depois disso.</li>
+<li>Depois de clicar em <strong>Enviar mensagem confidencial</strong>, aparece uma página a confirmar que a carta foi recebida.</li>
+</ul>
+
+<p>Se o participante tiver desistido, o formulário mostra «Já não são aceites mensagens para este participante».</p>
+
+<h2 id="mensajes">5. Mensagens confidenciais: imprimir, eliminar e devolver</h2>
+
+<h3>A lista de mensagens</h3>
+<p>Abre-se com o botão <strong>Mensagens</strong> de cada participante. Por segurança, <strong>nunca mostra o conteúdo</strong> das cartas, apenas os seus dados: remetente, tipo (texto ou ficheiros), data de envio e estado de impressão. Pode filtrar por tipo, pesquisar por remetente e ordenar por qualquer uma dessas colunas, incluindo o estado de impressão (primeiro as não impressas).</p>
+
+<h3>Imprimir</h3>
+<ol>
+<li>Clique em <strong>Imprimir</strong> na carta.</li>
+<li>Abre-se um novo separador com a carta pronta a imprimir: o destinatário, o remetente e o conteúdo. A carta é decifrada nesse momento.</li>
+<li>Abre-se a caixa de diálogo de impressão do navegador. Ao fechá-la, o separador fecha-se sozinho.</li>
+</ol>
+<ul>
+<li>As cartas com várias imagens são paginadas de forma a que nenhuma imagem fique dividida entre duas páginas.</li>
+<li>Se a carta for um único PDF, normalmente é-lhe acrescentado no topo um cabeçalho «De/Para» para saber de quem é e a quem se destina.</li>
+<li>Se houver vários ficheiros e algum não for uma imagem, são todos descarregados juntos num ZIP. Os documentos Word não podem ser mostrados na vista de impressão: é preciso descarregá-los e imprimi-los à parte.</li>
+<li>Use um navegador atual (Edge, Chrome, Firefox ou Safari). O Internet Explorer não é suportado e não mostra as cartas.</li>
+</ul>
+
+<h3>Histórico de impressão</h3>
+<p>O estado de cada carta indica se foi impressa, quantas vezes e quando foi impressa pela primeira vez. Ao clicar, vê-se o histórico completo: quem a imprimiu, quando e a partir de que IP. Se possível, imprima cada carta uma só vez e guarde as cópias em papel com cuidado.</p>
+
+<h3>Eliminar uma carta</h3>
+<p><strong>Eliminar</strong> apaga a carta, os seus ficheiros e o seu histórico de impressão. Não é possível desfazer.</p>
+
+<h3 id="devolver">Devolver cartas por email</h3>
+<p>Quando um participante desiste (por exemplo, porque afinal não vai ao retiro), as suas cartas podem ser devolvidas a quem as escreveu, desde que tenha deixado o email:</p>
+<ul>
+<li><strong>Devolver por email</strong> devolve uma carta; <strong>Devolver todas por email</strong>, todas as que podem ser devolvidas.</li>
+<li>Antes do envio é mostrada uma pré-visualização com o destinatário, o assunto, o texto e os anexos. As cartas de texto são anexadas como documento HTML; as de ficheiros, com os ficheiros originais.</li>
+<li>Depois de enviado o email, a carta é apagada do sistema. Se o envio falhar, a carta é conservada.</li>
+<li>Se a carta já tiver sido impressa, é lembrado que é preciso destruir a cópia em papel.</li>
+<li>As cartas sem email aparecem como «Sem email: não pode ser devolvida».</li>
+</ul>
+<p>O assunto e o texto do email são preparados pelo gestor do retiro.</p>
+
+<h2 id="bajas">6. Participantes desistentes</h2>
+
+<p>Quando o gestor do retiro marca alguém como desistente, o participante passa para o separador <strong>Participantes desistentes</strong>, com a data e o utilizador que o marcou como desistente. O seu URL deixa de aceitar cartas, mas nada é apagado: as suas cartas continuam lá, e pode imprimi-las ou <a href="#devolver">devolvê-las por email</a>. O seu registo de contactos continua aberto.</p>
+<p>Se o participante acabar mesmo por ir ao retiro, peça ao gestor do retiro que o reative.</p>
+
+<h2 id="calendario">7. As cartas, do princípio ao fim</h2>
+<ol>
+<li><strong>Pedido de cartas.</strong> Para cada participante, copie a <strong>Mensagem de convite</strong> e envie-a ao respetivo contacto de emergência. Anote no registo de contactos a quem ligou ou escreveu.</li>
+<li><strong>Acompanhamento.</strong> Veja na lista quem tem poucas cartas (ordene por <strong>Total de cartas</strong>) e volte a contactar se for preciso. Registe as cartas em papel em <strong>Cartas físicas</strong>.</li>
+<li><strong>Desistências.</strong> Se alguém não for, devolva as suas cartas por email assim que o gestor o marcar como desistente.</li>
+<li><strong>Durante o retiro.</strong> Imprima as cartas (ordene por <strong>Mensagens</strong> para ver as que faltam imprimir) e prepare a entrega. Antes de entregar, confirme na lista que não ficou nenhuma por imprimir.</li>
+<li><strong>Depois.</strong> Destrua as cópias que sobrarem. O gestor do retiro esvaziará o retiro para apagar os dados pessoais.</li>
+</ol>
+
+<h2 id="faq">8. Perguntas frequentes e problemas</h2>
+
+<h4>Quem pode ler as cartas?</h4>
+<p>Ninguém, no ecrã. Só se veem ao serem impressas, e só as podem imprimir os gestores do retiro e de mensagens desse retiro e os administradores do plugin. Cada impressão fica registada.</p>
+
+<h4>Um familiar diz que a ligação não funciona.</h4>
+<p>Confirme que copiou o endereço completo e que o participante não está marcado como desistente. Se aparecer «Demasiados pedidos», a pessoa deve aguardar uma hora; também pode pedir a um administrador do plugin que reponha os limites.</p>
+
+<h4>Ao enviar ficheiros aparece um erro de tamanho.</h4>
+<p>O limite é definido pelo servidor e aparece no formulário. É preciso enviar ficheiros mais pequenos, ou menos de cada vez.</p>
+
+<h4>Uma carta não se imprime bem.</h4>
+<p>Experimente outro navegador atual. Se forem documentos Word, descarregue-os e imprima-os à parte. Se a carta trouxer vários ficheiros e algum não for uma imagem, são descarregados num ZIP.</p>
+
+<h4>Não me aparece o botão Mensagem de convite.</h4>
+<p>Só aparece se o gestor do retiro tiver escrito um modelo de pedido.</p>
+
+<h4>Não consigo alterar os dados de um participante.</h4>
+<p>O seu perfil só permite alterar as cartas físicas, alguns campos personalizados e o registo de contactos. Para o resto, fale com o gestor do retiro.</p>
+
+<h4>Não vejo um retiro na lista.</h4>
+<p>Só vê os retiros em que tem permissão. Peça acesso ao gestor do retiro.</p>
+
+<p class="dfxprl-manual-footer">Encontrou um erro ou sente falta de alguma coisa? Diga-nos no <a href="https://github.com/davefx/dfx-parish-retreat-letters/issues" target="_blank" rel="noopener">GitHub</a> ou no <a href="https://wordpress.org/support/plugin/dfx-parish-retreat-letters/" target="_blank" rel="noopener">fórum de suporte do WordPress.org</a>.</p>
+
+</div>

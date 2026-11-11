@@ -176,6 +176,99 @@ class CustomFieldTest extends TestCase {
 		$this->assertSame( 'text', $this->sanitize_definition( array( 'name' => 'X', 'field_type' => 'bogus' ) )['field_type'] );
 	}
 
+	/**
+	 * Build a field with an ID and slug, as the list filters need.
+	 *
+	 * @param int    $id      Field ID.
+	 * @param string $slug    Field slug.
+	 * @param string $type    Field type.
+	 * @param array  $options Options for select fields.
+	 * @return object
+	 */
+	private function filter_field( $id, $slug, $type, $options = array() ) {
+		$field = $this->field( $type, $options );
+		$field->id = $id;
+		$field->slug = $slug;
+		return $field;
+	}
+
+	public function test_numbers_and_dates_filter_by_range_and_other_types_by_one_value() {
+		$this->assertSame(
+			array( 'min' => 'filter_cfmin_age', 'max' => 'filter_cfmax_age' ),
+			DFXPRL_Custom_Field::get_filter_params( $this->filter_field( 1, 'age', 'number' ) )
+		);
+		$this->assertSame(
+			array( 'min' => 'filter_cfmin_arrival', 'max' => 'filter_cfmax_arrival' ),
+			DFXPRL_Custom_Field::get_filter_params( $this->filter_field( 2, 'arrival', 'date' ) )
+		);
+		foreach ( array( 'text', 'textarea', 'select', 'checkbox' ) as $type ) {
+			$this->assertSame( array( 'value' => 'filter_cf_x' ), DFXPRL_Custom_Field::get_filter_params( $this->filter_field( 3, 'x', $type ) ), $type );
+		}
+	}
+
+	public function test_list_filters_are_read_from_the_request() {
+		$fields = array(
+			$this->filter_field( 1, 'room', 'text' ),
+			$this->filter_field( 2, 'size', 'select', array( 'S', 'M', 'L' ) ),
+			$this->filter_field( 3, 'paid', 'checkbox' ),
+			$this->filter_field( 4, 'age', 'number' ),
+			$this->filter_field( 5, 'arrival', 'date' ),
+			$this->filter_field( 6, 'diet', 'checkbox' ),
+		);
+
+		$result = $this->model->parse_list_filters( $fields, array(
+			'filter_cf_room'       => ' <b>12</b> ',
+			'filter_cf_size'       => 'm',
+			'filter_cf_paid'       => '0',
+			'filter_cfmin_age'     => '18,5',
+			'filter_cfmax_arrival' => '2026-11-20',
+			'filter_cf_diet'       => '',
+			'filter_name'          => 'John',
+		) );
+
+		$this->assertSame( array(
+			'filter_cf_room'       => '<b>12</b>',
+			'filter_cf_size'       => 'm',
+			'filter_cf_paid'       => '0',
+			'filter_cfmin_age'     => '18,5',
+			'filter_cfmax_arrival' => '2026-11-20',
+		), $result['params'] );
+
+		$this->assertSame( array(
+			array( 'field_id' => 1, 'operator' => 'contains', 'value' => '12' ),
+			array( 'field_id' => 2, 'operator' => 'equals', 'value' => 'M' ),
+			array( 'field_id' => 3, 'operator' => 'unchecked', 'value' => '1' ),
+			array( 'field_id' => 4, 'operator' => 'number_min', 'value' => '18.5' ),
+			array( 'field_id' => 5, 'operator' => 'date_max', 'value' => '2026-11-20' ),
+		), $result['conditions'] );
+	}
+
+	public function test_list_filters_ignore_values_not_valid_for_their_field() {
+		$fields = array(
+			$this->filter_field( 2, 'size', 'select', array( 'S', 'M', 'L' ) ),
+			$this->filter_field( 3, 'paid', 'checkbox' ),
+			$this->filter_field( 4, 'age', 'number' ),
+			$this->filter_field( 5, 'arrival', 'date' ),
+		);
+
+		$result = $this->model->parse_list_filters( $fields, array(
+			'filter_cf_size'       => 'XL',
+			'filter_cf_paid'       => 'maybe',
+			'filter_cfmax_age'     => 'old',
+			'filter_cfmin_arrival' => '2026-02-30',
+			'filter_cf_age'        => array( '1' ),
+		) );
+
+		$this->assertSame( array(), $result['params'] );
+		$this->assertSame( array(), $result['conditions'] );
+	}
+
+	public function test_list_filters_only_use_the_fields_they_are_given() {
+		// A field the user cannot see is never passed, so its parameter does nothing
+		$result = $this->model->parse_list_filters( array(), array( 'filter_cf_secret' => 'x' ) );
+		$this->assertSame( array(), $result['conditions'] );
+	}
+
 	public function test_log_edit_window_is_fifteen_minutes() {
 		$log = ( new ReflectionClass( 'DFXPRL_Attendant_Log' ) )->newInstanceWithoutConstructor();
 

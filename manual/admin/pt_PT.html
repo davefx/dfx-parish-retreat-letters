@@ -1,0 +1,421 @@
+<div class="dfxprl-manual" lang="pt-PT">
+
+<h1>Manual do DFX Cartas de retiros paroquiais</h1>
+
+<p class="dfxprl-manual-lead">Este plugin serve para recolher, guardar e imprimir as cartas que familiares e amigos escrevem às pessoas que participam num retiro paroquial. Cada participante tem uma ligação privada; quem lhe quiser escrever abre essa ligação, escreve a carta ou anexa ficheiros, e a carta fica cifrada até ao momento de ser impressa. Ninguém a pode ler no ecrã.</p>
+
+<nav class="dfxprl-manual-toc" aria-label="Índice">
+<h2>Índice</h2>
+<ol>
+<li><a href="#como-funciona">Como funciona</a></li>
+<li><a href="#perfiles">Perfis e permissões</a></li>
+<li><a href="#primeros-pasos">Primeiros passos</a></li>
+<li><a href="#retiros">Retiros</a></li>
+<li><a href="#acceso">Gestão de acessos e convites</a></li>
+<li><a href="#asistentes">Participantes</a></li>
+<li><a href="#csv">Importar e exportar participantes (CSV)</a></li>
+<li><a href="#formulario">O formulário de cartas</a></li>
+<li><a href="#mensajes">Mensagens confidenciais: imprimir, eliminar e devolver</a></li>
+<li><a href="#bajas">Desistências, reativações e fim do retiro</a></li>
+<li><a href="#ajustes-globales">Opções globais</a></li>
+<li><a href="#privacidad">Privacidade e conformidade</a></li>
+<li><a href="#seguridad">Segurança e cifragem</a></li>
+<li><a href="#calendario">Um retiro do princípio ao fim</a></li>
+<li><a href="#faq">Perguntas frequentes e problemas</a></li>
+</ol>
+</nav>
+
+<h2 id="como-funciona">1. Como funciona</h2>
+
+<ol>
+<li><strong>Cria um retiro</strong> com o nome, o local e as datas, e regista os participantes (um a um ou importando um ficheiro CSV).</li>
+<li><strong>Cada participante tem um URL privado</strong> para receber cartas. Copia-o a partir da lista de participantes e envia-o aos familiares e amigos, normalmente através do contacto de emergência.</li>
+<li><strong>Quem escreve abre a ligação</strong> em qualquer navegador, sem precisar de se registar. Escreve a carta num editor de texto simples ou anexa fotografias e documentos, resolve uma soma de segurança e envia-a.</li>
+<li><strong>A carta é guardada cifrada.</strong> No painel só se vê quem a enviou, quando e de que tipo é; nunca o seu conteúdo.</li>
+<li><strong>As pessoas autorizadas imprimem as cartas</strong> durante o retiro. Cada impressão fica registada com o utilizador, a data e o endereço IP.</li>
+<li><strong>As cartas são entregues</strong> a cada participante no momento que a equipa decidir.</li>
+</ol>
+
+<p>Está tudo no menu <strong>Retiros</strong> do painel de administração do WordPress. Não é preciso criar páginas nem artigos: o formulário de cartas é servido pelo próprio plugin.</p>
+
+<h2 id="perfiles">2. Perfis e permissões</h2>
+
+<p>As permissões são dadas <strong>por retiro</strong>: uma pessoa pode gerir um retiro e não ver nada de outro. Há quatro níveis.</p>
+
+<table class="dfxprl-manual-table">
+<thead>
+<tr><th>O que se pode fazer</th><th>Administrador do plugin</th><th>Gestor do retiro</th><th>Gestor de mensagens</th><th>Só leitura</th></tr>
+</thead>
+<tbody>
+<tr><td>Criar e eliminar retiros</td><td>Sim</td><td>Não</td><td>Não</td><td>Não</td></tr>
+<tr><td>Editar a configuração do retiro e os seus campos personalizados</td><td>Sim</td><td>Sim</td><td>Não</td><td>Não</td></tr>
+<tr><td>Conceder e retirar permissões, enviar convites</td><td>Sim</td><td>Sim</td><td>Não</td><td>Não</td></tr>
+<tr><td>Ver a lista de participantes e a contagem de cartas</td><td>Sim</td><td>Sim</td><td>Sim</td><td>Sim</td></tr>
+<tr><td>Adicionar, editar, marcar como desistentes e reativar participantes</td><td>Sim</td><td>Sim</td><td>Não</td><td>Não</td></tr>
+<tr><td>Importar e exportar CSV</td><td>Sim</td><td>Sim</td><td>Não</td><td>Não</td></tr>
+<tr><td>Registar cartas físicas recebidas</td><td>Sim</td><td>Sim</td><td>Sim</td><td>Não</td></tr>
+<tr><td>Escrever no registo de contactos</td><td>Sim</td><td>Sim</td><td>Sim</td><td>Não (só o lê)</td></tr>
+<tr><td>Copiar o URL para mensagens e a mensagem de convite</td><td>Sim</td><td>Sim</td><td>Sim</td><td>Sim</td></tr>
+<tr><td>Abrir, imprimir e eliminar cartas</td><td>Sim</td><td>Sim</td><td>Sim</td><td>Não</td></tr>
+<tr><td>Devolver cartas por email</td><td>Sim</td><td>Sim</td><td>Sim</td><td>Não</td></tr>
+<tr><td>Esvaziar o retiro depois de terminado</td><td>Sim</td><td>Sim</td><td>Não</td><td>Não</td></tr>
+<tr><td>Opções globais e Privacidade e conformidade</td><td>Sim</td><td>Não</td><td>Não</td><td>Não</td></tr>
+</tbody>
+</table>
+
+<h3>Administrador do plugin</h3>
+<p>São administradores do plugin os administradores do WordPress e os utilizadores a quem se concede o acesso de gestão global de retiros em <strong>Retiros &gt; Opções globais &gt; Gestão de utilizadores</strong>. Veem todos os retiros e são os únicos que podem criar e eliminar retiros ou alterar as opções globais e a privacidade.</p>
+
+<h3>Gestor do retiro</h3>
+<p>Tem o controlo total do seu retiro: configuração, participantes, cartas e permissões. Não vê outros retiros nem as opções globais.</p>
+
+<h3>Gestor de mensagens</h3>
+<p>É o perfil de quem trata das cartas: imprime-as, elimina-as se for preciso e devolve-as por email quando um participante desiste. Vê a lista de participantes e pode abrir a ficha de cada um em modo restrito, onde só pode alterar as cartas físicas recebidas, os campos personalizados que lhe são permitidos e o registo de contactos.</p>
+
+<h3>Só leitura</h3>
+<p>Pensado para quem precisa de consultar sem alterar nada; por exemplo, a pessoa que distribui as ligações pelas famílias. Vê os participantes (ativos e desistentes), as contagens de cartas, os campos personalizados abertos aos gestores de mensagens e o registo de contactos. Pode copiar o URL para mensagens de cada participante e a respetiva mensagem de convite; se um participante ainda não tiver URL, é gerado um, mas nunca se substitui um que já exista, por isso as ligações já distribuídas continuam a funcionar.</p>
+<p>Não pode alterar mais nada: nem editar, nem marcar como desistente, nem importar ou exportar, nem escrever no registo. Também não pode abrir, imprimir nem descarregar cartas, nem ver a configuração do retiro ou as suas permissões. Na lista de participantes verá o botão <strong>Ver</strong> em vez de <strong>Editar</strong>.</p>
+
+<h2 id="primeros-pasos">3. Primeiros passos</h2>
+
+<ol>
+<li>Instale e ative o plugin em <strong>Plugins</strong>. As tabelas necessárias são criadas automaticamente.</li>
+<li>Confirme que o site usa <strong>HTTPS</strong>. Os URL para mensagens contêm um código secreto e não devem circular sem cifragem.</li>
+<li>Guarde a chave de cifragem no <code>wp-config.php</code>. Ao ser ativado, o plugin gera uma chave, guarda-a na base de dados e mostra um aviso com a linha que deve copiar:
+<pre>define( 'DFXPRL_ENCRYPTION_KEY', 'uma-cadeia-longa-e-aleatoria' );</pre>
+Assim a chave não fica no mesmo sítio que os dados cifrados. Faça-o <strong>antes de receber cartas</strong>: o que for cifrado com uma chave só pode ser lido com essa mesma chave (ver <a href="#seguridad">Segurança e cifragem</a>).</li>
+<li>Reveja <strong>Retiros &gt; Opções globais</strong>: cabeçalho e rodapé do formulário de cartas, cabeçalho dos PDF e, se quiser tradução automática, a chave do DeepL.</li>
+<li>Reveja <strong>Retiros &gt; Privacidade e conformidade</strong> e ajuste os prazos de conservação ao que a sua política de proteção de dados determinar.</li>
+<li>Crie o seu primeiro retiro.</li>
+</ol>
+
+<h2 id="retiros">4. Retiros</h2>
+
+<h3>A lista de retiros</h3>
+<p>Em <strong>Retiros &gt; Todos os retiros</strong> aparecem os retiros a que tem acesso, com o local, as datas e o número de participantes ativos. Pode pesquisar pelo nome. Consoante o seu perfil, verá estes botões:</p>
+<ul>
+<li><strong>Editar</strong>: abre a configuração do retiro (gestores do retiro).</li>
+<li><strong>Participantes</strong>: abre a lista de participantes.</li>
+<li><strong>Eliminar</strong>: elimina o retiro (só administradores do plugin; ver mais abaixo).</li>
+</ul>
+<p>Ao clicar no nome do retiro, os gestores do retiro vão para a configuração; os restantes, para a lista de participantes.</p>
+
+<h3>Criar ou editar um retiro</h3>
+<p>Os administradores do plugin criam retiros em <strong>Retiros &gt; Adicionar novo</strong>. Estes são os campos:</p>
+
+<dl class="dfxprl-manual-fields">
+<dt>Nome do retiro, Local, Data de início, Data de fim</dt>
+<dd>Dados básicos. O nome e as datas são obrigatórios, e a data de fim não pode ser anterior à de início.</dd>
+
+<dt>Mensagem personalizada para os remetentes das cartas</dt>
+<dd>Texto que quem escreve verá antes do formulário. Serve para explicar o que é a carta, quando será entregue ou que tom convém usar. Aceita HTML.</dd>
+
+<dt>Texto do aviso legal e Texto de aceitação do aviso</dt>
+<dd>Se escrever um aviso legal, o formulário mostra-o com uma caixa que é preciso assinalar para poder enviar. O texto de aceitação é o que aparece junto a essa caixa (por omissão, «Aceito os termos e condições»).</dd>
+
+<dt>Formulário multilingue</dt>
+<dd>Se estiver ativado, quem escreve vê o formulário no idioma do navegador ou no que escolher num seletor (espanhol, catalão, basco, galego, inglês, português, francês, italiano e alemão). Se estiver desativado, o formulário aparece sempre no idioma principal do site. Ver <a href="#traducciones">Traduções dos textos do retiro</a>.</dd>
+
+<dt>Activar campo de notas</dt>
+<dd>Acrescenta a cada participante um campo de notas que aparece na lista e entra na importação e exportação CSV.</dd>
+
+<dt>Activar campo de notas internas</dt>
+<dd>O mesmo, mas estas notas <strong>nunca</strong> são importadas nem exportadas por CSV. Use-o para o que não deva sair do painel.</dd>
+
+<dt>Modelo de pedido de mensagens</dt>
+<dd>Texto que a equipa envia à família ou ao contacto de emergência para lhe pedir que escreva e que incentive outros a fazê-lo. Aceita marcadores que são substituídos pelos dados de cada participante: <code>[attendant_name]</code>, <code>[attendant_surnames]</code>, <code>[emergency_contact_name]</code>, <code>[messages_url]</code>, <code>[retreat_name]</code>, <code>[retreat_start_date]</code> e os restantes listados por baixo do campo, incluindo os dos campos personalizados (<code>[slug]</code>). Se o modelo tiver texto, aparece na lista de participantes o botão <strong>Mensagem de convite</strong>.</dd>
+
+<dt>Assunto do email de devolução de cartas e Texto do email de devolução de cartas</dt>
+<dd>Email enviado a quem escreveu uma carta quando o participante desiste e a carta lhe é devolvida. Aceita marcadores como <code>[sender_name]</code>, <code>[attendant_name]</code>, <code>[retreat_name]</code> ou a data de envio. Se o deixar vazio, é usado um texto por omissão. Ver <a href="#devolver">Devolver cartas por email</a>.</dd>
+
+<dt>Bloco de cabeçalho personalizado, Bloco de rodapé personalizado</dt>
+<dd>Bloco reutilizável, parte de modelo ou padrão que aparece acima e abaixo do formulário de cartas deste retiro. Se não escolher nenhum, é usado o das opções globais. Estes campos só aparecem se a <strong>Personalização por retiro</strong> estiver ativada nas opções globais.</dd>
+
+<dt>Classes adicionais do body</dt>
+<dd>Classes CSS, separadas por espaços, acrescentadas à etiqueta <code>&lt;body&gt;</code> do formulário deste retiro. Servem para lhe dar um aspeto diferente a partir do tema ou do CSS adicional do site.</dd>
+</dl>
+
+<p>Guarde com <strong>Adicionar retiro</strong> ou <strong>Actualizar retiro</strong>. No mesmo ecrã, <strong>Gerir participantes</strong> leva à lista de participantes.</p>
+
+<h3 id="traducciones">Traduções dos textos do retiro</h3>
+<p>A mensagem personalizada, o aviso legal e o respetivo texto de aceitação são escritos no idioma principal do site. Se o formulário for multilingue, em <strong>Traduções destes textos</strong> pode escrever uma versão para cada idioma. Os separadores marcados com «(escrito)» já têm texto.</p>
+<ul>
+<li><strong>Traduzir automaticamente</strong> preenche os campos desse idioma a partir do original, para que os reveja antes de guardar. Precisa de uma chave do DeepL nas opções globais.</li>
+<li>Se um idioma ficar vazio, o formulário usa a tradução automática do DeepL (se estiver configurada) ou, caso contrário, o texto original.</li>
+<li>Cada tradução automática é feita uma vez e guardada; só se repete se alterar o original. Ao DeepL só são enviados estes textos do retiro, nunca cartas nem dados pessoais.</li>
+</ul>
+
+<h3 id="campos-personalizados">Campos personalizados do participante</h3>
+<p>Cada retiro pode acrescentar os seus próprios campos à ficha dos participantes (por exemplo, tamanho da t-shirt, grupo, alergias ou se precisa de transporte). Clique em <strong>Adicionar campo</strong> e preencha:</p>
+<ul>
+<li><strong>Nome</strong> e <strong>Slug</strong>: o slug identifica o campo nos CSV e no modelo de pedido, como <code>[o_meu_campo]</code>.</li>
+<li><strong>Tipo</strong>: texto, texto longo, número, data, sim/não ou lista de opções (uma opção por linha).</li>
+<li><strong>Visível para</strong> e <strong>Editável por</strong>: só gestores do retiro, ou também gestores de mensagens. Os utilizadores só de leitura veem os campos visíveis para os gestores de mensagens, mas não os podem editar.</li>
+<li><strong>Mostrar na lista de participantes</strong> e <strong>Ordenável</strong>.</li>
+<li><strong>Importar de CSV</strong> e <strong>Exportar para CSV</strong>.</li>
+</ul>
+<p><strong>Remover campo</strong> apaga os seus valores em todos os participantes quando guardar o retiro. É pedida confirmação.</p>
+
+<h3>Eliminar um retiro</h3>
+<p>Só os administradores do plugin o podem fazer, com <strong>Eliminar</strong> na lista de retiros. São eliminados o retiro, todos os seus participantes e todas as suas cartas, sem volta atrás. Para confirmar, é preciso escrever o nome exato do retiro. Se quiser reutilizar o retiro com a sua configuração, é preferível usar <a href="#vaciar">Esvaziar retiro</a>.</p>
+
+<h2 id="acceso">5. Gestão de acessos e convites</h2>
+
+<p>No ecrã de edição do retiro, a caixa <strong>Gestão de acessos</strong> mostra quem tem permissão e permite concedê-la.</p>
+
+<h3>Permissões atuais</h3>
+<p>Lista de utilizadores com o seu perfil e quem o concedeu. <strong>Revogar</strong> retira-o. Não pode revogar as suas próprias permissões.</p>
+
+<h3>Dar acesso a um utilizador que já existe</h3>
+<ol>
+<li>Em <strong>Conceder acesso &gt; Utilizadores existentes</strong>, pesquise por nome de utilizador, email ou nome (pelo menos duas letras).</li>
+<li>Escolha o utilizador e o perfil: <strong>Gestor do retiro</strong>, <strong>Gestor de mensagens</strong> ou <strong>Só leitura</strong>.</li>
+<li>Clique em <strong>Conceder</strong>.</li>
+</ol>
+
+<h3>Convidar alguém novo</h3>
+<ol>
+<li>Em <strong>Convidar novos utilizadores</strong>, escreva o email da pessoa e escolha o perfil.</li>
+<li>Clique em <strong>Enviar convite</strong>. A pessoa recebe um email com uma ligação que expira ao fim de 7 dias.</li>
+<li>Ao abrir a ligação, preenche o nome e clica em <strong>Aceitar convite</strong>. Se o email já pertencia a um utilizador do site, recebe a permissão sem mais; se não, é-lhe criada uma conta e recebe os dados de acesso por email.</li>
+</ol>
+<p>Os convites ainda não aceites aparecem em <strong>Convites pendentes</strong>, com a data de expiração, e podem ser cancelados. Os expirados são limpos automaticamente.</p>
+
+<p>Conceder uma permissão, retirá-la e cada passo de um convite ficam registados no registo de auditoria.</p>
+
+<h2 id="asistentes">6. Participantes</h2>
+
+<h3>A lista de participantes</h3>
+<p>Abre-se com o botão <strong>Participantes</strong> do retiro. No topo vê-se o total de participantes e o resumo das cartas: quantas mensagens foram recebidas, quantas faltam imprimir e o total contando com as cartas físicas.</p>
+<p>Há dois separadores: <strong>Participantes</strong> (os ativos) e <strong>Participantes desistentes</strong>.</p>
+
+<h4>Colunas</h4>
+<ul>
+<li><strong>Nome próprio</strong>, <strong>Apelidos</strong>, <strong>Data de nascimento</strong>, <strong>Contacto de emergência</strong>, <strong>Convidado por</strong>, <strong>Incompatibilidades</strong>, <strong>Notas</strong> e <strong>Notas internas</strong> (se estiverem ativadas), e os campos personalizados marcados para a lista.</li>
+<li><strong>Mensagens</strong>: cartas recebidas pelo site e, entre parênteses, as que faltam imprimir. Clicando várias vezes no cabeçalho, ordena-se pelo total ou pelas que faltam imprimir.</li>
+<li><strong>Cartas físicas</strong>: cartas em papel recebidas fora do site.</li>
+<li><strong>Total de cartas</strong>: a soma das duas anteriores.</li>
+<li><strong>Registo de contactos</strong>: um ícone de caderno com o número de entradas. Ao clicar, o registo abre-se numa janela.</li>
+</ul>
+<p>Os cabeçalhos ficam fixos ao percorrer a lista. Em ecrãs estreitos, a tabela transforma-se em fichas e aparece uma lista pendente <strong>Ordenar por</strong>.</p>
+
+<h4>Pesquisar, filtrar e ordenar</h4>
+<p>A caixa de pesquisa procura no nome próprio, apelidos, contacto de emergência, convidado por e incompatibilidades. Em <strong>Filtros</strong> pode filtrar por cada um desses campos e pelas notas e notas internas; clique em <strong>Aplicar filtros</strong> ou <strong>Limpar filtros</strong>. Clique no cabeçalho de uma coluna para ordenar por ela.</p>
+<p>Em <strong>Filtros</strong> aparecem também os campos personalizados do retiro que pode ver. Os de texto filtram-se pelo seu conteúdo; os do tipo <strong>Lista de opções</strong> e <strong>Sim/Não</strong>, com uma lista pendente; os números e as datas, com um intervalo <strong>De</strong>–<strong>Até</strong> em que pode preencher apenas um dos extremos.</p>
+
+<h4>Reordenar colunas</h4>
+<p>Os gestores do retiro podem arrastar os cabeçalhos pela pega (aparece ao passar o rato por cima). A ordem é guardada para todos os que usam esse retiro. <strong>Repor a ordem por omissão</strong> volta a deixá-la como estava.</p>
+
+<h4>Edição direta</h4>
+<p>Clique numa célula para a editar sem abrir a ficha: <kbd>Enter</kbd> guarda, <kbd>Esc</kbd> cancela e, nos textos longos, <kbd>Ctrl</kbd>+<kbd>Enter</kbd> guarda. Os gestores do retiro podem editar nome próprio, apelidos, data de nascimento, convidado por, incompatibilidades e notas; gestores do retiro e de mensagens podem editar as cartas físicas; os campos personalizados seguem a sua própria permissão de edição.</p>
+
+<h4>Botões de cada participante</h4>
+<ul>
+<li><strong>Editar</strong> (ou <strong>Ver</strong> para só leitura): abre a ficha.</li>
+<li><strong>Mensagens</strong>: abre as suas cartas (gestores do retiro e de mensagens).</li>
+<li><strong>Mensagem de convite</strong>: mostra o modelo de pedido preenchido com os dados e a ligação do participante, pronto a copiar e colar num email ou no WhatsApp. Só aparece se o retiro tiver modelo.</li>
+<li><strong>Gerar URL para mensagens</strong> ou <strong>Copiar URL para mensagens</strong>: ver mais abaixo.</li>
+<li><strong>Marcar como desistente</strong>: ver <a href="#bajas">Desistências</a> (gestores do retiro).</li>
+</ul>
+
+<h3>Adicionar ou editar um participante</h3>
+<p>Clique em <strong>Adicionar novo participante</strong> ou em <strong>Editar</strong> na respetiva linha. Os campos são:</p>
+<ul>
+<li><strong>Nome próprio</strong>, <strong>Apelidos</strong> e <strong>Data de nascimento</strong> (obrigatórios).</li>
+<li><strong>Contacto de emergência</strong>: nome (obrigatório), apelido, telefone (obrigatório), email e relação com o participante. Normalmente é esta pessoa que recebe a ligação para as cartas.</li>
+<li><strong>Convidado por</strong>: quem o convidou para o retiro.</li>
+<li><strong>Incompatibilidades</strong>: participantes com quem não convém juntá-lo, por exemplo na mesma mesa ou no mesmo quarto.</li>
+<li><strong>Notas</strong> e <strong>Notas internas</strong>, se o retiro as tiver ativadas.</li>
+<li>Os <strong>campos personalizados</strong> do retiro.</li>
+<li><strong>Cartas físicas recebidas</strong>: número de cartas em papel recebidas fora do site.</li>
+</ul>
+<p>A ficha mostra também o número de mensagens recebidas (com ligação para elas), o <strong>URL para mensagens</strong> e o <strong>Registo de contactos</strong>. Se um campo não passar a validação, o formulário conserva tudo o que foi escrito e só é preciso corrigir esse campo.</p>
+<p>Os gestores de mensagens abrem a ficha em modo restrito: só podem alterar as cartas físicas, os campos personalizados que lhes são permitidos e o registo de contactos. Os utilizadores só de leitura veem-na com tudo bloqueado e um botão <strong>Voltar aos participantes</strong>.</p>
+
+<h3 id="url">O URL para mensagens</h3>
+<p>Cada participante tem um endereço único, do género <code>https://suaparoquia.pt/messages/codigo-secreto</code>, que é a porta de entrada para lhe escrever. O código é aleatório e não se consegue adivinhar.</p>
+<ul>
+<li>Se o participante ainda não tiver um, clique em <strong>Gerar URL para mensagens</strong>.</li>
+<li><strong>Copiar URL para mensagens</strong> copia-o para a área de transferência com as iniciais do participante no fim (por exemplo, <code>…/messages/codigo/#JGP</code>), para saber de quem é a ligação sem mostrar o nome.</li>
+<li>Partilhe a ligação apenas com quem deva escrever. Qualquer pessoa que a tenha pode enviar cartas a esse participante.</li>
+<li>O URL continua válido até o participante ser marcado como desistente ou eliminado.</li>
+</ul>
+
+<h3 id="historial">Registo de contactos</h3>
+<p>Serve para a equipa anotar as chamadas e conversas com a pessoa de contacto de cada participante: «Liguei à mãe na terça-feira, vai enviar a ligação aos irmãos», etc. Abre-se a partir da coluna <strong>Registo de contactos</strong> da lista ou da ficha.</p>
+<ul>
+<li>Gestores do retiro e de mensagens podem acrescentar entradas com data e descrição (<strong>Adicionar entrada</strong>).</li>
+<li>Quem escreve uma entrada pode editá-la durante 15 minutos e apagá-la em qualquer momento. As entradas editadas ficam marcadas com «(editado)».</li>
+<li>Os gestores do retiro podem editar ou apagar qualquer entrada e ver o <strong>Histórico de alterações</strong> completo, incluindo as entradas apagadas.</li>
+<li>Os utilizadores só de leitura podem lê-lo, mas não escrever.</li>
+</ul>
+
+<h2 id="csv">7. Importar e exportar participantes (CSV)</h2>
+
+<h3>Importar</h3>
+<p>Na lista de participantes, clique em <strong>Importar CSV</strong>. O ficheiro:</p>
+<ul>
+<li>Tem de ter os nomes das colunas na primeira linha. Podem estar por qualquer ordem, em inglês ou no idioma do painel, e as colunas não reconhecidas são ignoradas.</li>
+<li>Precisa destas colunas: <strong>Nome próprio</strong>, <strong>Apelidos</strong>, <strong>Data de nascimento</strong>, <strong>Nome do contacto de emergência</strong> e <strong>Telefone do contacto de emergência</strong>.</li>
+<li>Pode ter ainda: apelido, email e relação do contacto de emergência, convidado por, incompatibilidades, notas e os campos personalizados marcados para importar (pelo seu slug).</li>
+<li>Pode ter no máximo 2 MB.</li>
+</ul>
+<p><strong>Datas.</strong> São aceites AAAA-MM-DD, DD/MM/AAAA, MM/DD/AAAA, DD-MM-AAAA, MM-DD-AAAA e DD.MM.AAAA. Uma data como 01/10/2025 pode ser 1 de outubro ou 10 de janeiro; escolha em <strong>Formato de data preferido</strong> como a interpretar ou, melhor ainda, use AAAA-MM-DD. No fim, o resultado avisa das datas ambíguas que encontrou.</p>
+<p><strong>Participantes que já existem.</strong> Se uma linha coincidir com um participante do retiro (mesmo nome próprio, apelidos e data de nascimento), não é duplicado: são atualizados os dados do contacto de emergência e os campos personalizados. As linhas que coincidem com participantes desistentes ficam como estavam.</p>
+<p>No fim é mostrado quantos participantes foram adicionados, quantos foram atualizados e que linhas tinham erros, com o número de linha.</p>
+
+<h3>Exportar</h3>
+<p><strong>Exportar CSV</strong> descarrega os participantes ativos com os seus dados, o URL para mensagens, o número de mensagens e os campos personalizados marcados para exportar. As notas internas nunca são exportadas. Tenha em conta que o ficheiro contém dados pessoais e os URL privados: guarde-o com cuidado e apague-o quando já não precisar dele.</p>
+
+<h2 id="formulario">8. O formulário de cartas</h2>
+
+<p>É a página que vê quem abre o URL para mensagens de um participante. Não é preciso ter conta no site.</p>
+
+<ul>
+<li>No topo aparecem o nome do participante e a <strong>mensagem personalizada</strong> do retiro.</li>
+<li>Se o formulário for multilingue, há um seletor de <strong>Idioma</strong>. Mudar de idioma não recarrega a página, por isso não se perde o que já foi escrito.</li>
+<li>Quem escreve indica o seu nome e, se quiser, o seu email (duas vezes, para evitar gralhas). O email é guardado cifrado e só é usado para o avisar de algum problema com a carta, como a devolução se o participante acabar por não ir ao retiro.</li>
+<li>Escolhe o tipo de mensagem:
+<ul>
+<li><strong>Mensagem de texto</strong>: um editor com negrito, itálico, sublinhado, listas e anular/refazer. É possível colar imagens e texto copiado do Word ou do Google Docs.</li>
+<li><strong>Envio de ficheiros</strong>: fotografias ou documentos (PDF, DOC, DOCX, TXT, JPG, PNG, GIF). O formulário mostra o tamanho máximo que o servidor aceita.</li>
+</ul></li>
+<li>Resolve a <strong>Verificação de segurança</strong>, uma soma simples. Os utilizadores com sessão iniciada no site não a veem.</li>
+<li>Se o retiro tiver aviso legal, é preciso assinalar a caixa de aceitação; o botão de envio só fica ativo depois disso.</li>
+<li>Depois de clicar em <strong>Enviar mensagem confidencial</strong>, aparece uma página a confirmar que a carta foi recebida.</li>
+</ul>
+
+<p>Para evitar abusos, cada endereço IP pode enviar um número limitado de cartas por hora. Se alguém ficar bloqueado depois de vários erros, um administrador pode retirar o bloqueio em <strong>Privacidade e conformidade &gt; Repor todos os limites de pedidos</strong>.</p>
+<p>Se o participante tiver desistido, o formulário mostra «Já não são aceites mensagens para este participante». Um endereço com um código que não existe dá erro 404.</p>
+
+<h2 id="mensajes">9. Mensagens confidenciais: imprimir, eliminar e devolver</h2>
+
+<h3>A lista de mensagens</h3>
+<p>Abre-se com o botão <strong>Mensagens</strong> de cada participante. Por segurança, <strong>nunca mostra o conteúdo</strong> das cartas, apenas os seus dados: remetente, tipo (texto ou ficheiros), data de envio e estado de impressão. Pode filtrar por tipo, pesquisar por remetente e ordenar por qualquer uma dessas colunas, incluindo o estado de impressão (primeiro as não impressas).</p>
+
+<h3>Imprimir</h3>
+<ol>
+<li>Clique em <strong>Imprimir</strong> na carta.</li>
+<li>Abre-se um novo separador com a carta pronta a imprimir: o destinatário, o remetente e o conteúdo. A carta é decifrada nesse momento.</li>
+<li>Abre-se a caixa de diálogo de impressão do navegador. Ao fechá-la, o separador fecha-se sozinho.</li>
+</ol>
+<ul>
+<li>As cartas com várias imagens são paginadas de forma a que nenhuma imagem fique dividida entre duas páginas.</li>
+<li>Se a carta for um único PDF, ao imprimi-lo é-lhe acrescentado no topo um cabeçalho «De/Para» para saber de quem é e a quem se destina (pode ser desativado nas opções globais).</li>
+<li>Se houver vários ficheiros e algum não for uma imagem, são todos descarregados juntos num ZIP. Os documentos Word não podem ser mostrados na vista de impressão: é preciso descarregá-los e imprimi-los à parte.</li>
+<li>Use um navegador atual (Edge, Chrome, Firefox ou Safari). O Internet Explorer não é suportado e não mostra as cartas.</li>
+</ul>
+
+<h3>Histórico de impressão</h3>
+<p>O estado de cada carta indica se foi impressa, quantas vezes e quando foi impressa pela primeira vez. Ao clicar, vê-se o histórico completo: quem a imprimiu, quando e a partir de que IP. Se possível, imprima cada carta uma só vez e guarde as cópias em papel com cuidado.</p>
+
+<h3>Eliminar uma carta</h3>
+<p><strong>Eliminar</strong> apaga a carta, os seus ficheiros e o seu histórico de impressão. Não é possível desfazer.</p>
+
+<h3 id="devolver">Devolver cartas por email</h3>
+<p>Quando um participante desiste (por exemplo, porque afinal não vai ao retiro), as suas cartas podem ser devolvidas a quem as escreveu, desde que tenha deixado o email:</p>
+<ul>
+<li><strong>Devolver por email</strong> devolve uma carta; <strong>Devolver todas por email</strong>, todas as que podem ser devolvidas.</li>
+<li>Antes do envio é mostrada uma pré-visualização com o destinatário, o assunto, o texto e os anexos. As cartas de texto são anexadas como documento HTML; as de ficheiros, com os ficheiros originais.</li>
+<li>Depois de enviado o email, a carta é apagada do sistema. Se o envio falhar, a carta é conservada.</li>
+<li>Se a carta já tiver sido impressa, é lembrado que é preciso destruir a cópia em papel.</li>
+<li>As cartas sem email aparecem como «Sem email: não pode ser devolvida».</li>
+</ul>
+<p>O assunto e o texto do email configuram-se em cada retiro (ver <a href="#retiros">Retiros</a>).</p>
+
+<h2 id="bajas">10. Desistências, reativações e fim do retiro</h2>
+
+<h3>Marcar um participante como desistente</h3>
+<p>Se alguém não for ao retiro, clique em <strong>Marcar como desistente</strong> na respetiva linha. O participante:</p>
+<ul>
+<li>passa para o separador <strong>Participantes desistentes</strong>, com a data e o utilizador que o marcou como desistente;</li>
+<li>deixa de poder ser editado;</li>
+<li>deixa de aceitar cartas pelo seu URL;</li>
+<li>conserva as suas cartas, que podem ser impressas ou devolvidas por email, e o seu registo de contactos, que continua aberto.</li>
+</ul>
+<p>Nada é apagado. Nesse separador pode <strong>Reactivar</strong> o participante ou <strong>Eliminar permanentemente</strong>. Só se podem eliminar participantes desistentes; se ainda tiver cartas que poderiam ser devolvidas, é dado um aviso antes de as apagar.</p>
+
+<h3>Marcar todos os participantes como desistentes</h3>
+<p><strong>Marcar todos os participantes como desistentes</strong> faz o mesmo com o retiro inteiro. Para confirmar, é preciso escrever «MARCAR TODOS COMO DESISTENTES».</p>
+
+<h3 id="vaciar">Esvaziar o retiro</h3>
+<p>Quando o retiro termina, os gestores do retiro veem o botão <strong>Esvaziar retiro</strong>. Apaga definitivamente todos os participantes, ativos e desistentes, com as suas cartas, ficheiros, histórico de impressão, registo de contactos e valores dos campos personalizados. O retiro mantém a configuração, os campos personalizados e os gestores, pronto para a edição seguinte.</p>
+<p>Para confirmar, é preciso escrever o nome exato do retiro. Se ainda houver cartas de participantes desistentes que poderiam ser devolvidas, é dado um aviso antes.</p>
+
+<h2 id="ajustes-globales">11. Opções globais</h2>
+<p>Em <strong>Retiros &gt; Opções globais</strong>, só para administradores do plugin:</p>
+<dl class="dfxprl-manual-fields">
+<dt>Personalização por retiro</dt>
+<dd>Se estiver ativada, cada retiro pode ter o seu próprio cabeçalho, rodapé e classes do body. Se não, todos usam os valores desta página.</dd>
+<dt>Bloco de cabeçalho por omissão e Bloco de rodapé por omissão</dt>
+<dd>Bloco reutilizável, parte de modelo ou padrão que aparece no formulário de cartas. Criam-se em <strong>Aspeto &gt; Editor &gt; Padrões</strong>. Se não escolher nenhum, são usados o cabeçalho e o rodapé do tema.</dd>
+<dt>Classes adicionais do body</dt>
+<dd>Classes CSS para a etiqueta <code>&lt;body&gt;</code> de todos os formulários de cartas. A página leva sempre, além disso, a classe <code>dfxprl-message-form</code>.</dd>
+<dt>Adicionar cabeçalho ao PDF</dt>
+<dd>Acrescenta o cabeçalho «De/Para» às cartas em PDF ao imprimi-las. Quem o faz é o navegador de quem imprime, sem sobrecarregar o servidor. Está ativado por omissão.</dd>
+<dt>Chave da API do DeepL</dt>
+<dd>Opcional. Permite traduzir automaticamente os textos de cada retiro para o idioma de quem abre o formulário. Basta o plano gratuito, DeepL API Free (500 000 caracteres por mês). Também pode ser definida no <code>wp-config.php</code> como <code>DFXPRL_DEEPL_API_KEY</code>.</dd>
+<dt>Gestão de utilizadores</dt>
+<dd>Concede ou revoga o acesso de gestão global de retiros. Quem o tem é administrador do plugin: vê todos os retiros e pode criar novos. As permissões de cada retiro são concedidas no respetivo ecrã de edição.</dd>
+</dl>
+
+<h2 id="privacidad">12. Privacidade e conformidade</h2>
+<p>Em <strong>Retiros &gt; Privacidade e conformidade</strong>, só para administradores do plugin:</p>
+<ul>
+<li><strong>Vista geral do estado de conformidade</strong>: cifragem, anonimização de IP, política de conservação e registo de auditoria, com estatísticas dos dados guardados.</li>
+<li><strong>Política de retenção de dados</strong>: quantos dias são guardadas as cartas (de 30 a 3650; 0 para nunca as apagar) e o registo de auditoria (de 365 a 3650). O que ultrapassar esse prazo é apagado automaticamente. Os IP de quem escreve são sempre anonimizados ao fim de 30 dias.</li>
+<li><strong>Limpeza manual</strong>: executa já a limpeza que é feita automaticamente todos os dias.</li>
+<li><strong>Gestão de limites de pedidos</strong>: desbloqueia quem tenha ultrapassado o limite de envios.</li>
+<li><strong>Exportação/eliminação de dados pessoais</strong>: pesquise pelo nome ou email do remetente para dar resposta ao direito de acesso e portabilidade ou ao direito ao apagamento do RGPD. Para apagar, é preciso escrever «APAGAR TODOS OS DADOS». O conteúdo das cartas não é exportado em claro, porque está cifrado.</li>
+<li><strong>Actividade de auditoria recente</strong>: os últimos eventos registados. O registo guarda identificadores e iniciais, nunca o conteúdo das cartas.</li>
+</ul>
+
+<h2 id="seguridad">13. Segurança e cifragem</h2>
+<ul>
+<li>O conteúdo das cartas e os seus ficheiros são cifrados com AES-256 e autenticados com HMAC-SHA256 antes de serem guardados. O email de quem escreve também é guardado cifrado.</li>
+<li>As cartas só são decifradas ao serem impressas ou devolvidas por email. Não há pré-visualização no ecrã, para que ninguém as possa ler por cima do ombro.</li>
+<li>A chave de cifragem é gerada ao ativar o plugin. Passe-a para o <code>wp-config.php</code> como <code>DFXPRL_ENCRYPTION_KEY</code> e guarde uma cópia em local seguro: <strong>se a chave se perder, as cartas não podem ser recuperadas</strong>.</li>
+<li>Se a chave do <code>wp-config.php</code> e a da base de dados não coincidirem, aparece um aviso. Pode alterar a do <code>wp-config.php</code> para que coincida ou clicar em <strong>Remover a chave da base de dados e usar a chave de wp-config.php</strong>. O que tiver sido cifrado com a chave antiga deixará de poder ser lido.</li>
+<li>Ficam registados no registo de auditoria as permissões, os convites e as operações sobre retiros, participantes e cartas.</li>
+</ul>
+
+<h2 id="calendario">14. Um retiro do princípio ao fim</h2>
+<ol>
+<li><strong>Semanas antes.</strong> Crie o retiro (ou esvazie o do ano anterior), escreva a mensagem para os remetentes, o aviso legal e o modelo de pedido. Dê acesso à equipa com o perfil de que cada pessoa precisa.</li>
+<li><strong>Inscrições.</strong> Registe os participantes ou importe-os a partir de um CSV.</li>
+<li><strong>Pedido de cartas.</strong> Para cada participante, copie a <strong>Mensagem de convite</strong> e envie-a ao respetivo contacto de emergência. Anote no registo de contactos a quem ligou ou escreveu.</li>
+<li><strong>Acompanhamento.</strong> Veja na lista quem tem poucas cartas (ordene por <strong>Total de cartas</strong>) e volte a contactar se for preciso. Registe as cartas em papel em <strong>Cartas físicas</strong>.</li>
+<li><strong>Desistências.</strong> Se alguém não for, marque-o como desistente e devolva as suas cartas por email.</li>
+<li><strong>Durante o retiro.</strong> Imprima as cartas (ordene por <strong>Mensagens</strong> para ver as que faltam imprimir) e prepare a entrega.</li>
+<li><strong>Depois.</strong> Destrua as cópias que sobrarem e clique em <strong>Esvaziar retiro</strong> para apagar os dados pessoais e deixar o retiro pronto para a próxima vez.</li>
+</ol>
+
+<h2 id="faq">15. Perguntas frequentes e problemas</h2>
+
+<h4>Quem pode ler as cartas?</h4>
+<p>Ninguém, no ecrã. Só se veem ao serem impressas, e só as podem imprimir os administradores do plugin e os gestores do retiro e de mensagens desse retiro. Cada impressão fica registada.</p>
+
+<h4>Um familiar diz que a ligação não funciona.</h4>
+<p>Confirme que copiou o endereço completo e que o participante não está marcado como desistente. Se aparecer «Demasiados pedidos», aguarde uma hora ou reponha os limites em <strong>Privacidade e conformidade</strong>.</p>
+
+<h4>Ao enviar ficheiros aparece um erro de tamanho.</h4>
+<p>O limite é definido pelo servidor e aparece no formulário. É preciso enviar ficheiros mais pequenos, ou menos de cada vez. Quem administra o alojamento pode aumentar os limites do PHP (<code>upload_max_filesize</code> e <code>post_max_size</code>).</p>
+
+<h4>Não me aparece o botão Mensagem de convite.</h4>
+<p>Só aparece se o retiro tiver um <strong>Modelo de pedido de mensagens</strong>.</p>
+
+<h4>Não consigo editar um participante.</h4>
+<p>Ou está marcado como desistente (reative-o primeiro) ou o seu perfil não o permite: os gestores de mensagens só editam alguns campos e os utilizadores só de leitura não editam nada.</p>
+
+<h4>Não vejo o botão Esvaziar retiro.</h4>
+<p>Só aparece aos gestores do retiro e depois de passada a data de fim do retiro.</p>
+
+<h4>Perdi a chave de cifragem.</h4>
+<p>As cartas cifradas com ela não podem ser recuperadas. Por isso convém guardar uma cópia do <code>wp-config.php</code>, ou da chave, num local seguro.</p>
+
+<h4>O formulário está no meu idioma?</h4>
+<p>O formulário está traduzido para espanhol, catalão, basco, galego, inglês, português, francês, italiano e alemão. Os textos próprios de cada retiro têm de ser escritos ou traduzidos (ver <a href="#traducciones">Traduções</a>).</p>
+
+<p class="dfxprl-manual-footer">Encontrou um erro ou sente falta de alguma coisa? Diga-nos no <a href="https://github.com/davefx/dfx-parish-retreat-letters/issues" target="_blank" rel="noopener">GitHub</a> ou no <a href="https://wordpress.org/support/plugin/dfx-parish-retreat-letters/" target="_blank" rel="noopener">fórum de suporte do WordPress.org</a>.</p>
+
+</div>

@@ -1,0 +1,421 @@
+<div class="dfxprl-manual" lang="de">
+
+<h1>Handbuch zu DFX Briefe für Pfarrei-Einkehrtage</h1>
+
+<p class="dfxprl-manual-lead">Mit diesem Plugin sammelst, speicherst und druckst du die Briefe, die Familie und Freunde an die Menschen schreiben, die an Einkehrtagen einer Pfarrei teilnehmen. Jede teilnehmende Person hat einen privaten Link. Wer ihr schreiben möchte, öffnet diesen Link, schreibt einen Brief oder hängt Dateien an, und der Brief bleibt verschlüsselt, bis er gedruckt wird. Niemand kann ihn am Bildschirm lesen.</p>
+
+<nav class="dfxprl-manual-toc" aria-label="Inhalt">
+<h2>Inhalt</h2>
+<ol>
+<li><a href="#como-funciona">So funktioniert es</a></li>
+<li><a href="#perfiles">Rollen und Berechtigungen</a></li>
+<li><a href="#primeros-pasos">Erste Schritte</a></li>
+<li><a href="#retiros">Einkehrtage</a></li>
+<li><a href="#acceso">Zugriffsverwaltung und Einladungen</a></li>
+<li><a href="#asistentes">Teilnehmende</a></li>
+<li><a href="#csv">Teilnehmende importieren und exportieren (CSV)</a></li>
+<li><a href="#formulario">Das Briefformular</a></li>
+<li><a href="#mensajes">Vertrauliche Nachrichten: drucken, löschen und zurückschicken</a></li>
+<li><a href="#bajas">Abmeldungen, Reaktivierungen und das Ende der Einkehrtage</a></li>
+<li><a href="#ajustes-globales">Globale Einstellungen</a></li>
+<li><a href="#privacidad">Datenschutz und Compliance</a></li>
+<li><a href="#seguridad">Sicherheit und Verschlüsselung</a></li>
+<li><a href="#calendario">Einkehrtage von Anfang bis Ende</a></li>
+<li><a href="#faq">Häufige Fragen und Probleme</a></li>
+</ol>
+</nav>
+
+<h2 id="como-funciona">1. So funktioniert es</h2>
+
+<ol>
+<li><strong>Du legst Einkehrtage an</strong> mit Name, Ort und Datum und trägst die Teilnehmenden ein (einzeln oder per CSV-Import).</li>
+<li><strong>Jede teilnehmende Person hat eine private URL</strong>, über die sie Briefe bekommt. Du kopierst sie aus der Liste der Teilnehmenden und gibst sie an Familie und Freunde weiter, meist über den Notfallkontakt.</li>
+<li><strong>Wer schreiben möchte, öffnet den Link</strong> in einem beliebigen Browser, ohne sich zu registrieren. Dort schreibt man den Brief in einem einfachen Texteditor oder hängt Fotos und Dokumente an, löst eine kleine Rechenaufgabe zur Sicherheit und schickt ihn ab.</li>
+<li><strong>Der Brief wird verschlüsselt gespeichert.</strong> Im Backend siehst du nur, wer ihn geschickt hat, wann und welcher Art er ist, aber nie den Inhalt.</li>
+<li><strong>Berechtigte Personen drucken die Briefe</strong> während der Einkehrtage. Jeder Druck wird mit Benutzer, Datum und IP-Adresse protokolliert.</li>
+<li><strong>Die Briefe werden übergeben</strong>, und zwar dann, wenn das Team es für richtig hält.</li>
+</ol>
+
+<p>Alles findest du im Menü <strong>Einkehrtage</strong> im WordPress-Dashboard. Du musst keine Seiten oder Beiträge anlegen: Das Briefformular stellt das Plugin selbst bereit.</p>
+
+<h2 id="perfiles">2. Rollen und Berechtigungen</h2>
+
+<p>Berechtigungen werden <strong>pro Einkehrtage</strong> vergeben: Jemand kann bestimmte Einkehrtage leiten und von anderen gar nichts sehen. Es gibt vier Stufen.</p>
+
+<table class="dfxprl-manual-table">
+<thead>
+<tr><th>Was man tun kann</th><th>Plugin-Administration</th><th>Leitung der Einkehrtage</th><th>Nachrichtenverwaltung</th><th>Nur Lesezugriff</th></tr>
+</thead>
+<tbody>
+<tr><td>Einkehrtage anlegen und löschen</td><td>Ja</td><td>Nein</td><td>Nein</td><td>Nein</td></tr>
+<tr><td>Einstellungen der Einkehrtage und ihre individuellen Felder bearbeiten</td><td>Ja</td><td>Ja</td><td>Nein</td><td>Nein</td></tr>
+<tr><td>Berechtigungen gewähren und widerrufen, Einladungen senden</td><td>Ja</td><td>Ja</td><td>Nein</td><td>Nein</td></tr>
+<tr><td>Liste der Teilnehmenden und Anzahl der Briefe ansehen</td><td>Ja</td><td>Ja</td><td>Ja</td><td>Ja</td></tr>
+<tr><td>Teilnehmende hinzufügen, bearbeiten, abmelden und reaktivieren</td><td>Ja</td><td>Ja</td><td>Nein</td><td>Nein</td></tr>
+<tr><td>CSV importieren und exportieren</td><td>Ja</td><td>Ja</td><td>Nein</td><td>Nein</td></tr>
+<tr><td>Erhaltene Briefe in Papierform eintragen</td><td>Ja</td><td>Ja</td><td>Ja</td><td>Nein</td></tr>
+<tr><td>Ins Kontaktprotokoll schreiben</td><td>Ja</td><td>Ja</td><td>Ja</td><td>Nein (nur lesen)</td></tr>
+<tr><td>Nachrichten-URL und Einladungsnachricht kopieren</td><td>Ja</td><td>Ja</td><td>Ja</td><td>Ja</td></tr>
+<tr><td>Briefe öffnen, drucken und löschen</td><td>Ja</td><td>Ja</td><td>Ja</td><td>Nein</td></tr>
+<tr><td>Briefe per E-Mail zurückschicken</td><td>Ja</td><td>Ja</td><td>Ja</td><td>Nein</td></tr>
+<tr><td>Einkehrtage nach ihrem Ende leeren</td><td>Ja</td><td>Ja</td><td>Nein</td><td>Nein</td></tr>
+<tr><td>Globale Einstellungen sowie Datenschutz und Compliance</td><td>Ja</td><td>Nein</td><td>Nein</td><td>Nein</td></tr>
+</tbody>
+</table>
+
+<h3>Plugin-Administration</h3>
+<p>Dazu gehören die WordPress-Administratoren und alle Benutzer, denen unter <strong>Einkehrtage &gt; Globale Einstellungen &gt; Benutzerverwaltung</strong> die globale Berechtigung zur Verwaltung von Einkehrtagen gewährt wurde. Sie sehen alle Einkehrtage und sind die Einzigen, die Einkehrtage anlegen und löschen oder die globalen Einstellungen und den Datenschutz ändern können.</p>
+
+<h3>Leitung der Einkehrtage</h3>
+<p>Diese Rolle hat die volle Kontrolle über ihre Einkehrtage: Einstellungen, Teilnehmende, Briefe und Berechtigungen. Andere Einkehrtage und die globalen Einstellungen sieht sie nicht.</p>
+
+<h3>Nachrichtenverwaltung</h3>
+<p>Das ist die Rolle für alle, die sich um die Briefe kümmern: Sie drucken sie, löschen sie bei Bedarf und schicken sie per E-Mail zurück, wenn sich eine teilnehmende Person abmeldet. Sie sehen die Liste der Teilnehmenden und können das Datenblatt jeder Person in einem eingeschränkten Modus öffnen. Dort können sie nur die erhaltenen Briefe in Papierform, die individuellen Felder, die sie bearbeiten dürfen, und das Kontaktprotokoll ändern.</p>
+
+<h3>Nur Lesezugriff</h3>
+<p>Gedacht für Personen, die etwas nachschlagen müssen, ohne etwas zu verändern, zum Beispiel wer die Links an die Familien verteilt. Sie sehen die Teilnehmenden (aktive und abgemeldete), die Anzahl der Briefe, die individuellen Felder, die für die Rolle „Nachrichtenverwaltung“ freigegeben sind, und das Kontaktprotokoll. Sie können die Nachrichten-URL jeder teilnehmenden Person und ihre Einladungsnachricht kopieren. Hat jemand noch keine URL, wird eine erzeugt; eine bestehende wird aber nie ersetzt, sodass bereits verteilte Links weiter funktionieren.</p>
+<p>Ändern können sie sonst nichts: nicht bearbeiten, nicht abmelden, nicht importieren oder exportieren und nicht ins Kontaktprotokoll schreiben. Sie können auch keine Briefe öffnen, drucken oder herunterladen und weder die Einstellungen der Einkehrtage noch deren Berechtigungen sehen. In der Liste der Teilnehmenden steht bei ihnen <strong>Ansehen</strong> statt <strong>Bearbeiten</strong>.</p>
+
+<h2 id="primeros-pasos">3. Erste Schritte</h2>
+
+<ol>
+<li>Installiere und aktiviere das Plugin unter <strong>Plugins</strong>. Die benötigten Tabellen werden automatisch angelegt.</li>
+<li>Prüfe, ob deine Website <strong>HTTPS</strong> verwendet. Die Nachrichten-URLs enthalten einen geheimen Code und dürfen nicht unverschlüsselt übertragen werden.</li>
+<li>Speichere den Verschlüsselungsschlüssel in der <code>wp-config.php</code>. Bei der Aktivierung erzeugt das Plugin einen Schlüssel, speichert ihn in der Datenbank und zeigt einen Hinweis mit der Zeile an, die du kopieren musst:
+<pre>define( 'DFXPRL_ENCRYPTION_KEY', 'eine-lange-zufaellige-zeichenkette' );</pre>
+So liegt der Schlüssel nicht am selben Ort wie die verschlüsselten Daten. Erledige das <strong>bevor die ersten Briefe eintreffen</strong>: Was mit einem Schlüssel verschlüsselt wurde, lässt sich nur mit genau diesem Schlüssel wieder lesen (siehe <a href="#seguridad">Sicherheit und Verschlüsselung</a>).</li>
+<li>Sieh dir <strong>Einkehrtage &gt; Globale Einstellungen</strong> an: Header und Footer des Briefformulars, Kopfzeile der PDFs und, falls du automatische Übersetzungen möchtest, den API-Schlüssel für DeepL.</li>
+<li>Sieh dir <strong>Einkehrtage &gt; Datenschutz und Compliance</strong> an und passe die Aufbewahrungsfristen an deine Datenschutzrichtlinie an.</li>
+<li>Lege deine ersten Einkehrtage an.</li>
+</ol>
+
+<h2 id="retiros">4. Einkehrtage</h2>
+
+<h3>Die Liste der Einkehrtage</h3>
+<p>Unter <strong>Einkehrtage &gt; Alle Einkehrtage</strong> stehen alle Einkehrtage, auf die du Zugriff hast, mit Ort, Datum und Anzahl der aktiven Teilnehmenden. Du kannst nach Namen suchen. Je nach Rolle siehst du diese Schaltflächen:</p>
+<ul>
+<li><strong>Bearbeiten</strong>: öffnet die Einstellungen der Einkehrtage (Leitung der Einkehrtage).</li>
+<li><strong>Teilnehmende</strong>: öffnet die Liste der Teilnehmenden.</li>
+<li><strong>Löschen</strong>: löscht die Einkehrtage (nur Plugin-Administration; siehe unten).</li>
+</ul>
+<p>Ein Klick auf den Namen führt die Leitung der Einkehrtage zu den Einstellungen, alle anderen zur Liste der Teilnehmenden.</p>
+
+<h3>Einkehrtage anlegen oder bearbeiten</h3>
+<p>Die Plugin-Administration legt neue Einkehrtage unter <strong>Einkehrtage &gt; Neu hinzufügen</strong> an. Das sind die Felder:</p>
+
+<dl class="dfxprl-manual-fields">
+<dt>Name der Einkehrtage, Ort, Beginn, Ende</dt>
+<dd>Die Grunddaten. Name und Datum sind Pflichtfelder, und das Ende darf nicht vor dem Beginn liegen.</dd>
+
+<dt>Individuelle Nachricht für die Absender der Briefe</dt>
+<dd>Text, den die Schreibenden über dem Formular sehen. Damit kannst du erklären, worum es bei dem Brief geht, wann er übergeben wird oder welcher Ton passt. HTML ist erlaubt.</dd>
+
+<dt>Text des rechtlichen Hinweises und Text zur Annahme des Hinweises</dt>
+<dd>Wenn du einen rechtlichen Hinweis einträgst, zeigt das Formular ihn mit einem Kontrollkästchen an, das man ankreuzen muss, bevor man absenden kann. Der Annahmetext steht neben diesem Kästchen (standardmäßig „Ich akzeptiere die Bedingungen“).</dd>
+
+<dt>Mehrsprachiges Formular</dt>
+<dd>Ist es aktiviert, sehen die Schreibenden das Formular in der Sprache ihres Browsers oder in der Sprache, die sie in einer Auswahl wählen (Spanisch, Katalanisch, Baskisch, Galicisch, Englisch, Portugiesisch, Französisch, Italienisch und Deutsch). Ist es deaktiviert, erscheint das Formular immer in der Hauptsprache der Website. Siehe <a href="#traducciones">Übersetzungen der Texte der Einkehrtage</a>.</dd>
+
+<dt>Feld für Anmerkungen aktivieren</dt>
+<dd>Fügt bei jeder teilnehmenden Person ein Anmerkungsfeld hinzu, das in der Liste angezeigt wird und beim CSV-Import und -Export berücksichtigt wird.</dd>
+
+<dt>Feld für interne Anmerkungen aktivieren</dt>
+<dd>Genauso, aber diese Anmerkungen werden <strong>nie</strong> per CSV importiert oder exportiert. Nutze es für alles, was das Backend nicht verlassen soll.</dd>
+
+<dt>Template für die Briefanfrage</dt>
+<dd>Text, den das Team an die Familie oder den Notfallkontakt schickt, um sie zu bitten, selbst zu schreiben und andere dazu zu ermutigen. Er kann Platzhalter enthalten, die durch die Daten der jeweiligen Person ersetzt werden: <code>[attendant_name]</code>, <code>[attendant_surnames]</code>, <code>[emergency_contact_name]</code>, <code>[messages_url]</code>, <code>[retreat_name]</code>, <code>[retreat_start_date]</code> und die weiteren, die unter dem Feld aufgeführt sind, einschließlich derer für die individuellen Felder (<code>[slug]</code>). Enthält das Template Text, erscheint in der Liste der Teilnehmenden die Schaltfläche <strong>Einladungsnachricht</strong>.</dd>
+
+<dt>Betreff der E-Mail zur Rücksendung von Briefen und Text der E-Mail zur Rücksendung von Briefen</dt>
+<dd>E-Mail an die Person, die einen Brief geschrieben hat, wenn sich die teilnehmende Person abmeldet und der Brief zurückgeschickt wird. Sie kann Platzhalter wie <code>[sender_name]</code>, <code>[attendant_name]</code>, <code>[retreat_name]</code> oder das Sendedatum enthalten. Lässt du die Felder leer, wird ein Standardtext verwendet. Siehe <a href="#devolver">Briefe per E-Mail zurückschicken</a>.</dd>
+
+<dt>Individueller Header-Block, Individueller Footer-Block</dt>
+<dd>Wiederverwendbarer Block, Template-Teil oder Vorlage, der über und unter dem Briefformular dieser Einkehrtage angezeigt wird. Wählst du nichts aus, wird der aus den globalen Einstellungen verwendet. Diese Felder erscheinen nur, wenn in den globalen Einstellungen die <strong>Anpassung pro Einkehrtage</strong> aktiviert ist.</dd>
+
+<dt>Zusätzliche Body-Klassen</dt>
+<dd>CSS-Klassen, durch Leerzeichen getrennt, die dem <code>&lt;body&gt;</code>-Tag des Formulars dieser Einkehrtage hinzugefügt werden. Damit kannst du dem Formular über das Theme oder das zusätzliche CSS der Website ein eigenes Aussehen geben.</dd>
+</dl>
+
+<p>Speichere mit <strong>Einkehrtage hinzufügen</strong> oder <strong>Einkehrtage aktualisieren</strong>. Auf derselben Seite führt <strong>Teilnehmende verwalten</strong> zur Liste der Teilnehmenden.</p>
+
+<h3 id="traducciones">Übersetzungen der Texte der Einkehrtage</h3>
+<p>Die individuelle Nachricht, der rechtliche Hinweis und der zugehörige Annahmetext werden in der Hauptsprache der Website geschrieben. Ist das Formular mehrsprachig, kannst du unter <strong>Übersetzungen dieser Texte</strong> für jede Sprache eine eigene Fassung schreiben. Reiter mit dem Zusatz „(geschrieben)“ enthalten bereits Text.</p>
+<ul>
+<li><strong>Automatisch übersetzen</strong> füllt die Felder der jeweiligen Sprache aus dem Original, damit du sie vor dem Speichern prüfen kannst. Dafür ist ein API-Schlüssel für DeepL in den globalen Einstellungen nötig.</li>
+<li>Bleibt eine Sprache leer, verwendet das Formular die automatische Übersetzung von DeepL (falls eingerichtet) oder sonst den Originaltext.</li>
+<li>Jede automatische Übersetzung wird nur einmal erstellt und gespeichert; sie wird erst wiederholt, wenn du das Original änderst. An DeepL gehen nur diese Texte der Einkehrtage, niemals Briefe oder personenbezogene Daten.</li>
+</ul>
+
+<h3 id="campos-personalizados">Individuelle Felder für Teilnehmende</h3>
+<p>Für alle Einkehrtage kannst du dem Datenblatt der Teilnehmenden jeweils eigene Felder hinzufügen (zum Beispiel T-Shirt-Größe, Gruppe, Allergien oder ob jemand eine Mitfahrgelegenheit braucht). Klicke auf <strong>Feld hinzufügen</strong> und fülle aus:</p>
+<ul>
+<li><strong>Name</strong> und <strong>Titelform</strong>: Die Titelform kennzeichnet das Feld in CSV-Dateien und im Template für die Briefanfrage, etwa als <code>[mein_feld]</code>.</li>
+<li><strong>Typ</strong>: Text, langer Text, Zahl, Datum, Ja/Nein oder Auswahlliste (eine Option pro Zeile).</li>
+<li><strong>Sichtbar für</strong> und <strong>Bearbeitbar von</strong>: nur für die Leitung der Einkehrtage oder auch für die Nachrichtenverwaltung. Benutzer mit Nur Lesezugriff sehen die Felder, die für die Nachrichtenverwaltung sichtbar sind, können sie aber nicht bearbeiten.</li>
+<li><strong>In der Liste der Teilnehmenden anzeigen</strong> und <strong>Sortierbar</strong>.</li>
+<li><strong>Aus CSV importieren</strong> und <strong>Nach CSV exportieren</strong>.</li>
+</ul>
+<p><strong>Feld entfernen</strong> löscht beim Speichern der Einkehrtage die Werte dieses Feldes bei allen Teilnehmenden. Vorher wirst du um Bestätigung gebeten.</p>
+
+<h3>Einkehrtage löschen</h3>
+<p>Das kann nur die Plugin-Administration, über <strong>Löschen</strong> in der Liste der Einkehrtage. Gelöscht werden die Einkehrtage, alle Teilnehmenden und alle Briefe, unwiderruflich. Zur Bestätigung musst du den genauen Namen der Einkehrtage eintippen. Wenn du die Einkehrtage mit ihren Einstellungen wiederverwenden möchtest, nimm besser <a href="#vaciar">Einkehrtage leeren</a>.</p>
+
+<h2 id="acceso">5. Zugriffsverwaltung und Einladungen</h2>
+
+<p>Auf der Bearbeitungsseite der Einkehrtage zeigt der Kasten <strong>Zugriffsverwaltung</strong>, wer welche Berechtigung hat, und dort kannst du neue vergeben.</p>
+
+<h3>Aktuelle Berechtigungen</h3>
+<p>Liste der Benutzer mit ihrer Rolle und der Angabe, wer sie vergeben hat. <strong>Widerrufen</strong> entzieht die Berechtigung. Deine eigenen Berechtigungen kannst du nicht widerrufen.</p>
+
+<h3>Einem vorhandenen Benutzer Zugriff geben</h3>
+<ol>
+<li>Suche unter <strong>Zugriff gewähren &gt; Vorhandene Benutzer</strong> nach Benutzername, E-Mail-Adresse oder Name (mindestens zwei Buchstaben).</li>
+<li>Wähle den Benutzer und die Rolle: <strong>Leitung der Einkehrtage</strong>, <strong>Nachrichtenverwaltung</strong> oder <strong>Nur Lesezugriff</strong>.</li>
+<li>Klicke auf <strong>Gewähren</strong>.</li>
+</ol>
+
+<h3>Neue Personen einladen</h3>
+<ol>
+<li>Gib unter <strong>Neue Benutzer einladen</strong> die E-Mail-Adresse ein und wähle die Rolle.</li>
+<li>Klicke auf <strong>Einladung senden</strong>. Die Person bekommt eine E-Mail mit einem Link, der nach 7 Tagen abläuft.</li>
+<li>Nach dem Öffnen des Links gibt sie ihren Namen ein und klickt auf <strong>Einladung annehmen</strong>. Gehört die E-Mail-Adresse schon zu einem Benutzer der Website, erhält er einfach die Berechtigung; andernfalls wird ein Konto angelegt und die Zugangsdaten kommen per E-Mail.</li>
+</ol>
+<p>Noch nicht angenommene Einladungen stehen mit ihrem Ablaufdatum unter <strong>Ausstehende Einladungen</strong> und lassen sich dort stornieren. Abgelaufene werden automatisch entfernt.</p>
+
+<p>Das Gewähren und Widerrufen von Berechtigungen sowie jeder Schritt einer Einladung werden im Audit-Protokoll festgehalten.</p>
+
+<h2 id="asistentes">6. Teilnehmende</h2>
+
+<h3>Die Liste der Teilnehmenden</h3>
+<p>Du öffnest sie mit der Schaltfläche <strong>Teilnehmende</strong> der jeweiligen Einkehrtage. Oben stehen die Gesamtzahl der Teilnehmenden und eine Übersicht der Briefe: wie viele Nachrichten eingegangen sind, wie viele noch gedruckt werden müssen und die Gesamtzahl einschließlich der Briefe in Papierform.</p>
+<p>Es gibt zwei Reiter: <strong>Teilnehmende</strong> (die aktiven) und <strong>Abgemeldete Teilnehmende</strong>.</p>
+
+<h4>Spalten</h4>
+<ul>
+<li><strong>Vorname</strong>, <strong>Nachnamen</strong>, <strong>Geburtsdatum</strong>, <strong>Notfallkontakt</strong>, <strong>Eingeladen von</strong>, <strong>Unvereinbarkeiten</strong>, <strong>Anmerkungen</strong> und <strong>Interne Anmerkungen</strong> (falls aktiviert) sowie die individuellen Felder, die für die Liste markiert sind.</li>
+<li><strong>Nachrichten</strong>: Briefe, die über die Website eingegangen sind, und in Klammern die, die noch gedruckt werden müssen. Klickst du mehrmals auf die Spaltenüberschrift, wird abwechselnd nach Gesamtzahl oder nach noch nicht gedruckten Briefen sortiert.</li>
+<li><strong>Briefe in Papierform</strong>: Briefe auf Papier, die außerhalb der Website eingegangen sind.</li>
+<li><strong>Briefe insgesamt</strong>: die Summe der beiden vorigen Spalten.</li>
+<li><strong>Kontaktprotokoll</strong>: ein Notizbuch-Symbol mit der Anzahl der Einträge. Ein Klick darauf öffnet das Protokoll in einem Fenster.</li>
+</ul>
+<p>Die Spaltenüberschriften bleiben beim Scrollen stehen. Auf schmalen Bildschirmen wird die Tabelle zu Karten, und es erscheint ein Auswahlfeld <strong>Sortieren nach</strong>.</p>
+
+<h4>Suchen, filtern und sortieren</h4>
+<p>Die Suche durchsucht Vorname, Nachnamen, Notfallkontakt, „Eingeladen von“ und Unvereinbarkeiten. Unter <strong>Filter</strong> kannst du nach jedem dieser Felder sowie nach Anmerkungen und internen Anmerkungen filtern; klicke dann auf <strong>Filter anwenden</strong> oder <strong>Filter zurücksetzen</strong>. Klicke auf eine Spaltenüberschrift, um nach dieser Spalte zu sortieren.</p>
+<p>Unter <strong>Filter</strong> erscheinen auch die individuellen Felder der Einkehrtage, die du sehen darfst. Textfelder werden nach ihrem Inhalt gefiltert; Felder vom Typ <strong>Optionsliste</strong> und <strong>Ja/Nein</strong> über ein Auswahlfeld; Zahlen und Datumsangaben über einen Bereich <strong>Von</strong>–<strong>Bis</strong>, bei dem du auch nur eine der beiden Grenzen ausfüllen kannst.</p>
+
+<h4>Spalten neu anordnen</h4>
+<p>Die Leitung der Einkehrtage kann die Spaltenüberschriften an ihrem Griff verschieben (er erscheint, wenn du mit der Maus darüberfährst). Die Reihenfolge wird für alle gespeichert, die mit diesen Einkehrtagen arbeiten. <strong>Standardreihenfolge wiederherstellen</strong> stellt den ursprünglichen Zustand wieder her.</p>
+
+<h4>Direkt in der Liste bearbeiten</h4>
+<p>Klicke auf eine Zelle, um sie zu bearbeiten, ohne das Datenblatt zu öffnen: <kbd>Eingabe</kbd> speichert, <kbd>Esc</kbd> bricht ab, und bei langen Texten speichert <kbd>Strg</kbd>+<kbd>Eingabe</kbd>. Die Leitung der Einkehrtage kann Vorname, Nachnamen, Geburtsdatum, „Eingeladen von“, Unvereinbarkeiten und Anmerkungen bearbeiten; Leitung und Nachrichtenverwaltung können die Briefe in Papierform bearbeiten; bei den individuellen Feldern gilt deren Bearbeitungsberechtigung.</p>
+
+<h4>Schaltflächen bei jeder teilnehmenden Person</h4>
+<ul>
+<li><strong>Bearbeiten</strong> (oder <strong>Ansehen</strong> bei Nur Lesezugriff): öffnet das Datenblatt.</li>
+<li><strong>Nachrichten</strong>: öffnet die Briefe der Person (Leitung der Einkehrtage und Nachrichtenverwaltung).</li>
+<li><strong>Einladungsnachricht</strong>: zeigt das Template für die Briefanfrage, ausgefüllt mit den Daten und dem Link der Person, fertig zum Kopieren und Einfügen in eine E-Mail oder in WhatsApp. Erscheint nur, wenn die Einkehrtage ein Template haben.</li>
+<li><strong>Nachrichten-URL erzeugen</strong> oder <strong>Nachrichten-URL kopieren</strong>: siehe unten.</li>
+<li><strong>Abmelden</strong>: siehe <a href="#bajas">Abmeldungen</a> (Leitung der Einkehrtage).</li>
+</ul>
+
+<h3>Teilnehmende hinzufügen oder bearbeiten</h3>
+<p>Klicke auf <strong>Neue teilnehmende Person hinzufügen</strong> oder in der jeweiligen Zeile auf <strong>Bearbeiten</strong>. Das sind die Felder:</p>
+<ul>
+<li><strong>Vorname</strong>, <strong>Nachnamen</strong> und <strong>Geburtsdatum</strong> (Pflichtfelder).</li>
+<li><strong>Notfallkontakt</strong>: Vorname (Pflichtfeld), Nachname, Telefon (Pflichtfeld), E-Mail-Adresse und Beziehung zur teilnehmenden Person. Diese Person bekommt in der Regel den Link für die Briefe.</li>
+<li><strong>Eingeladen von</strong>: wer die Person zu den Einkehrtagen eingeladen hat.</li>
+<li><strong>Unvereinbarkeiten</strong>: Teilnehmende, mit denen man sie besser nicht zusammenbringt, zum Beispiel am selben Tisch oder im selben Zimmer.</li>
+<li><strong>Anmerkungen</strong> und <strong>Interne Anmerkungen</strong>, falls sie für die Einkehrtage aktiviert sind.</li>
+<li>Die <strong>individuellen Felder</strong> der Einkehrtage.</li>
+<li><strong>Erhaltene Briefe in Papierform</strong>: Anzahl der Briefe auf Papier, die außerhalb der Website eingegangen sind.</li>
+</ul>
+<p>Das Datenblatt zeigt außerdem die Anzahl der eingegangenen Nachrichten (mit Link dorthin), die <strong>Nachrichten-URL</strong> und das <strong>Kontaktprotokoll</strong>. Wenn ein Feld die Prüfung nicht besteht, bleibt alles Eingegebene erhalten und du musst nur dieses Feld korrigieren.</p>
+<p>Die Nachrichtenverwaltung öffnet das Datenblatt im eingeschränkten Modus: Sie kann nur die Briefe in Papierform, die individuellen Felder, die sie bearbeiten darf, und das Kontaktprotokoll ändern. Benutzer mit Nur Lesezugriff sehen es vollständig gesperrt, mit einer Schaltfläche <strong>Zurück zu den Teilnehmenden</strong>.</p>
+
+<h3 id="url">Die Nachrichten-URL</h3>
+<p>Jede teilnehmende Person hat eine eigene Adresse, etwa <code>https://deinepfarrei.de/messages/geheimer-code</code>, über die man ihr schreiben kann. Der Code ist zufällig und lässt sich nicht erraten.</p>
+<ul>
+<li>Hat die Person noch keine, klicke auf <strong>Nachrichten-URL erzeugen</strong>.</li>
+<li><strong>Nachrichten-URL kopieren</strong> kopiert sie in die Zwischenablage, mit den Initialen der Person am Ende (zum Beispiel <code>…/messages/code/#JGP</code>). So weißt du, wem der Link gehört, ohne dass der Name zu sehen ist.</li>
+<li>Gib den Link nur an Personen weiter, die schreiben sollen. Wer ihn hat, kann dieser Person Briefe schicken.</li>
+<li>Die URL bleibt gültig, bis die Person abgemeldet oder gelöscht wird.</li>
+</ul>
+
+<h3 id="historial">Kontaktprotokoll</h3>
+<p>Hier hält das Team die Anrufe und Gespräche mit der Kontaktperson jeder teilnehmenden Person fest: „Mutter am Dienstag angerufen, schickt den Link an die Geschwister“ und Ähnliches. Du öffnest es über die Spalte <strong>Kontaktprotokoll</strong> in der Liste oder über das Datenblatt.</p>
+<ul>
+<li>Leitung der Einkehrtage und Nachrichtenverwaltung können Einträge mit Datum und Beschreibung hinzufügen (<strong>Eintrag hinzufügen</strong>).</li>
+<li>Wer einen Eintrag schreibt, kann ihn 15 Minuten lang bearbeiten und jederzeit löschen. Bearbeitete Einträge werden mit „(bearbeitet)“ gekennzeichnet.</li>
+<li>Die Leitung der Einkehrtage kann jeden Eintrag bearbeiten oder löschen und den vollständigen <strong>Änderungsverlauf</strong> sehen, einschließlich gelöschter Einträge.</li>
+<li>Benutzer mit Nur Lesezugriff können das Protokoll lesen, aber nicht hineinschreiben.</li>
+</ul>
+
+<h2 id="csv">7. Teilnehmende importieren und exportieren (CSV)</h2>
+
+<h3>Importieren</h3>
+<p>Klicke in der Liste der Teilnehmenden auf <strong>CSV importieren</strong>. Für die Datei gilt:</p>
+<ul>
+<li>In der ersten Zeile müssen die Spaltennamen stehen. Sie können in beliebiger Reihenfolge stehen, auf Englisch oder in der Sprache des Backends; Spalten, die nicht erkannt werden, werden ignoriert.</li>
+<li>Diese Spalten sind Pflicht: <strong>Vorname</strong>, <strong>Nachnamen</strong>, <strong>Geburtsdatum</strong>, <strong>Name des Notfallkontakts</strong> und <strong>Telefon des Notfallkontakts</strong>.</li>
+<li>Zusätzlich möglich sind: Nachname, E-Mail-Adresse und Beziehung des Notfallkontakts, „Eingeladen von“, Unvereinbarkeiten, Anmerkungen und die individuellen Felder, die für den Import markiert sind (über ihre Titelform).</li>
+<li>Die Datei darf höchstens 2 MB groß sein.</li>
+</ul>
+<p><strong>Datumsangaben.</strong> Akzeptiert werden JJJJ-MM-TT, TT/MM/JJJJ, MM/TT/JJJJ, TT-MM-JJJJ, MM-TT-JJJJ und TT.MM.JJJJ. Ein Datum wie 01/10/2025 kann der 1. Oktober oder der 10. Januar sein; lege unter <strong>Bevorzugtes Datumsformat</strong> fest, wie es gelesen werden soll, oder verwende besser JJJJ-MM-TT. Nach dem Import weist das Ergebnis auf mehrdeutige Datumsangaben hin.</p>
+<p><strong>Bereits vorhandene Teilnehmende.</strong> Stimmt eine Zeile mit einer teilnehmenden Person dieser Einkehrtage überein (gleicher Vorname, gleiche Nachnamen und gleiches Geburtsdatum), wird sie nicht doppelt angelegt: Aktualisiert werden die Daten des Notfallkontakts und die individuellen Felder. Zeilen, die zu abgemeldeten Teilnehmenden passen, bleiben unverändert.</p>
+<p>Am Ende siehst du, wie viele Teilnehmende hinzugefügt und wie viele aktualisiert wurden und welche Zeilen Fehler hatten, mit Zeilennummer.</p>
+
+<h3>Exportieren</h3>
+<p><strong>CSV exportieren</strong> lädt die aktiven Teilnehmenden mit ihren Daten, ihrer Nachrichten-URL, der Anzahl der Nachrichten und den für den Export markierten individuellen Feldern herunter. Interne Anmerkungen werden nie exportiert. Denk daran, dass die Datei personenbezogene Daten und die privaten URLs enthält: Bewahre sie sorgfältig auf und lösche sie, sobald du sie nicht mehr brauchst.</p>
+
+<h2 id="formulario">8. Das Briefformular</h2>
+
+<p>Das ist die Seite, die sieht, wer die Nachrichten-URL einer teilnehmenden Person öffnet. Ein Konto auf der Website ist nicht nötig.</p>
+
+<ul>
+<li>Oben stehen der Name der teilnehmenden Person und die <strong>individuelle Nachricht</strong> der Einkehrtage.</li>
+<li>Ist das Formular mehrsprachig, gibt es eine Auswahl für die <strong>Sprache</strong>. Beim Wechsel der Sprache wird die Seite nicht neu geladen, das Geschriebene geht also nicht verloren.</li>
+<li>Wer schreibt, gibt seinen Namen an und auf Wunsch seine E-Mail-Adresse (zweimal, um Tippfehler zu vermeiden). Die E-Mail-Adresse wird verschlüsselt gespeichert und nur verwendet, um bei einem Problem mit dem Brief Bescheid zu geben, etwa wenn er zurückgeschickt wird, weil die teilnehmende Person doch nicht zu den Einkehrtagen kommt.</li>
+<li>Dann wählt man die Art der Nachricht:
+<ul>
+<li><strong>Textnachricht</strong>: ein Editor mit Fett, Kursiv, Unterstrichen, Listen sowie Rückgängig/Wiederholen. Man kann Bilder und Text einfügen, der aus Word oder Google Docs kopiert wurde.</li>
+<li><strong>Datei-Upload</strong>: Fotos oder Dokumente (PDF, DOC, DOCX, TXT, JPG, PNG, GIF). Das Formular zeigt die maximale Größe an, die der Server zulässt.</li>
+</ul></li>
+<li>Anschließend löst man die <strong>Sicherheitsabfrage</strong>, eine einfache Addition. Benutzer, die auf der Website angemeldet sind, sehen sie nicht.</li>
+<li>Haben die Einkehrtage einen rechtlichen Hinweis, muss man das Kontrollkästchen zur Annahme ankreuzen; vorher lässt sich der Senden-Button nicht anklicken.</li>
+<li>Nach einem Klick auf <strong>Vertrauliche Nachricht senden</strong> erscheint eine Seite, die bestätigt, dass der Brief angekommen ist.</li>
+</ul>
+
+<p>Um Missbrauch zu verhindern, kann jede IP-Adresse pro Stunde nur eine begrenzte Anzahl Briefe senden. Ist jemand nach mehreren Fehlversuchen gesperrt, kann die Plugin-Administration die Sperre unter <strong>Datenschutz und Compliance &gt; Alle Anfragelimits zurücksetzen</strong> aufheben.</p>
+<p>Wurde die teilnehmende Person abgemeldet, zeigt das Formular „Für diese teilnehmende Person werden keine Nachrichten mehr angenommen.“ Eine Adresse mit einem Code, den es nicht gibt, führt zu einem 404-Fehler.</p>
+
+<h2 id="mensajes">9. Vertrauliche Nachrichten: drucken, löschen und zurückschicken</h2>
+
+<h3>Die Liste der Nachrichten</h3>
+<p>Du öffnest sie mit der Schaltfläche <strong>Nachrichten</strong> bei der jeweiligen teilnehmenden Person. Aus Sicherheitsgründen <strong>zeigt sie nie den Inhalt</strong> der Briefe, sondern nur ihre Daten: Absender, Art (Text oder Dateien), Sendedatum und Druckstatus. Du kannst nach Art filtern, nach Absender suchen und nach jeder dieser Spalten sortieren, auch nach dem Druckstatus (zuerst die nicht gedruckten).</p>
+
+<h3>Drucken</h3>
+<ol>
+<li>Klicke beim Brief auf <strong>Drucken</strong>.</li>
+<li>Ein neuer Tab öffnet sich mit dem druckfertigen Brief: Empfänger, Absender und Inhalt. Erst in diesem Moment wird er entschlüsselt.</li>
+<li>Der Druckdialog des Browsers öffnet sich. Wenn du ihn schließt, schließt sich auch der Tab.</li>
+</ol>
+<ul>
+<li>Briefe mit mehreren Bildern werden so gesetzt, dass kein Bild auf zwei Seiten verteilt wird.</li>
+<li>Besteht der Brief aus einer einzigen PDF-Datei, wird beim Drucken oben eine Von/An-Kopfzeile ergänzt, damit man sieht, von wem und für wen er ist (lässt sich in den globalen Einstellungen abschalten).</li>
+<li>Gibt es mehrere Dateien und ist mindestens eine kein Bild, werden alle zusammen als ZIP heruntergeladen. Word-Dokumente lassen sich in der Druckansicht nicht anzeigen: Sie müssen heruntergeladen und separat gedruckt werden.</li>
+<li>Verwende einen aktuellen Browser (Edge, Chrome, Firefox oder Safari). Internet Explorer wird nicht unterstützt und zeigt die Briefe nicht an.</li>
+</ul>
+
+<h3>Druckverlauf</h3>
+<p>Der Status jedes Briefes zeigt, ob er gedruckt wurde, wie oft und wann zum ersten Mal. Ein Klick darauf zeigt den vollständigen Verlauf: wer ihn gedruckt hat, wann und von welcher IP-Adresse. Drucke jeden Brief nach Möglichkeit nur einmal und bewahre die Papierexemplare sorgfältig auf.</p>
+
+<h3>Einen Brief löschen</h3>
+<p><strong>Löschen</strong> entfernt den Brief, seine Dateien und seinen Druckverlauf. Das lässt sich nicht rückgängig machen.</p>
+
+<h3 id="devolver">Briefe per E-Mail zurückschicken</h3>
+<p>Wenn sich eine teilnehmende Person abmeldet (zum Beispiel, weil sie doch nicht an den Einkehrtagen teilnimmt), können ihre Briefe an die Schreibenden zurückgeschickt werden, sofern diese ihre E-Mail-Adresse angegeben haben:</p>
+<ul>
+<li><strong>Per E-Mail zurückschicken</strong> schickt einen Brief zurück, <strong>Alle per E-Mail zurückschicken</strong> alle, die zurückgeschickt werden können.</li>
+<li>Vor dem Senden siehst du eine Vorschau mit Empfänger, Betreff, Text und Anhängen. Textbriefe werden als HTML-Dokument angehängt, Briefe mit Dateien mit den Originaldateien.</li>
+<li>Sobald die E-Mail verschickt ist, wird der Brief aus dem System gelöscht. Schlägt der Versand fehl, bleibt der Brief erhalten.</li>
+<li>Wurde der Brief bereits gedruckt, wirst du daran erinnert, das Papierexemplar zu vernichten.</li>
+<li>Briefe ohne E-Mail-Adresse erscheinen als „Keine E-Mail-Adresse: Rücksendung nicht möglich“.</li>
+</ul>
+<p>Betreff und Text der E-Mail werden für die jeweiligen Einkehrtage festgelegt (siehe <a href="#retiros">Einkehrtage</a>).</p>
+
+<h2 id="bajas">10. Abmeldungen, Reaktivierungen und das Ende der Einkehrtage</h2>
+
+<h3>Eine teilnehmende Person abmelden</h3>
+<p>Kommt jemand nicht zu den Einkehrtagen, klicke in der jeweiligen Zeile auf <strong>Abmelden</strong>. Die Person:</p>
+<ul>
+<li>wandert in den Reiter <strong>Abgemeldete Teilnehmende</strong>, mit Datum und dem Benutzer, der sie abgemeldet hat;</li>
+<li>kann nicht mehr bearbeitet werden;</li>
+<li>nimmt über ihre URL keine Briefe mehr an;</li>
+<li>behält ihre Briefe, die weiterhin gedruckt oder per E-Mail zurückgeschickt werden können, und ihr Kontaktprotokoll, das offen bleibt.</li>
+</ul>
+<p>Es wird nichts gelöscht. In diesem Reiter kannst du die Person <strong>Reaktivieren</strong> oder <strong>Endgültig löschen</strong>. Löschen lassen sich nur abgemeldete Teilnehmende; hat die Person noch Briefe, die zurückgeschickt werden könnten, wirst du vor dem Löschen gewarnt.</p>
+
+<h3>Alle Teilnehmenden abmelden</h3>
+<p><strong>Alle Teilnehmenden abmelden</strong> macht dasselbe für die ganzen Einkehrtage. Zur Bestätigung musst du „ALLE TEILNEHMENDEN ABMELDEN“ eintippen.</p>
+
+<h3 id="vaciar">Einkehrtage leeren</h3>
+<p>Sind die Einkehrtage vorbei, sieht die Leitung der Einkehrtage die Schaltfläche <strong>Einkehrtage leeren</strong>. Sie löscht endgültig alle Teilnehmenden, aktive wie abgemeldete, mit ihren Briefen, Dateien, Druckverläufen, Kontaktprotokollen und den Werten der individuellen Felder. Die Einkehrtage behalten ihre Einstellungen, ihre individuellen Felder und ihre Leitung und sind bereit für das nächste Mal.</p>
+<p>Zur Bestätigung musst du den genauen Namen der Einkehrtage eintippen. Gibt es noch Briefe abgemeldeter Teilnehmender, die zurückgeschickt werden könnten, wirst du vorher gewarnt.</p>
+
+<h2 id="ajustes-globales">11. Globale Einstellungen</h2>
+<p>Unter <strong>Einkehrtage &gt; Globale Einstellungen</strong>, nur für die Plugin-Administration:</p>
+<dl class="dfxprl-manual-fields">
+<dt>Anpassung pro Einkehrtage</dt>
+<dd>Ist sie aktiviert, können alle Einkehrtage einen eigenen Header, Footer und eigene Body-Klassen haben. Andernfalls verwenden alle die Werte dieser Seite.</dd>
+<dt>Standard-Header-Block und Standard-Footer-Block</dt>
+<dd>Wiederverwendbarer Block, Template-Teil oder Vorlage, der im Briefformular angezeigt wird. Angelegt werden sie unter <strong>Design &gt; Editor &gt; Vorlagen</strong>. Wählst du nichts aus, werden Header und Footer des Themes verwendet.</dd>
+<dt>Zusätzliche Body-Klassen</dt>
+<dd>CSS-Klassen für den <code>&lt;body&gt;</code>-Tag aller Briefformulare. Die Seite hat außerdem immer die Klasse <code>dfxprl-message-form</code>.</dd>
+<dt>PDF-Kopfzeile hinzufügen</dt>
+<dd>Ergänzt beim Drucken von PDF-Briefen die Von/An-Kopfzeile. Das erledigt der Browser der Person, die druckt, ohne den Server zu belasten. Standardmäßig aktiviert.</dd>
+<dt>API-Schlüssel für DeepL</dt>
+<dd>Optional. Damit werden die Texte der Einkehrtage automatisch in die Sprache der Person übersetzt, die das Formular öffnet. Der kostenlose Tarif DeepL API Free (500.000 Zeichen pro Monat) reicht aus. Der Schlüssel lässt sich auch in der <code>wp-config.php</code> als <code>DFXPRL_DEEPL_API_KEY</code> festlegen.</dd>
+<dt>Benutzerverwaltung</dt>
+<dd>Gewährt oder widerruft die globale Berechtigung zur Verwaltung von Einkehrtagen. Wer sie hat, gehört zur Plugin-Administration: Er sieht alle Einkehrtage und kann neue anlegen. Die Berechtigungen für einzelne Einkehrtage vergibst du auf deren Bearbeitungsseite.</dd>
+</dl>
+
+<h2 id="privacidad">12. Datenschutz und Compliance</h2>
+<p>Unter <strong>Einkehrtage &gt; Datenschutz und Compliance</strong>, nur für die Plugin-Administration:</p>
+<ul>
+<li><strong>Übersicht über den Compliance-Status</strong>: Verschlüsselung, IP-Anonymisierung, Aufbewahrungsrichtlinie und Audit-Protokoll, mit Statistiken zu den gespeicherten Daten.</li>
+<li><strong>Richtlinie zur Datenaufbewahrung</strong>: wie viele Tage die Briefe aufbewahrt werden (30 bis 3650; 0, um sie nie zu löschen) und das Audit-Protokoll (365 bis 3650). Was älter ist, wird automatisch gelöscht. Die IP-Adressen der Schreibenden werden immer nach 30 Tagen anonymisiert.</li>
+<li><strong>Manuelle Bereinigung</strong>: führt sofort die Bereinigung aus, die sonst täglich automatisch läuft.</li>
+<li><strong>Verwaltung der Anfragelimits</strong>: hebt die Sperre für alle auf, die das Sendelimit überschritten haben.</li>
+<li><strong>Export/Löschung personenbezogener Daten</strong>: Suche nach Name oder E-Mail-Adresse der Absender, um Anfragen nach dem Recht auf Auskunft und Datenübertragbarkeit oder dem Recht auf Löschung nach der DSGVO zu beantworten. Zum Löschen musst du „ALLE DATEN LÖSCHEN“ eintippen. Der Inhalt der Briefe wird nicht im Klartext exportiert, weil er verschlüsselt ist.</li>
+<li><strong>Letzte Audit-Aktivitäten</strong>: die zuletzt protokollierten Ereignisse. Das Protokoll speichert Kennungen und Initialen, nie den Inhalt der Briefe.</li>
+</ul>
+
+<h2 id="seguridad">13. Sicherheit und Verschlüsselung</h2>
+<ul>
+<li>Der Inhalt der Briefe und ihrer Dateien wird vor dem Speichern mit AES-256 verschlüsselt und mit HMAC-SHA256 authentifiziert. Auch die E-Mail-Adresse der Schreibenden wird verschlüsselt gespeichert.</li>
+<li>Briefe werden nur beim Drucken oder beim Zurückschicken per E-Mail entschlüsselt. Es gibt keine Vorschau am Bildschirm, damit niemand über die Schulter mitlesen kann.</li>
+<li>Der Verschlüsselungsschlüssel wird bei der Aktivierung des Plugins erzeugt. Verschiebe ihn als <code>DFXPRL_ENCRYPTION_KEY</code> in die <code>wp-config.php</code> und bewahre eine Kopie an einem sicheren Ort auf: <strong>Geht der Schlüssel verloren, lassen sich die Briefe nicht wiederherstellen</strong>.</li>
+<li>Stimmen der Schlüssel in der <code>wp-config.php</code> und der in der Datenbank nicht überein, erscheint ein Hinweis. Du kannst den Schlüssel in der <code>wp-config.php</code> so ändern, dass er übereinstimmt, oder auf <strong>Schlüssel aus der Datenbank entfernen und Schlüssel aus wp-config.php verwenden</strong> klicken. Was mit dem alten Schlüssel verschlüsselt wurde, ist dann nicht mehr lesbar.</li>
+<li>Im Audit-Protokoll werden Berechtigungen, Einladungen und alle Vorgänge an Einkehrtagen, Teilnehmenden und Briefen festgehalten.</li>
+</ul>
+
+<h2 id="calendario">14. Einkehrtage von Anfang bis Ende</h2>
+<ol>
+<li><strong>Einige Wochen vorher.</strong> Lege die Einkehrtage an (oder leere die vom Vorjahr), schreibe die Nachricht für die Absender, den rechtlichen Hinweis und das Template für die Briefanfrage. Gib dem Team Zugriff, jeder Person mit der Rolle, die sie braucht.</li>
+<li><strong>Anmeldungen.</strong> Trage die Teilnehmenden ein oder importiere sie aus einer CSV-Datei.</li>
+<li><strong>Um Briefe bitten.</strong> Kopiere für jede teilnehmende Person die <strong>Einladungsnachricht</strong> und schicke sie an ihren Notfallkontakt. Halte im Kontaktprotokoll fest, wen du angerufen oder angeschrieben hast.</li>
+<li><strong>Nachfassen.</strong> Sieh in der Liste nach, wer wenige Briefe hat (sortiere nach <strong>Briefe insgesamt</strong>), und melde dich bei Bedarf noch einmal. Trage Briefe auf Papier unter <strong>Briefe in Papierform</strong> ein.</li>
+<li><strong>Abmeldungen.</strong> Kommt jemand nicht, melde die Person ab und schicke ihre Briefe per E-Mail zurück.</li>
+<li><strong>Während der Einkehrtage.</strong> Drucke die Briefe (sortiere nach <strong>Nachrichten</strong>, um die noch nicht gedruckten zu sehen) und bereite die Übergabe vor.</li>
+<li><strong>Danach.</strong> Vernichte überzählige Ausdrucke und klicke auf <strong>Einkehrtage leeren</strong>, um die personenbezogenen Daten zu löschen und die Einkehrtage für das nächste Mal vorzubereiten.</li>
+</ol>
+
+<h2 id="faq">15. Häufige Fragen und Probleme</h2>
+
+<h4>Wer kann die Briefe lesen?</h4>
+<p>Am Bildschirm niemand. Sichtbar werden sie nur beim Drucken, und drucken können sie nur die Plugin-Administration sowie die Leitung und die Nachrichtenverwaltung der jeweiligen Einkehrtage. Jeder Druck wird protokolliert.</p>
+
+<h4>Ein Familienmitglied sagt, der Link funktioniert nicht.</h4>
+<p>Prüfe, ob die Adresse vollständig kopiert wurde und ob die teilnehmende Person nicht abgemeldet ist. Erscheint „Zu viele Anfragen“, warte eine Stunde oder setze die Limits unter <strong>Datenschutz und Compliance</strong> zurück.</p>
+
+<h4>Beim Senden von Dateien erscheint ein Fehler wegen der Größe.</h4>
+<p>Das Limit legt der Server fest, und es wird im Formular angezeigt. Man muss kleinere Dateien oder weniger auf einmal senden. Wer das Hosting verwaltet, kann die PHP-Limits erhöhen (<code>upload_max_filesize</code> und <code>post_max_size</code>).</p>
+
+<h4>Ich sehe die Schaltfläche Einladungsnachricht nicht.</h4>
+<p>Sie erscheint nur, wenn die Einkehrtage ein <strong>Template für die Briefanfrage</strong> haben.</p>
+
+<h4>Ich kann eine teilnehmende Person nicht bearbeiten.</h4>
+<p>Entweder ist sie abgemeldet (reaktiviere sie zuerst), oder deine Rolle erlaubt es nicht: Die Nachrichtenverwaltung bearbeitet nur einige Felder, und mit Nur Lesezugriff lässt sich gar nichts bearbeiten.</p>
+
+<h4>Ich sehe die Schaltfläche Einkehrtage leeren nicht.</h4>
+<p>Sie erscheint nur für die Leitung der Einkehrtage und erst, wenn das Enddatum der Einkehrtage vorbei ist.</p>
+
+<h4>Ich habe den Verschlüsselungsschlüssel verloren.</h4>
+<p>Die damit verschlüsselten Briefe lassen sich nicht wiederherstellen. Deshalb solltest du eine Kopie der <code>wp-config.php</code> oder des Schlüssels an einem sicheren Ort aufbewahren.</p>
+
+<h4>Gibt es das Formular in meiner Sprache?</h4>
+<p>Das Formular ist auf Spanisch, Katalanisch, Baskisch, Galicisch, Englisch, Portugiesisch, Französisch, Italienisch und Deutsch übersetzt. Die eigenen Texte der jeweiligen Einkehrtage musst du selbst schreiben oder übersetzen (siehe <a href="#traducciones">Übersetzungen</a>).</p>
+
+<p class="dfxprl-manual-footer">Hast du einen Fehler gefunden oder fehlt dir etwas? Schreib es uns auf <a href="https://github.com/davefx/dfx-parish-retreat-letters/issues" target="_blank" rel="noopener">GitHub</a> oder im <a href="https://wordpress.org/support/plugin/dfx-parish-retreat-letters/" target="_blank" rel="noopener">Support-Forum auf WordPress.org</a>.</p>
+
+</div>

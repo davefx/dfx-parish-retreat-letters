@@ -3,7 +3,7 @@ Contributors: davefx
 Tags: parish, retreat, letters, confidential, GDPR
 Requires at least: 5.0
 Tested up to: 7.1
-Stable tag: 26.11.08.1
+Stable tag: 26.11.11
 Requires PHP: 7.4
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
@@ -122,6 +122,11 @@ Under **Retreats > Global Settings** you can configure:
 * Encryption key management (including the option to remove a database-stored key in favour of the `wp-config.php` constant).
 * The DeepL API key for the automatic translation of the retreat texts (it can also be defined in `wp-config.php` as `DFXPRL_DEEPL_API_KEY`). A key of the free plan, DeepL API Free (up to 500,000 characters a month), is enough.
 
+= User manual =
+
+* A user manual is built into the admin, with a version for each access level: plugin administrator, retreat manager, message manager and read only. Each user opens the one for their highest access level, and can switch to the others they hold; plugin administrators can read all four, and retreat managers also those of the access levels they give their team. Every page of the plugin has a **Manual** link at the top right, and the plugin row in the Plugins screen links to it too. The complete manual covers every screen: retreats, access management and invitations, attendants, CSV import and export, the letters form, printing and returning letters, withdrawals and emptying a retreat, global settings, privacy and security, and a step-by-step retreat calendar.
+* It is shown in the language of each user: English, Spanish, Catalan, Basque, Galician, Portuguese, French, Italian or German (other variants of those languages use the closest one, and any other language gets the English manual).
+
 = Internationalisation =
 
 * The plugin ships with complete translations into **Spanish, Catalan, Basque, Galician, Portuguese (Portugal), French, Italian and German**. The Spanish one matches the translation approved on translate.wordpress.org; the others were machine-generated following the wordpress.org glossary of each language and are open to review on translate.wordpress.org.
@@ -191,6 +196,14 @@ By default it is generated automatically and stored in the WordPress database (`
 Yes. The best place is [translate.wordpress.org](https://translate.wordpress.org/projects/wp-plugins/dfx-parish-retreat-letters/), so the translation reaches every site as a language pack. A `.pot` translation template is also included in the `languages/` directory.
 
 ## Changelog
+
+### 26.11.11
+
+- New: **user manual** in the admin, with a version for each access level (plugin administrator, retreat manager, message manager and read only), linked from the top of every page of the plugin and from the Plugins screen, in English, Spanish, Catalan, Basque, Galician, Portuguese, French, Italian and German, shown in each user's language.
+- New: the attendants list **Filters** include the retreat's custom fields each user can see: text by content, options lists and Yes/No fields with a drop-down, and numbers and dates with a From–To range.
+- Fix: the "File upload message" text was untranslated in every language except Spanish.
+- Fix: in the global settings, the translated notice for a DeepL key defined in `wp-config.php` named the old Google constant instead of `DFXPRL_DEEPL_API_KEY`.
+- Fix: two typos in the Spanish translation.
 
 ### 26.11.08.1
 

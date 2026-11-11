@@ -23,6 +23,10 @@ if (!defined('WPINC')) {
     define('WPINC', 'wp-includes');
 }
 
+if (!defined('DFXPRL_PLUGIN_BASENAME')) {
+    define('DFXPRL_PLUGIN_BASENAME', 'dfx-parish-retreat-letters/dfx-parish-retreat-letters.php');
+}
+
 // Mock basic WordPress functions that are commonly used
 if (!function_exists('plugin_dir_path')) {
     function plugin_dir_path($file) {

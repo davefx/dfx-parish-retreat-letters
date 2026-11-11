@@ -162,6 +162,8 @@ class DFXPRL_Admin {
 		add_action( 'admin_menu', array( $this, 'add_admin_menu' ) );
 		add_action( 'admin_init', array( $this, 'handle_admin_form_submissions' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_scripts' ) );
+		add_filter( 'plugin_action_links_' . DFXPRL_PLUGIN_BASENAME, array( $this, 'add_manual_action_link' ) );
+		add_action( 'in_admin_header', array( $this, 'render_manual_link' ) );
 		add_action( 'admin_notices', array( $this, 'maybe_render_ie_unsupported_notice' ) );
 		add_action( 'wp_ajax_dfxprl_delete_retreat', array( $this, 'ajax_delete_retreat' ) );
 		add_action( 'wp_ajax_dfxprl_delete_attendant', array( $this, 'ajax_delete_attendant' ) );
@@ -390,6 +392,17 @@ class DFXPRL_Admin {
 			);
 		}
 
+		// User manual, in the language of the current user, for everyone with access to a retreat.
+		// It is left out of the menu: every page of the plugin links to it (see render_manual_link()).
+		add_submenu_page(
+			'dfxprl-retreats',
+			__( 'User Manual', 'dfx-parish-retreat-letters' ),
+			'', // Empty menu title to hide it from the menu
+			'read',
+			'dfxprl-manual',
+			array( $this, 'manual_page' )
+		);
+
 		// Hidden submenu page for messages (accessed only through attendant links)
 		add_submenu_page(
 			'dfxprl-retreats',
@@ -402,6 +415,151 @@ class DFXPRL_Admin {
 
 		// Hide the messages submenu item from displaying in the menu
 		add_action( 'admin_enqueue_scripts', array( $this, 'hide_messages_submenu' ) );
+	}
+
+	/**
+	 * Profiles that have their own user manual, from the most to the least permissions.
+	 *
+	 * Each one has a folder in manual/ with one file per locale.
+	 *
+	 * @since 26.11.11
+	 * @return string[]
+	 */
+	public static function get_manual_profiles() {
+		return array( 'admin', DFXPRL_Permissions::PERMISSION_MANAGER, DFXPRL_Permissions::PERMISSION_MESSAGE_MANAGER, DFXPRL_Permissions::PERMISSION_READ_ONLY );
+	}
+
+	/**
+	 * Translated name of a manual profile.
+	 *
+	 * @since 26.11.11
+	 * @param string $profile One of get_manual_profiles().
+	 * @return string
+	 */
+	public static function get_manual_profile_label( $profile ) {
+		if ( 'admin' === $profile ) {
+			return __( 'Plugin Administrator', 'dfx-parish-retreat-letters' );
+		}
+		return DFXPRL_Permissions::get_permission_level_label( $profile );
+	}
+
+	/**
+	 * Manuals the current user can read, the one for their highest profile first.
+	 *
+	 * Plugin administrators can read all of them, and retreat managers also the ones
+	 * of the profiles they give to their team.
+	 *
+	 * @since 26.11.11
+	 * @return string[] Manual profiles.
+	 */
+	public function get_current_user_manual_profiles() {
+		$profiles = self::get_manual_profiles();
+
+		if ( $this->permissions->current_user_can_manage_plugin() ) {
+			return $profiles;
+		}
+
+		$levels = $this->permissions->get_user_permission_levels( get_current_user_id() );
+		if ( in_array( DFXPRL_Permissions::PERMISSION_MANAGER, $levels, true ) ) {
+			return array_slice( $profiles, 1 );
+		}
+
+		$levels = array_values( array_intersect( $profiles, $levels ) );
+		return $levels ? $levels : array( DFXPRL_Permissions::PERMISSION_READ_ONLY );
+	}
+
+	/**
+	 * Get the path of the user manual for a profile and a locale.
+	 *
+	 * Uses the manual written for that exact locale, or else one in the same
+	 * language (e.g. es_ES for es_MX, pt_PT for pt_BR), or else the English one.
+	 *
+	 * @since 26.11.11
+	 * @param string $locale  WordPress locale, e.g. "es_ES".
+	 * @param string $profile One of get_manual_profiles(); anything else means "admin".
+	 * @return string Absolute path of the manual file.
+	 */
+	public static function get_manual_file( $locale, $profile = 'admin' ) {
+		if ( ! in_array( $profile, self::get_manual_profiles(), true ) ) {
+			$profile = 'admin';
+		}
+		$dir    = DFXPRL_PLUGIN_DIR . 'manual/' . $profile . '/';
+		$locale = preg_replace( '/[^A-Za-z_]/', '', (string) $locale );
+
+		if ( '' !== $locale && is_readable( $dir . $locale . '.html' ) ) {
+			return $dir . $locale . '.html';
+		}
+
+		$language = strtolower( strtok( $locale, '_' ) );
+		if ( '' !== $language ) {
+			foreach ( (array) glob( $dir . '*.html' ) as $file ) {
+				if ( strtolower( strtok( basename( $file, '.html' ), '_' ) ) === $language ) {
+					return $file;
+				}
+			}
+		}
+
+		return $dir . 'en_US.html';
+	}
+
+	/**
+	 * Add a link to the user manual in the plugin row of the Plugins screen.
+	 *
+	 * @since 26.11.11
+	 * @param array $links Plugin action links.
+	 * @return array
+	 */
+	public function add_manual_action_link( $links ) {
+		$links[] = '<a href="' . esc_url( admin_url( 'admin.php?page=dfxprl-manual' ) ) . '">' . esc_html__( 'Manual', 'dfx-parish-retreat-letters' ) . '</a>';
+		return $links;
+	}
+
+	/**
+	 * Show a link to the user manual at the top of every admin page of the plugin.
+	 *
+	 * @since 26.11.11
+	 */
+	public function render_manual_link() {
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only URL parameter for page scoping
+		$page_param = isset( $_GET['page'] ) ? sanitize_text_field( wp_unslash( $_GET['page'] ) ) : '';
+		if ( 'dfxprl-manual' === $page_param || ! in_array( $page_param, self::get_plugin_admin_page_slugs(), true ) ) {
+			return;
+		}
+		?>
+		<div class="dfxprl-manual-link">
+			<a href="<?php echo esc_url( admin_url( 'admin.php?page=dfxprl-manual' ) ); ?>"><span class="dashicons dashicons-book" aria-hidden="true"></span> <?php esc_html_e( 'Manual', 'dfx-parish-retreat-letters' ); ?></a>
+		</div>
+		<?php
+	}
+
+	/**
+	 * Render the user manual page.
+	 *
+	 * @since 26.11.11
+	 */
+	public function manual_page() {
+		$profiles = $this->get_current_user_manual_profiles();
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only URL parameter to choose a manual
+		$profile = isset( $_GET['profile'] ) ? sanitize_key( wp_unslash( $_GET['profile'] ) ) : '';
+		if ( ! in_array( $profile, $profiles, true ) ) {
+			$profile = $profiles[0];
+		}
+
+		$file = self::get_manual_file( get_user_locale(), $profile );
+		// The manual ships with the plugin; it is still filtered as post content
+		$content = is_readable( $file ) ? file_get_contents( $file ) : ''; // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents -- Local file bundled with the plugin
+		?>
+		<div class="wrap dfxprl-manual-wrap">
+			<?php if ( count( $profiles ) > 1 ) : ?>
+				<nav class="nav-tab-wrapper dfxprl-manual-profiles" aria-label="<?php esc_attr_e( 'User Manual', 'dfx-parish-retreat-letters' ); ?>">
+					<?php foreach ( $profiles as $tab ) : ?>
+						<a href="<?php echo esc_url( admin_url( 'admin.php?page=dfxprl-manual&profile=' . $tab ) ); ?>" class="nav-tab<?php echo $tab === $profile ? ' nav-tab-active' : ''; ?>"<?php echo $tab === $profile ? ' aria-current="page"' : ''; ?>><?php echo esc_html( self::get_manual_profile_label( $tab ) ); ?></a>
+					<?php endforeach; ?>
+				</nav>
+			<?php endif; ?>
+			<?php echo wp_kses_post( $content ); ?>
+		</div>
+		<?php
 	}
 
 	/**
@@ -427,7 +585,9 @@ class DFXPRL_Admin {
 	 * @since 1.2.1
 	 */
 	public function hide_messages_submenu() {
-		$style = '#toplevel_page_dfxprl-retreats .wp-submenu li[class*="dfxprl-messages"] {
+		$style = '#toplevel_page_dfxprl-retreats .wp-submenu li[class*="dfxprl-messages"],
+		#toplevel_page_dfxprl-retreats .wp-submenu a[href$="page=dfxprl-messages"],
+		#toplevel_page_dfxprl-retreats .wp-submenu a[href$="page=dfxprl-manual"] {
 			display: none !important;
 		}';
 
@@ -449,6 +609,7 @@ class DFXPRL_Admin {
 			'dfxprl-messages',
 			'dfxprl-privacy',
 			'dfxprl-global-settings',
+			'dfxprl-manual',
 		);
 	}
 
@@ -951,6 +1112,9 @@ class DFXPRL_Admin {
 			';
 
 		wp_add_inline_style( 'dfxprl-admin-styles', $base_styles );
+
+		// The manual page, and the link to it shown on every page of the plugin
+		wp_enqueue_style( 'dfxprl-admin-manual', DFXPRL_PLUGIN_URL . 'assets/css/admin-manual.css', array(), DFXPRL_VERSION );
 
 		// Enqueue Select2 for user management on global settings page
 		if ( isset( $_GET['page'] ) && sanitize_text_field( wp_unslash( $_GET['page'] ) ) === 'dfxprl-global-settings' ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- URL parameter check for asset loading      
@@ -2118,6 +2282,8 @@ class DFXPRL_Admin {
 		$filter_emergency_contact = sanitize_text_field( wp_unslash( $_GET['filter_emergency_contact'] ?? '' ) );
 		$filter_notes             = sanitize_text_field( wp_unslash( $_GET['filter_notes'] ?? '' ) );
 		$filter_internal_notes    = sanitize_text_field( wp_unslash( $_GET['filter_internal_notes'] ?? '' ) );
+		// Custom fields can be filtered only by those who can see them
+		$custom_filters = $this->custom_field_model->parse_list_filters( $this->custom_field_model->get_viewable_by_retreat( $retreat_id ), wp_unslash( $_GET ) );
 		// phpcs:enable WordPress.Security.NonceVerification.Recommended
 
 		// Custom field sorting uses "cf_<slug>"; only allowed for sortable fields the user can see
@@ -2141,6 +2307,7 @@ class DFXPRL_Admin {
 			'filter_emergency_contact' => $filter_emergency_contact,
 			'filter_notes'             => $filter_notes,
 			'filter_internal_notes'    => $filter_internal_notes,
+			'custom_filters'           => $custom_filters['conditions'],
 			'orderby'                  => $custom_order_field ? 'custom_field' : $orderby,
 			'order'                    => $order,
 			'per_page'                 => $per_page,
@@ -2156,9 +2323,12 @@ class DFXPRL_Admin {
 			'filter_emergency_contact' => $filter_emergency_contact,
 			'filter_notes'             => $filter_notes,
 			'filter_internal_notes'    => $filter_internal_notes,
-		);
+		) + $custom_filters['params'];
 
-		$total_items = $this->attendant_model->get_count_by_retreat( $retreat_id, $search, $filters + array( 'withdrawn' => $withdrawn_view ) );
+		$total_items = $this->attendant_model->get_count_by_retreat( $retreat_id, $search, $filters + array(
+			'withdrawn'      => $withdrawn_view,
+			'custom_filters' => $custom_filters['conditions'],
+		) );
 		$total_pages = ceil( $total_items / $per_page );
 
 		// Message and letter counts of the attendants shown in this tab
@@ -3560,6 +3730,49 @@ class DFXPRL_Admin {
 	}
 
 	/**
+	 * Render the filter row of a custom field in the attendants list filters.
+	 *
+	 * @since 26.11.11
+	 * @param object $field   Field object.
+	 * @param array  $filters Active filters (parameter name => value).
+	 */
+	private function render_custom_field_filter( $field, $filters ) {
+		$params = DFXPRL_Custom_Field::get_filter_params( $field );
+		$id = 'dfxprl-filter-cf-' . $field->slug;
+		?>
+		<tr>
+			<th scope="row"><label for="<?php echo esc_attr( $id ); ?>"><?php echo esc_html( $field->name ); ?></label></th>
+			<td>
+				<?php if ( isset( $params['min'] ) ) : ?>
+					<?php $input_type = 'date' === $field->field_type ? 'date' : 'number'; ?>
+					<label for="<?php echo esc_attr( $id ); ?>"><?php echo esc_html_x( 'From', 'start of a filter range', 'dfx-parish-retreat-letters' ); ?></label>
+					<input type="<?php echo esc_attr( $input_type ); ?>" id="<?php echo esc_attr( $id ); ?>" name="<?php echo esc_attr( $params['min'] ); ?>" value="<?php echo esc_attr( $filters[ $params['min'] ] ?? '' ); ?>"<?php echo 'number' === $input_type ? ' step="any" class="small-text"' : ''; ?>>
+					<label for="<?php echo esc_attr( $id ); ?>-max"><?php echo esc_html_x( 'To', 'end of a filter range', 'dfx-parish-retreat-letters' ); ?></label>
+					<input type="<?php echo esc_attr( $input_type ); ?>" id="<?php echo esc_attr( $id ); ?>-max" name="<?php echo esc_attr( $params['max'] ); ?>" value="<?php echo esc_attr( $filters[ $params['max'] ] ?? '' ); ?>"<?php echo 'number' === $input_type ? ' step="any" class="small-text"' : ''; ?>>
+				<?php elseif ( 'checkbox' === $field->field_type ) : ?>
+					<?php $current = $filters[ $params['value'] ] ?? ''; ?>
+					<select id="<?php echo esc_attr( $id ); ?>" name="<?php echo esc_attr( $params['value'] ); ?>">
+						<option value=""><?php echo esc_html_x( 'Any', 'filter option that matches every attendant', 'dfx-parish-retreat-letters' ); ?></option>
+						<option value="1" <?php selected( $current, '1' ); ?>><?php esc_html_e( 'Yes', 'dfx-parish-retreat-letters' ); ?></option>
+						<option value="0" <?php selected( $current, '0' ); ?>><?php esc_html_e( 'No', 'dfx-parish-retreat-letters' ); ?></option>
+					</select>
+				<?php elseif ( 'select' === $field->field_type ) : ?>
+					<?php $current = $filters[ $params['value'] ] ?? ''; ?>
+					<select id="<?php echo esc_attr( $id ); ?>" name="<?php echo esc_attr( $params['value'] ); ?>">
+						<option value=""><?php echo esc_html_x( 'Any', 'filter option that matches every attendant', 'dfx-parish-retreat-letters' ); ?></option>
+						<?php foreach ( $field->options as $option ) : ?>
+							<option value="<?php echo esc_attr( $option ); ?>" <?php selected( 0 === strcasecmp( $current, $option ) ); ?>><?php echo esc_html( $option ); ?></option>
+						<?php endforeach; ?>
+					</select>
+				<?php else : ?>
+					<input type="text" id="<?php echo esc_attr( $id ); ?>" name="<?php echo esc_attr( $params['value'] ); ?>" value="<?php echo esc_attr( $filters[ $params['value'] ] ?? '' ); ?>" class="regular-text">
+				<?php endif; ?>
+			</td>
+		</tr>
+		<?php
+	}
+
+	/**
 	 * Render the attendants list page.
 	 *
 	 * @since 1.0.0
@@ -3811,6 +4024,9 @@ class DFXPRL_Admin {
 										<td><input type="text" id="filter_internal_notes" name="filter_internal_notes" value="<?php echo esc_attr( $filters['filter_internal_notes'] ); ?>" class="regular-text"></td>
 									</tr>
 									<?php endif; ?>
+									<?php foreach ( $this->custom_field_model->get_viewable_by_retreat( $retreat->id ) as $filter_field ) : ?>
+										<?php $this->render_custom_field_filter( $filter_field, $filters ); ?>
+									<?php endforeach; ?>
 								</table>
 								
 								<p class="submit" style="margin: 10px 0 0; padding: 0;">

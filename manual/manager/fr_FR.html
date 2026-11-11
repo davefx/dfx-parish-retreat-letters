@@ -1,0 +1,342 @@
+<div class="dfxprl-manual" lang="fr">
+
+<h1>Manuel du gestionnaire de retraite</h1>
+
+<p class="dfxprl-manual-lead">Vous êtes gestionnaire d’une ou plusieurs retraites : vous avez la main sur chacune d’elles. Vous configurez la retraite, vous inscrivez les participants, vous décidez qui dans l’équipe y a accès et vous vous occupez des lettres, depuis leur demande jusqu’à la fin de la retraite et la suppression des données. Les lettres arrivent chiffrées et personne ne peut les lire à l’écran : elles ne sont visibles qu’à l’impression.</p>
+
+<nav class="dfxprl-manual-toc" aria-label="Sommaire">
+<h2>Sommaire</h2>
+<ol>
+<li><a href="#como-funciona">Fonctionnement</a></li>
+<li><a href="#tu-perfil">Ce que vous pouvez faire</a></li>
+<li><a href="#retiro">Configurer la retraite</a></li>
+<li><a href="#acceso">Gestion des accès et invitations</a></li>
+<li><a href="#asistentes">Participants</a></li>
+<li><a href="#csv">Importer et exporter les participants (CSV)</a></li>
+<li><a href="#formulario">Le formulaire des lettres</a></li>
+<li><a href="#mensajes">Messages confidentiels : imprimer, supprimer et renvoyer</a></li>
+<li><a href="#bajas">Désinscriptions, réactivations et fin de la retraite</a></li>
+<li><a href="#calendario">Une retraite du début à la fin</a></li>
+<li><a href="#faq">Questions fréquentes et problèmes</a></li>
+</ol>
+</nav>
+
+<h2 id="como-funciona">1. Fonctionnement</h2>
+
+<ol>
+<li><strong>La retraite a sa configuration</strong> : nom, lieu, dates, le message pour les personnes qui écrivent et les autres textes du formulaire.</li>
+<li><strong>Vous inscrivez les participants</strong>, un par un ou en important un fichier CSV.</li>
+<li><strong>Chaque participant a une URL privée</strong> pour recevoir des lettres. Vous la copiez depuis la liste des participants et la transmettez à sa famille et à ses amis, en général par l’intermédiaire de son contact d’urgence.</li>
+<li><strong>La personne qui écrit ouvre le lien</strong> dans n’importe quel navigateur, sans créer de compte. Elle rédige sa lettre ou joint des photos et des documents, puis l’envoie.</li>
+<li><strong>La lettre est enregistrée chiffrée.</strong> Le tableau de bord indique seulement qui l’a envoyée, quand et de quel type elle est ; jamais son contenu.</li>
+<li><strong>Pendant la retraite, les lettres sont imprimées</strong> et remises à chaque participant. Chaque impression est enregistrée.</li>
+<li><strong>À la fin, vous videz la retraite</strong> : les participants et leurs lettres sont supprimés, et la configuration reste prête pour l’édition suivante.</li>
+</ol>
+
+<p>Tout se trouve dans le menu <strong>Retraites</strong> du tableau de bord de WordPress. Dans <strong>Toutes les retraites</strong>, vous voyez les retraites sur lesquelles vous avez des droits.</p>
+
+<h2 id="tu-perfil">2. Ce que vous pouvez faire</h2>
+
+<p>Les droits sont attribués <strong>retraite par retraite</strong> : vous pouvez gérer une retraite sans rien voir d’une autre. Dans les retraites que vous gérez, vous pouvez tout faire, sauf ce qui est réservé aux administrateurs de l’extension : créer et supprimer des retraites, les réglages globaux et la page de confidentialité.</p>
+
+<p>Vous pouvez donner accès à votre équipe avec l’un de ces trois profils :</p>
+
+<table class="dfxprl-manual-table">
+<thead>
+<tr><th>Ce qu’il est possible de faire</th><th>Gestionnaire de retraite</th><th>Gestionnaire de messages</th><th>Lecture seule</th></tr>
+</thead>
+<tbody>
+<tr><td>Modifier la configuration de la retraite et ses champs personnalisés</td><td>Oui</td><td>Non</td><td>Non</td></tr>
+<tr><td>Accorder et retirer des droits, envoyer des invitations</td><td>Oui</td><td>Non</td><td>Non</td></tr>
+<tr><td>Voir la liste des participants et le nombre de lettres</td><td>Oui</td><td>Oui</td><td>Oui</td></tr>
+<tr><td>Ajouter, modifier, désinscrire et réactiver des participants</td><td>Oui</td><td>Non</td><td>Non</td></tr>
+<tr><td>Importer et exporter en CSV</td><td>Oui</td><td>Non</td><td>Non</td></tr>
+<tr><td>Noter les lettres papier reçues</td><td>Oui</td><td>Oui</td><td>Non</td></tr>
+<tr><td>Écrire dans le journal des contacts</td><td>Oui</td><td>Oui</td><td>Non (lecture uniquement)</td></tr>
+<tr><td>Copier l’URL des messages et le message d’invitation</td><td>Oui</td><td>Oui</td><td>Oui</td></tr>
+<tr><td>Ouvrir, imprimer, supprimer et renvoyer des lettres</td><td>Oui</td><td>Oui</td><td>Non</td></tr>
+<tr><td>Vider la retraite une fois terminée</td><td>Oui</td><td>Non</td><td>Non</td></tr>
+</tbody>
+</table>
+
+<ul>
+<li><strong>Gestionnaire de messages</strong> : pour la personne chargée des lettres. Elle les imprime, les supprime si nécessaire et les renvoie par e-mail. Dans la fiche des participants, elle ne peut modifier que les lettres papier, les champs personnalisés qui lui sont autorisés et le journal des contacts.</li>
+<li><strong>Lecture seule</strong> : pour les personnes qui doivent consulter sans rien modifier, par exemple celle qui distribue les liens aux familles. Elle voit les participants, le nombre de lettres et le journal des contacts, et peut copier l’URL des messages et le message d’invitation de chaque participant. Elle ne peut rien modifier ni ouvrir de lettres.</li>
+</ul>
+
+<h2 id="retiro">3. Configurer la retraite</h2>
+
+<p>Dans <strong>Toutes les retraites</strong>, cliquez sur <strong>Modifier</strong> ou sur le nom de la retraite. Voici les champs :</p>
+
+<dl class="dfxprl-manual-fields">
+<dt>Nom de la retraite, Lieu, Date de début, Date de fin</dt>
+<dd>Informations de base. Le nom et les dates sont obligatoires, et la date de fin ne peut pas être antérieure à la date de début.</dd>
+
+<dt>Message personnalisé pour les expéditeurs de lettres</dt>
+<dd>Texte affiché à la personne qui écrit, avant le formulaire. Il permet d’expliquer ce qu’est la lettre, quand elle sera remise ou quel ton adopter. Le HTML est accepté.</dd>
+
+<dt>Texte de l’avertissement légal et Texte d’acceptation de l’avertissement légal</dt>
+<dd>Si vous rédigez un avertissement légal, le formulaire l’affiche avec une case à cocher obligatoire pour pouvoir envoyer. Le texte d’acceptation est celui qui apparaît à côté de cette case (par défaut, « J’accepte les conditions générales »).</dd>
+
+<dt>Formulaire multilingue</dt>
+<dd>Activé, la personne qui écrit voit le formulaire dans la langue de son navigateur ou dans celle qu’elle choisit dans un sélecteur (espagnol, catalan, basque, galicien, anglais, portugais, français, italien et allemand). Désactivé, le formulaire s’affiche toujours dans la langue principale du site. Voir <a href="#traducciones">Traductions des textes de la retraite</a>.</dd>
+
+<dt>Activer le champ Notes</dt>
+<dd>Ajoute à chaque participant un champ de notes visible dans la liste et inclus dans l’import et l’export CSV.</dd>
+
+<dt>Activer le champ Notes internes</dt>
+<dd>Même chose, mais ces notes ne sont <strong>jamais</strong> importées ni exportées en CSV. Utilisez-le pour ce qui ne doit pas sortir du tableau de bord.</dd>
+
+<dt>Modèle de demande de messages</dt>
+<dd>Texte que l’équipe envoie à la famille ou au contact d’urgence pour lui demander d’écrire et d’encourager d’autres personnes à le faire. Il accepte des marqueurs remplacés par les données de chaque participant : <code>[attendant_name]</code>, <code>[attendant_surnames]</code>, <code>[emergency_contact_name]</code>, <code>[messages_url]</code>, <code>[retreat_name]</code>, <code>[retreat_start_date]</code> et les autres listés sous le champ, y compris ceux des champs personnalisés (<code>[slug]</code>). Si le modèle contient du texte, le bouton <strong>Message d’invitation</strong> apparaît dans la liste des participants.</dd>
+
+<dt>Objet de l’e-mail de renvoi des lettres et Texte de l’e-mail de renvoi des lettres</dt>
+<dd>E-mail envoyé à la personne qui a écrit une lettre lorsque le participant se désinscrit et que la lettre lui est renvoyée. Il accepte des marqueurs comme <code>[sender_name]</code>, <code>[attendant_name]</code>, <code>[retreat_name]</code> ou la date d’envoi. Si vous le laissez vide, un texte par défaut est utilisé. Voir <a href="#devolver">Renvoyer des lettres par e-mail</a>.</dd>
+
+<dt>Bloc d’entête personnalisé, Bloc de pied de page personnalisé et Classes supplémentaires pour body</dt>
+<dd>Ils changent l’aspect du formulaire des lettres de cette retraite. Ils n’apparaissent que si un administrateur de l’extension a activé la personnalisation par retraite ; sinon, le formulaire utilise l’entête et le pied de page communs à toutes les retraites.</dd>
+</dl>
+
+<p>Enregistrez avec <strong>Mettre à jour la retraite</strong>. Depuis le même écran, <strong>Gérer les participants</strong> mène à la liste des participants.</p>
+
+<h3 id="traducciones">Traductions des textes de la retraite</h3>
+<p>Le message personnalisé, l’avertissement légal et son texte d’acceptation sont rédigés dans la langue principale du site. Si le formulaire est multilingue, vous pouvez écrire une version pour chaque langue dans <strong>Traductions de ces textes</strong>. Les onglets marqués « (rédigé) » contiennent déjà du texte.</p>
+<ul>
+<li><strong>Traduire automatiquement</strong> remplit les champs de cette langue à partir de l’original, pour que vous les relisiez avant d’enregistrer. Cela ne fonctionne que si un administrateur de l’extension a configuré la traduction automatique avec DeepL.</li>
+<li>Si une langue reste vide, le formulaire utilise la traduction automatique (si elle est configurée) ou, à défaut, le texte original.</li>
+<li>Chaque traduction automatique est faite une seule fois puis enregistrée ; elle n’est refaite que si vous modifiez l’original. Seuls ces textes de la retraite sont envoyés à DeepL, jamais les lettres ni des données personnelles.</li>
+</ul>
+
+<h3 id="campos-personalizados">Champs personnalisés du participant</h3>
+<p>Vous pouvez ajouter vos propres champs à la fiche des participants (par exemple taille de t-shirt, groupe, allergies ou besoin de transport). Cliquez sur <strong>Ajouter un champ</strong> et renseignez :</p>
+<ul>
+<li><strong>Nom</strong> et <strong>Slug</strong> : le slug identifie le champ dans les fichiers CSV et dans le modèle de demande, sous la forme <code>[mon_champ]</code>.</li>
+<li><strong>Type</strong> : texte, texte long, nombre, date, oui/non ou liste d’options (une option par ligne).</li>
+<li><strong>Visible par</strong> et <strong>Modifiable par</strong> : gestionnaires de retraite uniquement, ou aussi gestionnaires de messages. Les utilisateurs en lecture seule voient les champs visibles par les gestionnaires de messages, mais ne peuvent pas les modifier.</li>
+<li><strong>Afficher dans la liste des participants</strong> et <strong>Triable</strong>.</li>
+<li><strong>Importer depuis le CSV</strong> et <strong>Exporter vers le CSV</strong>.</li>
+</ul>
+<p><strong>Retirer le champ</strong> efface ses valeurs pour tous les participants à l’enregistrement de la retraite. Une confirmation est demandée.</p>
+
+<h2 id="acceso">4. Gestion des accès et invitations</h2>
+
+<p>Sur l’écran de modification de la retraite, le cadre <strong>Gestion des accès</strong> indique qui a des droits et permet d’en accorder.</p>
+
+<h3>Droits actuels</h3>
+<p>Liste des utilisateurs avec leur profil et la personne qui le leur a accordé. <strong>Révoquer</strong> le retire. Vous ne pouvez pas révoquer vos propres droits.</p>
+
+<h3>Donner accès à un utilisateur existant</h3>
+<ol>
+<li>Dans <strong>Accorder l’accès &gt; Comptes existants</strong>, cherchez par identifiant, e-mail ou nom (au moins deux lettres).</li>
+<li>Choisissez l’utilisateur et le profil : <strong>Gestionnaire de retraite</strong>, <strong>Gestionnaire de messages</strong> ou <strong>Lecture seule</strong>.</li>
+<li>Cliquez sur <strong>Accorder</strong>.</li>
+</ol>
+
+<h3>Inviter une nouvelle personne</h3>
+<ol>
+<li>Dans <strong>Inviter de nouvelles personnes</strong>, saisissez son e-mail et choisissez le profil.</li>
+<li>Cliquez sur <strong>Envoyer l’invitation</strong>. La personne reçoit un e-mail avec un lien valable 7 jours.</li>
+<li>En ouvrant le lien, elle complète son nom et clique sur <strong>Accepter l’invitation</strong>. Si son e-mail correspondait déjà à un utilisateur du site, elle reçoit simplement les droits ; sinon, un compte est créé et elle reçoit ses identifiants par e-mail.</li>
+</ol>
+<p>Les invitations pas encore acceptées apparaissent dans <strong>Invitations en attente</strong>, avec leur date d’expiration, et peuvent être annulées. Les invitations expirées sont nettoyées automatiquement.</p>
+
+<p>Donnez à chaque personne le profil le plus limité qui lui suffit. L’attribution d’un droit, son retrait et chaque étape d’une invitation sont consignés dans le journal d’audit.</p>
+
+<h2 id="asistentes">5. Participants</h2>
+
+<h3>La liste des participants</h3>
+<p>Elle s’ouvre avec le bouton <strong>Participants</strong> de la retraite. En haut figurent le nombre total de participants et le récapitulatif des lettres : combien de messages ont été reçus, combien restent à imprimer et le total en comptant les lettres papier.</p>
+<p>Il y a deux onglets : <strong>Participants</strong> (les actifs) et <strong>Participants désinscrits</strong>.</p>
+
+<h4>Colonnes</h4>
+<ul>
+<li><strong>Nom</strong>, <strong>Noms de famille</strong>, <strong>Date de naissance</strong>, <strong>Contact d’urgence</strong>, <strong>Invité par</strong>, <strong>Incompatibilités</strong>, <strong>Notes</strong> et <strong>Notes internes</strong> (si elles sont activées), ainsi que les champs personnalisés marqués pour la liste.</li>
+<li><strong>Messages</strong> : lettres reçues par le site et, entre parenthèses, celles qui restent à imprimer. En cliquant plusieurs fois sur l’entête, vous triez par total ou par lettres à imprimer.</li>
+<li><strong>Lettres papier</strong> : lettres sur papier reçues en dehors du site.</li>
+<li><strong>Total des lettres</strong> : la somme des deux précédentes.</li>
+<li><strong>Journal des contacts</strong> : une icône de carnet avec le nombre d’entrées. Un clic ouvre le journal dans une fenêtre.</li>
+</ul>
+<p>Les entêtes restent fixes quand vous faites défiler la liste. Sur les écrans étroits, le tableau se transforme en fiches et une liste déroulante <strong>Trier par</strong> apparaît.</p>
+
+<h4>Rechercher, filtrer et trier</h4>
+<p>La recherche porte sur le nom, les noms de famille, le contact d’urgence, « invité par » et les incompatibilités. Dans <strong>Filtres</strong>, vous pouvez filtrer sur chacun de ces champs ainsi que sur les notes et les notes internes ; cliquez sur <strong>Appliquer les filtres</strong> ou <strong>Effacer les filtres</strong>. Cliquez sur l’entête d’une colonne pour trier selon celle-ci.</p>
+<p>Dans <strong>Filtres</strong> figurent aussi les champs personnalisés de la retraite que vous pouvez voir. Les champs texte se filtrent par leur contenu ; les champs <strong>Liste d’options</strong> et <strong>Oui/Non</strong>, avec une liste déroulante ; les nombres et les dates, avec un intervalle <strong>De</strong>–<strong>À</strong> dont vous pouvez ne remplir qu’une seule borne.</p>
+
+<h4>Réorganiser les colonnes</h4>
+<p>Faites glisser les entêtes par leur poignée (elle apparaît au survol de la souris). L’ordre est enregistré pour tous les utilisateurs de cette retraite. <strong>Rétablir l’ordre par défaut</strong> revient à l’ordre initial.</p>
+
+<h4>Modification en ligne</h4>
+<p>Cliquez sur une cellule pour la modifier sans ouvrir la fiche : <kbd>Entrée</kbd> enregistre, <kbd>Échap</kbd> annule et, dans les textes longs, <kbd>Ctrl</kbd>+<kbd>Entrée</kbd> enregistre. Vous pouvez modifier ainsi le nom, les noms de famille, la date de naissance, « invité par », les incompatibilités, les notes, les lettres papier et les champs personnalisés.</p>
+
+<h4>Boutons de chaque participant</h4>
+<ul>
+<li><strong>Modifier</strong> : ouvre la fiche.</li>
+<li><strong>Messages</strong> : ouvre ses lettres.</li>
+<li><strong>Message d’invitation</strong> : affiche le modèle de demande rempli avec ses données et son lien, prêt à copier et coller dans un e-mail ou dans WhatsApp. N’apparaît que si la retraite a un modèle.</li>
+<li><strong>Générer l’URL des messages</strong> ou <strong>Copier l’URL des messages</strong> : voir plus bas.</li>
+<li><strong>Désinscrire</strong> : voir <a href="#bajas">Désinscriptions</a>.</li>
+</ul>
+
+<h3>Ajouter ou modifier un participant</h3>
+<p>Cliquez sur <strong>Ajouter un participant</strong> ou sur <strong>Modifier</strong> dans sa ligne. Les champs sont :</p>
+<ul>
+<li><strong>Nom</strong>, <strong>Noms de famille</strong> et <strong>Date de naissance</strong> (obligatoires).</li>
+<li><strong>Contact d’urgence</strong> : prénom (obligatoire), nom de famille, téléphone (obligatoire), e-mail et lien avec le participant. C’est généralement cette personne qui reçoit le lien pour les lettres.</li>
+<li><strong>Invité par</strong> : la personne qui l’a invité à la retraite.</li>
+<li><strong>Incompatibilités</strong> : participants avec lesquels il vaut mieux ne pas le placer, par exemple à la même table ou dans la même chambre.</li>
+<li><strong>Notes</strong> et <strong>Notes internes</strong>, si la retraite les a activées.</li>
+<li>Les <strong>champs personnalisés</strong> de la retraite.</li>
+<li><strong>Lettres papier reçues</strong> : nombre de lettres sur papier reçues en dehors du site.</li>
+</ul>
+<p>La fiche affiche aussi le nombre de messages reçus (avec un lien vers eux), l’<strong>URL des messages</strong> et le <strong>Journal des contacts</strong>. Si un champ ne passe pas la validation, le formulaire conserve tout ce qui a été saisi et il suffit de corriger ce champ.</p>
+
+<h3 id="url">L’URL des messages</h3>
+<p>Chaque participant a une adresse unique, du type <code>https://votreparoisse.fr/messages/code-secret</code>, qui est la porte d’entrée pour lui écrire. Le code est aléatoire et impossible à deviner.</p>
+<ul>
+<li>Si le participant n’en a pas encore, cliquez sur <strong>Générer l’URL des messages</strong>.</li>
+<li><strong>Copier l’URL des messages</strong> la copie dans le presse-papiers avec les initiales du participant à la fin (par exemple <code>…/messages/code/#JGP</code>), pour savoir à qui correspond le lien sans afficher son nom.</li>
+<li>Ne partagez le lien qu’avec les personnes qui doivent écrire. Quiconque le possède peut envoyer des lettres à ce participant.</li>
+<li>L’URL reste valable jusqu’à ce que le participant soit désinscrit ou supprimé.</li>
+</ul>
+
+<h3 id="historial">Journal des contacts</h3>
+<p>Il permet à l’équipe de noter les appels et les échanges avec la personne de contact de chaque participant : « Appelé sa mère mardi, elle enverra le lien aux frères et sœurs », etc. Il s’ouvre depuis la colonne <strong>Journal des contacts</strong> de la liste ou depuis la fiche.</p>
+<ul>
+<li>Ajoutez des entrées avec une date et une description avec <strong>Ajouter une entrée</strong>.</li>
+<li>Vous pouvez modifier ou supprimer n’importe quelle entrée, y compris celles des autres, et consulter l’<strong>Historique des modifications</strong> complet, y compris les entrées supprimées. Les entrées modifiées portent la mention « (modifié) ».</li>
+<li>Les gestionnaires de messages peuvent écrire des entrées et corriger les leurs pendant 15 minutes. Les utilisateurs en lecture seule le lisent, mais n’y écrivent pas.</li>
+</ul>
+
+<h2 id="csv">6. Importer et exporter les participants (CSV)</h2>
+
+<h3>Importer</h3>
+<p>Dans la liste des participants, cliquez sur <strong>Importer un CSV</strong>. Le fichier :</p>
+<ul>
+<li>Doit avoir les noms des colonnes sur la première ligne. Elles peuvent être dans n’importe quel ordre, en anglais ou dans la langue du tableau de bord, et les colonnes non reconnues sont ignorées.</li>
+<li>Doit contenir ces colonnes : <strong>Nom</strong>, <strong>Noms de famille</strong>, <strong>Date de naissance</strong>, <strong>Prénom du contact d’urgence</strong> et <strong>Téléphone du contact d’urgence</strong>.</li>
+<li>Peut contenir en plus : nom de famille, e-mail et lien de parenté du contact d’urgence, « invité par », incompatibilités, notes et les champs personnalisés marqués pour l’import (par leur slug).</li>
+<li>Ne doit pas dépasser 2 Mo.</li>
+</ul>
+<p><strong>Dates.</strong> Les formats acceptés sont AAAA-MM-JJ, JJ/MM/AAAA, MM/JJ/AAAA, JJ-MM-AAAA, MM-JJ-AAAA et JJ.MM.AAAA. Une date comme 01/10/2025 peut être le 1er octobre ou le 10 janvier ; choisissez dans <strong>Format de date préféré</strong> comment l’interpréter, ou mieux, utilisez AAAA-MM-JJ. À la fin, le résultat signale les dates ambiguës rencontrées.</p>
+<p><strong>Participants déjà existants.</strong> Si une ligne correspond à un participant de la retraite (mêmes nom, noms de famille et date de naissance), il n’est pas créé en double : les données de son contact d’urgence et ses champs personnalisés sont mis à jour. Les lignes correspondant à des participants désinscrits ne sont pas modifiées.</p>
+<p>À la fin, vous voyez combien de participants ont été ajoutés, combien ont été mis à jour et quelles lignes comportaient des erreurs, avec leur numéro.</p>
+
+<h3>Exporter</h3>
+<p><strong>Exporter en CSV</strong> télécharge les participants actifs avec leurs données, leur URL des messages, le nombre de messages et les champs personnalisés marqués pour l’export. Les notes internes ne sont jamais exportées. Attention : le fichier contient des données personnelles et les URL privées. Conservez-le avec soin et supprimez-le quand vous n’en avez plus besoin.</p>
+
+<h2 id="formulario">7. Le formulaire des lettres</h2>
+
+<p>C’est la page que voit la personne qui ouvre l’URL des messages d’un participant. Aucun compte sur le site n’est nécessaire. Il vaut mieux le connaître pour pouvoir aider les familles.</p>
+
+<ul>
+<li>En haut apparaissent le nom du participant et le <strong>message personnalisé</strong> de la retraite.</li>
+<li>Si le formulaire est multilingue, un sélecteur <strong>Langue</strong> est proposé. Changer de langue ne recharge pas la page : ce qui a été écrit n’est donc pas perdu.</li>
+<li>La personne qui écrit indique son nom et, si elle le souhaite, son e-mail (deux fois, pour éviter les fautes de frappe). L’e-mail est enregistré chiffré et sert uniquement à la prévenir d’un problème avec sa lettre, comme le renvoi si le participant ne vient finalement pas à la retraite.</li>
+<li>Elle choisit le type de message :
+<ul>
+<li><strong>Message texte</strong> : un éditeur avec gras, italique, souligné, listes et annuler/rétablir. Il est possible de coller des images et du texte copié depuis Word ou Google Docs.</li>
+<li><strong>Envoi de fichiers</strong> : photos ou documents (PDF, DOC, DOCX, TXT, JPG, PNG, GIF). Le formulaire indique la taille maximale acceptée par le serveur.</li>
+</ul></li>
+<li>Elle résout la <strong>vérification de sécurité</strong>, une addition simple. Les utilisateurs connectés au site ne la voient pas.</li>
+<li>Si la retraite a un avertissement légal, il faut cocher la case d’acceptation ; le bouton d’envoi ne s’active pas avant.</li>
+<li>Après un clic sur <strong>Envoyer le message confidentiel</strong>, une page confirme que la lettre a bien été reçue.</li>
+</ul>
+
+<p>Pour éviter les abus, chaque adresse IP ne peut envoyer qu’un nombre limité de lettres par heure. Si quelqu’un se retrouve bloqué, il peut attendre une heure ou demander à un administrateur de l’extension de lever le blocage.</p>
+<p>Si le participant a été désinscrit, le formulaire affiche « Les messages ne sont plus acceptés pour ce participant ». Une adresse avec un code inexistant renvoie une erreur 404.</p>
+
+<h2 id="mensajes">8. Messages confidentiels : imprimer, supprimer et renvoyer</h2>
+
+<h3>La liste des messages</h3>
+<p>Elle s’ouvre avec le bouton <strong>Messages</strong> de chaque participant. Par sécurité, elle <strong>n’affiche jamais le contenu</strong> des lettres, seulement leurs informations : expéditeur, type (texte ou fichiers), date d’envoi et état d’impression. Vous pouvez filtrer par type, chercher par expéditeur et trier par n’importe laquelle de ces colonnes, y compris l’état d’impression (les lettres non imprimées d’abord).</p>
+
+<h3>Imprimer</h3>
+<ol>
+<li>Cliquez sur <strong>Imprimer</strong> sur la lettre.</li>
+<li>Un nouvel onglet s’ouvre avec la lettre prête à imprimer : le destinataire, l’expéditeur et le contenu. Elle est déchiffrée à ce moment-là.</li>
+<li>La boîte de dialogue d’impression du navigateur s’ouvre. Quand vous la fermez, l’onglet se ferme tout seul.</li>
+</ol>
+<ul>
+<li>Les lettres contenant plusieurs images sont mises en page pour qu’aucune image ne soit coupée entre deux pages.</li>
+<li>Si la lettre est un PDF unique, un entête « De/À » est normalement ajouté en haut pour savoir de qui elle vient et à qui elle est destinée.</li>
+<li>S’il y a plusieurs fichiers et que l’un d’eux n’est pas une image, ils sont tous téléchargés ensemble dans un ZIP. Les documents Word ne peuvent pas s’afficher dans l’aperçu d’impression : il faut les télécharger et les imprimer séparément.</li>
+<li>Utilisez un navigateur récent (Edge, Chrome, Firefox ou Safari). Internet Explorer n’est pas pris en charge et n’affiche pas les lettres.</li>
+</ul>
+
+<h3>Historique d’impression</h3>
+<p>L’état de chaque lettre indique si elle a été imprimée, combien de fois et quand pour la première fois. Un clic affiche l’historique complet : qui l’a imprimée, quand et depuis quelle IP. Imprimez si possible chaque lettre une seule fois et conservez les exemplaires papier avec soin.</p>
+
+<h3>Supprimer une lettre</h3>
+<p><strong>Supprimer</strong> efface la lettre, ses fichiers et son historique d’impression. Impossible d’annuler.</p>
+
+<h3 id="devolver">Renvoyer des lettres par e-mail</h3>
+<p>Quand un participant se désinscrit (par exemple parce qu’il ne vient finalement pas à la retraite), ses lettres peuvent être renvoyées à leurs auteurs, à condition qu’ils aient laissé leur e-mail :</p>
+<ul>
+<li><strong>Renvoyer par e-mail</strong> renvoie une lettre ; <strong>Tout renvoyer par e-mail</strong>, toutes celles qui peuvent l’être.</li>
+<li>Avant l’envoi, un aperçu montre le destinataire, l’objet, le texte et les pièces jointes. Les lettres texte sont jointes sous forme de document HTML ; les lettres avec fichiers, avec les fichiers d’origine.</li>
+<li>Une fois l’e-mail envoyé, la lettre est supprimée du système. Si l’envoi échoue, la lettre est conservée.</li>
+<li>Si la lettre avait déjà été imprimée, un rappel indique qu’il faut détruire l’exemplaire papier.</li>
+<li>Les lettres sans e-mail apparaissent comme « Pas d’e-mail : impossible de la renvoyer ».</li>
+</ul>
+<p>L’objet et le texte de l’e-mail se configurent dans la retraite (voir <a href="#retiro">Configurer la retraite</a>).</p>
+
+<h2 id="bajas">9. Désinscriptions, réactivations et fin de la retraite</h2>
+
+<h3>Désinscrire un participant</h3>
+<p>Si quelqu’un ne viendra pas à la retraite, cliquez sur <strong>Désinscrire</strong> dans sa ligne. Le participant :</p>
+<ul>
+<li>passe dans l’onglet <strong>Participants désinscrits</strong>, avec la date et l’utilisateur qui l’a désinscrit ;</li>
+<li>ne peut plus être modifié ;</li>
+<li>ne reçoit plus de lettres par son URL ;</li>
+<li>conserve ses lettres, qui peuvent être imprimées ou renvoyées par e-mail, et son journal des contacts, qui reste accessible.</li>
+</ul>
+<p>Rien n’est supprimé. Depuis cet onglet, vous pouvez <strong>Réactiver</strong> le participant ou le <strong>Supprimer définitivement</strong>. Seuls les participants désinscrits peuvent être supprimés ; s’il a encore des lettres qui pourraient être renvoyées, un avertissement s’affiche avant de les effacer.</p>
+
+<h3>Désinscrire tous les participants</h3>
+<p><strong>Désinscrire tous les participants</strong> fait la même chose pour toute la retraite. Pour confirmer, il faut saisir « DÉSINSCRIRE TOUS LES PARTICIPANTS ».</p>
+
+<h3 id="vaciar">Vider la retraite</h3>
+<p>Une fois la date de fin de la retraite passée, le bouton <strong>Vider la retraite</strong> apparaît. Il supprime définitivement tous les participants, actifs et désinscrits, avec leurs lettres, fichiers, historique d’impression, journal des contacts et valeurs des champs personnalisés. La retraite garde sa configuration, ses champs personnalisés et ses gestionnaires, prête pour l’édition suivante.</p>
+<p>Pour confirmer, il faut saisir le nom exact de la retraite. S’il reste des lettres de participants désinscrits qui pourraient encore être renvoyées, un avertissement s’affiche avant.</p>
+<p>S’il faut supprimer toute la retraite, configuration comprise, demandez-le à un administrateur de l’extension.</p>
+
+<h2 id="calendario">10. Une retraite du début à la fin</h2>
+<ol>
+<li><strong>Quelques semaines avant.</strong> Videz la retraite de l’année précédente si elle contient encore des données et relisez le message pour les expéditeurs, l’avertissement légal et le modèle de demande. Donnez accès à l’équipe avec le profil dont chacun a besoin.</li>
+<li><strong>Inscriptions.</strong> Ajoutez les participants ou importez-les depuis un CSV.</li>
+<li><strong>Demande de lettres.</strong> Pour chaque participant, copiez le <strong>Message d’invitation</strong> et envoyez-le à son contact d’urgence. Notez dans le journal des contacts qui vous avez appelé ou à qui vous avez écrit.</li>
+<li><strong>Suivi.</strong> Repérez dans la liste qui a peu de lettres (triez par <strong>Total des lettres</strong>) et relancez si nécessaire. Notez les lettres sur papier dans <strong>Lettres papier</strong>.</li>
+<li><strong>Désinscriptions.</strong> Si quelqu’un ne vient pas, désinscrivez-le et renvoyez ses lettres par e-mail.</li>
+<li><strong>Pendant la retraite.</strong> Imprimez les lettres (triez par <strong>Messages</strong> pour voir celles qui restent à imprimer) et préparez la remise.</li>
+<li><strong>Après.</strong> Détruisez les exemplaires en trop et cliquez sur <strong>Vider la retraite</strong> pour supprimer les données personnelles et préparer la retraite pour la prochaine fois.</li>
+</ol>
+
+<h2 id="faq">11. Questions fréquentes et problèmes</h2>
+
+<h4>Qui peut lire les lettres ?</h4>
+<p>Personne à l’écran. Elles ne sont visibles qu’à l’impression, et seuls les gestionnaires de retraite et de messages de cette retraite et les administrateurs de l’extension peuvent les imprimer. Chaque impression est enregistrée.</p>
+
+<h4>Un proche dit que le lien ne fonctionne pas.</h4>
+<p>Vérifiez qu’il a copié l’adresse complète et que le participant n’est pas désinscrit. S’il voit « Trop de requêtes », qu’il attende une heure, ou demandez à un administrateur de l’extension de réinitialiser les limites.</p>
+
+<h4>Une erreur de taille apparaît à l’envoi de fichiers.</h4>
+<p>La limite est fixée par le serveur et indiquée dans le formulaire. Il faut envoyer des fichiers plus petits ou moins de fichiers à la fois.</p>
+
+<h4>Le bouton Message d’invitation n’apparaît pas.</h4>
+<p>Il n’apparaît que si la retraite a un <strong>Modèle de demande de messages</strong>.</p>
+
+<h4>Je ne peux pas modifier un participant.</h4>
+<p>Il est désinscrit. Réactivez-le depuis l’onglet <strong>Participants désinscrits</strong>.</p>
+
+<h4>Je ne vois pas le bouton Vider la retraite.</h4>
+<p>Il n’apparaît qu’une fois la date de fin de la retraite passée.</p>
+
+<h4>Je ne vois pas une retraite dans la liste.</h4>
+<p>Vous ne voyez que les retraites sur lesquelles vous avez des droits. Demandez l’accès à son gestionnaire ou à un administrateur de l’extension.</p>
+
+<h4>Le formulaire est-il dans ma langue ?</h4>
+<p>Le formulaire est traduit en espagnol, catalan, basque, galicien, anglais, portugais, français, italien et allemand. Les textes propres à la retraite doivent être rédigés ou traduits (voir <a href="#traducciones">Traductions</a>).</p>
+
+<p class="dfxprl-manual-footer">Vous avez trouvé une erreur ou il vous manque quelque chose ? Signalez-le sur <a href="https://github.com/davefx/dfx-parish-retreat-letters/issues" target="_blank" rel="noopener">GitHub</a> ou sur le <a href="https://wordpress.org/support/plugin/dfx-parish-retreat-letters/" target="_blank" rel="noopener">forum d’assistance de WordPress.org</a>.</p>
+
+</div>

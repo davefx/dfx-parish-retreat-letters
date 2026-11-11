@@ -1,0 +1,193 @@
+<div class="dfxprl-manual" lang="en">
+
+<h1>Message manager manual</h1>
+
+<p class="dfxprl-manual-lead">You are a message manager for one or more retreats: you look after the letters. You print them to hand out during the retreat, delete them if needed and return them by email to whoever wrote them when an attendant doesn't end up going. You also see the attendants, record paper letters and keep the contact log with the families. Letters arrive encrypted and nobody can read them on screen: they can only be seen when printed.</p>
+
+<nav class="dfxprl-manual-toc" aria-label="Contents">
+<h2>Contents</h2>
+<ol>
+<li><a href="#como-funciona">How it works</a></li>
+<li><a href="#tu-perfil">What you can do</a></li>
+<li><a href="#asistentes">Attendants</a></li>
+<li><a href="#formulario">The letter form</a></li>
+<li><a href="#mensajes">Confidential messages: printing, deleting and returning</a></li>
+<li><a href="#bajas">Withdrawn attendants</a></li>
+<li><a href="#calendario">The letters, from start to finish</a></li>
+<li><a href="#faq">FAQ and troubleshooting</a></li>
+</ol>
+</nav>
+
+<h2 id="como-funciona">1. How it works</h2>
+
+<ol>
+<li><strong>Each attendant has a private URL</strong> for receiving letters. The team passes it on to their family and friends, usually through their emergency contact.</li>
+<li><strong>The writer opens the link</strong> in any browser, without signing up. They write their letter or attach photos and documents, and send it.</li>
+<li><strong>The letter is stored encrypted.</strong> The admin area only shows who sent it, when, and what kind of letter it is; never its content.</li>
+<li><strong>You print the letters</strong> during the retreat. Every print is logged with the user, the date and the IP address.</li>
+<li><strong>The letters are handed out</strong> to each attendant whenever the team decides.</li>
+</ol>
+
+<p>Everything lives under the <strong>Retreats</strong> menu in the WordPress dashboard. <strong>All Retreats</strong> shows the retreats where you have any permission; click <strong>Attendants</strong> or the retreat name to go in.</p>
+
+<h2 id="tu-perfil">2. What you can do</h2>
+
+<p>Permissions are granted <strong>per retreat</strong>: in another retreat you may have a different profile or none at all. In the retreats where you are a message manager:</p>
+
+<ul>
+<li><strong>You can</strong>:
+<ul>
+<li>see the attendants list, active and withdrawn, with their letter counts;</li>
+<li>open, print, delete and return letters by email;</li>
+<li>record paper letters received;</li>
+<li>change the custom fields that the retreat manager has opened to message managers;</li>
+<li>write in the contact log;</li>
+<li>copy each attendant's message URL and invitation message.</li>
+</ul></li>
+<li><strong>You can't</strong>: change the retreat settings, grant permissions, add, edit, withdraw or reactivate attendants, import or export CSV, or empty the retreat. For any of that, talk to the retreat manager.</li>
+</ul>
+
+<h2 id="asistentes">3. Attendants</h2>
+
+<h3>The attendants list</h3>
+<p>At the top you'll see the total number of attendants and a letter summary: how many messages have been received, how many are still to be printed and the total including physical letters. There are two tabs: <strong>Attendants</strong> (the active ones) and <strong>Withdrawn attendants</strong>.</p>
+
+<h4>Columns</h4>
+<ul>
+<li>The attendant's details: <strong>First Name</strong>, <strong>Last Name</strong>, <strong>Emergency Contact</strong> and the others the retreat has enabled, including the custom fields visible to you.</li>
+<li><strong>Messages</strong>: letters received through the website and, in brackets, those still to be printed. Clicking the header repeatedly sorts by total or by letters pending printing.</li>
+<li><strong>Physical Letters</strong>: paper letters received outside the website.</li>
+<li><strong>Total Letters</strong>: the sum of the two previous columns.</li>
+<li><strong>Contact Log</strong>: a notebook icon with the number of entries. Click it to open the log in a pop-up window.</li>
+</ul>
+<p>The headers stay in place as you scroll down the list. On narrow screens the table turns into cards and a <strong>Sort by</strong> drop-down appears.</p>
+
+<h4>Searching, filtering and sorting</h4>
+<p>The search box looks in first name, last name, emergency contact, invited by and incompatibilities. Under <strong>Filters</strong> you can filter by each of those fields and by notes; click <strong>Apply Filters</strong> or <strong>Clear Filters</strong>. Click a column header to sort by it.</p>
+<p><strong>Filters</strong> also lists the retreat's custom fields that you can see. Text fields are filtered by what they contain; <strong>Options list</strong> and <strong>Yes/No</strong> fields, with a drop-down; numbers and dates, with a <strong>From</strong>–<strong>To</strong> range in which you can fill in just one end.</p>
+
+<h4>Inline editing</h4>
+<p>You can change <strong>Physical Letters</strong> and the custom fields you're allowed to edit without opening the record: click the cell, type, and press <kbd>Enter</kbd> to save or <kbd>Esc</kbd> to cancel.</p>
+
+<h4>Buttons for each attendant</h4>
+<ul>
+<li><strong>Edit</strong>: opens the record in restricted mode (see below).</li>
+<li><strong>Messages</strong>: opens their letters.</li>
+<li><strong>Invitation Message</strong>: shows the request template filled in with their details and link, ready to copy and paste into an email or WhatsApp. It only appears if the retreat has a template.</li>
+<li><strong>Generate Message URL</strong> or <strong>Copy Message URL</strong>: see below.</li>
+</ul>
+
+<h3>The attendant record</h3>
+<p>It opens in restricted mode: you see all their details, but you can only change <strong>Physical Letters Received</strong>, the custom fields you're allowed to edit and the <strong>Contact Log</strong>. The record also shows the number of messages received, with a link to them, and their <strong>Message URL</strong>.</p>
+
+<h3 id="url">The message URL</h3>
+<p>Each attendant has a unique address, something like <code>https://yourparish.org/messages/secret-code</code>, which is the way in to write to them. The code is random and can't be guessed.</p>
+<ul>
+<li>If the attendant doesn't have one yet, click <strong>Generate Message URL</strong>.</li>
+<li><strong>Copy Message URL</strong> copies it to the clipboard with the attendant's initials at the end (for example, <code>…/messages/code/#JGP</code>), so you know whose link it is without showing their name.</li>
+<li>Share the link only with people who should write. Anyone who has it can send letters to that attendant.</li>
+</ul>
+
+<h3 id="historial">Contact log</h3>
+<p>This is where the team writes down calls and conversations with each attendant's contact person: "Called his mother on Tuesday, she'll send the link to his brothers", and so on. Open it from the <strong>Contact Log</strong> column in the list or from the record.</p>
+<ul>
+<li>Add entries with a date and a description using <strong>Add Entry</strong>.</li>
+<li>You can correct your entries for 15 minutes and delete them at any time. Edited entries are marked "(edited)".</li>
+<li>Only the retreat manager can change other people's entries.</li>
+</ul>
+
+<h2 id="formulario">4. The letter form</h2>
+
+<p>This is the page people see when they open an attendant's message URL. No account on the website is needed. It's worth knowing it well so you can help the families.</p>
+
+<ul>
+<li>At the top are the attendant's name and the message the team has prepared for letter writers.</li>
+<li>There may be a <strong>Language</strong> selector. Changing the language doesn't reload the page, so nothing already written is lost.</li>
+<li>The writer enters their name and, optionally, their email (twice, to avoid typos). The email is stored encrypted and is only used to let them know about any problem with their letter, such as it being returned if the attendant doesn't end up going on the retreat.</li>
+<li>They choose the message type:
+<ul>
+<li><strong>Text Message</strong>: an editor with bold, italic, underline, lists and undo/redo. Images and text copied from Word or Google Docs can be pasted in.</li>
+<li><strong>File Upload</strong>: photos or documents (PDF, DOC, DOCX, TXT, JPG, PNG, GIF). The form shows the maximum size the server accepts.</li>
+</ul></li>
+<li>They solve the <strong>Security Check</strong>, a simple sum.</li>
+<li>If the retreat has a legal disclaimer, the acceptance box must be ticked; the send button stays disabled until then.</li>
+<li>After clicking <strong>Send Confidential Message</strong>, a page confirms that the letter has been received.</li>
+</ul>
+
+<p>If the attendant has withdrawn, the form shows "Messages are no longer being accepted for this attendant."</p>
+
+<h2 id="mensajes">5. Confidential messages: printing, deleting and returning</h2>
+
+<h3>The messages list</h3>
+<p>Open it with each attendant's <strong>Messages</strong> button. For security, it <strong>never shows the content</strong> of the letters, only their details: sender, type (text or files), date sent and print status. You can filter by type, search by sender and sort by any of those columns, including print status (unprinted first).</p>
+
+<h3>Printing</h3>
+<ol>
+<li>Click <strong>Print</strong> on the letter.</li>
+<li>A new tab opens with the letter ready to print: recipient, sender and content. It is decrypted at that moment.</li>
+<li>The browser's print dialog opens. When you close it, the tab closes by itself.</li>
+</ol>
+<ul>
+<li>Letters with several images are laid out so that no image is split across two pages.</li>
+<li>If the letter is a single PDF, a "From/To" header is usually added at the top so you know who it's from and who it's for.</li>
+<li>If there are several files and any of them isn't an image, they are all downloaded together in a ZIP file. Word documents can't be shown in the print view: download them and print them separately.</li>
+<li>Use an up-to-date browser (Edge, Chrome, Firefox or Safari). Internet Explorer is not supported and won't show the letters.</li>
+</ul>
+
+<h3>Print history</h3>
+<p>Each letter's status tells you whether it has been printed, how many times and when it was first printed. Click it to see the full history: who printed it, when and from which IP. Print each letter only once if possible and keep the paper copies safe.</p>
+
+<h3>Deleting a letter</h3>
+<p><strong>Delete</strong> removes the letter, its files and its print history. It can't be undone.</p>
+
+<h3 id="devolver">Returning letters by email</h3>
+<p>When an attendant withdraws (for example, because they end up not going on the retreat), their letters can be returned to the people who wrote them, as long as they left their email:</p>
+<ul>
+<li><strong>Return by email</strong> returns one letter; <strong>Return all by email</strong> returns every letter that can be returned.</li>
+<li>Before sending, a preview shows the recipient, subject, text and attachments. Text letters are attached as an HTML document; file letters, with the original files.</li>
+<li>Once the email is sent, the letter is deleted from the system. If sending fails, the letter is kept.</li>
+<li>If the letter had already been printed, you're reminded to destroy the paper copy.</li>
+<li>Letters without an email are shown as "No email: cannot be returned".</li>
+</ul>
+<p>The email subject and text are prepared by the retreat manager.</p>
+
+<h2 id="bajas">6. Withdrawn attendants</h2>
+
+<p>When the retreat manager withdraws someone, the attendant moves to the <strong>Withdrawn attendants</strong> tab, with the date and the user who withdrew them. Their URL stops accepting letters, but nothing is deleted: their letters are still there, and you can print them or <a href="#devolver">return them by email</a>. Their contact log stays open.</p>
+<p>If the attendant does end up going on the retreat, ask the retreat manager to reactivate them.</p>
+
+<h2 id="calendario">7. The letters, from start to finish</h2>
+<ol>
+<li><strong>Asking for letters.</strong> For each attendant, copy the <strong>Invitation Message</strong> and send it to their emergency contact. Note in the contact log who you've called or written to.</li>
+<li><strong>Follow-up.</strong> Check the list for anyone with few letters (sort by <strong>Total Letters</strong>) and get back in touch if needed. Record paper letters under <strong>Physical Letters</strong>.</li>
+<li><strong>Withdrawals.</strong> If someone isn't going, return their letters by email as soon as the manager withdraws them.</li>
+<li><strong>During the retreat.</strong> Print the letters (sort by <strong>Messages</strong> to see those still to be printed) and get them ready to hand out. Before handing them out, check in the list that none are left unprinted.</li>
+<li><strong>Afterwards.</strong> Destroy any spare copies. The retreat manager will empty the retreat to delete the personal data.</li>
+</ol>
+
+<h2 id="faq">8. FAQ and troubleshooting</h2>
+
+<h4>Who can read the letters?</h4>
+<p>Nobody, on screen. They can only be seen when printed, and only that retreat's retreat managers and message managers and the plugin administrators can print them. Every print is logged.</p>
+
+<h4>A relative says the link doesn't work.</h4>
+<p>Check that they copied the whole address and that the attendant hasn't been withdrawn. If they see "Too many requests", they should wait an hour, or you can ask a plugin administrator to reset the limits.</p>
+
+<h4>Uploading files gives a size error.</h4>
+<p>The limit is set by the server and shown on the form. Send smaller files, or fewer at a time.</p>
+
+<h4>A letter doesn't print properly.</h4>
+<p>Try another up-to-date browser. If they are Word documents, download them and print them separately. If the letter has several files and any of them isn't an image, they are downloaded in a ZIP file.</p>
+
+<h4>I can't see the Invitation Message button.</h4>
+<p>It only appears if the retreat manager has written a request template.</p>
+
+<h4>I can't change an attendant's details.</h4>
+<p>Your profile only lets you change physical letters, some custom fields and the contact log. For anything else, talk to the retreat manager.</p>
+
+<h4>I can't see a retreat in the list.</h4>
+<p>You only see the retreats where you have permission. Ask the retreat manager for access.</p>
+
+<p class="dfxprl-manual-footer">Found a mistake or missing something? Let us know on <a href="https://github.com/davefx/dfx-parish-retreat-letters/issues" target="_blank" rel="noopener">GitHub</a> or in the <a href="https://wordpress.org/support/plugin/dfx-parish-retreat-letters/" target="_blank" rel="noopener">WordPress.org support forum</a>.</p>
+
+</div>

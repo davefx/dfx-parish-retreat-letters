@@ -1,0 +1,233 @@
+/* User manual page, and the link to it at the top of every page of the plugin */
+
+.dfxprl-manual-link {
+	float: right;
+	position: relative;
+	z-index: 2;
+	margin: 0 20px 0 6px;
+}
+
+.dfxprl-manual-link a {
+	display: inline-block;
+	padding: 3px 10px 3px 8px;
+	background: #fff;
+	border: 1px solid #c3c4c7;
+	border-top: 0;
+	border-radius: 0 0 4px 4px;
+	color: #2271b1;
+	font-size: 13px;
+	line-height: 1.9;
+	text-decoration: none;
+}
+
+.dfxprl-manual-link a:hover,
+.dfxprl-manual-link a:focus {
+	color: #135e96;
+	background: #f6f7f7;
+}
+
+.dfxprl-manual-link .dashicons {
+	font-size: 16px;
+	width: 16px;
+	height: 16px;
+	vertical-align: -3px;
+}
+
+@media screen and (max-width: 782px) {
+	.dfxprl-manual-link {
+		margin-right: 10px;
+	}
+}
+
+@media print {
+	.dfxprl-manual-link {
+		display: none;
+	}
+}
+
+.dfxprl-manual {
+	max-width: 52rem;
+	background: #fff;
+	border: 1px solid #c3c4c7;
+	padding: 1.5rem 2rem 2rem;
+	font-size: 14px;
+	line-height: 1.6;
+}
+
+.dfxprl-manual h1 {
+	font-size: 1.9em;
+	line-height: 1.25;
+	margin: 0 0 0.75em;
+	padding: 0;
+}
+
+.dfxprl-manual h2 {
+	font-size: 1.45em;
+	margin: 2em 0 0.6em;
+	padding-top: 0.6em;
+	border-top: 1px solid #dcdcde;
+	scroll-margin-top: 48px;
+}
+
+.dfxprl-manual h3 {
+	font-size: 1.15em;
+	margin: 1.6em 0 0.4em;
+	scroll-margin-top: 48px;
+}
+
+.dfxprl-manual h4 {
+	font-size: 1em;
+	margin: 1.3em 0 0.3em;
+}
+
+.dfxprl-manual p,
+.dfxprl-manual li,
+.dfxprl-manual dd {
+	font-size: 14px;
+}
+
+.dfxprl-manual ul,
+.dfxprl-manual ol {
+	margin-left: 1.6em;
+}
+
+.dfxprl-manual ul {
+	list-style: disc;
+}
+
+.dfxprl-manual ul ul {
+	list-style: circle;
+	margin-top: 0.3em;
+}
+
+.dfxprl-manual li {
+	margin-bottom: 0.35em;
+}
+
+.dfxprl-manual-lead {
+	font-size: 15px !important;
+	color: #3c434a;
+}
+
+.dfxprl-manual-toc {
+	background: #f6f7f7;
+	border: 1px solid #dcdcde;
+	padding: 0.8em 1.4em;
+	margin: 1.5em 0;
+}
+
+.dfxprl-manual-toc h2 {
+	border: 0;
+	margin: 0.3em 0 0.4em;
+	padding: 0;
+	font-size: 1.1em;
+}
+
+.dfxprl-manual-toc ol {
+	columns: 2;
+	column-gap: 2em;
+	margin-bottom: 0.4em;
+}
+
+.dfxprl-manual-table {
+	border-collapse: collapse;
+	width: 100%;
+	margin: 1em 0;
+	font-size: 13px;
+}
+
+.dfxprl-manual-table th,
+.dfxprl-manual-table td {
+	border: 1px solid #dcdcde;
+	padding: 6px 8px;
+	text-align: center;
+	vertical-align: top;
+}
+
+.dfxprl-manual-table th:first-child,
+.dfxprl-manual-table td:first-child {
+	text-align: left;
+}
+
+.dfxprl-manual-table thead th {
+	background: #f6f7f7;
+}
+
+.dfxprl-manual-fields dt {
+	font-weight: 600;
+	margin-top: 1em;
+}
+
+.dfxprl-manual-fields dd {
+	margin: 0.2em 0 0 1.4em;
+}
+
+.dfxprl-manual pre {
+	background: #f6f7f7;
+	border: 1px solid #dcdcde;
+	padding: 0.6em 0.8em;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	word-break: break-all;
+}
+
+.dfxprl-manual kbd {
+	font-size: 12px;
+}
+
+.dfxprl-manual-footer {
+	margin-top: 2.5em;
+	padding-top: 1em;
+	border-top: 1px solid #dcdcde;
+	color: #50575e;
+}
+
+@media screen and (max-width: 782px) {
+	.dfxprl-manual {
+		padding: 1rem;
+	}
+
+	.dfxprl-manual-toc ol {
+		columns: 1;
+	}
+
+	.dfxprl-manual-table {
+		display: block;
+		overflow-x: auto;
+	}
+}
+
+@media print {
+	#adminmenumain,
+	#wpadminbar,
+	#wpfooter,
+	.notice {
+		display: none !important;
+	}
+
+	#wpcontent {
+		margin-left: 0 !important;
+	}
+
+	.dfxprl-manual {
+		border: 0;
+		max-width: none;
+		padding: 0;
+	}
+}
+
+/* Tabs to read the manual of another profile */
+.dfxprl-manual-profiles {
+	max-width: calc(56rem + 2px);
+	margin-bottom: 0;
+}
+
+.dfxprl-manual-profiles + .dfxprl-manual {
+	border-top: 0;
+}
+
+@media print {
+	.dfxprl-manual-profiles {
+		display: none;
+	}
+}

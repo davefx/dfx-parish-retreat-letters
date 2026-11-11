@@ -1,0 +1,421 @@
+<div class="dfxprl-manual" lang="it">
+
+<h1>Manuale di DFX Lettere per ritiri parrocchiali</h1>
+
+<p class="dfxprl-manual-lead">Questo plugin serve a raccogliere, conservare e stampare le lettere che familiari e amici scrivono alle persone che partecipano a un ritiro parrocchiale. Ogni partecipante ha un link privato: chi vuole scrivergli apre quel link, scrive la sua lettera o allega dei file, e la lettera resta cifrata fino al momento della stampa. Nessuno può leggerla a schermo.</p>
+
+<nav class="dfxprl-manual-toc" aria-label="Indice">
+<h2>Indice</h2>
+<ol>
+<li><a href="#como-funciona">Come funziona</a></li>
+<li><a href="#perfiles">Profili e autorizzazioni</a></li>
+<li><a href="#primeros-pasos">Primi passi</a></li>
+<li><a href="#retiros">Ritiri</a></li>
+<li><a href="#acceso">Gestione degli accessi e inviti</a></li>
+<li><a href="#asistentes">Partecipanti</a></li>
+<li><a href="#csv">Importare ed esportare i partecipanti (CSV)</a></li>
+<li><a href="#formulario">Il modulo delle lettere</a></li>
+<li><a href="#mensajes">Messaggi riservati: stampare, eliminare e restituire</a></li>
+<li><a href="#bajas">Ritiri dei partecipanti, riattivazioni e fine del ritiro</a></li>
+<li><a href="#ajustes-globales">Impostazioni globali</a></li>
+<li><a href="#privacidad">Privacy e conformità</a></li>
+<li><a href="#seguridad">Sicurezza e cifratura</a></li>
+<li><a href="#calendario">Un ritiro dall’inizio alla fine</a></li>
+<li><a href="#faq">Domande frequenti e problemi</a></li>
+</ol>
+</nav>
+
+<h2 id="como-funciona">1. Come funziona</h2>
+
+<ol>
+<li><strong>Crei un ritiro</strong> con nome, luogo e date, e registri i partecipanti (uno alla volta o importando un file CSV).</li>
+<li><strong>Ogni partecipante ha un URL privato</strong> per ricevere lettere. Lo copi dall’elenco dei partecipanti e lo passi ai suoi familiari e amici, di solito tramite il suo contatto di emergenza.</li>
+<li><strong>Chi scrive apre il link</strong> in qualsiasi browser, senza registrarsi. Scrive la lettera con un semplice editor di testo oppure allega foto e documenti, risolve una piccola somma di sicurezza e la invia.</li>
+<li><strong>La lettera viene salvata cifrata.</strong> Nel pannello si vede solo chi l’ha inviata, quando e di che tipo è; mai il suo contenuto.</li>
+<li><strong>Le persone autorizzate stampano le lettere</strong> durante il ritiro. Ogni stampa viene registrata con l’utente, la data e l’indirizzo IP.</li>
+<li><strong>Le lettere vengono consegnate</strong> a ciascun partecipante nel momento deciso dall’équipe.</li>
+</ol>
+
+<p>Tutto si trova nel menu <strong>Ritiri</strong> della bacheca di WordPress. Non serve creare pagine o articoli: il modulo delle lettere lo mostra direttamente il plugin.</p>
+
+<h2 id="perfiles">2. Profili e autorizzazioni</h2>
+
+<p>Le autorizzazioni si assegnano <strong>ritiro per ritiro</strong>: una persona può essere responsabile di un ritiro e non vedere nulla di un altro. Ci sono quattro livelli.</p>
+
+<table class="dfxprl-manual-table">
+<thead>
+<tr><th>Che cosa si può fare</th><th>Amministratore del plugin</th><th>Responsabile del ritiro</th><th>Responsabile dei messaggi</th><th>Sola lettura</th></tr>
+</thead>
+<tbody>
+<tr><td>Creare ed eliminare ritiri</td><td>Sì</td><td>No</td><td>No</td><td>No</td></tr>
+<tr><td>Modificare la configurazione del ritiro e i suoi campi personalizzati</td><td>Sì</td><td>Sì</td><td>No</td><td>No</td></tr>
+<tr><td>Concedere e revocare autorizzazioni, inviare inviti</td><td>Sì</td><td>Sì</td><td>No</td><td>No</td></tr>
+<tr><td>Vedere l’elenco dei partecipanti e il conteggio delle lettere</td><td>Sì</td><td>Sì</td><td>Sì</td><td>Sì</td></tr>
+<tr><td>Aggiungere, modificare, ritirare e riattivare partecipanti</td><td>Sì</td><td>Sì</td><td>No</td><td>No</td></tr>
+<tr><td>Importare ed esportare CSV</td><td>Sì</td><td>Sì</td><td>No</td><td>No</td></tr>
+<tr><td>Annotare le lettere cartacee ricevute</td><td>Sì</td><td>Sì</td><td>Sì</td><td>No</td></tr>
+<tr><td>Scrivere nel registro dei contatti</td><td>Sì</td><td>Sì</td><td>Sì</td><td>No (solo lettura)</td></tr>
+<tr><td>Copiare l’URL per i messaggi e il messaggio di invito</td><td>Sì</td><td>Sì</td><td>Sì</td><td>Sì</td></tr>
+<tr><td>Aprire, stampare ed eliminare lettere</td><td>Sì</td><td>Sì</td><td>Sì</td><td>No</td></tr>
+<tr><td>Restituire lettere via email</td><td>Sì</td><td>Sì</td><td>Sì</td><td>No</td></tr>
+<tr><td>Svuotare il ritiro quando è terminato</td><td>Sì</td><td>Sì</td><td>No</td><td>No</td></tr>
+<tr><td>Impostazioni globali e Privacy e conformità</td><td>Sì</td><td>No</td><td>No</td><td>No</td></tr>
+</tbody>
+</table>
+
+<h3>Amministratore del plugin</h3>
+<p>Sono amministratori del plugin gli amministratori di WordPress e gli utenti a cui è stata concessa l’autorizzazione globale di gestione dei ritiri in <strong>Ritiri &gt; Impostazioni globali &gt; Gestione degli utenti</strong>. Vedono tutti i ritiri e sono gli unici che possono creare ed eliminare ritiri o modificare le impostazioni globali e la privacy.</p>
+
+<h3>Responsabile del ritiro</h3>
+<p>Ha il controllo completo del suo ritiro: configurazione, partecipanti, lettere e autorizzazioni. Non vede altri ritiri né le impostazioni globali.</p>
+
+<h3>Responsabile dei messaggi</h3>
+<p>È il profilo di chi si occupa delle lettere: le stampa, le elimina se necessario e le restituisce via email quando un partecipante si ritira. Vede l’elenco dei partecipanti e può aprire la scheda di ciascuno in modalità limitata, dove può modificare solo le lettere cartacee ricevute, i campi personalizzati che gli sono consentiti e il registro dei contatti.</p>
+
+<h3>Sola lettura</h3>
+<p>Pensato per chi deve consultare senza toccare nulla, ad esempio la persona che distribuisce i link alle famiglie. Vede i partecipanti (attivi e ritirati), il conteggio delle lettere, i campi personalizzati aperti ai responsabili dei messaggi e il registro dei contatti. Può copiare l’URL per i messaggi di ogni partecipante e il suo messaggio di invito; se un partecipante non ha ancora un URL, viene generato, ma un URL esistente non viene mai sostituito, quindi i link già distribuiti continuano a funzionare.</p>
+<p>Non può cambiare nient’altro: né modificare, né ritirare, né importare o esportare, né scrivere nel registro. Non può nemmeno aprire, stampare o scaricare lettere, né vedere la configurazione del ritiro o le sue autorizzazioni. Nell’elenco dei partecipanti vedrà il pulsante <strong>Visualizza</strong> al posto di <strong>Modifica</strong>.</p>
+
+<h2 id="primeros-pasos">3. Primi passi</h2>
+
+<ol>
+<li>Installa e attiva il plugin da <strong>Plugin</strong>. Le tabelle necessarie vengono create automaticamente.</li>
+<li>Verifica che il sito usi <strong>HTTPS</strong>. Gli URL per i messaggi contengono un codice segreto e non devono viaggiare in chiaro.</li>
+<li>Salva la chiave di cifratura in <code>wp-config.php</code>. All’attivazione il plugin genera una chiave, la salva nel database e mostra un avviso con la riga da copiare:
+<pre>define( 'DFXPRL_ENCRYPTION_KEY', 'una-stringa-lunga-e-casuale' );</pre>
+In questo modo la chiave non si trova nello stesso posto dei dati cifrati. Fallo <strong>prima di ricevere lettere</strong>: ciò che viene cifrato con una chiave si può leggere solo con quella stessa chiave (vedi <a href="#seguridad">Sicurezza e cifratura</a>).</li>
+<li>Controlla <strong>Ritiri &gt; Impostazioni globali</strong>: header e footer del modulo delle lettere, intestazione dei PDF e, se vuoi la traduzione automatica, la chiave di DeepL.</li>
+<li>Controlla <strong>Ritiri &gt; Privacy e conformità</strong> e adatta i periodi di conservazione a quanto prevede la tua informativa sulla protezione dei dati.</li>
+<li>Crea il tuo primo ritiro.</li>
+</ol>
+
+<h2 id="retiros">4. Ritiri</h2>
+
+<h3>L’elenco dei ritiri</h3>
+<p>In <strong>Ritiri &gt; Tutti i ritiri</strong> compaiono i ritiri a cui hai accesso, con luogo, date e numero di partecipanti attivi. Puoi cercare per nome. A seconda del tuo profilo vedrai questi pulsanti:</p>
+<ul>
+<li><strong>Modifica</strong>: apre la configurazione del ritiro (responsabili del ritiro).</li>
+<li><strong>Partecipanti</strong>: apre l’elenco dei partecipanti.</li>
+<li><strong>Elimina</strong>: elimina il ritiro (solo amministratori del plugin; vedi più avanti).</li>
+</ul>
+<p>Facendo clic sul nome del ritiro, i responsabili del ritiro vanno alla configurazione; gli altri, all’elenco dei partecipanti.</p>
+
+<h3>Creare o modificare un ritiro</h3>
+<p>Gli amministratori del plugin creano i ritiri da <strong>Ritiri &gt; Aggiungi nuovo</strong>. Questi sono i campi:</p>
+
+<dl class="dfxprl-manual-fields">
+<dt>Nome del ritiro, Luogo, Data di inizio, Data di fine</dt>
+<dd>Dati di base. Il nome e le date sono obbligatori, e la data di fine non può essere precedente a quella di inizio.</dd>
+
+<dt>Messaggio personalizzato per i mittenti delle lettere</dt>
+<dd>Testo che vede chi scrive, prima del modulo. Serve a spiegare che cos’è la lettera, quando verrà consegnata o quale tono è opportuno. Accetta HTML.</dd>
+
+<dt>Testo delle note legali e Testo di accettazione delle note legali</dt>
+<dd>Se scrivi delle note legali, il modulo le mostra con una casella da spuntare per poter inviare. Il testo di accettazione è quello che compare accanto alla casella (per impostazione predefinita, «Accetto i termini e le condizioni»).</dd>
+
+<dt>Modulo multilingue</dt>
+<dd>Se è attivo, chi scrive vede il modulo nella lingua del proprio browser o in quella scelta da un selettore (spagnolo, catalano, basco, galiziano, inglese, portoghese, francese, italiano e tedesco). Se è disattivato, il modulo appare sempre nella lingua principale del sito. Vedi <a href="#traducciones">Traduzioni dei testi del ritiro</a>.</dd>
+
+<dt>Abilita il campo note</dt>
+<dd>Aggiunge a ogni partecipante un campo note che si vede nell’elenco ed è incluso nell’importazione ed esportazione CSV.</dd>
+
+<dt>Abilita il campo note interne</dt>
+<dd>Uguale, ma queste note non vengono <strong>mai</strong> importate né esportate via CSV. Usalo per ciò che non deve uscire dal pannello.</dd>
+
+<dt>Template per la richiesta di messaggi</dt>
+<dd>Testo che l’équipe invia alla famiglia o al contatto di emergenza per chiedergli di scrivere e di incoraggiare altri a farlo. Accetta dei segnaposto che vengono sostituiti con i dati di ciascun partecipante: <code>[attendant_name]</code>, <code>[attendant_surnames]</code>, <code>[emergency_contact_name]</code>, <code>[messages_url]</code>, <code>[retreat_name]</code>, <code>[retreat_start_date]</code> e gli altri elencati sotto il campo, compresi quelli dei campi personalizzati (<code>[slug]</code>). Se il template contiene del testo, nell’elenco dei partecipanti compare il pulsante <strong>Messaggio di invito</strong>.</dd>
+
+<dt>Oggetto dell’email di restituzione della lettera e Testo dell’email di restituzione della lettera</dt>
+<dd>Email inviata a chi ha scritto una lettera quando il partecipante si ritira e la lettera gli viene restituita. Accetta segnaposto come <code>[sender_name]</code>, <code>[attendant_name]</code>, <code>[retreat_name]</code> o la data di invio. Se lo lasci vuoto, viene usato un testo predefinito. Vedi <a href="#devolver">Restituire lettere via email</a>.</dd>
+
+<dt>Blocco header personalizzato, Blocco footer personalizzato</dt>
+<dd>Blocco riutilizzabile, parte di template o pattern che viene mostrato sopra e sotto il modulo delle lettere di questo ritiro. Se non ne scegli nessuno, si usa quello delle impostazioni globali. Questi campi compaiono solo se nelle impostazioni globali è attiva la <strong>Personalizzazione per ritiro</strong>.</dd>
+
+<dt>Classi aggiuntive del body</dt>
+<dd>Classi CSS, separate da spazi, che vengono aggiunte al tag <code>&lt;body&gt;</code> del modulo di questo ritiro. Servono a dargli un aspetto diverso dal tema o dal CSS aggiuntivo del sito.</dd>
+</dl>
+
+<p>Salva con <strong>Aggiungi ritiro</strong> o <strong>Aggiorna ritiro</strong>. Dalla stessa schermata, <strong>Gestisci i partecipanti</strong> porta all’elenco dei partecipanti.</p>
+
+<h3 id="traducciones">Traduzioni dei testi del ritiro</h3>
+<p>Il messaggio personalizzato, le note legali e il relativo testo di accettazione si scrivono nella lingua principale del sito. Se il modulo è multilingue, in <strong>Traduzioni di questi testi</strong> puoi scrivere una versione per ogni lingua. Le schede contrassegnate con «(scritto)» contengono già del testo.</p>
+<ul>
+<li><strong>Traduci automaticamente</strong> compila i campi di quella lingua a partire dall’originale, perché tu li possa rivedere prima di salvare. Serve una chiave di DeepL nelle impostazioni globali.</li>
+<li>Se una lingua resta vuota, il modulo usa la traduzione automatica di DeepL (se è configurata) oppure, in caso contrario, il testo originale.</li>
+<li>Ogni traduzione automatica viene fatta una sola volta e poi salvata; si ripete solo se cambi l’originale. A DeepL vengono inviati solo questi testi del ritiro, mai lettere né dati personali.</li>
+</ul>
+
+<h3 id="campos-personalizados">Campi personalizzati del partecipante</h3>
+<p>Ogni ritiro può aggiungere i propri campi alla scheda dei partecipanti (ad esempio taglia della maglietta, gruppo, allergie o necessità di trasporto). Fai clic su <strong>Aggiungi campo</strong> e compila:</p>
+<ul>
+<li><strong>Nome</strong> e <strong>Slug</strong>: lo slug identifica il campo nei file CSV e nel template per la richiesta, come <code>[mio_campo]</code>.</li>
+<li><strong>Tipo</strong>: testo, testo lungo, numero, data, sì/no o elenco di opzioni (un’opzione per riga).</li>
+<li><strong>Visibile a</strong> e <strong>Modificabile da</strong>: solo i responsabili del ritiro, oppure anche i responsabili dei messaggi. Gli utenti in sola lettura vedono i campi visibili ai responsabili dei messaggi, ma non possono modificarli.</li>
+<li><strong>Mostra nell’elenco dei partecipanti</strong> e <strong>Ordinabile</strong>.</li>
+<li><strong>Importa da CSV</strong> ed <strong>Esporta in CSV</strong>.</li>
+</ul>
+<p><strong>Rimuovi campo</strong> cancella i suoi valori per tutti i partecipanti quando salvi il ritiro. Viene chiesta una conferma.</p>
+
+<h3>Eliminare un ritiro</h3>
+<p>Solo gli amministratori del plugin possono farlo, con <strong>Elimina</strong> nell’elenco dei ritiri. Vengono eliminati il ritiro, tutti i suoi partecipanti e tutte le sue lettere, senza possibilità di tornare indietro. Per confermare bisogna scrivere il nome esatto del ritiro. Se vuoi riutilizzare il ritiro con la sua configurazione, usa piuttosto <a href="#vaciar">Svuota il ritiro</a>.</p>
+
+<h2 id="acceso">5. Gestione degli accessi e inviti</h2>
+
+<p>Nella schermata di modifica del ritiro, il riquadro <strong>Gestione degli accessi</strong> mostra chi ha le autorizzazioni e permette di concederle.</p>
+
+<h3>Autorizzazioni attuali</h3>
+<p>Elenco degli utenti con il loro profilo e chi l’ha concesso. <strong>Revoca</strong> lo toglie. Non puoi revocare le tue autorizzazioni.</p>
+
+<h3>Dare accesso a un utente già esistente</h3>
+<ol>
+<li>In <strong>Concedi l’accesso &gt; Utenti esistenti</strong>, cerca per nome utente, email o nome (almeno due lettere).</li>
+<li>Scegli l’utente e il profilo: <strong>Responsabile del ritiro</strong>, <strong>Responsabile dei messaggi</strong> o <strong>Sola lettura</strong>.</li>
+<li>Fai clic su <strong>Concedi</strong>.</li>
+</ol>
+
+<h3>Invitare una persona nuova</h3>
+<ol>
+<li>In <strong>Invita nuovi utenti</strong>, scrivi la sua email e scegli il profilo.</li>
+<li>Fai clic su <strong>Invia l’invito</strong>. La persona riceve un’email con un link che scade dopo 7 giorni.</li>
+<li>Aprendo il link, completa il suo nome e fa clic su <strong>Accetta l’invito</strong>. Se la sua email apparteneva già a un utente del sito, riceve semplicemente l’autorizzazione; altrimenti le viene creato un account e riceve i dati di accesso via email.</li>
+</ol>
+<p>Gli inviti non ancora accettati compaiono in <strong>Inviti in attesa</strong>, con la data di scadenza, e si possono annullare. Quelli scaduti vengono eliminati automaticamente.</p>
+
+<p>La concessione e la revoca di un’autorizzazione e ogni passaggio di un invito vengono annotati nel registro di controllo.</p>
+
+<h2 id="asistentes">6. Partecipanti</h2>
+
+<h3>L’elenco dei partecipanti</h3>
+<p>Si apre con il pulsante <strong>Partecipanti</strong> del ritiro. In alto si vedono il totale dei partecipanti e il riepilogo delle lettere: quanti messaggi sono stati ricevuti, quanti restano da stampare e il totale contando le lettere cartacee.</p>
+<p>Ci sono due schede: <strong>Partecipanti</strong> (quelli attivi) e <strong>Partecipanti ritirati</strong>.</p>
+
+<h4>Colonne</h4>
+<ul>
+<li><strong>Nome</strong>, <strong>Cognomi</strong>, <strong>Data di nascita</strong>, <strong>Contatto di emergenza</strong>, <strong>Invitato da</strong>, <strong>Incompatibilità</strong>, <strong>Note</strong> e <strong>Note interne</strong> (se sono attive), più i campi personalizzati contrassegnati per l’elenco.</li>
+<li><strong>Messaggi</strong>: lettere ricevute tramite il sito e, tra parentesi, quelle ancora da stampare. Facendo clic più volte sull’intestazione si ordina per totale o per lettere da stampare.</li>
+<li><strong>Lettere cartacee</strong>: lettere su carta ricevute al di fuori del sito.</li>
+<li><strong>Lettere totali</strong>: la somma delle due precedenti.</li>
+<li><strong>Registro dei contatti</strong>: un’icona a forma di taccuino con il numero di voci. Facendo clic, il registro si apre in una finestra.</li>
+</ul>
+<p>Le intestazioni restano fisse mentre scorri l’elenco. Sugli schermi stretti la tabella si trasforma in schede e compare un menu a tendina <strong>Ordina per</strong>.</p>
+
+<h4>Cercare, filtrare e ordinare</h4>
+<p>La ricerca agisce su nome, cognomi, contatto di emergenza, «invitato da» e incompatibilità. In <strong>Filtri</strong> puoi filtrare per ciascuno di questi campi e per le note e le note interne; fai clic su <strong>Applica filtri</strong> o <strong>Cancella filtri</strong>. Fai clic sull’intestazione di una colonna per ordinare in base a quella.</p>
+<p>In <strong>Filtri</strong> compaiono anche i campi personalizzati del ritiro che puoi vedere. Quelli di testo si filtrano in base al contenuto; quelli di tipo <strong>Elenco di opzioni</strong> e <strong>Sì/No</strong>, con un menu a tendina; i numeri e le date, con un intervallo <strong>Da</strong>–<strong>A</strong> in cui puoi compilare anche uno solo dei due estremi.</p>
+
+<h4>Riordinare le colonne</h4>
+<p>I responsabili del ritiro possono trascinare le intestazioni dalla loro maniglia (compare passando sopra con il mouse). L’ordine viene salvato per tutti quelli che usano quel ritiro. <strong>Ripristina l’ordine predefinito</strong> lo riporta com’era.</p>
+
+<h4>Modifica in linea</h4>
+<p>Fai clic su una cella per modificarla senza aprire la scheda: <kbd>Invio</kbd> salva, <kbd>Esc</kbd> annulla e, nei testi lunghi, <kbd>Ctrl</kbd>+<kbd>Invio</kbd> salva. I responsabili del ritiro possono modificare nome, cognomi, data di nascita, «invitato da», incompatibilità e note; i responsabili del ritiro e dei messaggi possono modificare le lettere cartacee; i campi personalizzati seguono la propria autorizzazione di modifica.</p>
+
+<h4>Pulsanti di ogni partecipante</h4>
+<ul>
+<li><strong>Modifica</strong> (o <strong>Visualizza</strong> per la sola lettura): apre la scheda.</li>
+<li><strong>Messaggi</strong>: apre le sue lettere (responsabili del ritiro e dei messaggi).</li>
+<li><strong>Messaggio di invito</strong>: mostra il template per la richiesta compilato con i suoi dati e il suo link, pronto da copiare e incollare in un’email o su WhatsApp. Compare solo se il ritiro ha un template.</li>
+<li><strong>Genera l’URL per i messaggi</strong> o <strong>Copia l’URL per i messaggi</strong>: vedi più avanti.</li>
+<li><strong>Ritira</strong>: vedi <a href="#bajas">Ritiri dei partecipanti</a> (responsabili del ritiro).</li>
+</ul>
+
+<h3>Aggiungere o modificare un partecipante</h3>
+<p>Fai clic su <strong>Aggiungi nuovo partecipante</strong> o su <strong>Modifica</strong> nella sua riga. I campi sono:</p>
+<ul>
+<li><strong>Nome</strong>, <strong>Cognomi</strong> e <strong>Data di nascita</strong> (obbligatori).</li>
+<li><strong>Contatto di emergenza</strong>: nome (obbligatorio), cognome, telefono (obbligatorio), email e rapporto con il partecipante. Di solito è questa persona a ricevere il link per le lettere.</li>
+<li><strong>Invitato da</strong>: chi lo ha invitato al ritiro.</li>
+<li><strong>Incompatibilità</strong>: partecipanti con cui è meglio non metterlo, ad esempio allo stesso tavolo o nella stessa stanza.</li>
+<li><strong>Note</strong> e <strong>Note interne</strong>, se il ritiro le ha attivate.</li>
+<li>I <strong>campi personalizzati</strong> del ritiro.</li>
+<li><strong>Lettere cartacee ricevute</strong>: numero di lettere su carta ricevute al di fuori del sito.</li>
+</ul>
+<p>La scheda mostra anche il numero di messaggi ricevuti (con un link per vederli), l’<strong>URL per i messaggi</strong> e il <strong>Registro dei contatti</strong>. Se un campo non supera la convalida, il modulo conserva tutto ciò che hai scritto e basta correggere quel campo.</p>
+<p>I responsabili dei messaggi aprono la scheda in modalità limitata: possono modificare solo le lettere cartacee, i campi personalizzati che sono loro consentiti e il registro dei contatti. Gli utenti in sola lettura la vedono completamente bloccata, con un pulsante <strong>Torna ai partecipanti</strong>.</p>
+
+<h3 id="url">L’URL per i messaggi</h3>
+<p>Ogni partecipante ha un indirizzo unico, del tipo <code>https://latuaparrocchia.it/messages/codice-segreto</code>, che è la porta per scrivergli. Il codice è casuale e non si può indovinare.</p>
+<ul>
+<li>Se il partecipante non ne ha ancora uno, fai clic su <strong>Genera l’URL per i messaggi</strong>.</li>
+<li><strong>Copia l’URL per i messaggi</strong> lo copia negli appunti con le iniziali del partecipante alla fine (ad esempio <code>…/messages/codice/#JGP</code>), così sai di chi è il link senza mostrarne il nome.</li>
+<li>Condividi il link solo con chi deve scrivere. Chiunque lo abbia può inviare lettere a quel partecipante.</li>
+<li>L’URL resta valido finché il partecipante non viene ritirato o eliminato.</li>
+</ul>
+
+<h3 id="historial">Registro dei contatti</h3>
+<p>Serve all’équipe per annotare le telefonate e le conversazioni con la persona di contatto di ogni partecipante: «Chiamata alla madre martedì, manderà il link ai fratelli», ecc. Si apre dalla colonna <strong>Registro dei contatti</strong> dell’elenco o dalla scheda.</p>
+<ul>
+<li>I responsabili del ritiro e dei messaggi possono aggiungere voci con data e descrizione (<strong>Aggiungi voce</strong>).</li>
+<li>Chi scrive una voce può modificarla per 15 minuti ed eliminarla in qualsiasi momento. Le voci modificate sono contrassegnate con «(modificato)».</li>
+<li>I responsabili del ritiro possono modificare o eliminare qualsiasi voce e vedere la <strong>Cronologia delle modifiche</strong> completa, comprese le voci eliminate.</li>
+<li>Gli utenti in sola lettura possono leggerlo, ma non scriverci.</li>
+</ul>
+
+<h2 id="csv">7. Importare ed esportare i partecipanti (CSV)</h2>
+
+<h3>Importare</h3>
+<p>Nell’elenco dei partecipanti, fai clic su <strong>Importa CSV</strong>. Il file:</p>
+<ul>
+<li>Deve avere i nomi delle colonne nella prima riga. Possono essere in qualsiasi ordine, in inglese o nella lingua del pannello, e le colonne non riconosciute vengono ignorate.</li>
+<li>Deve contenere queste colonne: <strong>Nome</strong>, <strong>Cognomi</strong>, <strong>Data di nascita</strong>, <strong>Nome del contatto di emergenza</strong> e <strong>Telefono del contatto di emergenza</strong>.</li>
+<li>Può contenere inoltre: cognome, email e rapporto del contatto di emergenza, «invitato da», incompatibilità, note e i campi personalizzati contrassegnati per l’importazione (tramite il loro slug).</li>
+<li>Può pesare al massimo 2 MB.</li>
+</ul>
+<p><strong>Date.</strong> Sono accettati AAAA-MM-GG, GG/MM/AAAA, MM/GG/AAAA, GG-MM-AAAA, MM-GG-AAAA e GG.MM.AAAA. Una data come 01/10/2025 può essere il 1° ottobre o il 10 gennaio; scegli in <strong>Formato di data preferito</strong> come interpretarle, o meglio ancora usa AAAA-MM-GG. Alla fine, il risultato segnala le date ambigue che ha trovato.</p>
+<p><strong>Partecipanti già esistenti.</strong> Se una riga corrisponde a un partecipante del ritiro (stesso nome, cognomi e data di nascita), non viene duplicato: si aggiornano i dati del suo contatto di emergenza e i suoi campi personalizzati. Le righe che corrispondono a partecipanti ritirati vengono lasciate com’erano.</p>
+<p>Alla fine viene mostrato quanti partecipanti sono stati aggiunti, quanti aggiornati e quali righe contenevano errori, con il numero di riga.</p>
+
+<h3>Esportare</h3>
+<p><strong>Esporta CSV</strong> scarica i partecipanti attivi con i loro dati, il loro URL per i messaggi, il numero di messaggi e i campi personalizzati contrassegnati per l’esportazione. Le note interne non vengono mai esportate. Tieni presente che il file contiene dati personali e gli URL privati: conservalo con cura ed eliminalo quando non ti serve più.</p>
+
+<h2 id="formulario">8. Il modulo delle lettere</h2>
+
+<p>È la pagina che vede chi apre l’URL per i messaggi di un partecipante. Non serve un account sul sito.</p>
+
+<ul>
+<li>In alto compaiono il nome del partecipante e il <strong>messaggio personalizzato</strong> del ritiro.</li>
+<li>Se il modulo è multilingue, c’è un selettore <strong>Lingua</strong>. Cambiare lingua non ricarica la pagina, quindi non si perde ciò che è stato scritto.</li>
+<li>Chi scrive inserisce il proprio nome e, se vuole, la propria email (due volte, per evitare errori di battitura). L’email viene salvata cifrata e si usa solo per avvisarlo di qualche problema con la sua lettera, come la restituzione se il partecipante alla fine non va al ritiro.</li>
+<li>Sceglie il tipo di messaggio:
+<ul>
+<li><strong>Messaggio di testo</strong>: un editor con grassetto, corsivo, sottolineato, elenchi e annulla/ripeti. Si possono incollare immagini e testo copiato da Word o Google Docs.</li>
+<li><strong>Caricamento di file</strong>: foto o documenti (PDF, DOC, DOCX, TXT, JPG, PNG, GIF). Il modulo indica la dimensione massima accettata dal server.</li>
+</ul></li>
+<li>Risolve il <strong>controllo di sicurezza</strong>, una semplice somma. Gli utenti che hanno effettuato l’accesso al sito non lo vedono.</li>
+<li>Se il ritiro ha delle note legali, bisogna spuntare la casella di accettazione; il pulsante di invio non si attiva prima.</li>
+<li>Dopo aver fatto clic su <strong>Invia il messaggio riservato</strong>, compare una pagina che conferma che la lettera è stata ricevuta.</li>
+</ul>
+
+<p>Per evitare abusi, ogni indirizzo IP può inviare un numero limitato di lettere all’ora. Se qualcuno resta bloccato dopo vari errori, un amministratore può rimuovere il blocco in <strong>Privacy e conformità &gt; Reimposta tutti i limiti di richieste</strong>.</p>
+<p>Se il partecipante è stato ritirato, il modulo mostra «Non si accettano più messaggi per questo partecipante». Un indirizzo con un codice che non esiste restituisce un errore 404.</p>
+
+<h2 id="mensajes">9. Messaggi riservati: stampare, eliminare e restituire</h2>
+
+<h3>L’elenco dei messaggi</h3>
+<p>Si apre con il pulsante <strong>Messaggi</strong> di ogni partecipante. Per sicurezza, <strong>non mostra mai il contenuto</strong> delle lettere, solo i loro dati: mittente, tipo (testo o file), data di invio e stato di stampa. Puoi filtrare per tipo, cercare per mittente e ordinare per una qualsiasi di queste colonne, compreso lo stato di stampa (prima quelle non stampate).</p>
+
+<h3>Stampare</h3>
+<ol>
+<li>Fai clic su <strong>Stampa</strong> nella lettera.</li>
+<li>Si apre una nuova scheda con la lettera pronta per la stampa: il destinatario, il mittente e il contenuto. Viene decifrata in quel momento.</li>
+<li>Si apre la finestra di stampa del browser. Quando la chiudi, la scheda si chiude da sola.</li>
+</ol>
+<ul>
+<li>Le lettere con più immagini vengono impaginate in modo che nessuna immagine resti divisa tra due pagine.</li>
+<li>Se la lettera è un unico PDF, alla stampa le viene aggiunta in alto un’intestazione «Da/A» per sapere da chi viene e a chi è destinata (si può disattivare nelle impostazioni globali).</li>
+<li>Se ci sono più file e qualcuno non è un’immagine, vengono scaricati tutti insieme in un file ZIP. I documenti Word non possono essere mostrati nell’anteprima di stampa: bisogna scaricarli e stamparli a parte.</li>
+<li>Usa un browser aggiornato (Edge, Chrome, Firefox o Safari). Internet Explorer non è supportato e non mostra le lettere.</li>
+</ul>
+
+<h3>Cronologia di stampa</h3>
+<p>Lo stato di ogni lettera indica se è stata stampata, quante volte e quando per la prima volta. Facendo clic si vede la cronologia completa: chi l’ha stampata, quando e da quale IP. Se possibile, stampa ogni lettera una sola volta e conserva con cura le copie cartacee.</p>
+
+<h3>Eliminare una lettera</h3>
+<p><strong>Elimina</strong> cancella la lettera, i suoi file e la sua cronologia di stampa. Non si può annullare.</p>
+
+<h3 id="devolver">Restituire lettere via email</h3>
+<p>Quando un partecipante si ritira (ad esempio perché alla fine non va al ritiro), le sue lettere possono essere restituite a chi le ha scritte, purché abbia lasciato la propria email:</p>
+<ul>
+<li><strong>Restituisci via email</strong> restituisce una lettera; <strong>Restituisci tutte via email</strong>, tutte quelle che si possono restituire.</li>
+<li>Prima dell’invio viene mostrata un’anteprima con il destinatario, l’oggetto, il testo e gli allegati. Le lettere di testo vengono allegate come documento HTML; quelle con file, con i file originali.</li>
+<li>Una volta inviata l’email, la lettera viene eliminata dal sistema. Se l’invio non riesce, la lettera viene conservata.</li>
+<li>Se la lettera era già stata stampata, viene ricordato che bisogna distruggere la copia cartacea.</li>
+<li>Le lettere senza email compaiono come «Nessuna email: non può essere restituita».</li>
+</ul>
+<p>L’oggetto e il testo dell’email si configurano in ogni ritiro (vedi <a href="#retiros">Ritiri</a>).</p>
+
+<h2 id="bajas">10. Ritiri dei partecipanti, riattivazioni e fine del ritiro</h2>
+
+<h3>Ritirare un partecipante</h3>
+<p>Se qualcuno non parteciperà al ritiro, fai clic su <strong>Ritira</strong> nella sua riga. Il partecipante:</p>
+<ul>
+<li>passa alla scheda <strong>Partecipanti ritirati</strong>, con la data e l’utente che lo ha ritirato;</li>
+<li>non può più essere modificato;</li>
+<li>smette di ricevere lettere tramite il suo URL;</li>
+<li>conserva le sue lettere, che si possono stampare o restituire via email, e il suo registro dei contatti, che resta aperto.</li>
+</ul>
+<p>Non viene eliminato nulla. Da quella scheda puoi riattivare il partecipante con <strong>Riattiva</strong> oppure eliminarlo con <strong>Elimina definitivamente</strong>. Si possono eliminare solo i partecipanti ritirati; se ha ancora lettere che si potrebbero restituire, viene mostrato un avviso prima di cancellarle.</p>
+
+<h3>Ritirare tutti i partecipanti</h3>
+<p><strong>Ritira tutti i partecipanti</strong> fa lo stesso con l’intero ritiro. Per confermare bisogna scrivere «RITIRA TUTTI I PARTECIPANTI».</p>
+
+<h3 id="vaciar">Svuotare il ritiro</h3>
+<p>Quando il ritiro è terminato, i responsabili del ritiro vedono il pulsante <strong>Svuota il ritiro</strong>. Elimina definitivamente tutti i partecipanti, attivi e ritirati, con le loro lettere, i file, la cronologia di stampa, il registro dei contatti e i valori dei campi personalizzati. Il ritiro mantiene la configurazione, i campi personalizzati e i responsabili, pronto per l’edizione successiva.</p>
+<p>Per confermare bisogna scrivere il nome esatto del ritiro. Se restano lettere di partecipanti ritirati che si potrebbero ancora restituire, viene mostrato prima un avviso.</p>
+
+<h2 id="ajustes-globales">11. Impostazioni globali</h2>
+<p>In <strong>Ritiri &gt; Impostazioni globali</strong>, solo per gli amministratori del plugin:</p>
+<dl class="dfxprl-manual-fields">
+<dt>Personalizzazione per ritiro</dt>
+<dd>Se è attiva, ogni ritiro può avere header, footer e classi del body propri. Altrimenti tutti usano i valori di questa pagina.</dd>
+<dt>Blocco header predefinito e Blocco footer predefinito</dt>
+<dd>Blocco riutilizzabile, parte di template o pattern che viene mostrato nel modulo delle lettere. Si creano in <strong>Aspetto &gt; Editor &gt; Pattern</strong>. Se non ne scegli nessuno, si usano l’header e il footer del tema.</dd>
+<dt>Classi aggiuntive del body</dt>
+<dd>Classi CSS per il tag <code>&lt;body&gt;</code> di tutti i moduli delle lettere. La pagina ha inoltre sempre la classe <code>dfxprl-message-form</code>.</dd>
+<dt>Aggiungi un’intestazione al PDF</dt>
+<dd>Aggiunge l’intestazione «Da/A» alle lettere in PDF durante la stampa. Se ne occupa il browser di chi stampa, senza caricare il server. È attiva per impostazione predefinita.</dd>
+<dt>Chiave API di DeepL</dt>
+<dd>Facoltativa. Permette di tradurre automaticamente i testi di ogni ritiro nella lingua di chi apre il modulo. Basta il piano gratuito, DeepL API Free (500.000 caratteri al mese). Si può definire anche in <code>wp-config.php</code> come <code>DFXPRL_DEEPL_API_KEY</code>.</dd>
+<dt>Gestione degli utenti</dt>
+<dd>Concede o revoca l’autorizzazione globale di gestione dei ritiri. Chi ce l’ha è amministratore del plugin: vede tutti i ritiri e può crearne di nuovi. Le autorizzazioni di ogni ritiro si concedono dalla sua schermata di modifica.</dd>
+</dl>
+
+<h2 id="privacidad">12. Privacy e conformità</h2>
+<p>In <strong>Ritiri &gt; Privacy e conformità</strong>, solo per gli amministratori del plugin:</p>
+<ul>
+<li><strong>Panoramica dello stato di conformità</strong>: cifratura, anonimizzazione degli IP, criterio di conservazione e registro di controllo, con statistiche sui dati salvati.</li>
+<li><strong>Criterio di conservazione dei dati</strong>: per quanti giorni si conservano le lettere (da 30 a 3650; 0 per non eliminarle mai) e il registro di controllo (da 365 a 3650). Ciò che supera quel periodo viene eliminato automaticamente. Gli IP di chi scrive vengono sempre anonimizzati dopo 30 giorni.</li>
+<li><strong>Pulizia manuale</strong>: esegue subito la pulizia che viene fatta automaticamente ogni giorno.</li>
+<li><strong>Gestione dei limiti di richieste</strong>: sblocca chi ha superato il limite di invii.</li>
+<li><strong>Esportazione/eliminazione dei dati personali</strong>: cerca per nome o email del mittente per rispondere al diritto di accesso e portabilità o al diritto alla cancellazione del GDPR. Per eliminare bisogna scrivere «ELIMINA TUTTI I DATI». Il contenuto delle lettere non viene esportato in chiaro, perché è cifrato.</li>
+<li><strong>Attività di controllo recenti</strong>: gli ultimi eventi registrati. Il registro conserva identificativi e iniziali, mai il contenuto delle lettere.</li>
+</ul>
+
+<h2 id="seguridad">13. Sicurezza e cifratura</h2>
+<ul>
+<li>Il contenuto delle lettere e i loro file vengono cifrati con AES-256 e autenticati con HMAC-SHA256 prima di essere salvati. Anche l’email di chi scrive viene salvata cifrata.</li>
+<li>Le lettere vengono decifrate solo quando si stampano o si restituiscono via email. Non c’è un’anteprima a schermo, perché nessuno possa leggerle da sopra la spalla.</li>
+<li>La chiave di cifratura viene generata all’attivazione del plugin. Spostala in <code>wp-config.php</code> come <code>DFXPRL_ENCRYPTION_KEY</code> e conservane una copia in un luogo sicuro: <strong>se la chiave va persa, le lettere non si possono recuperare</strong>.</li>
+<li>Se la chiave di <code>wp-config.php</code> e quella del database non coincidono, viene mostrato un avviso. Puoi cambiare quella di <code>wp-config.php</code> perché coincida oppure fare clic su <strong>Rimuovi la chiave dal database e usa la chiave di wp-config.php</strong>. Ciò che era stato cifrato con la chiave vecchia non si potrà più leggere.</li>
+<li>Nel registro di controllo vengono annotati le autorizzazioni, gli inviti e le operazioni su ritiri, partecipanti e lettere.</li>
+</ul>
+
+<h2 id="calendario">14. Un ritiro dall’inizio alla fine</h2>
+<ol>
+<li><strong>Qualche settimana prima.</strong> Crea il ritiro (o svuota quello dell’anno precedente), scrivi il messaggio per i mittenti, le note legali e il template per la richiesta. Dai accesso all’équipe con il profilo di cui ha bisogno ciascuno.</li>
+<li><strong>Iscrizioni.</strong> Registra i partecipanti o importali da un file CSV.</li>
+<li><strong>Richiesta delle lettere.</strong> Per ogni partecipante, copia il <strong>Messaggio di invito</strong> e invialo al suo contatto di emergenza. Annota nel registro dei contatti chi hai chiamato o a chi hai scritto.</li>
+<li><strong>Verifica.</strong> Guarda nell’elenco chi ha poche lettere (ordina per <strong>Lettere totali</strong>) e ricontatta se serve. Annota le lettere su carta in <strong>Lettere cartacee</strong>.</li>
+<li><strong>Ritiri dei partecipanti.</strong> Se qualcuno non viene, ritiralo e restituisci le sue lettere via email.</li>
+<li><strong>Durante il ritiro.</strong> Stampa le lettere (ordina per <strong>Messaggi</strong> per vedere quelle da stampare) e prepara la consegna.</li>
+<li><strong>Dopo.</strong> Distruggi le copie in eccesso e fai clic su <strong>Svuota il ritiro</strong> per eliminare i dati personali e lasciare il ritiro pronto per la prossima volta.</li>
+</ol>
+
+<h2 id="faq">15. Domande frequenti e problemi</h2>
+
+<h4>Chi può leggere le lettere?</h4>
+<p>Nessuno a schermo. Si vedono solo quando si stampano, e possono stamparle solo gli amministratori del plugin e i responsabili del ritiro e dei messaggi di quel ritiro. Ogni stampa viene registrata.</p>
+
+<h4>Un familiare dice che il link non funziona.</h4>
+<p>Verifica che abbia copiato l’indirizzo completo e che il partecipante non sia stato ritirato. Se vede «Troppe richieste», aspetta un’ora o reimposta i limiti da <strong>Privacy e conformità</strong>.</p>
+
+<h4>Inviando dei file compare un errore di dimensione.</h4>
+<p>Il limite lo stabilisce il server e compare nel modulo. Bisogna inviare file più piccoli o meno file alla volta. Chi amministra l’hosting può aumentare i limiti di PHP (<code>upload_max_filesize</code> e <code>post_max_size</code>).</p>
+
+<h4>Non mi compare il pulsante Messaggio di invito.</h4>
+<p>Compare solo se il ritiro ha un <strong>Template per la richiesta di messaggi</strong>.</p>
+
+<h4>Non riesco a modificare un partecipante.</h4>
+<p>O è stato ritirato (riattivalo prima) o il tuo profilo non lo consente: i responsabili dei messaggi modificano solo alcuni campi e gli utenti in sola lettura non modificano nulla.</p>
+
+<h4>Non vedo il pulsante Svuota il ritiro.</h4>
+<p>Compare solo ai responsabili del ritiro e quando la data di fine del ritiro è già passata.</p>
+
+<h4>Ho perso la chiave di cifratura.</h4>
+<p>Le lettere cifrate con quella chiave non si possono recuperare. Per questo conviene conservare una copia di <code>wp-config.php</code> o della chiave in un luogo sicuro.</p>
+
+<h4>Il modulo è nella mia lingua?</h4>
+<p>Il modulo è tradotto in spagnolo, catalano, basco, galiziano, inglese, portoghese, francese, italiano e tedesco. I testi propri di ogni ritiro vanno scritti o tradotti (vedi <a href="#traducciones">Traduzioni</a>).</p>
+
+<p class="dfxprl-manual-footer">Hai trovato un errore o manca qualcosa? Segnalalo su <a href="https://github.com/davefx/dfx-parish-retreat-letters/issues" target="_blank" rel="noopener">GitHub</a> o nel <a href="https://wordpress.org/support/plugin/dfx-parish-retreat-letters/" target="_blank" rel="noopener">forum di supporto di WordPress.org</a>.</p>
+
+</div>

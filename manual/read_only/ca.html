@@ -1,0 +1,128 @@
+<div class="dfxprl-manual" lang="ca">
+
+<h1>Manual del perfil de només lectura</h1>
+
+<p class="dfxprl-manual-lead">Teniu accés de només lectura a un o diversos recessos. Podeu consultar els participants i quantes cartes ha rebut cadascun, llegir el registre de contactes i, sobretot, obtenir l'enllaç de cada participant perquè la seva família i els seus amics li escriguin. No podeu canviar res ni obrir les cartes, de manera que no hi ha cap perill que espatlleu res.</p>
+
+<nav class="dfxprl-manual-toc" aria-label="Índex">
+<h2>Índex</h2>
+<ol>
+<li><a href="#como-funciona">Com funciona</a></li>
+<li><a href="#tu-perfil">Què podeu fer</a></li>
+<li><a href="#asistentes">La llista de participants</a></li>
+<li><a href="#url">L'enllaç per a les cartes</a></li>
+<li><a href="#historial">Registre de contactes</a></li>
+<li><a href="#formulario">El formulari de cartes</a></li>
+<li><a href="#faq">Preguntes freqüents i problemes</a></li>
+</ol>
+</nav>
+
+<h2 id="como-funciona">1. Com funciona</h2>
+
+<ol>
+<li><strong>Cada participant té un URL privat</strong> per a rebre cartes. El feu arribar als seus familiars i amics, normalment a través del contacte d'emergència.</li>
+<li><strong>Qui escriu obre l'enllaç</strong> en qualsevol navegador, sense registrar-se. Escriu la carta o hi adjunta fotos i documents, i l'envia.</li>
+<li><strong>La carta es desa xifrada.</strong> Ningú no la pot llegir a la pantalla; vosaltres veieu quantes cartes té cada participant, però no qui les ha escrites ni què diuen.</li>
+<li><strong>Durant el recés, l'equip imprimeix les cartes</strong> i les lliura a cada participant.</li>
+</ol>
+
+<p>Tot és al menú <strong>Recessos</strong> de l'escriptori del WordPress. A <strong>Tots els recessos</strong> veieu els recessos en què teniu algun permís; feu clic a <strong>Participants</strong> o al nom del recés per a entrar-hi.</p>
+
+<h2 id="tu-perfil">2. Què podeu fer</h2>
+
+<p>Els permisos es donen <strong>per recés</strong>: en un altre recés podeu tenir un altre perfil o cap. En els recessos en què teniu només lectura:</p>
+
+<ul>
+<li><strong>Sí que podeu</strong>:
+<ul>
+<li>veure la llista de participants, actius i donats de baixa, i quantes cartes té cadascun;</li>
+<li>veure la fitxa de cada participant;</li>
+<li>copiar l'URL de missatges de cada participant i el seu missatge d'invitació;</li>
+<li>llegir el registre de contactes.</li>
+</ul></li>
+<li><strong>No podeu</strong>: canviar cap dada, donar de baixa ningú, escriure al registre, importar o exportar participants, ni obrir, imprimir o baixar cartes. Tampoc no veieu la configuració del recés ni qui hi té accés. Si necessiteu alguna d'aquestes coses, parleu amb el gestor del recés.</li>
+</ul>
+
+<h2 id="asistentes">3. La llista de participants</h2>
+
+<p>A dalt es veu el total de participants i el resum de cartes. Hi ha dues pestanyes: <strong>Participants</strong> (els que van al recés) i <strong>Participants donats de baixa</strong> (els que al final no hi van; ja no reben cartes).</p>
+
+<h3>Columnes</h3>
+<ul>
+<li>Les dades del participant: <strong>Nom</strong>, <strong>Cognoms</strong>, <strong>Contacte d'emergència</strong> i les altres que el recés tingui activades.</li>
+<li><strong>Missatges</strong>: cartes rebudes pel web.</li>
+<li><strong>Cartes físiques</strong>: cartes en paper rebudes fora del web.</li>
+<li><strong>Total de cartes</strong>: la suma de les dues anteriors. Ordeneu per aquesta columna per a veure qui té poques cartes.</li>
+<li><strong>Registre de contactes</strong>: una icona de llibreta amb el nombre d'entrades. Si hi feu clic, s'obre el registre.</li>
+</ul>
+<p>Les capçaleres queden fixes quan es desplaça la llista cap avall. En pantalles estretes, com la del mòbil, la taula es converteix en fitxes i apareix un desplegable <strong>Ordena per</strong>.</p>
+
+<h3>Cercar, filtrar i ordenar</h3>
+<p>El cercador busca al nom, als cognoms, al contacte d'emergència, a «convidat per» i a les incompatibilitats. A <strong>Filtres</strong> podeu filtrar per cadascun d'aquests camps; feu clic a <strong>Aplica els filtres</strong> o <strong>Neteja els filtres</strong>. Feu clic a la capçalera d'una columna per a ordenar-la.</p>
+<p>A <strong>Filtres</strong> també hi apareixen els camps personalitzats del recés que podeu veure. Els de text es filtren pel contingut; els de tipus <strong>Llista d'opcions</strong> i <strong>Sí/No</strong>, amb un desplegable; els números i les dates, amb un interval <strong>Des de</strong>–<strong>Fins a</strong> en què podeu omplir només un dels dos extrems.</p>
+
+<h3>Botons de cada participant</h3>
+<ul>
+<li><strong>Visualitza</strong>: obre la seva fitxa, amb tots els camps bloquejats. <strong>Torna als participants</strong> us porta de nou a la llista.</li>
+<li><strong>Missatge d'invitació</strong>: vegeu <a href="#invitacion">més avall</a>. Només apareix si el recés té plantilla.</li>
+<li><strong>Genera l'URL de missatges</strong> o <strong>Copia l'URL de missatges</strong>: vegeu <a href="#url">L'enllaç per a les cartes</a>.</li>
+</ul>
+
+<h2 id="url">4. L'enllaç per a les cartes</h2>
+
+<p>Cada participant té una adreça única, de l'estil <code>https://laparroquia.org/messages/codi-secret</code>, que és la porta per a escriure-li. El codi és aleatori i no es pot endevinar.</p>
+<ul>
+<li><strong>Copia l'URL de missatges</strong> el copia al porta-retalls amb les inicials del participant al final (per exemple, <code>…/messages/codi/#JGP</code>), perquè sapigueu de qui és l'enllaç sense mostrar-ne el nom. Enganxeu-lo on vulgueu: un correu, un WhatsApp…</li>
+<li>Si el participant encara no té enllaç, veureu <strong>Genera l'URL de missatges</strong>. Feu-hi clic i es crea. Si ja en té un, no es canvia mai: els enllaços que ja s'hagin repartit continuen funcionant.</li>
+<li>Compartiu l'enllaç només amb qui hagi d'escriure. Qualsevol persona que el tingui pot enviar cartes a aquest participant.</li>
+<li>L'enllaç deixa de funcionar si el participant es dona de baixa.</li>
+</ul>
+
+<h3 id="invitacion">El missatge d'invitació</h3>
+<p>Si l'equip ha preparat una plantilla, el botó <strong>Missatge d'invitació</strong> mostra el text ja emplenat amb les dades del participant i el seu enllaç: el missatge que s'envia a la família o al contacte d'emergència per a demanar-li que escrigui i que animi altres persones a fer-ho. Copieu-lo i enganxeu-lo en un correu o al WhatsApp. Si el participant encara no té enllaç, feu clic abans a <strong>Genera l'URL de missatges</strong>; si no, el missatge sortirà sense enllaç.</p>
+
+<h2 id="historial">5. Registre de contactes</h2>
+<p>És on l'equip anota les trucades i les converses amb la persona de contacte de cada participant: «He trucat a la seva mare dimarts, enviarà l'enllaç als germans», etc. S'obre des de la columna <strong>Registre de contactes</strong> de la llista o des de la fitxa. Abans de trucar a una família, mireu-lo per a saber si algú ja hi ha parlat.</p>
+<p>El podeu llegir, però no hi podeu escriure. Si heu parlat amb algú i cal anotar-ho, digueu-ho a un gestor del recés o de missatges.</p>
+
+<h2 id="formulario">6. El formulari de cartes</h2>
+
+<p>És la pàgina que veu qui obre l'enllaç d'un participant. No cal tenir compte al web. Convé que el conegueu per a poder ajudar les famílies.</p>
+
+<ul>
+<li>A dalt hi apareixen el nom del participant i el missatge que l'equip ha preparat per a qui escriu.</li>
+<li>Hi pot haver un selector d'<strong>Idioma</strong>. Canviar d'idioma no recarrega la pàgina, de manera que no es perd el que s'ha escrit.</li>
+<li>Qui escriu hi posa el seu nom i, si vol, el seu correu electrònic (dues vegades, per a evitar errors). El correu només s'utilitza per a avisar-lo d'algun problema amb la carta, com ara la devolució si el participant al final no va al recés.</li>
+<li>Tria el tipus de missatge:
+<ul>
+<li><strong>Missatge de text</strong>: un editor amb negreta, cursiva, subratllat, llistes i desfés/refés. S'hi poden enganxar imatges i text copiat del Word o de Google Docs.</li>
+<li><strong>Pujada de fitxers</strong>: fotos o documents (PDF, DOC, DOCX, TXT, JPG, PNG, GIF). El formulari mostra la mida màxima que admet el servidor.</li>
+</ul></li>
+<li>Resol la <strong>comprovació de seguretat</strong>, una suma senzilla.</li>
+<li>Si el recés té avís legal, cal marcar la casella d'acceptació; fins aleshores el botó d'enviament no s'activa.</li>
+<li>Després de fer clic a <strong>Envia el missatge confidencial</strong>, es mostra una pàgina que confirma que la carta s'ha rebut. Al cap de poc, el recompte de cartes del participant puja a la llista.</li>
+</ul>
+
+<h2 id="faq">7. Preguntes freqüents i problemes</h2>
+
+<h4>Puc llegir les cartes?</h4>
+<p>No. Ningú no les pot llegir a la pantalla: només es veuen quan s'imprimeixen, i només les poden imprimir els gestors del recés i de missatges. Vosaltres veieu quantes cartes té cada participant.</p>
+
+<h4>Un familiar diu que l'enllaç no funciona.</h4>
+<p>Comproveu que ha copiat l'adreça completa i que el participant no està donat de baixa. Si veu «Massa sol·licituds», que esperi una hora i ho torni a provar. Si continua sense funcionar, aviseu un gestor del recés.</p>
+
+<h4>En enviar fitxers surt un error de mida.</h4>
+<p>El límit el posa el servidor i apareix al formulari. Cal enviar fitxers més petits o menys fitxers alhora.</p>
+
+<h4>No em surt el botó Missatge d'invitació.</h4>
+<p>Només apareix si el gestor del recés ha escrit una plantilla. Mentrestant, podeu copiar l'enllaç amb <strong>Copia l'URL de missatges</strong> i escriure vosaltres el missatge.</p>
+
+<h4>Una dada d'un participant és incorrecta.</h4>
+<p>No la podeu canviar. Digueu-ho al gestor del recés.</p>
+
+<h4>No veig un recés a la llista.</h4>
+<p>Només veieu els recessos en què teniu permís. Demaneu accés al gestor del recés.</p>
+
+<p class="dfxprl-manual-footer">Heu trobat un error o hi trobeu a faltar alguna cosa? Expliqueu-ho a <a href="https://github.com/davefx/dfx-parish-retreat-letters/issues" target="_blank" rel="noopener">GitHub</a> o al <a href="https://wordpress.org/support/plugin/dfx-parish-retreat-letters/" target="_blank" rel="noopener">fòrum d'assistència de WordPress.org</a>.</p>
+
+</div>

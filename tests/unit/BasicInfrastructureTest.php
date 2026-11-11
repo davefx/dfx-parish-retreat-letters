@@ -31,13 +31,16 @@ class BasicInfrastructureTest extends TestCase {
      * Test that plugin constants can be defined
      */
     public function testPluginConstantsCanBeDefined() {
-        // Test that we can define the constants
+        // The constant must match the Version header of the plugin, whichever version that is
+        preg_match('/^\s*\*\s*Version:\s*(\S+)/m', file_get_contents(dirname(__DIR__, 2) . '/dfx-parish-retreat-letters.php'), $header);
+        $this->assertNotEmpty($header[1] ?? '', 'The plugin header has no Version');
+
         if (!defined('DFXPRL_VERSION')) {
-            define('DFXPRL_VERSION', '26.11.04');
+            define('DFXPRL_VERSION', $header[1]);
         }
-        
+
         $this->assertTrue(defined('DFXPRL_VERSION'));
-        $this->assertEquals('26.11.04', DFXPRL_VERSION);
+        $this->assertEquals($header[1], DFXPRL_VERSION);
     }
 
     /**

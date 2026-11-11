@@ -255,6 +255,7 @@ class DFXPRL_Attendant {
 			'filter_emergency_contact'     => '',
 			'filter_notes'                 => '',
 			'filter_internal_notes'        => '',
+			'custom_filters'               => array(),
 			'orderby'                      => 'name',
 			'order'                        => 'ASC',
 			'per_page'                     => 100,
@@ -316,6 +317,11 @@ class DFXPRL_Attendant {
 			$where_clause .= ' AND a.internal_notes LIKE %s';
 			$where_values[] = '%' . $wpdb->esc_like( $args['filter_internal_notes'] ) . '%';
 		}
+
+		// Custom field filters (the caller passes only fields the user can view)
+		list( $custom_clause, $custom_values ) = $this->get_custom_filter_clause( $args['custom_filters'], 'a.id' );
+		$where_clause .= $custom_clause;
+		$where_values  = array_merge( $where_values, $custom_values );
 
 		// Sanitize orderby and order
 		$allowed_orderby = array( 
@@ -461,8 +467,13 @@ class DFXPRL_Attendant {
 			$where_values[] = '%' . $wpdb->esc_like( $filters['filter_internal_notes'] ) . '%';
 		}
 
+		// Custom field filters; the alias keeps the subqueries from reading their own id column
+		list( $custom_clause, $custom_values ) = $this->get_custom_filter_clause( $filters['custom_filters'] ?? array(), 'a.id' );
+		$where_clause .= $custom_clause;
+		$where_values  = array_merge( $where_values, $custom_values );
+
 		$table_name = $this->database->get_attendants_table();
-		$sql = "SELECT COUNT(*) FROM {$table_name} WHERE {$where_clause}"; // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		$sql = "SELECT COUNT(*) FROM {$table_name} a WHERE {$where_clause}"; // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 
 		$sql = $wpdb->prepare( $sql, $where_values ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 
@@ -936,6 +947,54 @@ class DFXPRL_Attendant {
 			return '';
 		}
 		return $withdrawn ? " AND {$alias}withdrawn_at IS NOT NULL" : " AND {$alias}withdrawn_at IS NULL";
+	}
+
+	/**
+	 * Build the WHERE conditions for the custom field filters of the attendants list.
+	 *
+	 * Each condition is checked with an EXISTS subquery on the values table, so an
+	 * attendant matches only when they have a value that meets it ("No" on a Yes/No
+	 * field matches attendants without a "Yes"). Empty values never match.
+	 *
+	 * @since 26.11.11
+	 * @param array  $conditions Conditions from DFXPRL_Custom_Field::parse_list_filters().
+	 * @param string $id_column  Qualified attendant ID column of the outer query.
+	 * @return array SQL fragment (starting with " AND", or empty) and its placeholder values.
+	 */
+	private function get_custom_filter_clause( $conditions, $id_column ) {
+		global $wpdb;
+
+		$clause = '';
+		$values = array();
+		if ( empty( $conditions ) || ! is_array( $conditions ) ) {
+			return array( $clause, $values );
+		}
+
+		$values_table = $this->database->get_custom_field_values_table();
+		$comparisons = array(
+			'contains'   => 'cff.value LIKE %s',
+			'equals'     => 'cff.value = %s',
+			'checked'    => 'cff.value = %s',
+			'unchecked'  => 'cff.value = %s',
+			'number_min' => 'CAST(cff.value AS DECIMAL(20,6)) >= %s',
+			'number_max' => 'CAST(cff.value AS DECIMAL(20,6)) <= %s',
+			'date_min'   => 'cff.value >= %s',
+			'date_max'   => 'cff.value <= %s',
+		);
+
+		foreach ( $conditions as $condition ) {
+			$operator = $condition['operator'] ?? '';
+			if ( ! isset( $comparisons[ $operator ] ) ) {
+				continue;
+			}
+
+			$exists = 'unchecked' === $operator ? 'NOT EXISTS' : 'EXISTS';
+			$clause .= " AND {$exists} (SELECT 1 FROM {$values_table} cff WHERE cff.attendant_id = {$id_column} AND cff.field_id = %d AND cff.value <> '' AND {$comparisons[ $operator ]})";
+			$values[] = (int) $condition['field_id'];
+			$values[] = 'contains' === $operator ? '%' . $wpdb->esc_like( $condition['value'] ) . '%' : (string) $condition['value'];
+		}
+
+		return array( $clause, $values );
 	}
 
 	/**

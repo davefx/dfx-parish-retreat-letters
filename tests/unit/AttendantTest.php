@@ -572,7 +572,8 @@ class AttendantTest extends TestCase {
             ]
         ];
         
-        $wpdb->method('get_results')->willReturn($mock_attendants);
+        // The attendants first; then the retreat's custom fields, of which there are none
+        $wpdb->method('get_results')->willReturnOnConsecutiveCalls($mock_attendants, []);
         $wpdb->method('prepare')->willReturn('SELECT * FROM wp_dfx_attendants WHERE retreat_id = 1');
         
         // Mock home_url function
@@ -719,7 +720,8 @@ class AttendantTest extends TestCase {
             ]
         ];
         
-        $wpdb->method('get_results')->willReturn($mock_attendants);
+        // The attendants first; then the retreat's custom fields, of which there are none
+        $wpdb->method('get_results')->willReturnOnConsecutiveCalls($mock_attendants, []);
         $wpdb->method('prepare')->willReturn('SELECT * FROM wp_dfx_attendants');
         // export_csv_data() instantiates DFXPRL_Retreat and calls get(), which reads the retreat
         // row via $wpdb->get_row; return the mock retreat so notes_enabled is honoured.
@@ -984,5 +986,78 @@ class AttendantTest extends TestCase {
         ]);
 
         $this->assertEquals(5, $count);
+    }
+
+    /**
+     * Mock wpdb and an attendant model whose database knows the custom field values table.
+     *
+     * @param callable $prepare_callback Receives the SQL and its values.
+     * @return DFXPRL_Attendant
+     */
+    private function attendant_with_custom_filter_mocks($prepare_callback) {
+        $database_mock = $this->createMock('DFXPRL_Database');
+        $database_mock->method('get_attendants_table')->willReturn('wp_dfx_attendants');
+        $database_mock->method('get_messages_table')->willReturn('wp_dfx_messages');
+        $database_mock->method('get_custom_field_values_table')->willReturn('wp_dfx_cfv');
+
+        global $wpdb;
+        $wpdb = $this->createMock('wpdb');
+        $wpdb->expects($this->once())->method('prepare')->willReturnCallback($prepare_callback);
+        $wpdb->method('get_results')->willReturn([]);
+        $wpdb->method('get_var')->willReturn(2);
+        $wpdb->method('esc_like')->willReturnArgument(0);
+
+        Functions\when('wp_parse_args')->alias(function($args, $defaults) {
+            return array_merge($defaults, $args);
+        });
+
+        $attendant = new DFXPRL_Attendant();
+        $reflection = new ReflectionClass($attendant);
+        $database_property = $reflection->getProperty('database');
+        $database_property->setAccessible(true);
+        $database_property->setValue($attendant, $database_mock);
+
+        return $attendant;
+    }
+
+    /**
+     * Test that custom field filters add one subquery per condition to the list query
+     */
+    public function testGetByRetreatWithCustomFieldFilters() {
+        $attendant = $this->attendant_with_custom_filter_mocks(function($sql, $params) {
+            $this->assertStringContainsString("EXISTS (SELECT 1 FROM wp_dfx_cfv cff WHERE cff.attendant_id = a.id AND cff.field_id = %d AND cff.value <> '' AND cff.value LIKE %s)", $sql);
+            $this->assertStringContainsString("NOT EXISTS (SELECT 1 FROM wp_dfx_cfv cff WHERE cff.attendant_id = a.id AND cff.field_id = %d AND cff.value <> '' AND cff.value = %s)", $sql);
+            $this->assertStringContainsString('CAST(cff.value AS DECIMAL(20,6)) >= %s', $sql);
+            $this->assertStringContainsString('cff.value <= %s', $sql);
+            // Retreat ID, the four conditions (field ID + value each), then LIMIT and OFFSET
+            $this->assertSame([1, 7, '%12%', 8, '1', 9, '18.5', 10, '2026-11-20', 100, 0], $params);
+            return $sql;
+        });
+
+        $attendant->get_by_retreat(1, ['custom_filters' => [
+            ['field_id' => 7, 'operator' => 'contains', 'value' => '12'],
+            ['field_id' => 8, 'operator' => 'unchecked', 'value' => '1'],
+            ['field_id' => 9, 'operator' => 'number_min', 'value' => '18.5'],
+            ['field_id' => 10, 'operator' => 'date_max', 'value' => '2026-11-20'],
+        ]]);
+    }
+
+    /**
+     * Test that the count query applies the same custom field filters, with an aliased table
+     */
+    public function testGetCountByRetreatWithCustomFieldFilters() {
+        $attendant = $this->attendant_with_custom_filter_mocks(function($sql, $params) {
+            $this->assertStringContainsString('FROM wp_dfx_attendants a WHERE', $sql);
+            $this->assertStringContainsString('cff.attendant_id = a.id AND cff.field_id = %d', $sql);
+            $this->assertSame([1, 3, 'M'], $params);
+            return $sql;
+        });
+
+        $count = $attendant->get_count_by_retreat(1, '', ['custom_filters' => [
+            ['field_id' => 3, 'operator' => 'equals', 'value' => 'M'],
+            ['field_id' => 4, 'operator' => 'drop table', 'value' => 'x'],
+        ]]);
+
+        $this->assertEquals(2, $count);
     }
 }

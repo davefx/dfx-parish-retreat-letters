@@ -396,6 +396,25 @@ class DFXPRL_Permissions {
 	}
 
 	/**
+	 * Get the permission levels a user holds on any retreat.
+	 *
+	 * @since 26.11.11
+	 * @param int $user_id User ID.
+	 * @return string[] Permission levels, without repetitions.
+	 */
+	public function get_user_permission_levels( $user_id ) {
+		global $wpdb;
+
+		$permissions_table = $this->database->get_permissions_table();
+		$levels = $wpdb->get_col( $wpdb->prepare(
+			"SELECT DISTINCT permission_level FROM {$permissions_table} WHERE user_id = %d AND is_active = 1", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			$user_id
+		) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
+
+		return array_values( array_intersect( self::get_permission_levels(), (array) $levels ) );
+	}
+
+	/**
 	 * Add dynamic capability to user meta for performance.
 	 *
 	 * @since 1.3.0

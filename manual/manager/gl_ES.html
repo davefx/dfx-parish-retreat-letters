@@ -1,0 +1,342 @@
+<div class="dfxprl-manual" lang="gl">
+
+<h1>Manual do xestor do retiro</h1>
+
+<p class="dfxprl-manual-lead">Es xestor dun ou de varios retiros: tes o control completo de cada un deles. Configuras o retiro, dás de alta os participantes, decides quen do equipo ten acceso e encárgaste das cartas, desde que se piden ata que o retiro remata e se borran os datos. As cartas chegan cifradas e ninguén as pode ler na pantalla: só se ven ao imprimilas.</p>
+
+<nav class="dfxprl-manual-toc" aria-label="Índice">
+<h2>Índice</h2>
+<ol>
+<li><a href="#como-funciona">Como funciona</a></li>
+<li><a href="#tu-perfil">Que podes facer</a></li>
+<li><a href="#retiro">Configurar o retiro</a></li>
+<li><a href="#acceso">Xestión do acceso e invitacións</a></li>
+<li><a href="#asistentes">Participantes</a></li>
+<li><a href="#csv">Importar e exportar participantes (CSV)</a></li>
+<li><a href="#formulario">O formulario de cartas</a></li>
+<li><a href="#mensajes">Mensaxes confidenciais: imprimir, eliminar e devolver</a></li>
+<li><a href="#bajas">Baixas, reactivacións e fin do retiro</a></li>
+<li><a href="#calendario">Un retiro de principio a fin</a></li>
+<li><a href="#faq">Preguntas frecuentes e problemas</a></li>
+</ol>
+</nav>
+
+<h2 id="como-funciona">1. Como funciona</h2>
+
+<ol>
+<li><strong>O retiro ten a súa configuración</strong>: nome, lugar, datas, a mensaxe para quen escribe e os demais textos do formulario.</li>
+<li><strong>Dás de alta os participantes</strong>, un a un ou importando un CSV.</li>
+<li><strong>Cada participante ten un URL privado</strong> para recibir cartas. Cópialo desde a lista de participantes e pásaslo aos seus familiares e amigos, normalmente a través do seu contacto de emerxencia.</li>
+<li><strong>Quen escribe abre a ligazón</strong> en calquera navegador, sen rexistrarse. Escribe a súa carta ou xunta fotos e documentos, e envíaa.</li>
+<li><strong>A carta gárdase cifrada.</strong> No panel só se ve quen a envía, cando e de que tipo é; nunca o seu contido.</li>
+<li><strong>Durante o retiro imprímense as cartas</strong> e entréganse a cada participante. Cada impresión queda rexistrada.</li>
+<li><strong>Ao rematar, baleiras o retiro</strong>: bórranse os participantes e as súas cartas, e a configuración queda lista para a seguinte edición.</li>
+</ol>
+
+<p>Todo está no menú <strong>Retiros</strong> do escritorio de WordPress. En <strong>Todos os retiros</strong> ves os retiros nos que tes algún permiso.</p>
+
+<h2 id="tu-perfil">2. Que podes facer</h2>
+
+<p>Os permisos dánse <strong>por retiro</strong>: podes ser xestor dun retiro e non ver nada doutro. Nos retiros que xestionas podes facelo todo, agás o que está reservado aos administradores do plugin: crear e eliminar retiros, os axustes globais e a páxina de privacidade.</p>
+
+<p>Podes darlle acceso ao teu equipo con calquera destes tres perfís:</p>
+
+<table class="dfxprl-manual-table">
+<thead>
+<tr><th>Que se pode facer</th><th>Xestor do retiro</th><th>Xestor de mensaxes</th><th>Só lectura</th></tr>
+</thead>
+<tbody>
+<tr><td>Editar a configuración do retiro e os seus campos personalizados</td><td>Si</td><td>Non</td><td>Non</td></tr>
+<tr><td>Dar e quitar permisos, enviar invitacións</td><td>Si</td><td>Non</td><td>Non</td></tr>
+<tr><td>Ver a lista de participantes e a conta de cartas</td><td>Si</td><td>Si</td><td>Si</td></tr>
+<tr><td>Engadir, editar, dar de baixa e reactivar participantes</td><td>Si</td><td>Non</td><td>Non</td></tr>
+<tr><td>Importar e exportar CSV</td><td>Si</td><td>Non</td><td>Non</td></tr>
+<tr><td>Anotar as cartas físicas recibidas</td><td>Si</td><td>Si</td><td>Non</td></tr>
+<tr><td>Escribir no rexistro de contactos</td><td>Si</td><td>Si</td><td>Non (só o le)</td></tr>
+<tr><td>Copiar o URL de mensaxes e a mensaxe de invitación</td><td>Si</td><td>Si</td><td>Si</td></tr>
+<tr><td>Abrir, imprimir, eliminar e devolver cartas</td><td>Si</td><td>Si</td><td>Non</td></tr>
+<tr><td>Baleirar o retiro cando rematou</td><td>Si</td><td>Non</td><td>Non</td></tr>
+</tbody>
+</table>
+
+<ul>
+<li><strong>Xestor de mensaxes</strong>: para quen se encarga das cartas. Imprímeas, elimínaas se fai falta e devólveas por correo electrónico. Na ficha dos participantes só pode cambiar as cartas físicas, os campos personalizados que teña permitidos e o rexistro de contactos.</li>
+<li><strong>Só lectura</strong>: para quen precisa consultar sen tocar nada; por exemplo, a persoa que reparte as ligazóns ás familias. Ve os participantes, as contas de cartas e o rexistro de contactos, e pode copiar o URL de mensaxes e a mensaxe de invitación de cada participante. Non pode cambiar nada nin abrir cartas.</li>
+</ul>
+
+<h2 id="retiro">3. Configurar o retiro</h2>
+
+<p>En <strong>Todos os retiros</strong>, preme <strong>Editar</strong> ou o nome do retiro. Estes son os campos:</p>
+
+<dl class="dfxprl-manual-fields">
+<dt>Nome do retiro, Localización, Data de inicio, Data de remate</dt>
+<dd>Datos básicos. O nome e as datas son obrigatorios, e a data de remate non pode ser anterior á de inicio.</dd>
+
+<dt>Mensaxe personalizada para os remitentes das cartas</dt>
+<dd>Texto que verá quen escribe, antes do formulario. Serve para explicar que é a carta, cando se entregará ou que ton convén. Admite HTML.</dd>
+
+<dt>Texto do aviso legal e Texto de aceptación do aviso legal</dt>
+<dd>Se escribes un aviso legal, o formulario móstrao cunha caixa que hai que marcar para poder enviar. O texto de aceptación é o que aparece xunto a esa caixa (por defecto, «Acepto os termos e condicións»).</dd>
+
+<dt>Formulario multilingüe</dt>
+<dd>Se está activado, quen escribe ve o formulario no idioma do seu navegador ou no que escolla nun selector (castelán, catalán, éuscaro, galego, inglés, portugués, francés, italiano e alemán). Se está desactivado, o formulario sae sempre no idioma principal do sitio. Consulta <a href="#traducciones">Traducións dos textos do retiro</a>.</dd>
+
+<dt>Activar o campo de notas</dt>
+<dd>Engade a cada participante un campo de notas que se ve na lista e que entra na importación e na exportación CSV.</dd>
+
+<dt>Activar o campo de notas internas</dt>
+<dd>Igual, pero estas notas <strong>nunca</strong> se importan nin se exportan por CSV. Úsao para o que non deba saír do panel.</dd>
+
+<dt>Modelo de solicitude de mensaxes</dt>
+<dd>Texto que o equipo envía á familia ou ao contacto de emerxencia para pedirlle que escriba e que anime a outras persoas a facelo. Admite marcadores que se substitúen polos datos de cada participante: <code>[attendant_name]</code>, <code>[attendant_surnames]</code>, <code>[emergency_contact_name]</code>, <code>[messages_url]</code>, <code>[retreat_name]</code>, <code>[retreat_start_date]</code> e os demais que se listan baixo o campo, incluídos os dos campos personalizados (<code>[slug]</code>). Se o modelo ten texto, na lista de participantes aparece o botón <strong>Mensaxe de invitación</strong>.</dd>
+
+<dt>Asunto do correo electrónico de devolución da carta e Texto do correo electrónico de devolución da carta</dt>
+<dd>Correo que se envía a quen escribiu unha carta cando o participante se dá de baixa e se lle devolve a carta. Admite marcadores como <code>[sender_name]</code>, <code>[attendant_name]</code>, <code>[retreat_name]</code> ou a data de envío. Se o deixas baleiro, úsase un texto por defecto. Consulta <a href="#devolver">Devolver cartas por correo electrónico</a>.</dd>
+
+<dt>Bloque de cabeceira personalizado, Bloque de pé de páxina personalizado e Clases adicionais do body</dt>
+<dd>Cambian o aspecto do formulario de cartas deste retiro. Só aparecen se un administrador do plugin activou a personalización por retiro; se non, o formulario usa a cabeceira e o pé comúns a todos os retiros.</dd>
+</dl>
+
+<p>Garda con <strong>Actualizar o retiro</strong>. Desde a mesma pantalla, <strong>Xestionar os participantes</strong> leva á lista de participantes.</p>
+
+<h3 id="traducciones">Traducións dos textos do retiro</h3>
+<p>A mensaxe personalizada, o aviso legal e o seu texto de aceptación escríbense no idioma principal do sitio. Se o formulario é multilingüe, en <strong>Traducións destes textos</strong> podes escribir unha versión para cada idioma. As pestanas marcadas como «(escrito)» xa teñen texto.</p>
+<ul>
+<li><strong>Traducir automaticamente</strong> enche os campos dese idioma a partir do orixinal para que os revises antes de gardar. Só funciona se un administrador do plugin configurou a tradución automática con DeepL.</li>
+<li>Se un idioma se deixa baleiro, o formulario usa a tradución automática (se está configurada) ou, se non, o texto orixinal.</li>
+<li>Cada tradución automática faise unha vez e gárdase; só se repite se cambias o orixinal. A DeepL só se envían estes textos do retiro, nunca cartas nin datos persoais.</li>
+</ul>
+
+<h3 id="campos-personalizados">Campos personalizados do participante</h3>
+<p>Podes engadir os teus propios campos á ficha dos participantes (por exemplo, talla de camiseta, grupo, alerxias ou se precisa transporte). Preme <strong>Engadir un campo</strong> e enche:</p>
+<ul>
+<li><strong>Nome</strong> e <strong>Slug</strong>: o slug identifica o campo nos CSV e no modelo de solicitude, como <code>[o_meu_campo]</code>.</li>
+<li><strong>Tipo</strong>: texto, texto longo, número, data, si/non ou lista de opcións (unha opción por liña).</li>
+<li><strong>Visible para</strong> e <strong>Editable por</strong>: só para os xestores do retiro, ou tamén para os xestores de mensaxes. Os usuarios de só lectura ven os campos visibles para os xestores de mensaxes, pero non os poden editar.</li>
+<li><strong>Mostrar na lista de participantes</strong> e <strong>Ordenable</strong>.</li>
+<li><strong>Importar desde CSV</strong> e <strong>Exportar a CSV</strong>.</li>
+</ul>
+<p><strong>Quitar o campo</strong> borra os seus valores para todos os participantes ao gardar o retiro. Pídese confirmación.</p>
+
+<h2 id="acceso">4. Xestión do acceso e invitacións</h2>
+
+<p>Na pantalla de edición do retiro, o cadro <strong>Xestión do acceso</strong> mostra quen ten permiso e permite dalo.</p>
+
+<h3>Permisos actuais</h3>
+<p>Lista de usuarios co seu perfil e quen llo deu. <strong>Revogar</strong> quítao. Non podes revogar os teus propios permisos.</p>
+
+<h3>Dar acceso a un usuario que xa existe</h3>
+<ol>
+<li>En <strong>Conceder acceso &gt; Usuarios existentes</strong>, busca polo nome de usuario, o correo electrónico ou o nome (polo menos dúas letras).</li>
+<li>Escolle o usuario e o perfil: <strong>Xestor do retiro</strong>, <strong>Xestor de mensaxes</strong> ou <strong>Só lectura</strong>.</li>
+<li>Preme <strong>Conceder</strong>.</li>
+</ol>
+
+<h3>Invitar a alguén novo</h3>
+<ol>
+<li>En <strong>Invitar usuarios novos</strong>, escribe o seu correo electrónico e escolle o perfil.</li>
+<li>Preme <strong>Enviar a invitación</strong>. Chégalle un correo cunha ligazón que caduca aos 7 días.</li>
+<li>Ao abrir a ligazón, completa o seu nome e preme <strong>Aceptar a invitación</strong>. Se o seu correo xa era dun usuario da web, recibe o permiso sen máis; se non, créaselle unha conta e recibe os seus datos de acceso por correo.</li>
+</ol>
+<p>As invitacións aínda sen aceptar aparecen en <strong>Invitacións pendentes</strong>, coa súa data de caducidade, e pódense cancelar. As caducadas límpanse soas.</p>
+
+<p>Dálle a cada persoa o perfil máis baixo que lle abonde. Dar un permiso, quitalo e cada paso dunha invitación quedan anotados no rexistro de auditoría.</p>
+
+<h2 id="asistentes">5. Participantes</h2>
+
+<h3>A lista de participantes</h3>
+<p>Ábrese co botón <strong>Participantes</strong> do retiro. Enriba vese o total de participantes e o resumo de cartas: cantas mensaxes se recibiron, cantas faltan por imprimir e o total contando as cartas físicas.</p>
+<p>Hai dúas pestanas: <strong>Participantes</strong> (os activos) e <strong>Participantes dados de baixa</strong>.</p>
+
+<h4>Columnas</h4>
+<ul>
+<li><strong>Nome</strong>, <strong>Apelidos</strong>, <strong>Data de nacemento</strong>, <strong>Contacto de emerxencia</strong>, <strong>Invitado por</strong>, <strong>Incompatibilidades</strong>, <strong>Notas</strong> e <strong>Notas internas</strong> (se están activadas), e os campos personalizados marcados para a lista.</li>
+<li><strong>Mensaxes</strong>: cartas recibidas pola web e, entre parénteses, as que faltan por imprimir. Se premes varias veces na cabeceira, ordénase polo total ou polas pendentes de imprimir.</li>
+<li><strong>Cartas físicas</strong>: cartas en papel recibidas fóra da web.</li>
+<li><strong>Total de cartas</strong>: a suma das dúas anteriores.</li>
+<li><strong>Rexistro de contactos</strong>: unha icona de caderno co número de entradas. Ao premela, ábrese o rexistro nunha xanela.</li>
+</ul>
+<p>As cabeceiras quedan fixas ao baixar pola lista. Nas pantallas estreitas a táboa convértese en fichas e aparece un despregable <strong>Ordenar por</strong>.</p>
+
+<h4>Buscar, filtrar e ordenar</h4>
+<p>O buscador busca no nome, nos apelidos, no contacto de emerxencia, en «invitado por» e nas incompatibilidades. En <strong>Filtros</strong> podes filtrar por cada un deses campos e polas notas e as notas internas; preme <strong>Aplicar os filtros</strong> ou <strong>Limpar os filtros</strong>. Preme na cabeceira dunha columna para ordenar por ela.</p>
+<p>En <strong>Filtros</strong> saen tamén os campos personalizados do retiro que podes ver. Os de texto fíltranse polo seu contido; os de tipo <strong>Lista de opcións</strong> e <strong>Si/Non</strong>, cun despregable; os números e as datas, cun intervalo <strong>Desde</strong>–<strong>Ata</strong> no que podes encher só un dos dous extremos.</p>
+
+<h4>Reordenar as columnas</h4>
+<p>Arrastra as cabeceiras desde a súa asa (aparece ao pasar o rato por riba). A orde gárdase para todos os que usan ese retiro. <strong>Restaurar a orde por defecto</strong> devólvea a como estaba.</p>
+
+<h4>Edición en liña</h4>
+<p>Preme nunha cela para editala sen abrir a ficha: <kbd>Intro</kbd> garda, <kbd>Esc</kbd> cancela e, nos textos longos, <kbd>Ctrl</kbd>+<kbd>Intro</kbd> garda. Así podes editar o nome, os apelidos, a data de nacemento, «invitado por», as incompatibilidades, as notas, as cartas físicas e os campos personalizados.</p>
+
+<h4>Botóns de cada participante</h4>
+<ul>
+<li><strong>Editar</strong>: abre a ficha.</li>
+<li><strong>Mensaxes</strong>: abre as súas cartas.</li>
+<li><strong>Mensaxe de invitación</strong>: mostra o modelo de solicitude cuberto cos seus datos e a súa ligazón, listo para copiar e pegar nun correo ou en WhatsApp. Só aparece se o retiro ten modelo.</li>
+<li><strong>Xerar o URL de mensaxes</strong> ou <strong>Copiar o URL de mensaxes</strong>: consulta máis abaixo.</li>
+<li><strong>Dar de baixa</strong>: consulta <a href="#bajas">Baixas</a>.</li>
+</ul>
+
+<h3>Engadir ou editar un participante</h3>
+<p>Preme <strong>Engadir un participante novo</strong> ou <strong>Editar</strong> na súa fila. Os campos son:</p>
+<ul>
+<li><strong>Nome</strong>, <strong>Apelidos</strong> e <strong>Data de nacemento</strong> (obrigatorios).</li>
+<li><strong>Contacto de emerxencia</strong>: nome (obrigatorio), apelido, teléfono (obrigatorio), correo electrónico e relación co participante. Esta persoa adoita ser quen recibe a ligazón para as cartas.</li>
+<li><strong>Invitado por</strong>: quen o invitou ao retiro.</li>
+<li><strong>Incompatibilidades</strong>: participantes cos que non convén poñelo, por exemplo na mesma mesa ou habitación.</li>
+<li><strong>Notas</strong> e <strong>Notas internas</strong>, se o retiro as ten activadas.</li>
+<li>Os <strong>campos personalizados</strong> do retiro.</li>
+<li><strong>Cartas físicas recibidas</strong>: número de cartas en papel recibidas fóra da web.</li>
+</ul>
+<p>A ficha tamén mostra o número de mensaxes recibidas (cunha ligazón a elas), o <strong>URL de mensaxes</strong> e o <strong>Rexistro de contactos</strong>. Se un campo non pasa a validación, o formulario conserva todo o escrito e só hai que corrixir ese campo.</p>
+
+<h3 id="url">O URL de mensaxes</h3>
+<p>Cada participante ten un enderezo único, do estilo <code>https://atuaparroquia.org/messages/código-secreto</code>, que é a porta para escribirlle. O código é aleatorio e non se pode adiviñar.</p>
+<ul>
+<li>Se o participante aínda non ten, preme <strong>Xerar o URL de mensaxes</strong>.</li>
+<li><strong>Copiar o URL de mensaxes</strong> cópiao no portapapeis coas iniciais do participante ao final (por exemplo, <code>…/messages/código/#JGP</code>), para saber de quen é a ligazón sen mostrar o seu nome.</li>
+<li>Comparte a ligazón só con quen deba escribir. Calquera persoa que a teña pode enviar cartas a ese participante.</li>
+<li>O URL segue sendo válido ata que o participante se dá de baixa ou se elimina.</li>
+</ul>
+
+<h3 id="historial">Rexistro de contactos</h3>
+<p>Serve para que o equipo anote as chamadas e as conversas coa persoa de contacto de cada participante: «Chamei á súa nai o martes, enviará a ligazón aos irmáns», etc. Ábrese desde a columna <strong>Rexistro de contactos</strong> da lista ou desde a ficha.</p>
+<ul>
+<li>Engade entradas con data e descrición con <strong>Engadir unha entrada</strong>.</li>
+<li>Podes editar ou borrar calquera entrada, tamén as doutras persoas, e ver o <strong>Historial de cambios</strong> completo, incluídas as entradas borradas. As editadas márcanse como «(editado)».</li>
+<li>Os xestores de mensaxes poden escribir entradas e corrixir as súas durante 15 minutos. Os usuarios de só lectura leno, pero non escriben nel.</li>
+</ul>
+
+<h2 id="csv">6. Importar e exportar participantes (CSV)</h2>
+
+<h3>Importar</h3>
+<p>Na lista de participantes, preme <strong>Importar CSV</strong>. O ficheiro:</p>
+<ul>
+<li>Debe ter os nomes das columnas na primeira fila. Poden estar en calquera orde, en inglés ou no idioma do panel, e as columnas que non se recoñecen ignóranse.</li>
+<li>Precisa estas columnas: <strong>Nome</strong>, <strong>Apelidos</strong>, <strong>Data de nacemento</strong>, <strong>Nome do contacto de emerxencia</strong> e <strong>Teléfono do contacto de emerxencia</strong>.</li>
+<li>Pode ter ademais: apelido, correo electrónico e relación do contacto de emerxencia, invitado por, incompatibilidades, notas e os campos personalizados marcados para importar (polo seu slug).</li>
+<li>Pode pesar 2 MB como máximo.</li>
+</ul>
+<p><strong>Datas.</strong> Acéptanse AAAA-MM-DD, DD/MM/AAAA, MM/DD/AAAA, DD-MM-AAAA, MM-DD-AAAA e DD.MM.AAAA. Unha data como 01/10/2025 pode ser o 1 de outubro ou o 10 de xaneiro; escolle en <strong>Formato de data preferido</strong> como interpretalas ou, mellor, usa AAAA-MM-DD. Ao rematar, o resultado avisa das datas ambiguas que atopou.</p>
+<p><strong>Participantes que xa existen.</strong> Se unha fila coincide cun participante do retiro (mesmo nome, apelidos e data de nacemento), non se duplica: actualízanse os datos do seu contacto de emerxencia e os seus campos personalizados. As filas que coinciden con participantes dados de baixa déixanse como estaban.</p>
+<p>Ao rematar móstrase cantos participantes se engadiron, cantos se actualizaron e que filas tiñan erros, co seu número de liña.</p>
+
+<h3>Exportar</h3>
+<p><strong>Exportar CSV</strong> descarga os participantes activos cos seus datos, o seu URL de mensaxes, o número de mensaxes e os campos personalizados marcados para exportar. As notas internas non se exportan nunca. Ten en conta que o ficheiro contén datos persoais e os URL privados: gárdao con coidado e bórrao cando xa non o precises.</p>
+
+<h2 id="formulario">7. O formulario de cartas</h2>
+
+<p>É a páxina que ve quen abre o URL de mensaxes dun participante. Non precisa conta na web. Convén que o coñezas para poder axudar as familias.</p>
+
+<ul>
+<li>Enriba aparecen o nome do participante e a <strong>mensaxe personalizada</strong> do retiro.</li>
+<li>Se o formulario é multilingüe, hai un selector de <strong>Idioma</strong>. Cambiar de idioma non recarga a páxina, así que non se perde o escrito.</li>
+<li>Quen escribe pon o seu nome e, se quere, o seu correo electrónico (dúas veces, para evitar erros). O correo gárdase cifrado e só se usa para avisalo dalgún problema coa súa carta, como a devolución se o participante finalmente non vai ao retiro.</li>
+<li>Escolle o tipo de mensaxe:
+<ul>
+<li><strong>Mensaxe de texto</strong>: un editor con negra, cursiva, subliñado, listas e desfacer/refacer. Pódense pegar imaxes e texto copiado de Word ou de Google Docs.</li>
+<li><strong>Subida de ficheiros</strong>: fotos ou documentos (PDF, DOC, DOCX, TXT, JPG, PNG, GIF). O formulario mostra o tamaño máximo que admite o servidor.</li>
+</ul></li>
+<li>Resolve a <strong>comprobación de seguridade</strong>, unha suma sinxela. Os usuarios que iniciaron sesión na web non a ven.</li>
+<li>Se o retiro ten aviso legal, hai que marcar a caixa de aceptación; ata entón non se activa o botón de envío.</li>
+<li>Despois de premer <strong>Enviar a mensaxe confidencial</strong>, móstrase unha páxina que confirma que a carta se recibiu.</li>
+</ul>
+
+<p>Para evitar abusos, cada enderezo IP pode enviar un número limitado de cartas por hora. Se alguén queda bloqueado, pode agardar unha hora ou pedirlle a un administrador do plugin que quite o bloqueo.</p>
+<p>Se o participante se deu de baixa, o formulario mostra «Xa non se aceptan mensaxes para este participante». Un enderezo cun código que non existe dá un erro 404.</p>
+
+<h2 id="mensajes">8. Mensaxes confidenciais: imprimir, eliminar e devolver</h2>
+
+<h3>A lista de mensaxes</h3>
+<p>Ábrese co botón <strong>Mensaxes</strong> de cada participante. Por seguridade, <strong>nunca mostra o contido</strong> das cartas, só os seus datos: remitente, tipo (texto ou ficheiros), data de envío e estado de impresión. Podes filtrar por tipo, buscar por remitente e ordenar por calquera desas columnas, incluído o estado de impresión (primeiro as non impresas).</p>
+
+<h3>Imprimir</h3>
+<ol>
+<li>Preme <strong>Imprimir</strong> na carta.</li>
+<li>Ábrese unha pestana nova coa carta lista para imprimir: o destinatario, o remitente e o contido. Descífrase nese momento.</li>
+<li>Ábrese o diálogo de impresión do navegador. Ao pechalo, a pestana péchase soa.</li>
+</ol>
+<ul>
+<li>As cartas con varias imaxes maquétanse para que ningunha imaxe quede partida entre dúas páxinas.</li>
+<li>Se a carta é un único PDF, normalmente engádeselle enriba unha cabeceira «De/Para» para saber de quen e para quen é.</li>
+<li>Se hai varios ficheiros e algún non é unha imaxe, descárganse todos xuntos nun ZIP. Os documentos de Word non se poden mostrar na vista de impresión: hai que descargalos e imprimilos á parte.</li>
+<li>Usa un navegador actual (Edge, Chrome, Firefox ou Safari). Internet Explorer non é compatible e non mostra as cartas.</li>
+</ul>
+
+<h3>Historial de impresión</h3>
+<p>O estado de cada carta indica se se imprimiu, cantas veces e cando por primeira vez. Ao premelo vese o historial completo: quen a imprimiu, cando e desde que IP. Se é posible, imprime cada carta unha soa vez e garda as copias en papel con coidado.</p>
+
+<h3>Eliminar unha carta</h3>
+<p><strong>Eliminar</strong> borra a carta, os seus ficheiros e o seu historial de impresión. Non se pode desfacer.</p>
+
+<h3 id="devolver">Devolver cartas por correo electrónico</h3>
+<p>Cando un participante se dá de baixa (por exemplo, porque finalmente non vai ao retiro), as súas cartas pódenselles devolver a quen as escribiu, sempre que deixasen o seu correo electrónico:</p>
+<ul>
+<li><strong>Devolver por correo electrónico</strong> devolve unha carta; <strong>Devolver todas por correo electrónico</strong>, todas as que se poden devolver.</li>
+<li>Antes de enviar móstrase unha vista previa co destinatario, o asunto, o texto e os anexos. As cartas de texto anéxanse como documento HTML; as de ficheiros, cos ficheiros orixinais.</li>
+<li>Ao enviarse o correo, a carta bórrase do sistema. Se o envío falla, a carta consérvase.</li>
+<li>Se a carta xa se imprimira, lémbrase que hai que destruír a copia en papel.</li>
+<li>As cartas sen correo aparecen como «Sen correo electrónico: non se pode devolver».</li>
+</ul>
+<p>O asunto e o texto do correo configúranse no retiro (consulta <a href="#retiro">Configurar o retiro</a>).</p>
+
+<h2 id="bajas">9. Baixas, reactivacións e fin do retiro</h2>
+
+<h3>Dar de baixa un participante</h3>
+<p>Se alguén non vai ir ao retiro, preme <strong>Dar de baixa</strong> na súa fila. O participante:</p>
+<ul>
+<li>pasa á pestana <strong>Participantes dados de baixa</strong>, coa data e o usuario que o deu de baixa;</li>
+<li>xa non se pode editar;</li>
+<li>deixa de aceptar cartas polo seu URL;</li>
+<li>conserva as súas cartas, que se poden imprimir ou devolver por correo electrónico, e o seu rexistro de contactos, que segue aberto.</li>
+</ul>
+<p>Non se borra nada. Desde esa pestana podes volver dar de alta o participante con <strong>Reactivar</strong> ou borralo con <strong>Eliminar permanentemente</strong>. Só se poden borrar participantes dados de baixa; se aínda ten cartas que se poderían devolver, avísase antes de borralas.</p>
+
+<h3>Dar de baixa todos os participantes</h3>
+<p><strong>Dar de baixa todos os participantes</strong> fai o mesmo con todo o retiro. Para confirmalo hai que escribir «DAR DE BAIXA TODOS OS PARTICIPANTES».</p>
+
+<h3 id="vaciar">Baleirar o retiro</h3>
+<p>Cando xa pasou a data de remate do retiro, aparece o botón <strong>Baleirar o retiro</strong>. Borra definitivamente todos os participantes, activos e dados de baixa, coas súas cartas, ficheiros, historial de impresión, rexistro de contactos e valores dos campos personalizados. O retiro queda coa súa configuración, os seus campos personalizados e os seus xestores, listo para a seguinte edición.</p>
+<p>Para confirmalo hai que escribir o nome exacto do retiro. Se quedan cartas de participantes dados de baixa que aínda se poderían devolver, avísase antes.</p>
+<p>Se hai que eliminar o retiro enteiro, configuración incluída, pídello a un administrador do plugin.</p>
+
+<h2 id="calendario">10. Un retiro de principio a fin</h2>
+<ol>
+<li><strong>Semanas antes.</strong> Baleira o retiro do ano anterior se aínda ten datos e revisa a mensaxe para os remitentes, o aviso legal e o modelo de solicitude. Dálle acceso ao equipo co perfil que precise cada persoa.</li>
+<li><strong>Inscricións.</strong> Dá de alta os participantes ou impórtaos desde un CSV.</li>
+<li><strong>Petición de cartas.</strong> Para cada participante, copia a <strong>Mensaxe de invitación</strong> e envíalla ao seu contacto de emerxencia. Anota no rexistro de contactos a quen chamaches ou escribiches.</li>
+<li><strong>Seguimento.</strong> Mira na lista quen ten poucas cartas (ordena por <strong>Total de cartas</strong>) e volve contactar se fai falta. Anota as cartas en papel en <strong>Cartas físicas</strong>.</li>
+<li><strong>Baixas.</strong> Se alguén non vai, dálo de baixa e devolve as súas cartas por correo electrónico.</li>
+<li><strong>Durante o retiro.</strong> Imprime as cartas (ordena por <strong>Mensaxes</strong> para ver as pendentes de imprimir) e prepara a entrega.</li>
+<li><strong>Despois.</strong> Destrúe as copias que sobren e preme <strong>Baleirar o retiro</strong> para borrar os datos persoais e deixar o retiro listo para a próxima vez.</li>
+</ol>
+
+<h2 id="faq">11. Preguntas frecuentes e problemas</h2>
+
+<h4>Quen pode ler as cartas?</h4>
+<p>Ninguén na pantalla. Só se ven ao imprimilas, e só as poden imprimir os xestores do retiro e de mensaxes dese retiro e os administradores do plugin. Cada impresión queda rexistrada.</p>
+
+<h4>Un familiar di que a ligazón non funciona.</h4>
+<p>Comproba que copiou o enderezo completo e que o participante non está dado de baixa. Se ve «Demasiadas solicitudes», que agarde unha hora, ou pídelle a un administrador do plugin que restableza os límites.</p>
+
+<h4>Ao enviar ficheiros sae un erro de tamaño.</h4>
+<p>O límite pono o servidor e aparece no formulario. Hai que enviar ficheiros máis pequenos ou menos dunha vez.</p>
+
+<h4>Non me aparece o botón Mensaxe de invitación.</h4>
+<p>Só aparece se o retiro ten un <strong>Modelo de solicitude de mensaxes</strong>.</p>
+
+<h4>Non podo editar un participante.</h4>
+<p>Está dado de baixa. Volve dalo de alta desde a pestana <strong>Participantes dados de baixa</strong>.</p>
+
+<h4>Non vexo o botón Baleirar o retiro.</h4>
+<p>Só aparece cando xa pasou a data de remate do retiro.</p>
+
+<h4>Non vexo un retiro na lista.</h4>
+<p>Só ves os retiros nos que tes permiso. Pídelle acceso ao seu xestor ou a un administrador do plugin.</p>
+
+<h4>O formulario está no meu idioma?</h4>
+<p>O formulario está traducido ao castelán, catalán, éuscaro, galego, inglés, portugués, francés, italiano e alemán. Os textos propios do retiro hai que escribilos ou traducilos (consulta <a href="#traducciones">Traducións</a>).</p>
+
+<p class="dfxprl-manual-footer">Atopaches un erro ou botas algo en falta? Cóntao en <a href="https://github.com/davefx/dfx-parish-retreat-letters/issues" target="_blank" rel="noopener">GitHub</a> ou no <a href="https://wordpress.org/support/plugin/dfx-parish-retreat-letters/" target="_blank" rel="noopener">foro de soporte de WordPress.org</a>.</p>
+
+</div>

@@ -507,6 +507,111 @@ class DFXPRL_Custom_Field {
 	}
 
 	/**
+	 * Get the URL parameter names used to filter the attendants list by a field.
+	 *
+	 * Text, long text, options lists and Yes/No fields use one parameter; numbers
+	 * and dates use two, for the lower and upper end of a range. The prefixes never
+	 * overlap, so the parameters of two different fields cannot collide.
+	 *
+	 * @since 26.11.11
+	 * @param object $field Field object.
+	 * @return array Parameter names: 'value', or 'min' and 'max'.
+	 */
+	public static function get_filter_params( $field ) {
+		if ( in_array( $field->field_type, array( 'number', 'date' ), true ) ) {
+			return array(
+				'min' => 'filter_cfmin_' . $field->slug,
+				'max' => 'filter_cfmax_' . $field->slug,
+			);
+		}
+
+		return array( 'value' => 'filter_cf_' . $field->slug );
+	}
+
+	/**
+	 * Read the custom field filters of the attendants list from the request.
+	 *
+	 * Values that are not valid for their field (an option that does not exist, a
+	 * malformed date, text in a number) are ignored, as if the filter were empty.
+	 * The caller must pass only the fields the current user can view.
+	 *
+	 * @since 26.11.11
+	 * @param array $fields  Field objects the user can filter by.
+	 * @param array $request Unslashed request parameters (usually $_GET).
+	 * @return array {
+	 *     @type array $params     Parameter name => value of the active filters, to keep them in links.
+	 *     @type array $conditions Conditions for DFXPRL_Attendant::get_by_retreat() 'custom_filters'.
+	 * }
+	 */
+	public function parse_list_filters( $fields, $request ) {
+		$params = array();
+		$conditions = array();
+
+		foreach ( $fields as $field ) {
+			foreach ( self::get_filter_params( $field ) as $bound => $param ) {
+				$raw = isset( $request[ $param ] ) && is_scalar( $request[ $param ] ) ? trim( (string) $request[ $param ] ) : '';
+				if ( '' === $raw ) {
+					continue;
+				}
+
+				$condition = $this->build_filter_condition( $field, $bound, $raw );
+				if ( null === $condition ) {
+					continue;
+				}
+
+				$params[ $param ] = $raw;
+				$conditions[] = $condition;
+			}
+		}
+
+		return array(
+			'params'     => $params,
+			'conditions' => $conditions,
+		);
+	}
+
+	/**
+	 * Turn one filter value into a query condition.
+	 *
+	 * @since 26.11.11
+	 * @param object $field Field object.
+	 * @param string $bound 'value', 'min' or 'max'.
+	 * @param string $raw   Non-empty raw value.
+	 * @return array|null Condition (field_id, operator, value), or null when the value is not valid.
+	 */
+	private function build_filter_condition( $field, $bound, $raw ) {
+		$field_id = (int) $field->id;
+
+		switch ( $field->field_type ) {
+			case 'checkbox':
+				if ( '1' === $raw || '0' === $raw ) {
+					return array( 'field_id' => $field_id, 'operator' => '1' === $raw ? 'checked' : 'unchecked', 'value' => '1' );
+				}
+				return null;
+
+			case 'select':
+				$value = $this->normalize_value( $field, $raw );
+				return is_string( $value ) && '' !== $value ? array( 'field_id' => $field_id, 'operator' => 'equals', 'value' => $value ) : null;
+
+			case 'number':
+			case 'date':
+				$value = $this->normalize_value( $field, $raw );
+				if ( ! is_string( $value ) || '' === $value ) {
+					return null;
+				}
+				return array(
+					'field_id' => $field_id,
+					'operator' => ( 'number' === $field->field_type ? 'number_' : 'date_' ) . $bound,
+					'value'    => $value,
+				);
+
+			default:
+				$value = sanitize_text_field( $raw );
+				return '' !== $value ? array( 'field_id' => $field_id, 'operator' => 'contains', 'value' => $value ) : null;
+		}
+	}
+
+	/**
 	 * Check whether the current user can view a field on the given retreat.
 	 *
 	 * @since 1.11.0

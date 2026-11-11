@@ -1,0 +1,342 @@
+<div class="dfxprl-manual" lang="ca">
+
+<h1>Manual del gestor del recés</h1>
+
+<p class="dfxprl-manual-lead">Sou gestor d'un o diversos recessos: teniu el control complet de cadascun. Configureu el recés, doneu d'alta els participants, decidiu qui de l'equip hi té accés i us encarregueu de les cartes, des que es demanen fins que el recés s'acaba i se n'esborren les dades. Les cartes arriben xifrades i ningú no les pot llegir a la pantalla: només es veuen quan s'imprimeixen.</p>
+
+<nav class="dfxprl-manual-toc" aria-label="Índex">
+<h2>Índex</h2>
+<ol>
+<li><a href="#como-funciona">Com funciona</a></li>
+<li><a href="#tu-perfil">Què podeu fer</a></li>
+<li><a href="#retiro">Configurar el recés</a></li>
+<li><a href="#acceso">Gestió d'accés i invitacions</a></li>
+<li><a href="#asistentes">Participants</a></li>
+<li><a href="#csv">Importar i exportar participants (CSV)</a></li>
+<li><a href="#formulario">El formulari de cartes</a></li>
+<li><a href="#mensajes">Missatges confidencials: imprimir, suprimir i retornar</a></li>
+<li><a href="#bajas">Baixes, reactivacions i final del recés</a></li>
+<li><a href="#calendario">Un recés de principi a fi</a></li>
+<li><a href="#faq">Preguntes freqüents i problemes</a></li>
+</ol>
+</nav>
+
+<h2 id="como-funciona">1. Com funciona</h2>
+
+<ol>
+<li><strong>El recés té la seva configuració</strong>: nom, lloc, dates, el missatge per a qui escriu i els altres textos del formulari.</li>
+<li><strong>Doneu d'alta els participants</strong>, un per un o important un CSV.</li>
+<li><strong>Cada participant té un URL privat</strong> per a rebre cartes. El copieu des de la llista de participants i el feu arribar als seus familiars i amics, normalment a través del contacte d'emergència.</li>
+<li><strong>Qui escriu obre l'enllaç</strong> en qualsevol navegador, sense registrar-se. Escriu la carta o hi adjunta fotos i documents, i l'envia.</li>
+<li><strong>La carta es desa xifrada.</strong> Al tauler només es veu qui l'envia, quan i de quin tipus és; mai el contingut.</li>
+<li><strong>Durant el recés s'imprimeixen les cartes</strong> i es lliuren a cada participant. Cada impressió queda registrada.</li>
+<li><strong>En acabar, buideu el recés</strong>: s'esborren els participants i les seves cartes, i la configuració queda a punt per a la propera edició.</li>
+</ol>
+
+<p>Tot és al menú <strong>Recessos</strong> de l'escriptori del WordPress. A <strong>Tots els recessos</strong> veieu els recessos en què teniu algun permís.</p>
+
+<h2 id="tu-perfil">2. Què podeu fer</h2>
+
+<p>Els permisos es donen <strong>per recés</strong>: podeu ser gestor d'un recés i no veure res d'un altre. En els recessos que gestioneu ho podeu fer tot, tret del que està reservat als administradors de l'extensió: crear i suprimir recessos, la configuració global i la pàgina de privadesa.</p>
+
+<p>Podeu donar accés al vostre equip amb qualsevol d'aquests tres perfils:</p>
+
+<table class="dfxprl-manual-table">
+<thead>
+<tr><th>Què s'hi pot fer</th><th>Gestor del recés</th><th>Gestor de missatges</th><th>Només lectura</th></tr>
+</thead>
+<tbody>
+<tr><td>Editar la configuració del recés i els camps personalitzats</td><td>Sí</td><td>No</td><td>No</td></tr>
+<tr><td>Donar i treure permisos, enviar invitacions</td><td>Sí</td><td>No</td><td>No</td></tr>
+<tr><td>Veure la llista de participants i el recompte de cartes</td><td>Sí</td><td>Sí</td><td>Sí</td></tr>
+<tr><td>Afegir, editar, donar de baixa i reactivar participants</td><td>Sí</td><td>No</td><td>No</td></tr>
+<tr><td>Importar i exportar CSV</td><td>Sí</td><td>No</td><td>No</td></tr>
+<tr><td>Anotar les cartes físiques rebudes</td><td>Sí</td><td>Sí</td><td>No</td></tr>
+<tr><td>Escriure al registre de contactes</td><td>Sí</td><td>Sí</td><td>No (només el llegeix)</td></tr>
+<tr><td>Copiar l'URL de missatges i el missatge d'invitació</td><td>Sí</td><td>Sí</td><td>Sí</td></tr>
+<tr><td>Obrir, imprimir, suprimir i retornar cartes</td><td>Sí</td><td>Sí</td><td>No</td></tr>
+<tr><td>Buidar el recés quan s'ha acabat</td><td>Sí</td><td>No</td><td>No</td></tr>
+</tbody>
+</table>
+
+<ul>
+<li><strong>Gestor de missatges</strong>: per a qui s'encarrega de les cartes. Les imprimeix, les suprimeix si cal i les retorna per correu electrònic. A la fitxa dels participants només pot canviar les cartes físiques, els camps personalitzats que tingui permesos i el registre de contactes.</li>
+<li><strong>Només lectura</strong>: per a qui necessita consultar sense tocar res; per exemple, la persona que reparteix els enllaços a les famílies. Veu els participants, els recomptes de cartes i el registre de contactes, i pot copiar l'URL de missatges i el missatge d'invitació de cada participant. No pot canviar res ni obrir cartes.</li>
+</ul>
+
+<h2 id="retiro">3. Configurar el recés</h2>
+
+<p>A <strong>Tots els recessos</strong>, feu clic a <strong>Edita</strong> o al nom del recés. Aquests són els camps:</p>
+
+<dl class="dfxprl-manual-fields">
+<dt>Nom del recés, Ubicació, Data d'inici, Data de finalització</dt>
+<dd>Dades bàsiques. El nom i les dates són obligatoris, i la data de finalització no pot ser anterior a la d'inici.</dd>
+
+<dt>Missatge personalitzat per als remitents de cartes</dt>
+<dd>Text que veurà qui escriu, abans del formulari. Serveix per a explicar què és la carta, quan es lliurarà o quin to convé. Admet HTML.</dd>
+
+<dt>Text de l'avís legal i Text d'acceptació de l'avís legal</dt>
+<dd>Si escriviu un avís legal, el formulari el mostra amb una casella que cal marcar per a poder enviar. El text d'acceptació és el que apareix al costat d'aquesta casella (per defecte, «Accepto els termes i condicions»).</dd>
+
+<dt>Formulari multilingüe</dt>
+<dd>Si està activat, qui escriu veu el formulari en l'idioma del seu navegador o en el que triï en un selector (castellà, català, basc, gallec, anglès, portuguès, francès, italià i alemany). Si està desactivat, el formulari surt sempre en l'idioma principal del lloc. Vegeu <a href="#traducciones">Traduccions dels textos del recés</a>.</dd>
+
+<dt>Activa el camp de notes</dt>
+<dd>Afegeix a cada participant un camp de notes que es veu a la llista i que entra en la importació i l'exportació CSV.</dd>
+
+<dt>Activa el camp de notes internes</dt>
+<dd>Igual, però aquestes notes <strong>mai</strong> no s'importen ni s'exporten per CSV. Feu-lo servir per al que no hagi de sortir del tauler.</dd>
+
+<dt>Plantilla de sol·licitud de missatges</dt>
+<dd>Text que l'equip envia a la família o al contacte d'emergència per a demanar-li que escrigui i que animi altres persones a fer-ho. Admet marcadors que se substitueixen per les dades de cada participant: <code>[attendant_name]</code>, <code>[attendant_surnames]</code>, <code>[emergency_contact_name]</code>, <code>[messages_url]</code>, <code>[retreat_name]</code>, <code>[retreat_start_date]</code> i els altres que es mostren sota el camp, inclosos els dels camps personalitzats (<code>[slug]</code>). Si la plantilla té text, a la llista de participants apareix el botó <strong>Missatge d'invitació</strong>.</dd>
+
+<dt>Assumpte del correu electrònic de retorn de cartes i Text del correu electrònic de retorn de cartes</dt>
+<dd>Correu que s'envia a qui va escriure una carta quan el participant es dona de baixa i se li retorna la carta. Admet marcadors com <code>[sender_name]</code>, <code>[attendant_name]</code>, <code>[retreat_name]</code> o la data d'enviament. Si el deixeu buit, s'utilitza un text per defecte. Vegeu <a href="#devolver">Retornar cartes per correu electrònic</a>.</dd>
+
+<dt>Bloc de capçalera personalitzada, Bloc de peu de pàgina personalitzat i Classes addicionals del body</dt>
+<dd>Canvien l'aspecte del formulari de cartes d'aquest recés. Només apareixen si un administrador de l'extensió ha activat la personalització per recés; si no, el formulari fa servir la capçalera i el peu comuns a tots els recessos.</dd>
+</dl>
+
+<p>Deseu-lo amb <strong>Actualitza el recés</strong>. Des de la mateixa pantalla, <strong>Gestiona els participants</strong> porta a la llista de participants.</p>
+
+<h3 id="traducciones">Traduccions dels textos del recés</h3>
+<p>El missatge personalitzat, l'avís legal i el text d'acceptació s'escriuen en l'idioma principal del lloc. Si el formulari és multilingüe, a <strong>Traduccions d'aquests textos</strong> podeu escriure una versió per a cada idioma. Les pestanyes marcades amb «(escrit)» ja tenen text.</p>
+<ul>
+<li><strong>Tradueix automàticament</strong> omple els camps d'aquell idioma a partir de l'original perquè els reviseu abans de desar. Només funciona si un administrador de l'extensió ha configurat la traducció automàtica amb DeepL.</li>
+<li>Si un idioma es deixa buit, el formulari utilitza la traducció automàtica (si està configurada) o, si no, el text original.</li>
+<li>Cada traducció automàtica es fa una sola vegada i es desa; només es repeteix si canvieu l'original. A DeepL només s'envien aquests textos del recés, mai cartes ni dades personals.</li>
+</ul>
+
+<h3 id="campos-personalizados">Camps personalitzats del participant</h3>
+<p>Podeu afegir els vostres propis camps a la fitxa dels participants (per exemple, talla de samarreta, grup, al·lèrgies o si necessita transport). Feu clic a <strong>Afegeix un camp</strong> i ompliu:</p>
+<ul>
+<li><strong>Nom</strong> i <strong>Àlies</strong>: l'àlies identifica el camp als CSV i a la plantilla de sol·licitud, com a <code>[el_meu_camp]</code>.</li>
+<li><strong>Tipus</strong>: text, text llarg, número, data, sí/no o llista d'opcions (una opció per línia).</li>
+<li><strong>Visible per a</strong> i <strong>Editable per</strong>: només per als gestors del recés, o també per als gestors de missatges. Els usuaris de només lectura veuen els camps visibles per als gestors de missatges, però no els poden editar.</li>
+<li><strong>Mostra a la llista de participants</strong> i <strong>Ordenable</strong>.</li>
+<li><strong>Importa des de CSV</strong> i <strong>Exporta a CSV</strong>.</li>
+</ul>
+<p><strong>Elimina el camp</strong> esborra els valors del camp per a tots els participants en desar el recés. Es demana confirmació.</p>
+
+<h2 id="acceso">4. Gestió d'accés i invitacions</h2>
+
+<p>A la pantalla d'edició del recés, el quadre <strong>Gestió d'accés</strong> mostra qui hi té permís i permet donar-ne.</p>
+
+<h3>Permisos actuals</h3>
+<p>Llista d'usuaris amb el seu perfil i qui els el va donar. <strong>Revoca</strong> el treu. No podeu revocar els vostres propis permisos.</p>
+
+<h3>Donar accés a un usuari que ja existeix</h3>
+<ol>
+<li>A <strong>Concedeix l'accés &gt; Usuaris existents</strong>, cerqueu per nom d'usuari, correu electrònic o nom (com a mínim dues lletres).</li>
+<li>Trieu l'usuari i el perfil: <strong>Gestor del recés</strong>, <strong>Gestor de missatges</strong> o <strong>Només lectura</strong>.</li>
+<li>Feu clic a <strong>Concedeix</strong>.</li>
+</ol>
+
+<h3>Convidar algú nou</h3>
+<ol>
+<li>A <strong>Convida usuaris nous</strong>, escriviu-ne el correu electrònic i trieu el perfil.</li>
+<li>Feu clic a <strong>Envia la invitació</strong>. La persona rep un correu amb un enllaç que caduca al cap de 7 dies.</li>
+<li>En obrir l'enllaç, escriu el seu nom i fa clic a <strong>Accepta la invitació</strong>. Si el seu correu ja corresponia a un usuari del web, rep el permís directament; si no, se li crea un compte i rep les dades d'accés per correu.</li>
+</ol>
+<p>Les invitacions encara no acceptades apareixen a <strong>Invitacions pendents</strong>, amb la data de caducitat, i es poden cancel·lar. Les caducades s'eliminen automàticament.</p>
+
+<p>Doneu a cada persona el perfil més baix que li sigui suficient. Cada vegada que es dona o es treu un permís, i cada pas d'una invitació, queda anotat al registre d'auditoria.</p>
+
+<h2 id="asistentes">5. Participants</h2>
+
+<h3>La llista de participants</h3>
+<p>S'obre amb el botó <strong>Participants</strong> del recés. A dalt es veu el total de participants i el resum de cartes: quants missatges s'han rebut, quants falten per imprimir i el total comptant les cartes físiques.</p>
+<p>Hi ha dues pestanyes: <strong>Participants</strong> (els actius) i <strong>Participants donats de baixa</strong>.</p>
+
+<h4>Columnes</h4>
+<ul>
+<li><strong>Nom</strong>, <strong>Cognoms</strong>, <strong>Data de naixement</strong>, <strong>Contacte d'emergència</strong>, <strong>Convidat per</strong>, <strong>Incompatibilitats</strong>, <strong>Notes</strong> i <strong>Notes internes</strong> (si estan activades), i els camps personalitzats marcats per a la llista.</li>
+<li><strong>Missatges</strong>: cartes rebudes pel web i, entre parèntesis, les que falten per imprimir. Si feu clic diverses vegades a la capçalera, s'ordena pel total o per les pendents d'imprimir.</li>
+<li><strong>Cartes físiques</strong>: cartes en paper rebudes fora del web.</li>
+<li><strong>Total de cartes</strong>: la suma de les dues anteriors.</li>
+<li><strong>Registre de contactes</strong>: una icona de llibreta amb el nombre d'entrades. Si hi feu clic, el registre s'obre en una finestra.</li>
+</ul>
+<p>Les capçaleres queden fixes quan es desplaça la llista cap avall. En pantalles estretes la taula es converteix en fitxes i apareix un desplegable <strong>Ordena per</strong>.</p>
+
+<h4>Cercar, filtrar i ordenar</h4>
+<p>El cercador busca al nom, als cognoms, al contacte d'emergència, a «convidat per» i a les incompatibilitats. A <strong>Filtres</strong> podeu filtrar per cadascun d'aquests camps i per les notes i les notes internes; feu clic a <strong>Aplica els filtres</strong> o <strong>Neteja els filtres</strong>. Feu clic a la capçalera d'una columna per a ordenar-la.</p>
+<p>A <strong>Filtres</strong> també hi apareixen els camps personalitzats del recés que podeu veure. Els de text es filtren pel contingut; els de tipus <strong>Llista d'opcions</strong> i <strong>Sí/No</strong>, amb un desplegable; els números i les dates, amb un interval <strong>Des de</strong>–<strong>Fins a</strong> en què podeu omplir només un dels dos extrems.</p>
+
+<h4>Reordenar les columnes</h4>
+<p>Arrossegueu les capçaleres per la nansa (apareix quan hi passeu el ratolí per sobre). L'ordre es desa per a tothom que fa servir aquest recés. <strong>Restaura l'ordre per defecte</strong> el torna a deixar com estava.</p>
+
+<h4>Edició en línia</h4>
+<p>Feu clic en una cel·la per a editar-la sense obrir la fitxa: <kbd>Retorn</kbd> desa, <kbd>Esc</kbd> cancel·la i, en els textos llargs, <kbd>Ctrl</kbd>+<kbd>Retorn</kbd> desa. Així podeu editar el nom, els cognoms, la data de naixement, «convidat per», les incompatibilitats, les notes, les cartes físiques i els camps personalitzats.</p>
+
+<h4>Botons de cada participant</h4>
+<ul>
+<li><strong>Edita</strong>: obre la fitxa.</li>
+<li><strong>Missatges</strong>: obre les seves cartes.</li>
+<li><strong>Missatge d'invitació</strong>: mostra la plantilla de sol·licitud emplenada amb les seves dades i el seu enllaç, a punt per a copiar i enganxar en un correu o al WhatsApp. Només apareix si el recés té plantilla.</li>
+<li><strong>Genera l'URL de missatges</strong> o <strong>Copia l'URL de missatges</strong>: vegeu més avall.</li>
+<li><strong>Dona de baixa</strong>: vegeu <a href="#bajas">Baixes</a>.</li>
+</ul>
+
+<h3>Afegir o editar un participant</h3>
+<p>Feu clic a <strong>Afegeix un participant</strong> o a <strong>Edita</strong> a la seva fila. Els camps són:</p>
+<ul>
+<li><strong>Nom</strong>, <strong>Cognoms</strong> i <strong>Data de naixement</strong> (obligatoris).</li>
+<li><strong>Contacte d'emergència</strong>: nom (obligatori), cognom, telèfon (obligatori), correu electrònic i relació amb el participant. Aquesta persona sol ser qui rep l'enllaç per a les cartes.</li>
+<li><strong>Convidat per</strong>: qui el va convidar al recés.</li>
+<li><strong>Incompatibilitats</strong>: participants amb qui no convé posar-lo, per exemple a la mateixa taula o habitació.</li>
+<li><strong>Notes</strong> i <strong>Notes internes</strong>, si el recés les té activades.</li>
+<li>Els <strong>camps personalitzats</strong> del recés.</li>
+<li><strong>Cartes físiques rebudes</strong>: nombre de cartes en paper rebudes fora del web.</li>
+</ul>
+<p>La fitxa també mostra el nombre de missatges rebuts (amb un enllaç per a veure'ls), l'<strong>URL de missatges</strong> i el <strong>Registre de contactes</strong>. Si un camp no passa la validació, el formulari conserva tot el que s'ha escrit i només cal corregir aquell camp.</p>
+
+<h3 id="url">L'URL de missatges</h3>
+<p>Cada participant té una adreça única, de l'estil <code>https://laparroquia.org/messages/codi-secret</code>, que és la porta per a escriure-li. El codi és aleatori i no es pot endevinar.</p>
+<ul>
+<li>Si el participant encara no en té, feu clic a <strong>Genera l'URL de missatges</strong>.</li>
+<li><strong>Copia l'URL de missatges</strong> el copia al porta-retalls amb les inicials del participant al final (per exemple, <code>…/messages/codi/#JGP</code>), perquè sapigueu de qui és l'enllaç sense mostrar-ne el nom.</li>
+<li>Compartiu l'enllaç només amb qui hagi d'escriure. Qualsevol persona que el tingui pot enviar cartes a aquest participant.</li>
+<li>L'URL és vàlid fins que el participant es dona de baixa o se suprimeix.</li>
+</ul>
+
+<h3 id="historial">Registre de contactes</h3>
+<p>Serveix perquè l'equip anoti les trucades i les converses amb la persona de contacte de cada participant: «He trucat a la seva mare dimarts, enviarà l'enllaç als germans», etc. S'obre des de la columna <strong>Registre de contactes</strong> de la llista o des de la fitxa.</p>
+<ul>
+<li>Afegiu entrades amb data i descripció amb <strong>Afegeix una entrada</strong>.</li>
+<li>Podeu editar o suprimir qualsevol entrada, també les d'altres persones, i veure l'<strong>Historial de canvis</strong> complet, incloses les entrades suprimides. Les entrades editades es marquen amb «(editat)».</li>
+<li>Els gestors de missatges poden escriure entrades i corregir les seves durant 15 minuts. Els usuaris de només lectura el llegeixen, però no hi escriuen.</li>
+</ul>
+
+<h2 id="csv">6. Importar i exportar participants (CSV)</h2>
+
+<h3>Importar</h3>
+<p>A la llista de participants, feu clic a <strong>Importa des de CSV</strong>. El fitxer:</p>
+<ul>
+<li>Ha de tenir els noms de les columnes a la primera fila. Poden estar en qualsevol ordre, en anglès o en l'idioma del tauler, i les columnes que no es reconeixen s'ignoren.</li>
+<li>Necessita aquestes columnes: <strong>Nom</strong>, <strong>Cognoms</strong>, <strong>Data de naixement</strong>, <strong>Nom del contacte d'emergència</strong> i <strong>Telèfon del contacte d'emergència</strong>.</li>
+<li>A més, pot tenir: cognom, correu electrònic i relació del contacte d'emergència, convidat per, incompatibilitats, notes i els camps personalitzats marcats per a importar (pel seu àlies).</li>
+<li>Pot pesar 2 MB com a màxim.</li>
+</ul>
+<p><strong>Dates.</strong> S'accepten AAAA-MM-DD, DD/MM/AAAA, MM/DD/AAAA, DD-MM-AAAA, MM-DD-AAAA i DD.MM.AAAA. Una data com 01/10/2025 pot ser l'1 d'octubre o el 10 de gener; trieu a <strong>Format de data preferit</strong> com s'han d'interpretar o, millor encara, feu servir AAAA-MM-DD. En acabar, el resultat avisa de les dates ambigües que ha trobat.</p>
+<p><strong>Participants que ja existeixen.</strong> Si una fila coincideix amb un participant del recés (mateix nom, cognoms i data de naixement), no es duplica: s'actualitzen les dades del contacte d'emergència i els camps personalitzats. Les files que coincideixen amb participants donats de baixa es deixen com estaven.</p>
+<p>En acabar es mostra quants participants s'han afegit, quants s'han actualitzat i quines files tenien errors, amb el número de línia.</p>
+
+<h3>Exportar</h3>
+<p><strong>Exporta a CSV</strong> baixa els participants actius amb les seves dades, l'URL de missatges, el nombre de missatges i els camps personalitzats marcats per a exportar. Les notes internes no s'exporten mai. Tingueu en compte que el fitxer conté dades personals i els URL privats: deseu-lo amb cura i suprimiu-lo quan ja no el necessiteu.</p>
+
+<h2 id="formulario">7. El formulari de cartes</h2>
+
+<p>És la pàgina que veu qui obre l'URL de missatges d'un participant. No cal tenir compte al web. Convé que el conegueu per a poder ajudar les famílies.</p>
+
+<ul>
+<li>A dalt hi apareixen el nom del participant i el <strong>missatge personalitzat</strong> del recés.</li>
+<li>Si el formulari és multilingüe, hi ha un selector d'<strong>Idioma</strong>. Canviar d'idioma no recarrega la pàgina, de manera que no es perd el que s'ha escrit.</li>
+<li>Qui escriu hi posa el seu nom i, si vol, el seu correu electrònic (dues vegades, per a evitar errors). El correu es desa xifrat i només s'utilitza per a avisar-lo d'algun problema amb la carta, com ara la devolució si el participant al final no va al recés.</li>
+<li>Tria el tipus de missatge:
+<ul>
+<li><strong>Missatge de text</strong>: un editor amb negreta, cursiva, subratllat, llistes i desfés/refés. S'hi poden enganxar imatges i text copiat del Word o de Google Docs.</li>
+<li><strong>Pujada de fitxers</strong>: fotos o documents (PDF, DOC, DOCX, TXT, JPG, PNG, GIF). El formulari mostra la mida màxima que admet el servidor.</li>
+</ul></li>
+<li>Resol la <strong>comprovació de seguretat</strong>, una suma senzilla. Els usuaris que han iniciat la sessió al web no la veuen.</li>
+<li>Si el recés té avís legal, cal marcar la casella d'acceptació; fins aleshores el botó d'enviament no s'activa.</li>
+<li>Després de fer clic a <strong>Envia el missatge confidencial</strong>, es mostra una pàgina que confirma que la carta s'ha rebut.</li>
+</ul>
+
+<p>Per a evitar abusos, cada adreça IP pot enviar un nombre limitat de cartes per hora. Si algú queda bloquejat, pot esperar una hora o demanar a un administrador de l'extensió que tregui el bloqueig.</p>
+<p>Si el participant s'ha donat de baixa, el formulari mostra «Ja no s'accepten missatges per a aquest participant». Una adreça amb un codi que no existeix dona un error 404.</p>
+
+<h2 id="mensajes">8. Missatges confidencials: imprimir, suprimir i retornar</h2>
+
+<h3>La llista de missatges</h3>
+<p>S'obre amb el botó <strong>Missatges</strong> de cada participant. Per seguretat, <strong>mai no mostra el contingut</strong> de les cartes, només les dades: remitent, tipus (text o fitxers), data d'enviament i estat d'impressió. Podeu filtrar per tipus, cercar per remitent i ordenar per qualsevol d'aquestes columnes, inclòs l'estat d'impressió (primer les no impreses).</p>
+
+<h3>Imprimir</h3>
+<ol>
+<li>Feu clic a <strong>Imprimeix</strong> a la carta.</li>
+<li>S'obre una pestanya nova amb la carta a punt per a imprimir: el destinatari, el remitent i el contingut. Es desxifra en aquell moment.</li>
+<li>S'obre el diàleg d'impressió del navegador. En tancar-lo, la pestanya es tanca sola.</li>
+</ol>
+<ul>
+<li>Les cartes amb diverses imatges es maqueten perquè cap imatge no quedi partida entre dues pàgines.</li>
+<li>Si la carta és un únic PDF, normalment s'hi afegeix a dalt una capçalera «De/Per a» per a saber de qui és i per a qui és.</li>
+<li>Si hi ha diversos fitxers i algun no és una imatge, es baixen tots junts en un ZIP. Els documents del Word no es poden mostrar a la vista d'impressió: cal baixar-los i imprimir-los a part.</li>
+<li>Feu servir un navegador actual (Edge, Chrome, Firefox o Safari). L'Internet Explorer no és compatible i no mostra les cartes.</li>
+</ul>
+
+<h3>Historial d'impressió</h3>
+<p>L'estat de cada carta indica si s'ha imprès, quantes vegades i quan es va imprimir per primera vegada. Si hi feu clic, veureu l'historial complet: qui la va imprimir, quan i des de quina IP. Si és possible, imprimiu cada carta una sola vegada i guardeu les còpies en paper amb cura.</p>
+
+<h3>Suprimir una carta</h3>
+<p><strong>Suprimeix</strong> esborra la carta, els seus fitxers i el seu historial d'impressió. No es pot desfer.</p>
+
+<h3 id="devolver">Retornar cartes per correu electrònic</h3>
+<p>Quan un participant es dona de baixa (per exemple, perquè al final no va al recés), les seves cartes es poden retornar a les persones que les van escriure, sempre que hagin deixat el correu electrònic:</p>
+<ul>
+<li><strong>Retorna per correu electrònic</strong> retorna una carta; <strong>Retorna-les totes per correu electrònic</strong>, totes les que es poden retornar.</li>
+<li>Abans d'enviar es mostra una previsualització amb el destinatari, l'assumpte, el text i els adjunts. Les cartes de text s'adjunten com a document HTML; les de fitxers, amb els fitxers originals.</li>
+<li>Quan s'envia el correu, la carta se suprimeix del sistema. Si l'enviament falla, la carta es conserva.</li>
+<li>Si la carta ja s'havia imprès, es recorda que cal destruir la còpia en paper.</li>
+<li>Les cartes sense correu electrònic apareixen com a «Sense correu electrònic: no es pot retornar».</li>
+</ul>
+<p>L'assumpte i el text del correu es configuren al recés (vegeu <a href="#retiro">Configurar el recés</a>).</p>
+
+<h2 id="bajas">9. Baixes, reactivacions i final del recés</h2>
+
+<h3>Donar de baixa un participant</h3>
+<p>Si algú no anirà al recés, feu clic a <strong>Dona de baixa</strong> a la seva fila. El participant:</p>
+<ul>
+<li>passa a la pestanya <strong>Participants donats de baixa</strong>, amb la data i l'usuari que el va donar de baixa;</li>
+<li>ja no es pot editar;</li>
+<li>deixa d'acceptar cartes pel seu URL;</li>
+<li>conserva les seves cartes, que es poden imprimir o retornar per correu electrònic, i el seu registre de contactes, que continua obert.</li>
+</ul>
+<p>No s'esborra res. Des d'aquesta pestanya podeu tornar a donar d'alta el participant amb <strong>Reactiva</strong> o suprimir-lo amb <strong>Suprimeix definitivament</strong>. Només es poden suprimir participants donats de baixa; si encara té cartes que es podrien retornar, s'avisa abans d'esborrar-les.</p>
+
+<h3>Donar de baixa tots els participants</h3>
+<p><strong>Dona de baixa tots els participants</strong> fa el mateix amb tot el recés. Per a confirmar-ho cal escriure «DONA DE BAIXA TOTS ELS PARTICIPANTS».</p>
+
+<h3 id="vaciar">Buidar el recés</h3>
+<p>Quan ja ha passat la data de finalització del recés, apareix el botó <strong>Buida el recés</strong>. Esborra definitivament tots els participants, actius i donats de baixa, amb les seves cartes, fitxers, historial d'impressió, registre de contactes i valors dels camps personalitzats. El recés conserva la configuració, els camps personalitzats i els gestors, a punt per a la propera edició.</p>
+<p>Per a confirmar-ho cal escriure el nom exacte del recés. Si queden cartes de participants donats de baixa que encara es podrien retornar, s'avisa abans.</p>
+<p>Si cal suprimir el recés sencer, configuració inclosa, demaneu-ho a un administrador de l'extensió.</p>
+
+<h2 id="calendario">10. Un recés de principi a fi</h2>
+<ol>
+<li><strong>Unes setmanes abans.</strong> Buideu el recés de l'any anterior si encara té dades i reviseu el missatge per als remitents, l'avís legal i la plantilla de sol·licitud. Doneu accés a l'equip amb el perfil que necessiti cadascú.</li>
+<li><strong>Inscripcions.</strong> Doneu d'alta els participants o importeu-los des d'un CSV.</li>
+<li><strong>Petició de cartes.</strong> Per a cada participant, copieu el <strong>Missatge d'invitació</strong> i envieu-lo al seu contacte d'emergència. Anoteu al registre de contactes a qui heu trucat o escrit.</li>
+<li><strong>Seguiment.</strong> Mireu a la llista qui té poques cartes (ordeneu per <strong>Total de cartes</strong>) i torneu a contactar si cal. Anoteu les cartes en paper a <strong>Cartes físiques</strong>.</li>
+<li><strong>Baixes.</strong> Si algú no hi va, doneu-lo de baixa i retorneu-ne les cartes per correu electrònic.</li>
+<li><strong>Durant el recés.</strong> Imprimiu les cartes (ordeneu per <strong>Missatges</strong> per a veure les pendents d'imprimir) i prepareu el lliurament.</li>
+<li><strong>Després.</strong> Destruïu les còpies que sobrin i feu clic a <strong>Buida el recés</strong> per a esborrar les dades personals i deixar el recés a punt per a la propera vegada.</li>
+</ol>
+
+<h2 id="faq">11. Preguntes freqüents i problemes</h2>
+
+<h4>Qui pot llegir les cartes?</h4>
+<p>Ningú, a la pantalla. Només es veuen quan s'imprimeixen, i només les poden imprimir els gestors del recés i de missatges d'aquell recés i els administradors de l'extensió. Cada impressió queda registrada.</p>
+
+<h4>Un familiar diu que l'enllaç no funciona.</h4>
+<p>Comproveu que ha copiat l'adreça completa i que el participant no està donat de baixa. Si veu «Massa sol·licituds», que esperi una hora, o demaneu a un administrador de l'extensió que reinicialitzi els límits.</p>
+
+<h4>En enviar fitxers surt un error de mida.</h4>
+<p>El límit el posa el servidor i apareix al formulari. Cal enviar fitxers més petits o menys fitxers alhora.</p>
+
+<h4>No em surt el botó Missatge d'invitació.</h4>
+<p>Només apareix si el recés té una <strong>Plantilla de sol·licitud de missatges</strong>.</p>
+
+<h4>No puc editar un participant.</h4>
+<p>Està donat de baixa. Torneu-lo a donar d'alta des de la pestanya <strong>Participants donats de baixa</strong>.</p>
+
+<h4>No veig el botó Buida el recés.</h4>
+<p>Només apareix quan ja ha passat la data de finalització del recés.</p>
+
+<h4>No veig un recés a la llista.</h4>
+<p>Només veieu els recessos en què teniu permís. Demaneu accés al seu gestor o a un administrador de l'extensió.</p>
+
+<h4>El formulari és en el meu idioma?</h4>
+<p>El formulari està traduït al castellà, català, basc, gallec, anglès, portuguès, francès, italià i alemany. Els textos propis del recés cal escriure'ls o traduir-los (vegeu <a href="#traducciones">Traduccions</a>).</p>
+
+<p class="dfxprl-manual-footer">Heu trobat un error o hi trobeu a faltar alguna cosa? Expliqueu-ho a <a href="https://github.com/davefx/dfx-parish-retreat-letters/issues" target="_blank" rel="noopener">GitHub</a> o al <a href="https://wordpress.org/support/plugin/dfx-parish-retreat-letters/" target="_blank" rel="noopener">fòrum d'assistència de WordPress.org</a>.</p>
+
+</div>
