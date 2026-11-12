@@ -3,7 +3,7 @@ Contributors: davefx
 Tags: parish, retreat, letters, confidential, GDPR
 Requires at least: 5.0
 Tested up to: 7.1
-Stable tag: 26.11.11
+Stable tag: 26.11.12
 Requires PHP: 7.4
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
@@ -196,6 +196,12 @@ By default it is generated automatically and stored in the WordPress database (`
 Yes. The best place is [translate.wordpress.org](https://translate.wordpress.org/projects/wp-plugins/dfx-parish-retreat-letters/), so the translation reaches every site as a language pack. A `.pot` translation template is also included in the `languages/` directory.
 
 ## Changelog
+
+### 26.11.12
+
+- New: **retreat managers can change the access level** of the users already assigned to their retreat, from a drop-down in **Current Permissions** on the retreat page, except their own and that of the other retreat managers. Plugin administrators can change anyone's but their own. The change is logged like a grant and a revocation.
+- Fix: the **Revoke** button appeared next to your own permission, although revoking it was always refused.
+- Fix: revoking the same access level from a user a second time (after granting it again) failed with a database error, so the user kept it.
 
 ### 26.11.11
 

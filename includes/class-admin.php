@@ -191,6 +191,7 @@ class DFXPRL_Admin {
 		add_action( 'wp_ajax_dfxprl_search_users', array( $this, 'ajax_search_users' ) );
 		add_action( 'wp_ajax_dfxprl_grant_permission', array( $this, 'ajax_grant_permission' ) );
 		add_action( 'wp_ajax_dfxprl_revoke_permission', array( $this, 'ajax_revoke_permission' ) );
+		add_action( 'wp_ajax_dfxprl_change_permission_level', array( $this, 'ajax_change_permission_level' ) );
 		add_action( 'wp_ajax_dfxprl_send_invitation', array( $this, 'ajax_send_invitation' ) );
 		add_action( 'wp_ajax_dfxprl_cancel_invitation', array( $this, 'ajax_cancel_invitation' ) );
 		add_action( 'wp_ajax_dfxprl_reset_rate_limits', array( $this, 'ajax_reset_rate_limits' ) );
@@ -691,7 +692,20 @@ class DFXPRL_Admin {
 			background: #e2e3e5;
 			color: #383d41;
 		}
-		.dfxprl-permissions-list, .dfxprl-invitations-list {
+		.dfxprl-change-permission {
+			max-width: 100%;
+			font-size: 12px;
+		}
+		.dfxprl-change-permission.permission-manager {
+			background-color: #d4edda;
+		}
+		.dfxprl-change-permission.permission-message_manager {
+			background-color: #fff3cd;
+		}
+		.dfxprl-change-permission.permission-read_only {
+			background-color: #e2e3e5;
+		}
+				.dfxprl-permissions-list, .dfxprl-invitations-list {
 			margin-bottom: 15px;
 		}
 		.dfxprl-permission-item, .dfxprl-invitation-item {
@@ -1174,6 +1188,7 @@ class DFXPRL_Admin {
 						'pleaseSelectRole'         => __( 'Please select a role.', 'dfx-parish-retreat-letters' ),
 						'failedToGrantPermission'  => __( 'Failed to grant permission. Please try again.', 'dfx-parish-retreat-letters' ),
 						'failedToRevokePermission' => __( 'Failed to revoke permission. Please try again.', 'dfx-parish-retreat-letters' ),
+						'failedToChangePermission' => __( 'Failed to change the access level. Please try again.', 'dfx-parish-retreat-letters' ),
 						'failedToSendInvitation'   => __( 'Failed to send invitation. Please try again.', 'dfx-parish-retreat-letters' ),
 						'failedToCancelInvitation' => __( 'Failed to cancel invitation. Please try again.', 'dfx-parish-retreat-letters' ),
 					),
@@ -2072,11 +2087,25 @@ class DFXPRL_Admin {
 										<small class="dfxprl-user-email"><?php echo esc_html( $permission->user_email ); ?></small>
 									</div>
 									<div class="dfxprl-permission-role">
-										<span class="permission-badge permission-<?php echo esc_attr( $permission->permission_level ); ?>">
-											<?php
-											echo esc_html( DFXPRL_Permissions::get_permission_level_label( $permission->permission_level ) );
-											?>
-										</span>
+										<?php if ( $this->permissions->user_can_change_permission_level( get_current_user_id(), $permission->user_id, $retreat->id ) ) : ?>
+											<select class="dfxprl-change-permission permission-<?php echo esc_attr( $permission->permission_level ); ?>"
+													data-user-id="<?php echo esc_attr( $permission->user_id ); ?>"
+													data-current="<?php echo esc_attr( $permission->permission_level ); ?>"
+													aria-label="<?php
+													/* translators: %s: user's display name */
+													echo esc_attr( sprintf( __( 'Access level of %s', 'dfx-parish-retreat-letters' ), $permission->display_name ) );
+													?>">
+												<?php foreach ( DFXPRL_Permissions::get_permission_levels() as $level ) : ?>
+													<option value="<?php echo esc_attr( $level ); ?>" <?php selected( $permission->permission_level, $level ); ?>><?php echo esc_html( DFXPRL_Permissions::get_permission_level_label( $level ) ); ?></option>
+												<?php endforeach; ?>
+											</select>
+										<?php else : ?>
+											<span class="permission-badge permission-<?php echo esc_attr( $permission->permission_level ); ?>">
+												<?php
+												echo esc_html( DFXPRL_Permissions::get_permission_level_label( $permission->permission_level ) );
+												?>
+											</span>
+										<?php endif; ?>
 									</div>
 									<div class="dfxprl-permission-meta">
 										<small><?php
@@ -2084,7 +2113,7 @@ class DFXPRL_Admin {
 										printf( esc_html__( 'By %s', 'dfx-parish-retreat-letters' ), esc_html( $permission->granted_by_name ) ); ?></small>
 										<small><?php echo esc_html( date_i18n( get_option( 'date_format' ), strtotime( $permission->granted_at ) ) ); ?></small>
 									</div>
-									<?php if ( $permission->user_id !== get_current_user_id() ) : ?>
+									<?php if ( (int) $permission->user_id !== get_current_user_id() ) : ?>
 										<div class="dfxprl-permission-actions">
 											<button type="button" class="button button-small dfxprl-revoke-permission"
 													data-user-id="<?php echo esc_attr( $permission->user_id ); ?>"
@@ -6690,6 +6719,56 @@ class DFXPRL_Admin {
 		} else {
 			wp_send_json_error( array( 'message' => __( 'Failed to revoke permission.', 'dfx-parish-retreat-letters' ) ) );
 		}
+	}
+
+	/**
+	 * AJAX handler for changing the access level of a user already assigned to a retreat.
+	 *
+	 * @since 26.11.12
+	 */
+	public function ajax_change_permission_level() {
+		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ?? '' ) ), 'dfxprl_retreats_nonce' ) ) {
+			wp_die( esc_html__( 'Security check failed.', 'dfx-parish-retreat-letters' ) );
+		}
+
+		$retreat_id = absint( $_POST['retreat_id'] ?? 0 );
+		$user_id = absint( $_POST['user_id'] ?? 0 );
+		$permission_level = sanitize_text_field( wp_unslash( $_POST['permission_level'] ?? '' ) );
+
+		if ( ! $retreat_id || ! $user_id || ! DFXPRL_Permissions::is_valid_permission_level( $permission_level ) ) {
+			wp_send_json_error( array( 'message' => __( 'Invalid parameters.', 'dfx-parish-retreat-letters' ) ) );
+		}
+
+		$current_user_id = get_current_user_id();
+		if ( ! $this->permissions->user_can_delegate_permissions( $current_user_id, $retreat_id ) ) {
+			wp_send_json_error( array( 'message' => __( 'Permission denied.', 'dfx-parish-retreat-letters' ) ) );
+		}
+
+		if ( $user_id === $current_user_id ) {
+			wp_send_json_error( array( 'message' => __( 'You cannot change your own access level.', 'dfx-parish-retreat-letters' ) ) );
+		}
+
+		if ( ! $this->permissions->user_can_change_permission_level( $current_user_id, $user_id, $retreat_id ) ) {
+			wp_send_json_error( array( 'message' => __( 'Only a plugin administrator can change the access level of another retreat manager.', 'dfx-parish-retreat-letters' ) ) );
+		}
+
+		$user = get_user_by( 'id', $user_id );
+		if ( ! $user || ! $this->permissions->get_user_retreat_levels( $user_id, $retreat_id ) ) {
+			wp_send_json_error( array( 'message' => __( 'This user has no access to this retreat.', 'dfx-parish-retreat-letters' ) ) );
+		}
+
+		if ( ! $this->permissions->change_permission_level( $user_id, $retreat_id, $permission_level, $current_user_id ) ) {
+			wp_send_json_error( array( 'message' => __( 'Failed to change the access level. Please try again.', 'dfx-parish-retreat-letters' ) ) );
+		}
+
+		wp_send_json_success( array(
+			'message' => sprintf(
+				/* translators: %1$s: user's display name, %2$s: permission level name */
+				__( '%1$s is now %2$s.', 'dfx-parish-retreat-letters' ),
+				$user->display_name,
+				DFXPRL_Permissions::get_permission_level_label( $permission_level )
+			),
+		) );
 	}
 
 	/**

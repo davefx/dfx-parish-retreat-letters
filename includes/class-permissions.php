@@ -312,6 +312,22 @@ class DFXPRL_Permissions {
 	public function revoke_permission( $user_id, $retreat_id, $permission_level, $revoked_by ) {
 		global $wpdb;
 
+		// The unique key covers is_active, so only one revoked row per level can exist:
+		// drop the previous one (the audit log keeps the history) or this update would fail
+		if ( ! $this->user_has_retreat_permission( $user_id, $retreat_id, $permission_level ) ) {
+			return false;
+		}
+		$wpdb->delete(
+			$this->database->get_permissions_table(),
+			array(
+				'user_id'          => $user_id,
+				'retreat_id'       => $retreat_id,
+				'permission_level' => $permission_level,
+				'is_active'        => 0,
+			),
+			array( '%d', '%d', '%s', '%d' )
+		); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
+
 		// Update permission to inactive
 		$result = $wpdb->update(
 			$this->database->get_permissions_table(),
@@ -338,6 +354,92 @@ class DFXPRL_Permissions {
 
 		// Remove dynamic capability
 		$this->remove_dynamic_capability( $user_id, $retreat_id, $permission_level );
+
+		return true;
+	}
+
+	/**
+	 * Get the active access levels of a user on one retreat.
+	 *
+	 * @since 26.11.12
+	 * @param int $user_id    User ID.
+	 * @param int $retreat_id Retreat ID.
+	 * @return array Permission levels (usually one).
+	 */
+	public function get_user_retreat_levels( $user_id, $retreat_id ) {
+		global $wpdb;
+
+		$permissions_table = $this->database->get_permissions_table();
+		$levels = $wpdb->get_col( $wpdb->prepare(
+			"SELECT DISTINCT permission_level FROM {$permissions_table} WHERE user_id = %d AND retreat_id = %d AND is_active = 1", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			$user_id,
+			$retreat_id
+		) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
+
+		return array_values( array_intersect( self::get_permission_levels(), $levels ? $levels : array() ) );
+	}
+
+	/**
+	 * Check whether a user can change the access level of another user on a retreat.
+	 *
+	 * Plugin administrators can change anyone's level. Retreat managers can change the
+	 * level of the other users of their retreats, except that of the other retreat
+	 * managers. Nobody can change their own level.
+	 *
+	 * @since 26.11.12
+	 * @param int $user_id        User who would make the change.
+	 * @param int $target_user_id User whose level would change.
+	 * @param int $retreat_id     Retreat ID.
+	 * @return bool
+	 */
+	public function user_can_change_permission_level( $user_id, $target_user_id, $retreat_id ) {
+		if ( (int) $user_id === (int) $target_user_id ) {
+			return false;
+		}
+
+		$user = get_user_by( 'id', $user_id );
+		if ( $user && $user->has_cap( 'manage_retreat_plugin' ) ) {
+			return true;
+		}
+
+		return $this->user_has_retreat_permission( $user_id, $retreat_id, self::PERMISSION_MANAGER )
+			&& ! $this->user_has_retreat_permission( $target_user_id, $retreat_id, self::PERMISSION_MANAGER );
+	}
+
+	/**
+	 * Change the access level of a user who already has access to a retreat.
+	 *
+	 * The user ends up with only the new level: it is granted if they lack it and
+	 * every other level they had on the retreat is revoked. Both steps are logged.
+	 *
+	 * @since 26.11.12
+	 * @param int    $user_id          User whose level changes.
+	 * @param int    $retreat_id       Retreat ID.
+	 * @param string $permission_level New permission level.
+	 * @param int    $changed_by       User ID who makes the change.
+	 * @return bool True on success (also when the level was already that one), false on failure.
+	 */
+	public function change_permission_level( $user_id, $retreat_id, $permission_level, $changed_by ) {
+		if ( ! self::is_valid_permission_level( $permission_level ) ) {
+			return false;
+		}
+
+		$levels = $this->get_user_retreat_levels( $user_id, $retreat_id );
+		if ( empty( $levels ) ) {
+			// Only users already assigned to the retreat change level; others are granted access
+			return false;
+		}
+
+		// Grant first, so the user never loses access halfway through
+		if ( ! in_array( $permission_level, $levels, true ) && ! $this->grant_permission( $user_id, $retreat_id, $permission_level, $changed_by ) ) {
+			return false;
+		}
+
+		foreach ( $levels as $level ) {
+			if ( $level !== $permission_level && ! $this->revoke_permission( $user_id, $retreat_id, $level, $changed_by ) ) {
+				return false;
+			}
+		}
 
 		return true;
 	}

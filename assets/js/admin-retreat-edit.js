@@ -174,6 +174,42 @@ alert(dfxprlRetreatEdit.i18n.failedToRevokePermission);
 });
 }
 
+// Change the access level of a user already assigned to the retreat
+$(document).on('change', '.dfxprl-change-permission', function() {
+var $select = $(this);
+var current = $select.data('current');
+var permissionLevel = $select.val();
+
+if (permissionLevel === current) {
+return;
+}
+
+$select.prop('disabled', true);
+$.ajax({
+url: ajaxurl,
+type: 'POST',
+data: {
+action: 'dfxprl_change_permission_level',
+nonce: nonce,
+retreat_id: retreatId,
+user_id: $select.data('user-id'),
+permission_level: permissionLevel
+},
+success: function(response) {
+if (response.success) {
+location.reload();
+return;
+}
+alert(response.data && response.data.message ? response.data.message : dfxprlRetreatEdit.i18n.failedToChangePermission);
+$select.val(current).prop('disabled', false);
+},
+error: function() {
+alert(dfxprlRetreatEdit.i18n.failedToChangePermission);
+$select.val(current).prop('disabled', false);
+}
+});
+});
+
 // Send invitation
 $('#invitation-form').on('submit', function(e) {
 e.preventDefault();

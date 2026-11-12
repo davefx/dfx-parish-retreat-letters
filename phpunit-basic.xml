@@ -25,6 +25,7 @@
             <file>./tests/unit/FormLanguagesTest.php</file>
             <file>./tests/unit/ReadOnlyAccessTest.php</file>
             <file>./tests/unit/UserManualTest.php</file>
+            <file>./tests/unit/ChangePermissionLevelTest.php</file>
         </testsuite>
         <testsuite name="basic">
             <file>./tests/unit/BasicInfrastructureTest.php</file>
