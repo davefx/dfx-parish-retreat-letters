@@ -1858,7 +1858,7 @@ msgstr "Selecciona un archivo CSV para importar. Tamaño máximo de archivo: 2MB
 
 #: includes/class-admin.php:5857
 msgid "Import Attendants"
-msgstr "Importar Asistentes"
+msgstr "Importar asistentes"
 
 #: includes/class-admin.php:5881
 msgid "Invalid attendant ID."

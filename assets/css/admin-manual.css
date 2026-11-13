@@ -231,3 +231,28 @@
 		display: none;
 	}
 }
+
+/* Screenshots */
+.dfxprl-manual-figure {
+	margin: 1em 0 1.4em;
+}
+
+.dfxprl-manual-figure img {
+	display: block;
+	max-width: 100%;
+	height: auto;
+	border: 1px solid #dcdcde;
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+@media print {
+	.dfxprl-manual-figure {
+		break-inside: avoid;
+	}
+}
+
+.dfxprl-manual-figure a {
+	display: inline-block;
+	max-width: 100%;
+	cursor: zoom-in;
+}

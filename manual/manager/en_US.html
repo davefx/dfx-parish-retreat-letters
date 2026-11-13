@@ -67,7 +67,7 @@
 <h2 id="retiro">3. Setting up the retreat</h2>
 
 <p>In <strong>All Retreats</strong>, click <strong>Edit</strong> or the retreat name. These are the fields:</p>
-
+<figure class="dfxprl-manual-figure"><a href="images/en_US/retreat-edit.webp" target="_blank" rel="noopener"><img src="images/en_US/retreat-edit.webp" alt="Retreat edit screen: the retreat details on the left and the Access Management box on the right" width="1094" height="720" loading="lazy"></a></figure>
 <dl class="dfxprl-manual-fields">
 <dt>Retreat Name, Location, Start Date, End Date</dt>
 <dd>The basics. The name and dates are required, and the end date can't be earlier than the start date.</dd>
@@ -109,6 +109,7 @@
 
 <h3 id="campos-personalizados">Custom attendant fields</h3>
 <p>You can add your own fields to the attendant record (for example, T-shirt size, group, allergies or whether they need transport). Click <strong>Add Field</strong> and fill in:</p>
+<figure class="dfxprl-manual-figure"><a href="images/en_US/custom-fields.webp" target="_blank" rel="noopener"><img src="images/en_US/custom-fields.webp" alt="A custom field of the options list type, with who can see and edit it" width="794" height="398" loading="lazy"></a></figure>
 <ul>
 <li><strong>Name</strong> and <strong>Slug</strong>: the slug identifies the field in CSV files and in the request template, as <code>[my_field]</code>.</li>
 <li><strong>Type</strong>: text, long text, number, date, yes/no or a list of options (one option per line).</li>
@@ -124,6 +125,7 @@
 
 <h3>Current permissions</h3>
 <p>A list of users with their profile and who granted it. <strong>Revoke</strong> removes it. You can't revoke your own permissions.</p>
+<figure class="dfxprl-manual-figure"><a href="images/en_US/access-manager.webp" target="_blank" rel="noopener"><img src="images/en_US/access-manager.webp" alt="Access Management box as a retreat manager sees it: they can change the level of the others, but not that of another manager" width="296" height="666" loading="lazy"></a></figure>
 <p>To change someone's access level, pick another one in the drop-down with their profile; the change applies straight away. You can change everyone's except your own and that of the other retreat managers, which only a plugin administrator can change.</p>
 
 <h3>Giving access to an existing user</h3>
@@ -147,6 +149,7 @@
 
 <h3>The attendants list</h3>
 <p>Open it with the retreat's <strong>Attendants</strong> button. At the top you'll see the total number of attendants and a letter summary: how many messages have been received, how many are still to be printed and the total including physical letters.</p>
+<figure class="dfxprl-manual-figure"><a href="images/en_US/attendants.webp" target="_blank" rel="noopener"><img src="images/en_US/attendants.webp" alt="Attendants list with the letters summary, the export and import buttons and the table columns" width="1494" height="760" loading="lazy"></a></figure>
 <p>There are two tabs: <strong>Attendants</strong> (the active ones) and <strong>Withdrawn attendants</strong>.</p>
 
 <h4>Columns</h4>
@@ -161,6 +164,7 @@
 
 <h4>Searching, filtering and sorting</h4>
 <p>The search box looks in first name, last name, emergency contact, invited by and incompatibilities. Under <strong>Filters</strong> you can filter by each of those fields and by notes and internal notes; click <strong>Apply Filters</strong> or <strong>Clear Filters</strong>. Click a column header to sort by it.</p>
+<figure class="dfxprl-manual-figure"><a href="images/en_US/filters.webp" target="_blank" rel="noopener"><img src="images/en_US/filters.webp" alt="Filters panel of the attendants list, with the custom fields at the end" width="620" height="730" loading="lazy"></a></figure>
 <p><strong>Filters</strong> also lists the retreat's custom fields that you can see. Text fields are filtered by what they contain; <strong>Options list</strong> and <strong>Yes/No</strong> fields, with a drop-down; numbers and dates, with a <strong>From</strong>–<strong>To</strong> range in which you can fill in just one end.</p>
 
 <h4>Reordering columns</h4>
@@ -180,6 +184,7 @@
 
 <h3>Adding or editing an attendant</h3>
 <p>Click <strong>Add New Attendant</strong> or <strong>Edit</strong> in their row. The fields are:</p>
+<figure class="dfxprl-manual-figure"><a href="images/en_US/attendant-edit.webp" target="_blank" rel="noopener"><img src="images/en_US/attendant-edit.webp" alt="Form to edit an attendant" width="1094" height="900" loading="lazy"></a></figure>
 <ul>
 <li><strong>First Name</strong>, <strong>Last Name</strong> and <strong>Date of Birth</strong> (required).</li>
 <li><strong>Emergency Contact</strong>: first name (required), last name, phone (required), email and relationship to the attendant. This is usually the person who receives the link for the letters.</li>
@@ -202,6 +207,7 @@
 
 <h3 id="historial">Contact log</h3>
 <p>This is where the team writes down calls and conversations with each attendant's contact person: "Called his mother on Tuesday, she'll send the link to his brothers", and so on. Open it from the <strong>Contact Log</strong> column in the list or from the record.</p>
+<figure class="dfxprl-manual-figure"><a href="images/en_US/contact-log.webp" target="_blank" rel="noopener"><img src="images/en_US/contact-log.webp" alt="Contact log of an attendant, with the form to add an entry" width="1094" height="448" loading="lazy"></a></figure>
 <ul>
 <li>Add entries with a date and a description using <strong>Add Entry</strong>.</li>
 <li>You can edit or delete any entry, including other people's, and see the full <strong>Change history</strong>, including deleted entries. Edited entries are marked "(edited)".</li>
@@ -212,6 +218,7 @@
 
 <h3>Importing</h3>
 <p>In the attendants list, click <strong>Import CSV</strong>. The file:</p>
+<figure class="dfxprl-manual-figure"><a href="images/en_US/import.webp" target="_blank" rel="noopener"><img src="images/en_US/import.webp" alt="Screen to import attendants from a CSV file" width="1094" height="366" loading="lazy"></a></figure>
 <ul>
 <li>Must have the column names in the first row. They can be in any order, in English or in the admin language, and unrecognised columns are ignored.</li>
 <li>Needs these columns: <strong>First Name</strong>, <strong>Last Name</strong>, <strong>Date of Birth</strong>, <strong>Emergency Contact Name</strong> and <strong>Emergency Contact Phone</strong>.</li>
@@ -228,7 +235,7 @@
 <h2 id="formulario">7. The letter form</h2>
 
 <p>This is the page people see when they open an attendant's message URL. No account on the website is needed. It's worth knowing it well so you can help the families.</p>
-
+<figure class="dfxprl-manual-figure"><a href="images/en_US/form.webp" target="_blank" rel="noopener"><img src="images/en_US/form.webp" alt="Letters form seen by whoever opens the messages URL of an attendant" width="880" height="1500" loading="lazy"></a></figure>
 <ul>
 <li>At the top are the attendant's name and the retreat's <strong>custom message</strong>.</li>
 <li>If the form is multilingual, there is a <strong>Language</strong> selector. Changing the language doesn't reload the page, so nothing already written is lost.</li>
@@ -250,7 +257,7 @@
 
 <h3>The messages list</h3>
 <p>Open it with each attendant's <strong>Messages</strong> button. For security, it <strong>never shows the content</strong> of the letters, only their details: sender, type (text or files), date sent and print status. You can filter by type, search by sender and sort by any of those columns, including print status (unprinted first).</p>
-
+<figure class="dfxprl-manual-figure"><a href="images/en_US/messages.webp" target="_blank" rel="noopener"><img src="images/en_US/messages.webp" alt="Messages list of an attendant, with the sender, the date and the print status, but not the content" width="1094" height="504" loading="lazy"></a></figure>
 <h3>Printing</h3>
 <ol>
 <li>Click <strong>Print</strong> on the letter.</li>

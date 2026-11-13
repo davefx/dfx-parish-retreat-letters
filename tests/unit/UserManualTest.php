@@ -86,7 +86,7 @@ class UserManualTest extends TestCase {
 	}
 
 	public function test_translations_keep_the_structure_of_the_spanish_manual() {
-		$patterns = array( '<h2', '<h3', '<h4', '<table', '<tr', 'id="', 'href="#' );
+		$patterns = array( '<h2', '<h3', '<h4', '<table', '<tr', '<img', 'id="', 'href="#' );
 
 		foreach ( DFXPRL_Admin::get_manual_profiles() as $profile ) {
 			$dir    = $this->plugin_dir . 'manual/' . $profile . '/';
@@ -142,5 +142,38 @@ class UserManualTest extends TestCase {
 		$this->assertStringContainsString( "add_action( 'in_admin_header', array( \$this, 'render_manual_link' ) );", $source );
 		$this->assertStringContainsString( 'public function render_manual_link()', $source );
 		$this->assertStringContainsString( '.dfxprl-manual-link', file_get_contents( $this->plugin_dir . 'assets/css/admin-manual.css' ) );
+	}
+
+	public function test_screenshots_exist_in_the_language_of_each_manual_and_have_alt_text() {
+		$images = $this->plugin_dir . 'manual/images/';
+		$spanish = array_map( 'basename', glob( $images . 'es_ES/*.webp' ) );
+		$this->assertNotEmpty( $spanish );
+
+		foreach ( DFXPRL_Admin::get_manual_profiles() as $profile ) {
+			foreach ( glob( $this->plugin_dir . 'manual/' . $profile . '/*.html' ) as $file ) {
+				$locale = basename( $file, '.html' );
+				$name   = $profile . '/' . basename( $file );
+				$this->assertSame( $spanish, array_map( 'basename', glob( $images . $locale . '/*.webp' ) ), "$name: screenshots of $locale" );
+
+				preg_match_all( '/<img [^>]*>/', file_get_contents( $file ), $tags );
+				$this->assertNotEmpty( $tags[0], "$name: no screenshots" );
+				foreach ( $tags[0] as $tag ) {
+					$this->assertMatchesRegularExpression( '#src="images/' . preg_quote( $locale, '#' ) . '/[a-z-]+\.webp"#', $tag, "$name: $tag" );
+					preg_match( '#src="images/([^"]+)"#', $tag, $src );
+					$this->assertFileExists( $images . $src[1], "$name: $tag" );
+					$this->assertMatchesRegularExpression( '/alt="[^"]{10,}"/', $tag, "$name: alt text of $tag" );
+					$this->assertMatchesRegularExpression( '/width="\d+" height="\d+"/', $tag, "$name: size of $tag" );
+				}
+			}
+		}
+	}
+
+	public function test_screenshot_paths_point_to_the_plugin_url() {
+		if ( ! defined( 'DFXPRL_PLUGIN_URL' ) ) {
+			define( 'DFXPRL_PLUGIN_URL', 'https://example.org/wp-content/plugins/dfx-parish-retreat-letters/' );
+		}
+		$html = DFXPRL_Admin::link_manual_images( '<p>Text with images/ in it</p><a href="images/es_ES/form.webp"><img src="images/es_ES/form.webp" alt="x"></a>' );
+		$url  = DFXPRL_PLUGIN_URL . 'manual/images/es_ES/form.webp';
+		$this->assertSame( '<p>Text with images/ in it</p><a href="' . $url . '"><img src="' . $url . '" alt="x"></a>', $html );
 	}
 }

@@ -504,6 +504,21 @@ class DFXPRL_Admin {
 	}
 
 	/**
+	 * Point the screenshots of a manual, and their links to the full size image, to the plugin URL.
+	 *
+	 * @since 26.11.13
+	 * @param string $html Manual HTML.
+	 * @return string
+	 */
+	public static function link_manual_images( $html ) {
+		return str_replace(
+			array( 'src="images/', 'href="images/' ),
+			array( 'src="' . DFXPRL_PLUGIN_URL . 'manual/images/', 'href="' . DFXPRL_PLUGIN_URL . 'manual/images/' ),
+			$html
+		);
+	}
+
+	/**
 	 * Add a link to the user manual in the plugin row of the Plugins screen.
 	 *
 	 * @since 26.11.11
@@ -549,6 +564,7 @@ class DFXPRL_Admin {
 		$file = self::get_manual_file( get_user_locale(), $profile );
 		// The manual ships with the plugin; it is still filtered as post content
 		$content = is_readable( $file ) ? file_get_contents( $file ) : ''; // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents -- Local file bundled with the plugin
+		$content = self::link_manual_images( $content );
 		?>
 		<div class="wrap dfxprl-manual-wrap">
 			<?php if ( count( $profiles ) > 1 ) : ?>
@@ -593,6 +609,21 @@ class DFXPRL_Admin {
 		}';
 
 		wp_add_inline_style( 'dfxprl-admin-styles', $style );
+	}
+
+	/**
+	 * Format a UTC datetime from the database in the site timezone, with translated month and day names.
+	 *
+	 * get_date_from_gmt() leaves them in English.
+	 *
+	 * @since 26.11.13
+	 * @param string $utc    UTC datetime (Y-m-d H:i:s).
+	 * @param string $format PHP date format.
+	 * @return string
+	 */
+	public static function format_utc_date( $utc, $format ) {
+		$timestamp = strtotime( $utc . ' UTC' );
+		return false === $timestamp ? '' : (string) wp_date( $format, $timestamp );
 	}
 
 	/**
@@ -692,9 +723,13 @@ class DFXPRL_Admin {
 			background: #e2e3e5;
 			color: #383d41;
 		}
-		.dfxprl-change-permission {
+		/* Out-ranks .wp-core-ui select, which sets a bigger font and leaves the arrow over the text */
+		.wp-core-ui select.dfxprl-change-permission {
 			max-width: 100%;
+			min-height: 26px;
+			padding: 0 24px 0 8px;
 			font-size: 12px;
+			line-height: 2;
 		}
 		.dfxprl-change-permission.permission-manager {
 			background-color: #d4edda;
@@ -914,6 +949,25 @@ class DFXPRL_Admin {
 	.dfxprl-attendants-table th[data-column="total_letters"],
 	.dfxprl-attendants-table th[data-column="contact_log"] {
 		width: 80px;
+	}
+	/* The action buttons need more room than the other columns of the fixed layout */
+	.dfxprl-attendants-table th.dfxprl-column-actions {
+		width: 160px;
+	}
+	.dfxprl-attendants-table td .button-small {
+		white-space: normal;
+		height: auto;
+		max-width: 100%;
+	}
+	/* Long header words (e.g. "Incompatibilities") break instead of running into the next column */
+	.dfxprl-attendants-table thead th {
+		overflow-wrap: break-word;
+		hyphens: auto;
+	}
+	/* WordPress floats the label of sortable headers, which then takes the width of its longest word */
+	.dfxprl-attendants-table thead th.sortable a > span:first-child,
+	.dfxprl-attendants-table thead th.sorted a > span:first-child {
+		max-width: 100%;
 	}
 	.dfxprl-attendants-table th.dfxprl-column-placeholder {
 		background: #f0f6fc;
@@ -4305,7 +4359,7 @@ class DFXPRL_Admin {
 								echo $this->tag_list_column( $column_headers[ $column_key ], $column_key, $can_manage_retreat && ! $withdrawn_view ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Escaped when captured
 							}
 							?>
-							<th scope="col" class="manage-column"><?php esc_html_e( 'Actions', 'dfx-parish-retreat-letters' ); ?></th>
+							<th scope="col" class="manage-column dfxprl-column-actions"><?php esc_html_e( 'Actions', 'dfx-parish-retreat-letters' ); ?></th>
 						</tr>
 					</thead>
 					<tbody>
@@ -4963,7 +5017,7 @@ class DFXPRL_Admin {
 					printf(
 						/* translators: 1: date of withdrawal, 2: user who withdrew the attendant */
 						esc_html__( 'On %1$s by %2$s', 'dfx-parish-retreat-letters' ),
-						esc_html( get_date_from_gmt( $attendant->withdrawn_at, get_option( 'date_format' ) ) ),
+						esc_html( self::format_utc_date( $attendant->withdrawn_at, get_option( 'date_format' ) ) ),
 						esc_html( $this->get_user_display_name( $attendant->withdrawn_by ) )
 					);
 					echo '</small>';
@@ -5533,13 +5587,13 @@ class DFXPRL_Admin {
 			<div class="dfxprl-log-entry-meta">
 				<strong><?php echo esc_html( date_i18n( get_option( 'date_format' ), strtotime( $entry->entry_date ) ) ); ?></strong>
 				&middot; <?php echo esc_html( $this->get_user_display_name( $entry->user_id ) ); ?>
-				&middot; <span title="<?php esc_attr_e( 'Written on', 'dfx-parish-retreat-letters' ); ?>"><?php echo esc_html( get_date_from_gmt( $entry->created_at, $datetime_format ) ); ?></span>
+				&middot; <span title="<?php esc_attr_e( 'Written on', 'dfx-parish-retreat-letters' ); ?>"><?php echo esc_html( self::format_utc_date( $entry->created_at, $datetime_format ) ); ?></span>
 				<?php if ( ! empty( $entry->updated_at ) ) : ?>
 					<?php
 					$edited_title = sprintf(
 						/* translators: 1: date and time of the last edit, 2: user who made it */
 						__( 'Last edited on %1$s by %2$s', 'dfx-parish-retreat-letters' ),
-						get_date_from_gmt( $entry->updated_at, $datetime_format ),
+						self::format_utc_date( $entry->updated_at, $datetime_format ),
 						$this->get_user_display_name( $entry->updated_by )
 					);
 					?>
@@ -5551,7 +5605,7 @@ class DFXPRL_Admin {
 						printf(
 							/* translators: 1: date and time of the deletion, 2: user who deleted the entry */
 							esc_html__( 'Deleted on %1$s by %2$s', 'dfx-parish-retreat-letters' ),
-							esc_html( get_date_from_gmt( $entry->deleted_at, $datetime_format ) ),
+							esc_html( self::format_utc_date( $entry->deleted_at, $datetime_format ) ),
 							esc_html( $this->get_user_display_name( $entry->deleted_by ) )
 						);
 						?>
@@ -5597,7 +5651,7 @@ class DFXPRL_Admin {
 									echo esc_html( $action_labels[ $revision->action ] ?? $revision->action );
 									?>
 								</strong>
-								&middot; <?php echo esc_html( get_date_from_gmt( $revision->changed_at, $datetime_format ) ); ?>
+								&middot; <?php echo esc_html( self::format_utc_date( $revision->changed_at, $datetime_format ) ); ?>
 								&middot; <?php echo esc_html( $this->get_user_display_name( $revision->user_id ) ); ?>
 								<br>
 								<span class="description"><?php echo esc_html( date_i18n( get_option( 'date_format' ), strtotime( $revision->entry_date ) ) ); ?>:</span>

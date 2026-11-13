@@ -3,7 +3,7 @@ Contributors: davefx
 Tags: parish, retreat, letters, confidential, GDPR
 Requires at least: 5.0
 Tested up to: 7.1
-Stable tag: 26.11.12
+Stable tag: 26.11.13
 Requires PHP: 7.4
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
@@ -196,6 +196,14 @@ By default it is generated automatically and stored in the WordPress database (`
 Yes. The best place is [translate.wordpress.org](https://translate.wordpress.org/projects/wp-plugins/dfx-parish-retreat-letters/), so the translation reaches every site as a language pack. A `.pot` translation template is also included in the `languages/` directory.
 
 ## Changelog
+
+### 26.11.13
+
+- New: the **user manual** shows screenshots of each screen it explains, taken in the language of the manual.
+- Fix: in the attendants list, the **Copy Message URL** button stuck out of the Actions column, and long column headers ran into the next one.
+- Fix: in the contact log, the time an entry was written or changed, and the withdrawal date, showed the month in English.
+- Fix: the access level drop-down in **Current Permissions** had its arrow over the text.
+- Fix: a capital letter in the Spanish translation of the CSV import button.
 
 ### 26.11.12
 
