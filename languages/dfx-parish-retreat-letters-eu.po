@@ -3499,3 +3499,20 @@ msgstr "Erabiltzaile honek ez du erretiro honetarako sarbiderik."
 #, php-format
 msgid "%1$s is now %2$s."
 msgstr "%1$s orain %2$s da."
+
+#. translators: Compact numeric date shown in lists, as a PHP date format (https://www.php.net/manual/datetime.format.php), e.g. d/m/Y
+msgctxt "short date format"
+msgid "m/d/Y"
+msgstr "Y/m/d"
+
+#. translators: %d: number of physical (paper) letters
+#, php-format
+msgid "%d physical letter"
+msgid_plural "%d physical letters"
+msgstr[0] "%d paperezko gutun"
+msgstr[1] "%d paperezko gutun"
+
+#. translators: %d: number of letters received through the app that have not been printed yet
+#, php-format
+msgid "%d to print"
+msgstr "%d inprimatzeko"

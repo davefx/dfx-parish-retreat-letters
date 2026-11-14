@@ -182,7 +182,10 @@ class ReadOnlyAccessTest extends TestCase {
 		$this->assertStringContainsString( 'current_user_can_view_retreat( $retreat_id )', $invitation );
 
 		// The list buttons are shown to read-only users
-		$this->assertStringContainsString( "<?php if ( \$this->permissions->current_user_can_view_retreat( \$retreat->id ) ) : ?>\n\t\t\t\t\t\t\t\t\t\t\t<?php if ( ! empty( \$retreat->message_request_template ) ) : ?>", $this->get_source( 'includes/class-admin.php' ) );
+		$admin = $this->get_source( 'includes/class-admin.php' );
+		$this->assertStringContainsString( '$can_view     = $this->permissions->current_user_can_view_retreat( $retreat->id );', $admin );
+		$this->assertStringContainsString( '<?php if ( $can_view && ! empty( $retreat->message_request_template ) ) : ?>', $admin );
+		$this->assertMatchesRegularExpression( '/<\?php if \( \$can_view \) : \?>\s*<\?php if \( empty\( \$attendant->message_url_token \) \) : \?>/', $admin );
 	}
 
 	public function test_read_only_sees_message_manager_fields_and_edits_none() {

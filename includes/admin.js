@@ -501,6 +501,7 @@
                 : 'Error generating message URL. Please try again.';
 
             // Disable button and show loading state
+            var originalHtml = $button.html();
             $button.prop('disabled', true).text(generatingText);
 
             var ajaxUrl = (typeof dfxprlAdmin !== 'undefined' && dfxprlAdmin.ajaxurl)
@@ -529,7 +530,7 @@
                                        'data-url="' + escapeHtmlAttribute(response.data.url) + '" ' +
                                        'data-attendant-name="' + escapeHtmlAttribute(attendantName) + '" ' +
                                        'data-attendant-surnames="' + escapeHtmlAttribute(attendantSurnames) + '">' +
-                                       'Copy Message URL</button>';
+                                       escapeHtmlAttribute(dfxprlAdmin.messages.copyMessageUrl || 'Copy Message URL') + '</button>';
                         $button.replaceWith(newButton);
 
                         // Show success message
@@ -542,13 +543,13 @@
                     } else {
                         alert(response.data.message || generateErrorText);
                         // Re-enable button
-                        $button.prop('disabled', false).text('Generate Message URL');
+                        $button.prop('disabled', false).html(originalHtml);
                     }
                 },
                 error: function() {
                     alert(generateErrorText);
                     // Re-enable button
-                    $button.prop('disabled', false).text('Generate Message URL');
+                    $button.prop('disabled', false).html(originalHtml);
                 }
             });
         });
@@ -931,9 +932,8 @@
             var $button = $(this);
             
             // Show loading state
-            $button.prop('disabled', true);
-            var originalText = $button.text();
-            $button.text(dfxprlAdmin.messages.loadingMessage || 'Loading...');
+            // The button may be just an icon, so it shows it is busy without changing its content
+            $button.prop('disabled', true).addClass('dfxprl-busy').attr('aria-busy', 'true');
             
             // Make AJAX request to get the expanded message
             $.ajax({
@@ -946,8 +946,7 @@
                     retreat_id: retreatId
                 },
                 success: function(response) {
-                    $button.prop('disabled', false);
-                    $button.text(originalText);
+                    $button.prop('disabled', false).removeClass('dfxprl-busy').removeAttr('aria-busy');
                     
                     if (response.success) {
                         showInvitationMessageModal(response.data.message);
@@ -956,8 +955,7 @@
                     }
                 },
                 error: function() {
-                    $button.prop('disabled', false);
-                    $button.text(originalText);
+                    $button.prop('disabled', false).removeClass('dfxprl-busy').removeAttr('aria-busy');
                     alert(dfxprlAdmin.messages.loadMessageError);
                 }
             });

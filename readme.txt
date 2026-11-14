@@ -3,7 +3,7 @@ Contributors: davefx
 Tags: parish, retreat, letters, confidential, GDPR
 Requires at least: 5.0
 Tested up to: 7.1
-Stable tag: 26.11.13
+Stable tag: 26.11.14
 Requires PHP: 7.4
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
@@ -196,6 +196,19 @@ By default it is generated automatically and stored in the WordPress database (`
 Yes. The best place is [translate.wordpress.org](https://translate.wordpress.org/projects/wp-plugins/dfx-parish-retreat-letters/), so the translation reaches every site as a language pack. A `.pot` translation template is also included in the `languages/` directory.
 
 ## Changelog
+
+### 26.11.14
+
+- Fix: on phones, the plugin credits took several lines over the bottom of the screen and **hid the fields** under them. They now take a single short line, and the page and the save buttons stay above it. On computers they go at the end of the page.
+- Fix: on phones, the **attendant filters** and the CSV import and export buttons did not show.
+- New: on phones, each attendant is a compact card, with the full name as its title, the **total of letters as a big number** next to it, every value next to its label, and the empty values left out.
+- New: on phones, the **total of letters of the retreat** shows as a big number above the attendants, with the physical letters and the letters still to print in the same box.
+- New: on computers, the attendants list scrolls inside its own pane, like a spreadsheet. Each column takes the width it needs (no more words cut in two), and the column headers, the name and the action buttons stay in sight.
+- New: the attendants list fits more columns on the screen: tighter cells, short dates (09/04/1975, with the long date on hover), the unprinted letters under the message count, and a dash for empty values instead of "N/A" or "No notes".
+- New: the Edit, Messages, Invitation Message and Withdraw buttons of the attendants list carry an icon next to their name, so they are told apart at a glance.
+- Fix: the **Copy Message URL** button that appears after generating the URL was always in English.
+- New: the save buttons of the attendant page, the retreat page and the global settings stay at the bottom of the screen, so you can save without scrolling down.
+- Fix: the fields of the retreat custom fields, and those of the letters form, ran past the right edge on phones.
 
 ### 26.11.13
 

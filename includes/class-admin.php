@@ -612,6 +612,17 @@ class DFXPRL_Admin {
 	}
 
 	/**
+	 * Compact numeric date format for the lists, e.g. 09/04/1975.
+	 *
+	 * @since 26.11.14
+	 * @return string PHP date format.
+	 */
+	public static function short_date_format() {
+		/* translators: Compact numeric date shown in lists, as a PHP date format (https://www.php.net/manual/datetime.format.php), e.g. d/m/Y */
+		return _x( 'm/d/Y', 'short date format', 'dfx-parish-retreat-letters' );
+	}
+
+	/**
 	 * Format a UTC datetime from the database in the site timezone, with translated month and day names.
 	 *
 	 * get_date_from_gmt() leaves them in English.
@@ -988,7 +999,7 @@ class DFXPRL_Admin {
 	.wp-list-table.dfxprl-attendants-table[data-retreat-id] thead th {
 		position: -webkit-sticky;
 		position: sticky;
-		top: 32px; /* sit just below the fixed WordPress admin bar */
+		top: 0; /* the top of the scroll pane around the list */
 		z-index: 11;
 		background: #f6f7f7;
 	}
@@ -999,10 +1010,124 @@ class DFXPRL_Admin {
 	.wp-list-table.dfxprl-attendants-table.dfxprl-reordering[data-retreat-id] thead th {
 		position: static;
 	}
-	@media screen and (max-width: 782px) {
-		.wp-list-table.dfxprl-attendants-table thead th,
-		.wp-list-table.dfxprl-attendants-table[data-retreat-id] thead th {
-			top: 46px; /* the admin bar is taller on small screens */
+	/* On a computer the list scrolls inside its own pane, like a spreadsheet:
+	   each column takes the width its content needs (no more words cut in two),
+	   and the header row and the first column stay in sight */
+	@media screen and (min-width: 783px) {
+		.dfxprl-table-scroll {
+			overflow: auto;
+			max-height: calc(100vh - 150px);
+			min-height: 300px;
+			border: 1px solid #c3c4c7;
+			background: #fff;
+		}
+		.dfxprl-table-scroll > .wp-list-table {
+			border: none;
+			table-layout: auto;
+		}
+		/* Dense cells, so as many columns as possible fit on the screen */
+		.wp-list-table.dfxprl-attendants-table td,
+		.wp-list-table.dfxprl-attendants-table th {
+			padding: 6px 8px;
+			overflow-wrap: normal;
+			word-break: normal;
+		}
+		.wp-list-table.dfxprl-attendants-table thead th {
+			font-size: 13px;
+			line-height: 1.3;
+			white-space: normal;
+			hyphens: auto;
+			vertical-align: bottom;
+		}
+		.dfxprl-attendants-table td {
+			max-width: 220px;
+		}
+		.dfxprl-attendants-table td small {
+			display: inline-block;
+			line-height: 1.4;
+			overflow-wrap: anywhere;
+		}
+		.dfxprl-attendants-table td[data-column="date_of_birth"] {
+			white-space: nowrap;
+		}
+		.dfxprl-attendants-table td[data-column="name"],
+		.dfxprl-attendants-table td[data-column="surnames"] {
+			min-width: 80px;
+		}
+		.dfxprl-attendants-table td[data-column="emergency_contact"] {
+			min-width: 140px;
+		}
+		/* Long texts wrap; empty ones take no more room than their header */
+		.dfxprl-attendants-table td[data-column="notes"],
+		.dfxprl-attendants-table td[data-column="internal_notes"],
+		.dfxprl-attendants-table td[data-column="incompatibilities"] {
+			max-width: 200px;
+		}
+		.dfxprl-attendants-table td[data-column="messages"] > .dfxprl-cell-value > a,
+		.dfxprl-attendants-table td[data-column="messages"] > .dfxprl-cell-value > span {
+			white-space: nowrap;
+		}
+		.dfxprl-attendants-table td[data-column="messages"] small {
+			white-space: normal;
+		}
+		.dfxprl-attendants-table th[data-column="physical_letters"],
+		.dfxprl-attendants-table th[data-column="total_letters"],
+		.dfxprl-attendants-table th[data-column="contact_log"] {
+			width: auto;
+			min-width: 56px;
+		}
+		/* The actions stay at the right edge, always within reach */
+		.wp-list-table.dfxprl-attendants-table th.dfxprl-column-actions,
+		.dfxprl-attendants-table tbody tr > td:last-child {
+			position: -webkit-sticky;
+			position: sticky;
+			right: 0;
+			width: 190px;
+			min-width: 190px;
+			box-shadow: -1px 0 0 #dcdcde;
+		}
+		.dfxprl-attendants-table tbody tr > td:last-child {
+			z-index: 2;
+			background: #fff;
+		}
+		.dfxprl-attendants-table.striped tbody tr:nth-child(odd) > td:last-child {
+			background: #f6f7f7;
+		}
+		.wp-list-table.dfxprl-attendants-table th.dfxprl-column-actions {
+			z-index: 12;
+		}
+		.dfxprl-attendants-table thead th {
+			white-space: normal;
+			hyphens: manual;
+			vertical-align: bottom;
+			min-width: 60px;
+		}
+		/* The first column (the name, unless moved) stays put when scrolling sideways */
+		.dfxprl-attendants-table tbody tr > td:first-child,
+		.wp-list-table.dfxprl-attendants-table thead tr > th:first-child,
+		.wp-list-table.dfxprl-attendants-table[data-retreat-id] thead tr > th:first-child {
+			position: -webkit-sticky;
+			position: sticky;
+			left: 0;
+			box-shadow: 1px 0 0 #dcdcde;
+		}
+		.dfxprl-attendants-table tbody tr > td:first-child {
+			z-index: 2;
+			background: #fff;
+		}
+		.dfxprl-attendants-table.striped tbody tr:nth-child(odd) > td:first-child {
+			background: #f6f7f7;
+		}
+		.wp-list-table.dfxprl-attendants-table thead tr > th:first-child,
+		.wp-list-table.dfxprl-attendants-table[data-retreat-id] thead tr > th:first-child {
+			z-index: 12;
+		}
+		/* While reordering columns, nothing is sticky so jQuery UI measures offsets correctly */
+		.wp-list-table.dfxprl-attendants-table.dfxprl-reordering thead tr > th:first-child,
+		.dfxprl-attendants-table.dfxprl-reordering tbody tr > td:first-child,
+		.wp-list-table.dfxprl-attendants-table.dfxprl-reordering th.dfxprl-column-actions,
+		.dfxprl-attendants-table.dfxprl-reordering tbody tr > td:last-child {
+			position: static;
 		}
 	}
 	/* Inline editing in the attendants list */
@@ -1077,6 +1202,71 @@ class DFXPRL_Admin {
 	.dfxprl-log-history summary {
 		cursor: pointer;
 	}
+	/* The save buttons of the long forms stay at the bottom of the screen, so there is no need to scroll down to save */
+	.dfxprl-sticky-submit {
+		position: -webkit-sticky;
+		position: sticky;
+		bottom: 0;
+		z-index: 20;
+		margin: 20px -12px 0;
+		padding: 12px !important;
+		background: #f0f0f1;
+		border-top: 1px solid #dcdcde;
+		box-shadow: 0 -2px 6px rgba(0, 0, 0, 0.06);
+	}
+	.dfxprl-sticky-submit .button {
+		margin: 0 6px 0 0;
+	}
+	/* On a computer the plugin credits go after the page instead of floating over its bottom part */
+	.dfxprl-plugin-footer {
+		margin-top: 30px;
+		padding: 10px 0;
+		border-top: 1px solid #dcdcde;
+	}
+	.dfxprl-plugin-footer p {
+		margin: 0;
+		color: #666;
+		font-size: 12px;
+		text-align: right;
+	}
+	.dfxprl-plugin-footer .dfxprl-footer-short {
+		display: none;
+	}
+	/* Action buttons of the attendants list: an icon next to the words */
+	.dfxprl-icon-actions {
+		display: inline-flex;
+		flex-wrap: wrap;
+		gap: 4px;
+		margin-bottom: 4px;
+	}
+	.wp-core-ui .button.dfxprl-icon-button {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		gap: 4px;
+		min-width: 30px;
+		margin: 0;
+		padding: 0 6px;
+	}
+	.dfxprl-icon-button .dashicons {
+		font-size: 17px;
+		width: 17px;
+		height: 17px;
+	}
+	.wp-core-ui .button.dfxprl-icon-button.button-link-delete {
+		color: #b32d2e;
+		border-color: #b32d2e;
+	}
+	.dfxprl-icon-button.dfxprl-busy {
+		cursor: progress;
+		opacity: 0.6;
+	}
+	/* The surnames and the totals of letters as big numbers only show on phones */
+	.dfxprl-card-surnames,
+	.dfxprl-card-total,
+	.dfxprl-retreat-total {
+		display: none;
+	}
 	/* Mobile sort: hidden on desktop */
 	.dfxprl-mobile-sort {
 		display: none;
@@ -1141,40 +1331,237 @@ class DFXPRL_Admin {
 			padding: 12px;
 			background: #fff;
 		}
+		/* Each value sits next to its label, so a card takes half the height */
 		.wp-list-table.widefat tbody td {
 			display: block !important;
 			width: 100% !important;
-			padding: 6px 0 6px 0;
+			box-sizing: border-box;
+			min-height: 26px;
+			padding: 4px 0 4px 38%;
 			border: none;
 			text-align: left;
 			position: relative;
+			overflow-wrap: anywhere;
 		}
 		.wp-list-table.widefat tbody td[data-colname]::before {
-			position: static !important;
+			content: attr(data-colname);
+			position: absolute !important;
 			display: block !important;
-			float: none !important;
-			width: auto !important;
-			max-width: 100% !important;
-			overflow: hidden;
-			text-overflow: ellipsis;
-			white-space: nowrap;
+			left: 0;
+			top: 6px;
+			width: 35% !important;
+			white-space: normal !important;
+			overflow: visible !important;
+			text-overflow: clip !important;
+			overflow-wrap: break-word;
+			hyphens: auto;
 			font-weight: 600;
 			font-size: 11px;
+			line-height: 1.4;
 			text-transform: uppercase;
 			color: #555;
-			margin-bottom: 2px;
 		}
+		.wp-list-table.widefat tbody td p {
+			margin: 0 0 4px;
+		}
+		/* The last cell holds the action buttons: label above them, buttons across the whole card */
 		.wp-list-table.widefat tbody td:last-child {
-			padding-top: 8px;
-			margin-top: 4px;
+			padding: 8px 0 0;
+			margin-top: 6px;
 			border-top: 1px solid #eee;
 		}
+		.wp-list-table.widefat tbody td:last-child::before {
+			position: static !important;
+			width: auto !important;
+			margin-bottom: 4px;
+		}
+		.wp-list-table.widefat tbody td:last-child .button {
+			margin: 0 4px 6px 0;
+		}
+		/* Attendant cards: label and value side by side, each line as tall as the longer of both */
+		.wp-list-table.dfxprl-attendants-table tbody td[data-colname] {
+			display: flex !important;
+			gap: 8px;
+			padding-left: 0;
+		}
+		.wp-list-table.dfxprl-attendants-table tbody td[data-colname]::before {
+			position: static !important;
+			flex: 0 0 35%;
+		}
+		.wp-list-table.dfxprl-attendants-table tbody td[data-colname] > .dfxprl-cell-value {
+			flex: 1 1 auto;
+			min-width: 0;
+		}
+		.wp-list-table.dfxprl-attendants-table tbody td:last-child {
+			display: block !important;
+		}
+		/* The attendant name is the title of the card */
+		.wp-list-table.dfxprl-attendants-table tbody td[data-column="name"] {
+			padding-left: 0;
+			font-size: 16px;
+		}
+		.wp-list-table.dfxprl-attendants-table tbody td[data-column="name"]::before {
+			display: none !important;
+		}
+		/* ...with the surnames next to the name, so their own line goes away */
+		.wp-list-table.dfxprl-attendants-table .dfxprl-card-surnames {
+			display: inline;
+		}
+		.wp-list-table.dfxprl-attendants-table tbody td[data-column="surnames"] {
+			display: none !important;
+		}
+		/* ...and the total of letters as a big number on the right of the title, before the rest of the fields */
+		.wp-list-table.dfxprl-attendants-table tbody td[data-column="name"] > .dfxprl-cell-value {
+			display: flex;
+			flex-direction: row-reverse;
+			justify-content: space-between;
+			align-items: center;
+			gap: 12px;
+		}
+		.wp-list-table.dfxprl-attendants-table .dfxprl-card-total {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			flex-shrink: 0;
+			min-width: 64px;
+			padding: 4px 8px;
+			border-radius: 6px;
+			background: #f0f6fc;
+			color: #1d2327;
+			line-height: 1.1;
+		}
+		.wp-list-table.dfxprl-attendants-table .dfxprl-card-total strong {
+			font-size: 28px;
+			font-weight: 700;
+		}
+		.wp-list-table.dfxprl-attendants-table .dfxprl-card-total small {
+			font-size: 10px;
+			text-transform: uppercase;
+			text-align: center;
+			color: #50575e;
+		}
+		.wp-list-table.dfxprl-attendants-table tbody td[data-column="total_letters"] {
+			display: none !important;
+		}
+		/* The total of letters of the retreat, big, above the list, with its detail in the same box */
+		.dfxprl-letters-summary .dfxprl-retreat-total {
+			display: block;
+			margin: 4px 0 8px;
+			padding: 10px 14px;
+			border-radius: 6px;
+			background: #f0f6fc;
+			border: 1px solid #c5d9ed;
+			color: #1d2327;
+		}
+		.dfxprl-retreat-total-number {
+			display: flex;
+			align-items: baseline;
+			gap: 10px;
+		}
+		.dfxprl-letters-summary .dfxprl-retreat-total strong {
+			font-size: 40px;
+			font-weight: 700;
+			line-height: 1;
+		}
+		.dfxprl-retreat-total-detail {
+			display: block;
+			margin-top: 6px;
+			font-size: 14px;
+			color: #3c434a;
+		}
+		.dfxprl-letters-summary .dfxprl-letters-line {
+			display: none;
+		}
+		.dfxprl-letters-summary .dfxprl-retreat-total small {
+			font-size: 13px;
+			font-weight: 600;
+			text-transform: uppercase;
+			color: #50575e;
+		}
+		/* Empty values only take room on a phone */
+		.wp-list-table.dfxprl-attendants-table tbody td.dfxprl-empty-cell:not(.dfxprl-inline-editing) {
+			display: none !important;
+		}
+		/* The column headers are hidden, so there is nothing to drag */
+		.dfxprl-column-order-help {
+			display: none;
+		}
 
-		/* Filters and pagination */
+		/* Filters and pagination. WordPress hides the actions above a list on
+		   small screens, which took the attendant filters and the CSV buttons away */
+		.tablenav.top .actions {
+			display: block;
+		}
+		.tablenav {
+			height: auto;
+		}
 		.tablenav .tablenav-pages,
-		.tablenav .alignleft.actions {
+		.tablenav .alignleft.actions,
+		.tablenav .alignright.actions {
 			float: none;
 			width: 100%;
+			margin: 0 0 8px;
+			padding: 0;
+		}
+		.tablenav .actions .button {
+			margin: 0 4px 6px 0;
+		}
+		.tablenav details .form-table input.regular-text,
+		.tablenav details .form-table select {
+			width: 100%;
+			max-width: 100%;
+		}
+
+		/* Custom fields of the retreat: one field per line, as wide as the card */
+		.dfxprl-cf-row > label:not(.dfxprl-cf-check) {
+			flex: 1 1 100%;
+			min-width: 0;
+		}
+		.dfxprl-cf-row > label input.regular-text,
+		.dfxprl-cf-row > label select,
+		.dfxprl-cf-row > label textarea {
+			width: 100%;
+			box-sizing: border-box;
+		}
+
+		.dfxprl-sticky-submit .button {
+			margin-bottom: 6px;
+		}
+		/* The credits float at the bottom of the screen in a single short line */
+		.dfxprl-plugin-footer {
+			position: fixed;
+			left: 0;
+			right: 0;
+			bottom: 0;
+			z-index: 1000;
+			margin: 0;
+			padding: 4px 10px;
+			background: #f0f0f1;
+			border-top: 1px solid #dcdcde;
+		}
+		.dfxprl-plugin-footer .dfxprl-footer-long {
+			display: none;
+		}
+		.dfxprl-plugin-footer .dfxprl-footer-short {
+			display: block;
+			overflow: hidden;
+			white-space: nowrap;
+			text-overflow: ellipsis;
+			font-size: 11px;
+			line-height: 18px;
+			text-align: center;
+		}
+		/* Room for the credits line: the end of the page and the save buttons stay above it */
+		#wpbody-content {
+			padding-bottom: 40px;
+		}
+		.dfxprl-sticky-submit {
+			bottom: 27px;
+		}
+
+		/* Access level drop-down: room for the arrow with the bigger mobile font */
+		.wp-core-ui select.dfxprl-change-permission {
+			padding-right: 28px;
 		}
 	}
 			';
@@ -1346,6 +1733,7 @@ class DFXPRL_Admin {
 					'generateError' => __( 'Error generating message URL. Please try again.', 'dfx-parish-retreat-letters' ),
 					'urlGenerated' => __( 'Message URL generated successfully!', 'dfx-parish-retreat-letters' ),
 					'urlCopied' => __( 'URL copied to clipboard!', 'dfx-parish-retreat-letters' ),
+					'copyMessageUrl' => __( 'Copy Message URL', 'dfx-parish-retreat-letters' ),
 					'copyError' => __( 'Failed to copy URL. Please copy it manually.', 'dfx-parish-retreat-letters' ),
 					'invitationMessageTitle' => __( 'Invitation Message', 'dfx-parish-retreat-letters' ),
 					'loadingMessage' => __( 'Loading message...', 'dfx-parish-retreat-letters' ),
@@ -1371,14 +1759,6 @@ class DFXPRL_Admin {
 			)
 		);
 
-		// Enqueue admin footer positioning script
-		wp_enqueue_script(
-			'dfxprl-admin-footer',
-			DFXPRL_PLUGIN_URL . 'assets/js/admin-footer.js',
-			array( 'jquery' ),
-			DFXPRL_VERSION,
-			true
-		);
 	}
 
 	/**
@@ -2081,7 +2461,7 @@ class DFXPRL_Admin {
 
 							<?php $this->render_custom_fields_editor( $retreat ); ?>
 
-							<p class="submit">
+							<p class="submit dfxprl-sticky-submit">
 								<input type="submit" name="submit" id="submit" class="button button-primary" value="<?php echo esc_attr( $is_edit ? __( 'Update Retreat', 'dfx-parish-retreat-letters' ) : __( 'Add Retreat', 'dfx-parish-retreat-letters' ) ); ?>">
 								<?php if ( $is_edit ) : ?>
 									<a href="<?php echo esc_url( admin_url( 'admin.php?page=dfxprl-retreats&action=attendants&retreat_id=' . $retreat->id ) ); ?>" class="button">
@@ -4145,7 +4525,7 @@ class DFXPRL_Admin {
 							?>
 						</p>
 						<p style="margin-top: 5px;" class="dfxprl-letters-summary">
-							<?php echo $this->render_letters_summary( $total_messages, $physical_letters ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Escaped while building the HTML ?>
+							<?php echo $this->render_letters_summary( $total_messages, $physical_letters, $non_printed_messages ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Escaped while building the HTML ?>
 						</p>
 						<?php if ( $can_manage_retreat && ! $withdrawn_view ) : ?>
 							<button type="submit" name="action" value="export_csv" class="button">
@@ -4227,7 +4607,8 @@ class DFXPRL_Admin {
 					</p>
 				<?php endif; ?>
 
-				<table class="wp-list-table widefat fixed striped dfxprl-attendants-table"<?php echo ( $can_manage_retreat && ! $withdrawn_view ) ? ' data-retreat-id="' . esc_attr( $retreat->id ) . '"' : ''; ?>>
+				<div class="dfxprl-table-scroll">
+				<table class="wp-list-table widefat striped dfxprl-attendants-table"<?php echo ( $can_manage_retreat && ! $withdrawn_view ) ? ' data-retreat-id="' . esc_attr( $retreat->id ) . '"' : ''; ?>>
 					<thead>
 						<?php $column_headers = array(); ?>
 						<tr>
@@ -4399,30 +4780,29 @@ class DFXPRL_Admin {
 												</button>
 											<?php endif; ?>
 										<?php else : ?>
-										<?php if ( $this->permissions->current_user_can_manage_messages( $retreat->id ) ) : ?>
-											<a href="<?php echo esc_url( admin_url( 'admin.php?page=dfxprl-retreats&action=edit_attendant&retreat_id=' . $retreat->id . '&attendant_id=' . $attendant->id ) ); ?>" class="button button-small">
-												<?php esc_html_e( 'Edit', 'dfx-parish-retreat-letters' ); ?>
-											</a>
-										<?php elseif ( $this->permissions->current_user_can_view_retreat( $retreat->id ) ) : ?>
-											<a href="<?php echo esc_url( admin_url( 'admin.php?page=dfxprl-retreats&action=edit_attendant&retreat_id=' . $retreat->id . '&attendant_id=' . $attendant->id ) ); ?>" class="button button-small">
-												<?php esc_html_e( 'View', 'dfx-parish-retreat-letters' ); ?>
-											</a>
-										<?php endif; ?>
-
-										<?php if ( $this->permissions->current_user_can_manage_messages( $retreat->id ) ) : ?>
-											<a href="<?php echo esc_url( admin_url( 'admin.php?page=dfxprl-messages&attendant_id=' . $attendant->id ) ); ?>" class="button button-small">
-												<?php esc_html_e( 'Messages', 'dfx-parish-retreat-letters' ); ?>
-											</a>
-										<?php endif; ?>
-
-										<?php // Read-only users can also get the letters URL and the invitation, to share them ?>
-										<?php if ( $this->permissions->current_user_can_view_retreat( $retreat->id ) ) : ?>
-											<?php if ( ! empty( $retreat->message_request_template ) ) : ?>
-												<button type="button" class="button button-small dfxprl-show-invitation-message" data-attendant-id="<?php echo esc_attr( $attendant->id ); ?>" data-retreat-id="<?php echo esc_attr( $retreat->id ); ?>">
-													<?php esc_html_e( 'Invitation Message', 'dfx-parish-retreat-letters' ); ?>
-												</button>
+										<?php
+										// The everyday actions carry an icon next to their words, so they are told apart at a glance
+										$edit_url     = admin_url( 'admin.php?page=dfxprl-retreats&action=edit_attendant&retreat_id=' . $retreat->id . '&attendant_id=' . $attendant->id );
+										$can_messages = $this->permissions->current_user_can_manage_messages( $retreat->id );
+										$can_view     = $this->permissions->current_user_can_view_retreat( $retreat->id );
+										?>
+										<span class="dfxprl-icon-actions">
+											<?php if ( $can_messages ) : ?>
+												<?php echo $this->icon_action_button( 'a', 'edit', __( 'Edit', 'dfx-parish-retreat-letters' ), 'href="' . esc_url( $edit_url ) . '"' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Escaped in the helper ?>
+												<?php echo $this->icon_action_button( 'a', 'email-alt', __( 'Messages', 'dfx-parish-retreat-letters' ), 'href="' . esc_url( admin_url( 'admin.php?page=dfxprl-messages&attendant_id=' . $attendant->id ) ) . '"' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Escaped in the helper ?>
+											<?php elseif ( $can_view ) : ?>
+												<?php echo $this->icon_action_button( 'a', 'visibility', __( 'View', 'dfx-parish-retreat-letters' ), 'href="' . esc_url( $edit_url ) . '"' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Escaped in the helper ?>
 											<?php endif; ?>
+											<?php // Read-only users can also get the letters URL and the invitation, to share them ?>
+											<?php if ( $can_view && ! empty( $retreat->message_request_template ) ) : ?>
+												<?php echo $this->icon_action_button( 'button', 'format-chat', __( 'Invitation Message', 'dfx-parish-retreat-letters' ), 'type="button" data-attendant-id="' . esc_attr( $attendant->id ) . '" data-retreat-id="' . esc_attr( $retreat->id ) . '"', 'dfxprl-show-invitation-message' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Escaped in the helper ?>
+											<?php endif; ?>
+											<?php if ( $can_manage_retreat ) : ?>
+												<?php echo $this->icon_action_button( 'button', 'exit', __( 'Withdraw', 'dfx-parish-retreat-letters' ), 'type="button" data-attendant-id="' . esc_attr( $attendant->id ) . '" data-attendant-name="' . esc_attr( trim( $attendant->name . ' ' . $attendant->surnames ) ) . '"', 'button-link-delete dfxprl-withdraw-attendant' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Escaped in the helper ?>
+											<?php endif; ?>
+										</span>
 
+										<?php if ( $can_view ) : ?>
 											<?php if ( empty( $attendant->message_url_token ) ) : ?>
 												<button type="button" class="button button-small dfxprl-generate-url" data-attendant-id="<?php echo esc_attr( $attendant->id ); ?>">
 													<?php esc_html_e( 'Generate Message URL', 'dfx-parish-retreat-letters' ); ?>
@@ -4432,12 +4812,6 @@ class DFXPRL_Admin {
 													<?php esc_html_e( 'Copy Message URL', 'dfx-parish-retreat-letters' ); ?>
 												</button>
 											<?php endif; ?>
-										<?php endif; ?>
-
-										<?php if ( $can_manage_retreat ) : ?>
-											<button type="button" class="button button-small button-link-delete dfxprl-withdraw-attendant" data-attendant-id="<?php echo esc_attr( $attendant->id ); ?>" data-attendant-name="<?php echo esc_attr( trim( $attendant->name . ' ' . $attendant->surnames ) ); ?>">
-												<?php esc_html_e( 'Withdraw', 'dfx-parish-retreat-letters' ); ?>
-											</button>
 										<?php endif; ?>
 										<?php endif; ?>
 									</td>
@@ -4463,6 +4837,7 @@ class DFXPRL_Admin {
 						<?php endif; ?>
 					</tbody>
 				</table>
+				</div>
 
 				<?php if ( $total_pages > 1 ) : ?>
 					<div class="notice notice-info inline" style="margin: 15px 0; padding: 10px;">
@@ -4776,7 +5151,7 @@ class DFXPRL_Admin {
 					</table>
 				<?php endif; ?>
 
-				<p class="submit">
+				<p class="submit dfxprl-sticky-submit">
 					<?php if ( $read_only ) : ?>
 						<a href="<?php echo esc_url( admin_url( 'admin.php?page=dfxprl-retreats&action=attendants&retreat_id=' . $retreat->id ) ); ?>" class="button">
 							<?php esc_html_e( 'Back to Attendants', 'dfx-parish-retreat-letters' ); ?>
@@ -4889,6 +5264,28 @@ class DFXPRL_Admin {
 	}
 
 	/**
+	 * Build an action button of the attendants list: an icon next to its words.
+	 *
+	 * @since 26.11.14
+	 * @param string $tag        'a' or 'button'.
+	 * @param string $icon       Dashicon name, without the "dashicons-" prefix.
+	 * @param string $label      What the button does.
+	 * @param string $attributes Extra attributes, already escaped.
+	 * @param string $class      Extra classes.
+	 * @return string
+	 */
+	private function icon_action_button( $tag, $icon, $label, $attributes, $class = '' ) {
+		return sprintf(
+			'<%1$s %2$s class="button button-small dfxprl-icon-button %3$s"><span class="dashicons dashicons-%4$s" aria-hidden="true"></span><span class="dfxprl-action-label">%5$s</span></%1$s>',
+			'a' === $tag ? 'a' : 'button',
+			$attributes,
+			esc_attr( $class ),
+			esc_attr( $icon ),
+			esc_html( $label )
+		);
+	}
+
+	/**
 	 * Build a cell of the attendants list.
 	 *
 	 * The cell is tagged with its column key and, when the current user can edit
@@ -4907,22 +5304,25 @@ class DFXPRL_Admin {
 	 */
 	private function render_attendant_list_cell( $key, $retreat, $attendant, $message_count, $non_printed_count, $custom_values, $list_fields, $log_summary = null ) {
 		$field = $list_fields[ $key ] ?? null;
-		$not_available = '<span class="description">' . esc_html__( 'N/A', 'dfx-parish-retreat-letters' ) . '</span>';
-		$no_notes = '<span class="description">' . esc_html__( 'No notes', 'dfx-parish-retreat-letters' ) . '</span>';
+		// Empty values show a dash, quieter than a word repeated on every row; screen readers still hear the word
+		$not_available = '<span class="description" aria-hidden="true">—</span><span class="screen-reader-text">' . esc_html__( 'N/A', 'dfx-parish-retreat-letters' ) . '</span>';
+		$no_notes = '<span class="description" aria-hidden="true">—</span><span class="screen-reader-text">' . esc_html__( 'No notes', 'dfx-parish-retreat-letters' ) . '</span>';
 
 		ob_start();
 		switch ( $key ) {
 			case 'name':
 				$label = __( 'Name', 'dfx-parish-retreat-letters' );
+				// The mobile cards show the total of letters as a big number next to the name
+				echo '<span class="dfxprl-card-total"><strong>' . esc_html( (int) $message_count + (int) $attendant->physical_letters ) . '</strong><small>' . esc_html__( 'Total Letters', 'dfx-parish-retreat-letters' ) . '</small></span>';
 				if ( DFXPRL_Attendant::is_withdrawn( $attendant ) ) {
 					// Withdrawn attendants cannot be edited, so there is no link to their page
-					echo '<strong>' . esc_html( $attendant->name ) . '</strong>';
+					echo '<strong>' . esc_html( $attendant->name ) . '<span class="dfxprl-card-surnames"> ' . esc_html( $attendant->surnames ) . '</span></strong>';
 					break;
 				}
 				?>
 				<strong>
 					<a href="<?php echo esc_url( admin_url( 'admin.php?page=dfxprl-retreats&action=edit_attendant&retreat_id=' . $retreat->id . '&attendant_id=' . $attendant->id ) ); ?>">
-						<?php echo esc_html( $attendant->name ); ?>
+						<?php echo esc_html( $attendant->name ); ?><span class="dfxprl-card-surnames"> <?php echo esc_html( $attendant->surnames ); ?></span>
 					</a>
 				</strong>
 				<?php
@@ -4935,7 +5335,9 @@ class DFXPRL_Admin {
 
 			case 'date_of_birth':
 				$label = __( 'Date of Birth', 'dfx-parish-retreat-letters' );
-				echo esc_html( date_i18n( get_option( 'date_format' ), strtotime( $attendant->date_of_birth ) ) );
+				// Short numeric date to save width; the long one shows on hover
+				$birth = strtotime( $attendant->date_of_birth );
+				echo '<span title="' . esc_attr( date_i18n( get_option( 'date_format' ), $birth ) ) . '">' . esc_html( date_i18n( self::short_date_format(), $birth ) ) . '</span>';
 				break;
 
 			case 'emergency_contact':
@@ -4982,13 +5384,15 @@ class DFXPRL_Admin {
 							esc_html( _n( '%d message', '%d messages', $message_count, 'dfx-parish-retreat-letters' ) ),
 							esc_html( $message_count )
 						);
-						// Show non-printed count if there are any non-printed messages
+						// Show non-printed count if there are any non-printed messages, on its own line to keep the column narrow
 						if ( $non_printed_count > 0 ) {
+							echo '<br><small>';
 							printf(
 								/* translators: %d: Number of non-printed messages */
-								esc_html__( ' (%d non-printed)', 'dfx-parish-retreat-letters' ),
+								esc_html( trim( __( ' (%d non-printed)', 'dfx-parish-retreat-letters' ) ) ),
 								esc_html( $non_printed_count )
 							);
+							echo '</small>';
 						}
 						?>
 					<?php echo $messages_link ? '</a>' : '</span>'; ?>
@@ -5017,7 +5421,7 @@ class DFXPRL_Admin {
 					printf(
 						/* translators: 1: date of withdrawal, 2: user who withdrew the attendant */
 						esc_html__( 'On %1$s by %2$s', 'dfx-parish-retreat-letters' ),
-						esc_html( self::format_utc_date( $attendant->withdrawn_at, get_option( 'date_format' ) ) ),
+						esc_html( self::format_utc_date( $attendant->withdrawn_at, self::short_date_format() ) ),
 						esc_html( $this->get_user_display_name( $attendant->withdrawn_by ) )
 					);
 					echo '</small>';
@@ -5058,9 +5462,15 @@ class DFXPRL_Admin {
 			'data-colname' => $label,
 		);
 
+		// Cells with nothing to show are left out of the cards on small screens
+		$classes = array();
+		if ( in_array( trim( $content ), array( $not_available, $no_notes, '' ), true ) ) {
+			$classes[] = 'dfxprl-empty-cell';
+		}
+
 		$editor = $this->get_list_cell_editor( $key, $retreat, $attendant, $field, $custom_values );
 		if ( $editor ) {
-			$attributes['class'] = 'dfxprl-inline-editable';
+			$classes[] = 'dfxprl-inline-editable';
 			$attributes['data-attendant-id'] = $attendant->id;
 			$attributes['data-edit-type'] = $editor['type'];
 			$attributes['data-value'] = $editor['value'];
@@ -5072,30 +5482,50 @@ class DFXPRL_Admin {
 				$attributes['data-required'] = '1';
 			}
 		}
+		if ( $classes ) {
+			$attributes['class'] = implode( ' ', $classes );
+		}
 
 		$html = '<td';
 		foreach ( $attributes as $name => $value ) {
 			$html .= ' ' . $name . '="' . esc_attr( $value ) . '"';
 		}
-		return $html . '>' . $content . '</td>';
+		// The wrapper lets the value sit next to its label in the mobile cards
+		return $html . '><div class="dfxprl-cell-value">' . $content . '</div></td>';
 	}
 
 	/**
 	 * Build the retreat letters summary shown above the attendants list.
 	 *
+	 * Phones show the total as a big number in a box, with the physical letters
+	 * and the letters still to print under it; computers show the line of text.
+	 *
 	 * @since 1.12.0
 	 * @param int $total_messages   Messages received through the application.
 	 * @param int $physical_letters Physical letters received.
+	 * @param int $non_printed      Messages not printed yet.
 	 * @return string
 	 */
-	private function render_letters_summary( $total_messages, $physical_letters ) {
-		return '<strong>' . esc_html__( 'Letters:', 'dfx-parish-retreat-letters' ) . '</strong> ' . esc_html( sprintf(
+	private function render_letters_summary( $total_messages, $physical_letters, $non_printed = 0 ) {
+		$total = $total_messages + $physical_letters;
+
+		$box = '<span class="dfxprl-retreat-total">'
+			. '<span class="dfxprl-retreat-total-number"><strong>' . esc_html( $total ) . '</strong><small>' . esc_html__( 'Total Letters', 'dfx-parish-retreat-letters' ) . '</small></span>'
+			. '<span class="dfxprl-retreat-total-detail">'
+			/* translators: %d: number of physical (paper) letters */
+			. esc_html( sprintf( _n( '%d physical letter', '%d physical letters', $physical_letters, 'dfx-parish-retreat-letters' ), $physical_letters ) )
+			. ' · '
+			/* translators: %d: number of letters received through the app that have not been printed yet */
+			. esc_html( sprintf( __( '%d to print', 'dfx-parish-retreat-letters' ), $non_printed ) )
+			. '</span></span>';
+
+		return $box . '<span class="dfxprl-letters-line"><strong>' . esc_html__( 'Letters:', 'dfx-parish-retreat-letters' ) . '</strong> ' . esc_html( sprintf(
 			/* translators: 1: total letters count, 2: letters received through the app, 3: physical letters count */
 			__( '%1$d in total (%2$d via app, %3$d physical)', 'dfx-parish-retreat-letters' ),
-			$total_messages + $physical_letters,
+			$total,
 			$total_messages,
 			$physical_letters
-		) );
+		) ) . '</span>';
 	}
 
 	/**
@@ -5232,10 +5662,14 @@ class DFXPRL_Admin {
 			// Other cells of the row and the retreat summary that depend on the physical letters
 			$response['related_cells'] = array(
 				$this->render_attendant_list_cell( 'total_letters', $retreat, $attendant, $message_count, $non_printed_count, $custom_values, $list_fields ),
+				// The name cell carries the total for the mobile cards
+				$this->render_attendant_list_cell( 'name', $retreat, $attendant, $message_count, $non_printed_count, $custom_values, $list_fields ),
 			);
+			// Only active attendants can be edited, so the summary is the one of the active tab
 			$response['letters_summary'] = $this->render_letters_summary(
-				$this->message_model->get_count_by_retreat( $retreat->id ),
-				$this->attendant_model->get_physical_letters_count_by_retreat( $retreat->id )
+				$this->message_model->get_count_by_retreat( $retreat->id, false ),
+				$this->attendant_model->get_physical_letters_count_by_retreat( $retreat->id, false ),
+				$this->message_model->get_non_printed_count_by_retreat( $retreat->id, false )
 			);
 		}
 		wp_send_json_success( $response );
@@ -7719,7 +8153,7 @@ class DFXPRL_Admin {
 					</tbody>
 				</table>
 
-				<p class="submit">
+				<p class="submit dfxprl-sticky-submit">
 					<input type="submit" name="submit" id="submit" class="button button-primary" value="<?php esc_attr_e( 'Save Settings', 'dfx-parish-retreat-letters' ); ?>">
 				</p>
 			</form>
@@ -7945,20 +8379,23 @@ class DFXPRL_Admin {
 	 */
 	private function render_plugin_footer() {
 		?>
-		<div class="dfxprl-plugin-footer" style="position: fixed; bottom: 0; right: 0; left: 200px; z-index: 1000; background: #f1f1f1; border-top: 1px solid #ddd; padding: 10px 20px;">
-			<p style="margin: 0; color: #666; font-size: 12px; text-align: right;">
+		<?php $author_link = sprintf( '<a href="%s">David Marín Carreño</a>', esc_url( __( 'https://davefx.com/en/wordpress-plugins/', 'dfx-parish-retreat-letters' ) ) ); ?>
+		<div class="dfxprl-plugin-footer">
+			<p class="dfxprl-footer-long">
 				<?php
 				echo wp_kses_post( sprintf(
 					/* translators: %1$s: Plugin name, %2$s: Author link */
 					__( 'Retreat letters management features provided via %1$s plugin by %2$s. A.M.D.G.', 'dfx-parish-retreat-letters' ),
 					'<strong>DFX Parish Retreat Letters</strong>',
-					sprintf('<a href="%s">David Marín Carreño</a>', esc_url( __( 'https://davefx.com/en/wordpress-plugins/', 'dfx-parish-retreat-letters' ) ) )
+					$author_link
 				) );
 				?>
 			</p>
+			<?php // Phones keep the credits in a single line at the bottom of the screen ?>
+			<p class="dfxprl-footer-short">
+				<?php echo wp_kses_post( '<strong>DFX Parish Retreat Letters</strong> · ' . $author_link . ' · A.M.D.G.' ); ?>
+			</p>
 		</div>
 		<?php
-		// Footer positioning script is now properly enqueued via enqueue_admin_scripts()
-		// and loaded from assets/js/admin-footer.js
 	}
 }

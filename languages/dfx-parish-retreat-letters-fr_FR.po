@@ -3499,3 +3499,20 @@ msgstr "Cet utilisateur n’a pas accès à cette retraite."
 #, php-format
 msgid "%1$s is now %2$s."
 msgstr "%1$s est maintenant %2$s."
+
+#. translators: Compact numeric date shown in lists, as a PHP date format (https://www.php.net/manual/datetime.format.php), e.g. d/m/Y
+msgctxt "short date format"
+msgid "m/d/Y"
+msgstr "d/m/Y"
+
+#. translators: %d: number of physical (paper) letters
+#, php-format
+msgid "%d physical letter"
+msgid_plural "%d physical letters"
+msgstr[0] "%d lettre papier"
+msgstr[1] "%d lettres papier"
+
+#. translators: %d: number of letters received through the app that have not been printed yet
+#, php-format
+msgid "%d to print"
+msgstr "%d à imprimer"

@@ -3499,3 +3499,20 @@ msgstr "Diese Person hat keinen Zugriff auf diese Einkehrtage."
 #, php-format
 msgid "%1$s is now %2$s."
 msgstr "%1$s ist jetzt %2$s."
+
+#. translators: Compact numeric date shown in lists, as a PHP date format (https://www.php.net/manual/datetime.format.php), e.g. d/m/Y
+msgctxt "short date format"
+msgid "m/d/Y"
+msgstr "d.m.Y"
+
+#. translators: %d: number of physical (paper) letters
+#, php-format
+msgid "%d physical letter"
+msgid_plural "%d physical letters"
+msgstr[0] "%d Brief in Papierform"
+msgstr[1] "%d Briefe in Papierform"
+
+#. translators: %d: number of letters received through the app that have not been printed yet
+#, php-format
+msgid "%d to print"
+msgstr "%d zu drucken"
