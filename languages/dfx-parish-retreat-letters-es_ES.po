@@ -3519,3 +3519,15 @@ msgstr[1] "%d cartas físicas"
 #, php-format
 msgid "%d to print"
 msgstr "%d por imprimir"
+
+#: includes/class-admin.php
+msgid "Name and Surnames"
+msgstr "Nombre y apellidos"
+
+#: includes/class-admin.php
+msgid "(by name)"
+msgstr "(por nombre)"
+
+#: includes/class-admin.php
+msgid "(by surnames)"
+msgstr "(por apellidos)"

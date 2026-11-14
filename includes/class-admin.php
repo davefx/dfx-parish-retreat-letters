@@ -1050,9 +1050,18 @@ class DFXPRL_Admin {
 		.dfxprl-attendants-table td[data-column="date_of_birth"] {
 			white-space: nowrap;
 		}
-		.dfxprl-attendants-table td[data-column="name"],
-		.dfxprl-attendants-table td[data-column="surnames"] {
-			min-width: 80px;
+		/* The full name on one line, or the surnames under the name when not all the columns fit (see admin.js) */
+		.dfxprl-attendants-table td[data-column="name"] {
+			white-space: nowrap;
+		}
+		.dfxprl-attendants-table.dfxprl-compact-names td[data-column="name"] .dfxprl-card-surnames {
+			display: block;
+		}
+		/* Whether the name column is sorted by name or by surnames, on its own line under the header */
+		.dfxprl-attendants-table .dfxprl-sort-detail {
+			display: block;
+			clear: both;
+			font-weight: 400;
 		}
 		.dfxprl-attendants-table td[data-column="emergency_contact"] {
 			min-width: 140px;
@@ -1142,6 +1151,9 @@ class DFXPRL_Admin {
 		width: 100%;
 		max-width: 100%;
 		box-sizing: border-box;
+	}
+	.dfxprl-inline-editor .dfxprl-inline-input + .dfxprl-inline-input {
+		margin-top: 4px;
 	}
 	.dfxprl-inline-buttons {
 		margin-top: 4px;
@@ -1261,8 +1273,7 @@ class DFXPRL_Admin {
 		cursor: progress;
 		opacity: 0.6;
 	}
-	/* The surnames and the totals of letters as big numbers only show on phones */
-	.dfxprl-card-surnames,
+	/* The totals of letters as big numbers only show on phones */
 	.dfxprl-card-total,
 	.dfxprl-retreat-total {
 		display: none;
@@ -1401,13 +1412,6 @@ class DFXPRL_Admin {
 			font-size: 16px;
 		}
 		.wp-list-table.dfxprl-attendants-table tbody td[data-column="name"]::before {
-			display: none !important;
-		}
-		/* ...with the surnames next to the name, so their own line goes away */
-		.wp-list-table.dfxprl-attendants-table .dfxprl-card-surnames {
-			display: inline;
-		}
-		.wp-list-table.dfxprl-attendants-table tbody td[data-column="surnames"] {
 			display: none !important;
 		}
 		/* ...and the total of letters as a big number on the right of the title, before the rest of the fields */
@@ -1753,6 +1757,8 @@ class DFXPRL_Admin {
 					'contactLogTitle' => __( 'Contact Log', 'dfx-parish-retreat-letters' ),
 					'yes' => __( 'Yes', 'dfx-parish-retreat-letters' ),
 					'fieldRequired' => __( 'This field is required.', 'dfx-parish-retreat-letters' ),
+					'nameLabel'     => __( 'Name', 'dfx-parish-retreat-letters' ),
+					'surnamesLabel' => __( 'Surnames', 'dfx-parish-retreat-letters' ),
 					'inlineError' => __( 'Error saving the field. Please try again.', 'dfx-parish-retreat-letters' ),
 'confirmRemoveCustomField' => __( 'Removing this field will permanently delete its values for all attendants when the retreat is saved. Continue?', 'dfx-parish-retreat-letters' ),
 				),
@@ -4269,7 +4275,7 @@ class DFXPRL_Admin {
 		$custom_values = $list_fields ? $this->custom_field_model->get_values_for_attendants( wp_list_pluck( $attendants, 'id' ) ) : array();
 
 		// Columns available in this list, in their default order (the Actions column always goes last)
-		$available_columns = array( 'name', 'surnames' );
+		$available_columns = array( 'name' );
 		if ( $withdrawn_view ) {
 			$available_columns[] = 'withdrawal';
 		}
@@ -4297,8 +4303,10 @@ class DFXPRL_Admin {
 		$column_order = $this->merge_list_column_order( $saved_column_order, $available_columns );
 
 		// Helper function to generate sortable column header URL
-		$get_sort_url = function( $column ) use ( $retreat, $search, $orderby, $order, $filters, $view_params ) {
-			$new_order = ( $orderby === $column && $order === 'ASC' ) ? 'DESC' : 'ASC';
+		$get_sort_url = function( $column, $new_order = null ) use ( $retreat, $search, $orderby, $order, $filters, $view_params ) {
+			if ( null === $new_order ) {
+				$new_order = ( $orderby === $column && $order === 'ASC' ) ? 'DESC' : 'ASC';
+			}
 			$params = array(
 				'page'      => 'dfxprl-retreats',
 				'action'    => 'attendants',
@@ -4353,6 +4361,16 @@ class DFXPRL_Admin {
 			}
 			return add_query_arg( $params, admin_url( 'admin.php' ) );
 		};
+
+		// The name column cycles through: name ascending, surnames ascending, name descending, surnames descending
+		$name_sort_cycle = array(
+			'name|ASC'      => array( 'surnames', 'ASC' ),
+			'surnames|ASC'  => array( 'name', 'DESC' ),
+			'name|DESC'     => array( 'surnames', 'DESC' ),
+			'surnames|DESC' => array( 'name', 'ASC' ),
+		);
+		$name_sort_next = $name_sort_cycle[ $orderby . '|' . $order ] ?? array( 'name', 'ASC' );
+		$name_sorted    = in_array( $orderby, array( 'name', 'surnames' ), true );
 
 		// Helper function to generate sort indicator
 		$get_sort_indicator = function( $column ) use ( $orderby, $order ) {
@@ -4613,21 +4631,15 @@ class DFXPRL_Admin {
 						<?php $column_headers = array(); ?>
 						<tr>
 							<?php ob_start(); ?>
-							<th scope="col" class="manage-column sortable <?php echo $orderby === 'name' ? 'sorted' : 'sortable'; ?> <?php echo $orderby === 'name' ? esc_attr( strtolower( $order ) ) : 'desc'; ?>">
-								<a href="<?php echo esc_url( $get_sort_url( 'name' ) ); ?>">
-									<span><?php esc_html_e( 'Name', 'dfx-parish-retreat-letters' ); ?></span>
-									<span class="sorting-indicator"><?php echo esc_html( $get_sort_indicator( 'name' ) ); ?></span>
+							<th scope="col" class="manage-column sortable <?php echo $name_sorted ? 'sorted ' . esc_attr( strtolower( $order ) ) : 'sortable desc'; ?>">
+								<a href="<?php echo esc_url( $get_sort_url( $name_sort_next[0], $name_sort_next[1] ) ); ?>">
+									<span><?php esc_html_e( 'Name and Surnames', 'dfx-parish-retreat-letters' ); ?></span>
+									<?php if ( $name_sorted ) : ?>
+										<small class="dfxprl-sort-detail"><?php echo 'surnames' === $orderby ? esc_html__( '(by surnames)', 'dfx-parish-retreat-letters' ) : esc_html__( '(by name)', 'dfx-parish-retreat-letters' ); ?><?php echo esc_html( $get_sort_indicator( $orderby ) ); ?></small>
+									<?php endif; ?>
 								</a>
 							</th>
 							<?php $column_headers[ 'name' ] = ob_get_clean(); ?>
-							<?php ob_start(); ?>
-							<th scope="col" class="manage-column sortable <?php echo $orderby === 'surnames' ? 'sorted' : 'sortable'; ?> <?php echo $orderby === 'surnames' ? esc_attr( strtolower( $order ) ) : 'desc'; ?>">
-								<a href="<?php echo esc_url( $get_sort_url( 'surnames' ) ); ?>">
-									<span><?php esc_html_e( 'Surnames', 'dfx-parish-retreat-letters' ); ?></span>
-									<span class="sorting-indicator"><?php echo esc_html( $get_sort_indicator( 'surnames' ) ); ?></span>
-								</a>
-							</th>
-							<?php $column_headers[ 'surnames' ] = ob_get_clean(); ?>
 							<?php ob_start(); ?>
 							<th scope="col" class="manage-column sortable <?php echo $orderby === 'date_of_birth' ? 'sorted' : 'sortable'; ?> <?php echo $orderby === 'date_of_birth' ? esc_attr( strtolower( $order ) ) : 'desc'; ?>">
 								<a href="<?php echo esc_url( $get_sort_url( 'date_of_birth' ) ); ?>">
@@ -5311,26 +5323,21 @@ class DFXPRL_Admin {
 		ob_start();
 		switch ( $key ) {
 			case 'name':
-				$label = __( 'Name', 'dfx-parish-retreat-letters' );
+				$label = __( 'Name and Surnames', 'dfx-parish-retreat-letters' );
 				// The mobile cards show the total of letters as a big number next to the name
 				echo '<span class="dfxprl-card-total"><strong>' . esc_html( (int) $message_count + (int) $attendant->physical_letters ) . '</strong><small>' . esc_html__( 'Total Letters', 'dfx-parish-retreat-letters' ) . '</small></span>';
 				if ( DFXPRL_Attendant::is_withdrawn( $attendant ) ) {
 					// Withdrawn attendants cannot be edited, so there is no link to their page
-					echo '<strong>' . esc_html( $attendant->name ) . '<span class="dfxprl-card-surnames"> ' . esc_html( $attendant->surnames ) . '</span></strong>';
+					echo '<strong>' . esc_html( $attendant->name ) . ' <span class="dfxprl-card-surnames">' . esc_html( $attendant->surnames ) . '</span></strong>';
 					break;
 				}
 				?>
 				<strong>
 					<a href="<?php echo esc_url( admin_url( 'admin.php?page=dfxprl-retreats&action=edit_attendant&retreat_id=' . $retreat->id . '&attendant_id=' . $attendant->id ) ); ?>">
-						<?php echo esc_html( $attendant->name ); ?><span class="dfxprl-card-surnames"> <?php echo esc_html( $attendant->surnames ); ?></span>
+						<?php echo esc_html( $attendant->name ); ?> <span class="dfxprl-card-surnames"><?php echo esc_html( $attendant->surnames ); ?></span>
 					</a>
 				</strong>
 				<?php
-				break;
-
-			case 'surnames':
-				$label = __( 'Surnames', 'dfx-parish-retreat-letters' );
-				echo esc_html( $attendant->surnames );
 				break;
 
 			case 'date_of_birth':
@@ -5481,6 +5488,9 @@ class DFXPRL_Admin {
 			if ( ! empty( $editor['required'] ) ) {
 				$attributes['data-required'] = '1';
 			}
+			if ( isset( $editor['surnames'] ) ) {
+				$attributes['data-value-surnames'] = $editor['surnames'];
+			}
 		}
 		if ( $classes ) {
 			$attributes['class'] = implode( ' ', $classes );
@@ -5571,8 +5581,7 @@ class DFXPRL_Admin {
 		}
 
 		$core_editors = array(
-			'name'              => array( 'text', true ),
-			'surnames'          => array( 'text', true ),
+			'name'              => array( 'name', true ),
 			'date_of_birth'     => array( 'date', true ),
 			'invited_by'        => array( 'text', false ),
 			'incompatibilities' => array( 'textarea', false ),
@@ -5588,12 +5597,17 @@ class DFXPRL_Admin {
 			return null;
 		}
 
-		return array(
+		$editor = array(
 			'type'     => $core_editors[ $key ][0],
 			'value'    => (string) ( $attendant->$key ?? '' ),
 			'title'    => $title,
 			'required' => $core_editors[ $key ][1],
 		);
+		if ( 'name' === $key ) {
+			// The name and the surnames share a column, and are edited one above the other
+			$editor['surnames'] = (string) ( $attendant->surnames ?? '' );
+		}
+		return $editor;
 	}
 
 	/**
@@ -5638,6 +5652,19 @@ class DFXPRL_Admin {
 				wp_send_json_error( array( 'message' => __( 'The number of physical letters must be a whole number, zero or greater.', 'dfx-parish-retreat-letters' ) ) );
 			}
 			$saved = $this->attendant_model->update_physical_letters( $attendant->id, (int) $raw_value );
+		} elseif ( 'name' === $key ) {
+			// The name and the surnames are saved together, and neither can be left empty
+			$raw_surnames = is_scalar( $_POST['surnames'] ?? null ) ? wp_unslash( $_POST['surnames'] ) : ''; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Sanitized by update_field()
+			if ( '' === trim( sanitize_text_field( $raw_value ) ) || '' === trim( sanitize_text_field( $raw_surnames ) ) ) {
+				wp_send_json_error( array( 'message' => __( 'This field is required.', 'dfx-parish-retreat-letters' ) ) );
+			}
+			$saved = $this->attendant_model->update_field( $attendant->id, 'name', $raw_value );
+			if ( ! is_wp_error( $saved ) && $saved ) {
+				$saved = $this->attendant_model->update_field( $attendant->id, 'surnames', $raw_surnames );
+			}
+			if ( is_wp_error( $saved ) ) {
+				wp_send_json_error( array( 'message' => $saved->get_error_message() ) );
+			}
 		} else {
 			$saved = $this->attendant_model->update_field( $attendant->id, $key, $raw_value );
 			if ( is_wp_error( $saved ) ) {

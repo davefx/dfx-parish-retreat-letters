@@ -3857,3 +3857,15 @@ msgstr[1] ""
 #, php-format
 msgid "%d to print"
 msgstr ""
+
+#: includes/class-admin.php
+msgid "Name and Surnames"
+msgstr ""
+
+#: includes/class-admin.php
+msgid "(by name)"
+msgstr ""
+
+#: includes/class-admin.php
+msgid "(by surnames)"
+msgstr ""

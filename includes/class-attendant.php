@@ -372,6 +372,11 @@ class DFXPRL_Attendant {
 			} else {
 				$order_clause = "message_count {$order}, a.name ASC";
 			}
+		} elseif ( $orderby === 'name' ) {
+			// People who share a name are sorted by their surnames, and the other way round
+			$order_clause = "a.name {$order}, a.surnames {$order}";
+		} elseif ( $orderby === 'surnames' ) {
+			$order_clause = "a.surnames {$order}, a.name {$order}";
 		} else {
 			$order_clause = "a.{$orderby} {$order}";
 		}

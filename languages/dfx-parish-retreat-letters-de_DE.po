@@ -3516,3 +3516,15 @@ msgstr[1] "%d Briefe in Papierform"
 #, php-format
 msgid "%d to print"
 msgstr "%d zu drucken"
+
+#: includes/class-admin.php
+msgid "Name and Surnames"
+msgstr "Vorname und Nachnamen"
+
+#: includes/class-admin.php
+msgid "(by name)"
+msgstr "(nach Vorname)"
+
+#: includes/class-admin.php
+msgid "(by surnames)"
+msgstr "(nach Nachnamen)"

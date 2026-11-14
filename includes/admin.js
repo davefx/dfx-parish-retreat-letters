@@ -1365,6 +1365,28 @@
         });
     });
 
+    // The surnames go under the name only when not all the columns of the attendants list fit
+    $(function() {
+        var $table = $('.dfxprl-attendants-table');
+        var $pane = $table.closest('.dfxprl-table-scroll');
+        if (!$pane.length) {
+            return;
+        }
+        function fitNames() {
+            $table.removeClass('dfxprl-compact-names');
+            if ($pane[0].scrollWidth > $pane[0].clientWidth + 1) {
+                $table.addClass('dfxprl-compact-names');
+            }
+        }
+        var timer;
+        $(window).on('resize', function() {
+            clearTimeout(timer);
+            timer = setTimeout(fitNames, 100);
+        });
+        $(document).on('dfxprl:columns-changed', fitNames);
+        fitNames();
+    });
+
     // Inline editing of attendant fields in the attendants list
     $(function() {
         var $table = $('.dfxprl-attendants-table');
@@ -1406,6 +1428,13 @@
                     });
                     $input.val(value);
                     break;
+                case 'name':
+                    // The name on top and the surnames below it
+                    $input = $('<input type="text" class="dfxprl-inline-input dfxprl-inline-name">').val(value)
+                        .attr({ placeholder: dfxprlAdmin.messages.nameLabel, 'aria-label': dfxprlAdmin.messages.nameLabel })
+                        .add($('<input type="text" class="dfxprl-inline-input dfxprl-inline-surnames">').val($cell.attr('data-value-surnames') || '')
+                        .attr({ placeholder: dfxprlAdmin.messages.surnamesLabel, 'aria-label': dfxprlAdmin.messages.surnamesLabel }));
+                    break;
                 default:
                     $input = $('<input type="text" class="dfxprl-inline-input">').val(value);
             }
@@ -1423,7 +1452,7 @@
             if ($cell.attr('data-edit-type') === 'checkbox') {
                 return $editor.find('input[type=checkbox]').is(':checked') ? '1' : '';
             }
-            return $editor.find('.dfxprl-inline-input').val();
+            return $editor.find('.dfxprl-inline-input').first().val();
         }
 
         function cancel($cell) {
@@ -1432,7 +1461,8 @@
 
         function save($cell) {
             var value = editorValue($cell);
-            if ($cell.attr('data-required') && !String(value).trim()) {
+            var surnames = $cell.find('.dfxprl-inline-surnames').val();
+            if ($cell.attr('data-required') && (!String(value).trim() || (surnames !== undefined && !String(surnames).trim()))) {
                 alert(dfxprlAdmin.messages.fieldRequired);
                 return;
             }
@@ -1442,7 +1472,8 @@
                 nonce: dfxprlAdmin.nonce,
                 attendant_id: $cell.attr('data-attendant-id'),
                 column: $cell.attr('data-column'),
-                value: value
+                value: value,
+                surnames: surnames
             }).done(function(response) {
                 if (response.success) {
                     var $row = $cell.closest('tr');

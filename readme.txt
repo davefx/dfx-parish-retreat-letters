@@ -3,7 +3,7 @@ Contributors: davefx
 Tags: parish, retreat, letters, confidential, GDPR
 Requires at least: 5.0
 Tested up to: 7.1
-Stable tag: 26.11.14
+Stable tag: 26.11.14.1
 Requires PHP: 7.4
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
@@ -196,6 +196,12 @@ By default it is generated automatically and stored in the WordPress database (`
 Yes. The best place is [translate.wordpress.org](https://translate.wordpress.org/projects/wp-plugins/dfx-parish-retreat-letters/), so the translation reaches every site as a language pack. A `.pot` translation template is also included in the `languages/` directory.
 
 ## Changelog
+
+### 26.11.14.1
+
+- Change: on computers, the attendants list shows the name and the surnames in a single **Name and Surnames** column. Each click on its header sorts by name, by surnames, and then the same in reverse order. When not all the columns fit, the surnames go under the name, so the column takes less room.
+- Change: editing the name from the list shows two fields, the name on top and the surnames below it, saved together.
+- Change: attendants who share a name are sorted by their surnames, and the other way round.
 
 ### 26.11.14
 

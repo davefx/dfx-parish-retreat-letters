@@ -3516,3 +3516,15 @@ msgstr[1] "%d cartes físiques"
 #, php-format
 msgid "%d to print"
 msgstr "%d per imprimir"
+
+#: includes/class-admin.php
+msgid "Name and Surnames"
+msgstr "Nom i cognoms"
+
+#: includes/class-admin.php
+msgid "(by name)"
+msgstr "(per nom)"
+
+#: includes/class-admin.php
+msgid "(by surnames)"
+msgstr "(per cognoms)"

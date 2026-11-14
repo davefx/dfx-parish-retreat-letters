@@ -56,6 +56,6 @@ class AttendantListCellIntegrationTest extends WP_UnitTestCase {
 		// 5 messages and 2 physical letters
 		$this->assertMatchesRegularExpression( '#<span class="dfxprl-card-total"><strong>7</strong><small>[^<]+</small></span>#', $html );
 
-		$this->assertStringContainsString( 'Lucía<span class="dfxprl-card-surnames"> Navarro Gil</span>', $html );
+		$this->assertStringContainsString( 'Lucía <span class="dfxprl-card-surnames">Navarro Gil</span>', $html );
 	}
 }

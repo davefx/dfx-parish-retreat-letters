@@ -3516,3 +3516,15 @@ msgstr[1] "%d paperezko gutun"
 #, php-format
 msgid "%d to print"
 msgstr "%d inprimatzeko"
+
+#: includes/class-admin.php
+msgid "Name and Surnames"
+msgstr "Izen-abizenak"
+
+#: includes/class-admin.php
+msgid "(by name)"
+msgstr "(izenaren arabera)"
+
+#: includes/class-admin.php
+msgid "(by surnames)"
+msgstr "(abizenen arabera)"
