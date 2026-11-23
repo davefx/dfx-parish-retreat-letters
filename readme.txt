@@ -3,7 +3,7 @@ Contributors: davefx
 Tags: parish, retreat, letters, confidential, GDPR
 Requires at least: 5.0
 Tested up to: 7.1
-Stable tag: 26.11.14.1
+Stable tag: 26.11.23
 Requires PHP: 7.4
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
@@ -196,6 +196,13 @@ By default it is generated automatically and stored in the WordPress database (`
 Yes. The best place is [translate.wordpress.org](https://translate.wordpress.org/projects/wp-plugins/dfx-parish-retreat-letters/), so the translation reaches every site as a language pack. A `.pot` translation template is also included in the `languages/` directory.
 
 ## Changelog
+
+### 26.11.23
+
+- New: the **Withdrawn attendants** tab has a **Return pending letters by email** button that returns the letters of every withdrawn attendant at once, showing the progress and, at the end, which letters could not be returned and why.
+- Change: a withdrawn attendant with letters that can still be returned by email can no longer be deleted, and a retreat with such letters can no longer be emptied, without returning them first. Deleting or emptying offers to return them right there.
+- New: letters whose return has failed can be deleted without returning them, after a confirmation. This option only appears once a return has failed, and it is recorded in the audit log.
+- Change: when a letter cannot be returned because the mail server refuses the email, the error given by the server is shown.
 
 ### 26.11.14.1
 

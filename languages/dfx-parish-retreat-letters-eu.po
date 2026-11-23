@@ -163,8 +163,8 @@ msgstr "Parte-hartzaile hau behin betiko ezabatu nahi duzu, bere mezuekin, konta
 #. translators: %d: number of letters that can still be returned by email
 #: includes/class-admin.php:1239
 #, php-format
-msgid "This attendant has %d letters that can still be returned to their senders by email. If you delete the attendant, they will be deleted without being returned."
-msgstr "Parte-hartzaile honek oraindik e-postaz igorleei itzul dakizkiekeen %d gutun ditu. Parte-hartzailea ezabatzen baduzu, itzuli gabe ezabatuko dira."
+msgid "This attendant cannot be deleted yet. Letters still to be returned to their senders by email: %d. Return them first from the attendant's Messages page."
+msgstr "Ezin da oraindik parte-hartzaile hau ezabatu. E-postaz igorleei itzultzeko dauden gutunak: %d. Itzuli lehenik bere Mezuetatik."
 
 #: includes/class-admin.php:1240
 msgid "Return letter by email"
@@ -315,8 +315,8 @@ msgstr "Haien gutunak, fitxategiak, inprimatze-historia, kontaktuen erregistroa 
 #. translators: %d: number of letters
 #: includes/class-admin.php:1280
 #, php-format
-msgid "Letters of withdrawn attendants that can still be returned to their senders by email: %d. If you empty the retreat, they will be deleted without being returned."
-msgstr "Oraindik e-postaz igorleei itzul dakizkiekeen baja emandako parte-hartzaileen gutunak: %d. Erretiroa husten baduzu, itzuli gabe ezabatuko dira."
+msgid "The retreat cannot be emptied yet. Letters of withdrawn attendants still to be returned to their senders by email: %d. Return them first from the Messages page of each withdrawn attendant."
+msgstr "Ezin da oraindik erretiroa hustu. Baja emandako parte-hartzaileen gutunak, e-postaz igorleei itzultzeko daudenak: %d. Itzuli lehenik baja emandako parte-hartzaile bakoitzaren Mezuetatik."
 
 #: includes/class-admin.php:1281
 msgid "To confirm, type the exact retreat name below:"
@@ -3528,3 +3528,71 @@ msgstr "(izenaren arabera)"
 #: includes/class-admin.php
 msgid "(by surnames)"
 msgstr "(abizenen arabera)"
+
+#: includes/class-admin.php
+msgid "Letters still to be returned"
+msgstr "Itzultzeko dauden gutunak"
+
+#: includes/class-admin.php
+msgid "This attendant has letters still to be returned to their senders by email: %d. Return them before deleting the attendant."
+msgstr "Parte-hartzaile honek e-postaz igorleei itzultzeko gutunak ditu: %d. Itzuli parte-hartzailea ezabatu aurretik."
+
+#: includes/class-admin.php
+msgid "Withdrawn attendants of this retreat have letters still to be returned to their senders by email: %d. Return them before emptying the retreat."
+msgstr "Erretiro honetako baja emandako parte-hartzaileek e-postaz igorleei itzultzeko gutunak dituzte: %d. Itzuli erretiroa hustu aurretik."
+
+#: includes/class-admin.php
+msgid "Letters of withdrawn attendants still to be returned to their senders by email: %d. Each one is sent back with its attachments and then deleted from the system. Remember to destroy the printed copies."
+msgstr "Baja emandako parte-hartzaileen gutunak, e-postaz igorleei itzultzeko daudenak: %d. Bakoitza bere eranskinekin itzultzen da eta gero sistematik ezabatzen da. Gogoratu inprimatutako kopiak suntsitzea."
+
+#: includes/class-admin.php
+msgid "Return the letters by email"
+msgstr "Itzuli gutunak e-postaz"
+
+#: includes/class-admin.php
+msgid "Delete without returning"
+msgstr "Ezabatu itzuli gabe"
+
+#: includes/class-admin.php
+msgid "Returning letter %1$d of %2$d..."
+msgstr "%1$d/%2$d gutuna itzultzen..."
+
+#: includes/class-admin.php
+msgid "These letters have not been returned and are still in the system:"
+msgstr "Gutun hauek ez dira itzuli eta sisteman jarraitzen dute:"
+
+#: includes/class-admin.php
+msgid "Letters still to be returned: %d. They will be deleted together with the attendant, and their senders will not get them back. This cannot be undone."
+msgstr "Itzultzeko dauden gutunak: %d. Parte-hartzailearekin batera ezabatuko dira, eta igorleek ez dituzte itzulita jasoko. Ezin da desegin."
+
+#: includes/class-admin.php
+msgid "Letters still to be returned: %d. They will be deleted when the retreat is emptied, and their senders will not get them back. This cannot be undone."
+msgstr "Itzultzeko dauden gutunak: %d. Erretiroa hustean ezabatuko dira, eta igorleek ez dituzte itzulita jasoko. Ezin da desegin."
+
+#: includes/class-admin.php
+msgid "I understand that these letters will be deleted without being returned"
+msgstr "Ulertzen dut gutun hauek itzuli gabe ezabatuko direla"
+
+#: includes/class-admin.php
+msgid "The letters still to be returned will also be deleted without being returned."
+msgstr "Itzultzeko dauden gutunak ere ezabatuko dira, itzuli gabe."
+
+#: includes/class-admin.php
+msgid "Continue"
+msgstr "Jarraitu"
+
+#: includes/class-admin.php
+msgid "Close"
+msgstr "Itxi"
+
+#: includes/class-letter-return.php
+msgid "Error: %s"
+msgstr "Errorea: %s"
+
+#: includes/class-admin.php
+msgid "Return pending letters by email (%d)"
+msgstr "Itzuli zain dauden gutunak e-postaz (%d)"
+
+#: includes/class-admin.php
+msgid "Letters can only be deleted without being returned after trying to return them has failed. Return the letters by email first."
+msgstr "Gutunak itzuli gabe ezabatzeko, lehenik itzultzen saiatu behar da eta huts egin behar du. Itzuli lehenik gutunak e-postaz."

@@ -118,7 +118,10 @@ class ReadOnlyAccessTest extends TestCase {
 	public function test_schema_accepts_the_read_only_level() {
 		$schema = $this->get_method_source( 'includes/class-database.php', 'setup_tables' );
 		$this->assertSame( 3, substr_count( $schema, "permission_level enum('manager','message_manager','read_only')" ), 'Permissions, invitations and audit log' );
-		$this->assertStringContainsString( "const DB_VERSION = '1.16.0';", $this->get_source( 'includes/class-database.php' ) );
+		// The read-only level arrived with database version 1.16.0
+		$this->assertMatchesRegularExpression( "/const DB_VERSION = '([0-9.]+)';/", $this->get_source( 'includes/class-database.php' ) );
+		preg_match( "/const DB_VERSION = '([0-9.]+)';/", $this->get_source( 'includes/class-database.php' ), $version );
+		$this->assertTrue( version_compare( $version[1], '1.16.0', '>=' ) );
 	}
 
 	public function test_read_only_can_be_granted_and_invited() {

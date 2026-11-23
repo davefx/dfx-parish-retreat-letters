@@ -176,8 +176,8 @@ msgstr "¿Quieres borrar definitivamente a este asistente, junto con sus mensaje
 #. translators: %d: number of letters that can still be returned by email
 #: includes/class-admin.php:1239
 #, php-format
-msgid "This attendant has %d letters that can still be returned to their senders by email. If you delete the attendant, they will be deleted without being returned."
-msgstr "Este asistente tiene %d cartas que todavía se pueden devolver por email a sus remitentes. Si borras al asistente, se borrarán sin devolverse."
+msgid "This attendant cannot be deleted yet. Letters still to be returned to their senders by email: %d. Return them first from the attendant's Messages page."
+msgstr "Todavía no se puede borrar a este asistente. Cartas pendientes de devolver por email a sus remitentes: %d. Devuélvelas primero desde sus Mensajes."
 
 #: includes/class-admin.php:1240
 msgid "Return letter by email"
@@ -328,8 +328,8 @@ msgstr "También se borrarán sus cartas, archivos, historial de impresión, reg
 #. translators: %d: number of letters
 #: includes/class-admin.php:1280
 #, php-format
-msgid "Letters of withdrawn attendants that can still be returned to their senders by email: %d. If you empty the retreat, they will be deleted without being returned."
-msgstr "Cartas de asistentes de baja que todavía se pueden devolver por email a sus remitentes: %d. Si vacías el retiro, se borrarán sin devolverse."
+msgid "The retreat cannot be emptied yet. Letters of withdrawn attendants still to be returned to their senders by email: %d. Return them first from the Messages page of each withdrawn attendant."
+msgstr "Todavía no se puede vaciar el retiro. Cartas de asistentes dados de baja pendientes de devolver por email a sus remitentes: %d. Devuélvelas primero desde los Mensajes de cada asistente dado de baja."
 
 #: includes/class-admin.php:1281
 msgid "To confirm, type the exact retreat name below:"
@@ -3531,3 +3531,71 @@ msgstr "(por nombre)"
 #: includes/class-admin.php
 msgid "(by surnames)"
 msgstr "(por apellidos)"
+
+#: includes/class-admin.php
+msgid "Letters still to be returned"
+msgstr "Cartas pendientes de devolver"
+
+#: includes/class-admin.php
+msgid "This attendant has letters still to be returned to their senders by email: %d. Return them before deleting the attendant."
+msgstr "Este asistente tiene cartas pendientes de devolver por email a sus remitentes: %d. Devuélvelas antes de borrar al asistente."
+
+#: includes/class-admin.php
+msgid "Withdrawn attendants of this retreat have letters still to be returned to their senders by email: %d. Return them before emptying the retreat."
+msgstr "Los asistentes dados de baja de este retiro tienen cartas pendientes de devolver por email a sus remitentes: %d. Devuélvelas antes de vaciar el retiro."
+
+#: includes/class-admin.php
+msgid "Letters of withdrawn attendants still to be returned to their senders by email: %d. Each one is sent back with its attachments and then deleted from the system. Remember to destroy the printed copies."
+msgstr "Cartas de asistentes dados de baja pendientes de devolver por email a sus remitentes: %d. Cada una se devuelve con sus adjuntos y después se borra del sistema. Recuerda destruir las copias impresas."
+
+#: includes/class-admin.php
+msgid "Return the letters by email"
+msgstr "Devolver las cartas por email"
+
+#: includes/class-admin.php
+msgid "Delete without returning"
+msgstr "Borrar sin devolver"
+
+#: includes/class-admin.php
+msgid "Returning letter %1$d of %2$d..."
+msgstr "Devolviendo la carta %1$d de %2$d..."
+
+#: includes/class-admin.php
+msgid "These letters have not been returned and are still in the system:"
+msgstr "Estas cartas no se han devuelto y siguen en el sistema:"
+
+#: includes/class-admin.php
+msgid "Letters still to be returned: %d. They will be deleted together with the attendant, and their senders will not get them back. This cannot be undone."
+msgstr "Cartas pendientes de devolver: %d. Se borrarán junto con el asistente y quienes las escribieron no las recibirán de vuelta. No se puede deshacer."
+
+#: includes/class-admin.php
+msgid "Letters still to be returned: %d. They will be deleted when the retreat is emptied, and their senders will not get them back. This cannot be undone."
+msgstr "Cartas pendientes de devolver: %d. Se borrarán al vaciar el retiro y quienes las escribieron no las recibirán de vuelta. No se puede deshacer."
+
+#: includes/class-admin.php
+msgid "I understand that these letters will be deleted without being returned"
+msgstr "Entiendo que estas cartas se borrarán sin devolverse"
+
+#: includes/class-admin.php
+msgid "The letters still to be returned will also be deleted without being returned."
+msgstr "También se borrarán, sin devolverse, las cartas pendientes de devolver."
+
+#: includes/class-admin.php
+msgid "Continue"
+msgstr "Continuar"
+
+#: includes/class-admin.php
+msgid "Close"
+msgstr "Cerrar"
+
+#: includes/class-letter-return.php
+msgid "Error: %s"
+msgstr "Error: %s"
+
+#: includes/class-admin.php
+msgid "Return pending letters by email (%d)"
+msgstr "Devolver cartas pendientes por email (%d)"
+
+#: includes/class-admin.php
+msgid "Letters can only be deleted without being returned after trying to return them has failed. Return the letters by email first."
+msgstr "Solo se pueden borrar cartas sin devolverlas después de haber intentado devolverlas sin éxito. Devuelve primero las cartas por email."

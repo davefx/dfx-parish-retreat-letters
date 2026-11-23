@@ -78,7 +78,7 @@ class LetterReturnTest extends \PHPUnit\Framework\TestCase {
 	}
 
 	public function test_letter_is_deleted_only_after_the_email_is_sent() {
-		$source = $this->get_method_source( 'includes/class-letter-return.php', 'send' );
+		$source = $this->get_method_source( 'includes/class-letter-return.php', 'send_email' );
 		$mail   = strpos( $source, 'wp_mail(' );
 		$failed = strpos( $source, 'if ( ! $sent )' );
 		$delete = strpos( $source, '$this->message_model->delete(' );
@@ -101,6 +101,43 @@ class LetterReturnTest extends \PHPUnit\Framework\TestCase {
 		foreach ( array( 'export_personal_data', 'erase_personal_data' ) as $method ) {
 			$this->assertStringContainsString( 'm.sender_email_hash = %s', $this->get_method_source( 'includes/class-gdpr.php', $method ) );
 		}
+	}
+
+	public function test_attendant_with_returnable_letters_cannot_be_deleted() {
+		$source = $this->get_method_source( 'includes/class-admin.php', 'ajax_delete_attendant' );
+		$check  = strpos( $source, 'get_returnable_counts(' );
+		$this->assertNotFalse( $check );
+		$this->assertLessThan( strpos( $source, '$this->attendant_model->delete(' ), $check, 'Returnable letters must be checked before deleting' );
+	}
+
+	public function test_retreat_with_returnable_letters_cannot_be_emptied() {
+		$source = $this->get_method_source( 'includes/class-admin.php', 'ajax_empty_retreat' );
+		$check  = strpos( $source, 'get_returnable_count_by_retreat(' );
+		$this->assertNotFalse( $check );
+		$this->assertLessThan( strpos( $source, '$this->attendant_model->delete_by_retreat(' ), $check, 'Returnable letters must be checked before emptying' );
+	}
+
+	public function test_forced_deletion_without_return_is_logged() {
+		foreach ( array( 'ajax_delete_attendant', 'ajax_empty_retreat' ) as $method ) {
+			$source = $this->get_method_source( 'includes/class-admin.php', $method );
+			$this->assertStringContainsString( "\$_POST['force']", $source );
+			$this->assertStringContainsString( 'log_letters_deleted_without_return(', $source );
+			// Only letters whose return has already failed can be deleted without returning them
+			$this->assertLessThan( strpos( $source, 'log_letters_deleted_without_return(' ), strpos( $source, 'check_letters_can_be_deleted_without_return(' ) );
+		}
+	}
+
+	public function test_returnable_letters_list_requires_permission_to_manage_messages() {
+		$source = $this->get_method_source( 'includes/class-admin.php', 'ajax_get_returnable_letters' );
+		$this->assertStringContainsString( 'wp_verify_nonce(', $source );
+		$this->assertStringContainsString( 'current_user_can_manage_messages( $retreat_id )', $source );
+	}
+
+	public function test_mail_server_error_is_shown_when_a_return_fails() {
+		$source = $this->get_method_source( 'includes/class-letter-return.php', 'send_email' );
+		$this->assertStringContainsString( "add_action( 'wp_mail_failed'", $source );
+		$this->assertStringContainsString( 'mark_return_failed(', $this->get_method_source( 'includes/class-letter-return.php', 'send' ) );
+		$this->assertStringContainsString( "remove_action( 'wp_mail_failed'", $source );
 	}
 
 	public function test_message_form_stylesheet_is_balanced() {

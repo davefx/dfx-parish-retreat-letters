@@ -8,6 +8,164 @@
 (function($) {
     'use strict';
 
+    // Shared tools to return the pending letters of withdrawn attendants (bulk return, delete, empty retreat)
+    var dfxprlReturns = {
+        escapeHtml: function(text) {
+            return $('<div>').text(text === undefined || text === null ? '' : String(text)).html();
+        },
+
+        // Fetch the letters that can still be returned: { retreat_id } or { attendant_id }
+        fetch: function(params) {
+            return $.post(dfxprlAdmin.ajaxurl, $.extend({ action: 'dfxprl_get_returnable_letters', nonce: dfxprlAdmin.nonce }, params))
+                .then(function(response) {
+                    if (!response.success) {
+                        return $.Deferred().reject(response.data && response.data.message).promise();
+                    }
+                    return response.data.letters;
+                });
+        },
+
+        // Return the letters one by one; resolves with { returned, failed: [ { letter, message } ] }
+        run: function(letters, onProgress) {
+            var messages = dfxprlAdmin.messages;
+            var deferred = $.Deferred();
+            var result = { returned: 0, failed: [] };
+            var next = function(index) {
+                if (index >= letters.length) {
+                    deferred.resolve(result);
+                    return;
+                }
+                if (onProgress) {
+                    onProgress(index + 1, letters.length);
+                }
+                $.post(dfxprlAdmin.ajaxurl, {
+                    action: 'dfxprl_return_letter',
+                    nonce: dfxprlAdmin.nonce,
+                    message_id: letters[index].id
+                }).done(function(response) {
+                    if (response.success) {
+                        result.returned++;
+                    } else {
+                        result.failed.push({ letter: letters[index], message: (response.data && response.data.message) || messages.returnError });
+                    }
+                }).fail(function() {
+                    result.failed.push({ letter: letters[index], message: messages.returnError });
+                }).always(function() {
+                    next(index + 1);
+                });
+            };
+            next(0);
+            return deferred.promise();
+        },
+
+        // Open a modal; buttons: [ { text, className, onClick($modal) } ]
+        modal: function(title, bodyHtml, buttons) {
+            var esc = dfxprlReturns.escapeHtml;
+            $('#dfxprl-pending-letters-modal').remove();
+            var $modal = $(
+                '<div id="dfxprl-pending-letters-modal" class="dfxprl-modal-overlay">' +
+                    '<div class="dfxprl-modal-dialog">' +
+                        '<div class="dfxprl-modal-header"><h3>' + esc(title) + '</h3></div>' +
+                        '<div class="dfxprl-modal-body"></div>' +
+                        '<div class="dfxprl-modal-footer"></div>' +
+                    '</div>' +
+                '</div>'
+            );
+            $('body').append($modal);
+            dfxprlReturns.fill($modal, bodyHtml, buttons);
+            $modal.fadeIn(200);
+            return $modal;
+        },
+
+        fill: function($modal, bodyHtml, buttons) {
+            $modal.find('.dfxprl-modal-body').html(bodyHtml);
+            var $footer = $modal.find('.dfxprl-modal-footer').empty();
+            $.each(buttons, function(i, button) {
+                $('<button type="button" class="button"></button>')
+                    .addClass(button.className || '')
+                    .text(button.text)
+                    .on('click', function() { button.onClick($modal, $(this)); })
+                    .appendTo($footer);
+                $footer.append(' ');
+            });
+        },
+
+        // Body that lists the letters that could not be returned, with the reason
+        resultHtml: function(result) {
+            var esc = dfxprlReturns.escapeHtml;
+            var messages = dfxprlAdmin.messages;
+            var html = '<p><strong>' + esc(messages.returnAllSummary.replace('%1$d', result.returned).replace('%2$d', result.failed.length)) + '</strong></p>';
+            if (result.failed.length) {
+                html += '<p>' + esc(messages.returnFailedIntro) + '</p><ul style="list-style: disc; margin-left: 20px;">' +
+                    result.failed.map(function(item) {
+                        return '<li>' + esc(item.letter.attendant) + ' &rarr; ' + esc(item.letter.email || '-') + '<br><small>' + esc(item.message) + '</small></li>';
+                    }).join('') + '</ul>';
+            }
+            return html;
+        },
+
+        /*
+         * Guide the user through the pending letters before an action that would delete them.
+         * options: { title, intro, fetchParams, forceWarning (optional), onAllReturned, onForce (optional) }
+         */
+        pendingDialog: function(options) {
+            var esc = dfxprlReturns.escapeHtml;
+            var messages = dfxprlAdmin.messages;
+            var reload = function() { window.location.reload(); };
+
+            var askForce = function($modal) {
+                var body = '<div class="dfxprl-warning-message"><p><strong>' + esc(options.forceWarning) + '</strong></p></div>' +
+                    '<p><label><input type="checkbox" class="dfxprl-force-understood"> ' + esc(messages.forceConfirmCheckbox) + '</label></p>';
+                dfxprlReturns.fill($modal, body, [
+                    { text: messages.deleteWithoutReturnButton, className: 'button-link-delete dfxprl-force-confirm', onClick: function($m, $b) {
+                        $b.prop('disabled', true);
+                        options.onForce($m);
+                    } },
+                    { text: messages.cancelButton, onClick: function($m) { $m.remove(); } }
+                ]);
+                var $confirm = $modal.find('.dfxprl-force-confirm').prop('disabled', true);
+                $modal.find('.dfxprl-force-understood').on('change', function() {
+                    $confirm.prop('disabled', !this.checked);
+                });
+            };
+
+            var showResult = function($modal, result) {
+                var buttons;
+                if (!result.failed.length) {
+                    buttons = [{ text: messages.continueButton, className: 'button-primary', onClick: function($m) { $m.remove(); options.onAllReturned(); } }];
+                } else {
+                    buttons = [];
+                    if (options.onForce) {
+                        buttons.push({ text: messages.deleteWithoutReturnButton, className: 'button-link-delete', onClick: askForce });
+                    }
+                    buttons.push({ text: messages.closeButton, onClick: reload });
+                }
+                dfxprlReturns.fill($modal, dfxprlReturns.resultHtml(result), buttons);
+            };
+
+            var startReturn = function($modal) {
+                dfxprlReturns.fill($modal, '<p class="dfxprl-return-progress">' + esc(messages.returnSending) + '</p>', []);
+                dfxprlReturns.fetch(options.fetchParams).done(function(letters) {
+                    dfxprlReturns.run(letters, function(current, total) {
+                        $modal.find('.dfxprl-return-progress').text(messages.returnProgress.replace('%1$d', current).replace('%2$d', total));
+                    }).done(function(result) {
+                        showResult($modal, result);
+                    });
+                }).fail(function(message) {
+                    dfxprlReturns.fill($modal, '<p>' + esc(message || messages.returnError) + '</p>', [{ text: messages.closeButton, onClick: reload }]);
+                });
+            };
+
+            // Deleting without returning is only offered after some returns have failed
+            var buttons = [
+                { text: messages.returnPendingButton, className: 'button-primary', onClick: startReturn },
+                { text: messages.cancelButton, onClick: function($m) { $m.remove(); } }
+            ];
+
+            return dfxprlReturns.modal(options.title, '<p>' + esc(options.intro) + '</p>', buttons);
+        }
+    };
+
     $(document).ready(function() {
         // Check if dfxprlAdmin is available
         if (typeof dfxprlAdmin === 'undefined') {
@@ -184,13 +342,13 @@
         }
 
         // Send an attendant status change (withdraw, reactivate, delete) and reload the list on success
-        function changeAttendantStatus(action, $button) {
+        function changeAttendantStatus(action, $button, extra) {
             $button.prop('disabled', true);
-            $.post(dfxprlAdmin.ajaxurl, {
+            $.post(dfxprlAdmin.ajaxurl, $.extend({
                 action: action,
                 attendant_id: $button.data('attendant-id'),
                 nonce: dfxprlAdmin.nonce
-            }).done(function(response) {
+            }, extra || {})).done(function(response) {
                 if (response.success) {
                     // Reload so the tabs, counters and summaries reflect the change
                     window.location.reload();
@@ -221,13 +379,32 @@
         // Permanently delete a withdrawn attendant
         $(document).on('click', '.dfxprl-delete-attendant', function(e) {
             e.preventDefault();
-            var confirmText = dfxprlAdmin.messages.confirmDeleteAttendant;
-            var returnable = parseInt($(this).data('returnable-count'), 10) || 0;
+            var $button = $(this);
+            var messages = dfxprlAdmin.messages;
+            // Letters that can go back to their senders are returned first, or deleted on purpose
+            var returnable = parseInt($button.data('returnable-count'), 10) || 0;
             if (returnable > 0) {
-                confirmText = dfxprlAdmin.messages.returnableLettersWarning.replace('%d', returnable) + '\n\n' + confirmText;
+                dfxprlReturns.pendingDialog({
+                    title: messages.pendingLettersTitle,
+                    intro: messages.pendingLettersAttendant.replace('%d', returnable),
+                    fetchParams: { attendant_id: $button.data('attendant-id') },
+                    forceWarning: messages.forceDeleteAttendantWarning.replace('%d', returnable),
+                    onAllReturned: function() {
+                        if (confirm(messages.confirmDeleteAttendant)) {
+                            changeAttendantStatus('dfxprl_delete_attendant', $button);
+                        } else {
+                            window.location.reload();
+                        }
+                    },
+                    onForce: function($modal) {
+                        $modal.remove();
+                        changeAttendantStatus('dfxprl_delete_attendant', $button, { force: 1 });
+                    }
+                });
+                return;
             }
-            if (confirm(confirmText)) {
-                changeAttendantStatus('dfxprl_delete_attendant', $(this));
+            if (confirm(messages.confirmDeleteAttendant)) {
+                changeAttendantStatus('dfxprl_delete_attendant', $button);
             }
         });
 
@@ -373,9 +550,33 @@
             e.preventDefault();
 
             var $button = $(this);
+            var returnable = parseInt($button.data('returnable-count'), 10) || 0;
+            var messages = dfxprlAdmin.messages;
+
+            // Letters of withdrawn attendants that can go back to their senders are returned first, or deleted on purpose
+            if (returnable > 0) {
+                dfxprlReturns.pendingDialog({
+                    title: messages.pendingLettersTitle,
+                    intro: messages.pendingLettersRetreat.replace('%d', returnable),
+                    fetchParams: { retreat_id: $button.data('retreat-id') },
+                    forceWarning: messages.forceEmptyRetreatWarning.replace('%d', returnable),
+                    onAllReturned: function() {
+                        openEmptyRetreatModal($button, false);
+                    },
+                    onForce: function($modal) {
+                        $modal.remove();
+                        openEmptyRetreatModal($button, true);
+                    }
+                });
+                return;
+            }
+            openEmptyRetreatModal($button, false);
+        });
+
+        // Typed confirmation to empty the retreat; force also deletes the letters still to be returned
+        function openEmptyRetreatModal($button, force) {
             var retreatId = $button.data('retreat-id');
             var retreatName = String($button.data('retreat-name'));
-            var returnable = parseInt($button.data('returnable-count'), 10) || 0;
             var messages = dfxprlAdmin.messages;
 
             var $modal = $(
@@ -386,7 +587,7 @@
                             '<div class="dfxprl-warning-message">' +
                                 '<p><strong class="dfxprl-empty-retreat-warning"></strong></p>' +
                                 '<p class="dfxprl-empty-retreat-details"></p>' +
-                                '<p class="dfxprl-empty-retreat-returnable"><strong></strong></p>' +
+                                (force ? '<p><strong class="dfxprl-empty-retreat-forced"></strong></p>' : '') +
                             '</div>' +
                             '<div class="dfxprl-confirmation-section">' +
                                 '<p class="dfxprl-type-confirmation"></p>' +
@@ -404,11 +605,7 @@
             $modal.find('h3').text(messages.emptyRetreatTitle);
             $modal.find('.dfxprl-empty-retreat-warning').text(messages.emptyRetreatWarning.replace('%d', $button.data('attendant-count')));
             $modal.find('.dfxprl-empty-retreat-details').text(messages.emptyRetreatDetails);
-            if (returnable > 0) {
-                $modal.find('.dfxprl-empty-retreat-returnable strong').text(messages.emptyRetreatReturnable.replace('%d', returnable));
-            } else {
-                $modal.find('.dfxprl-empty-retreat-returnable').remove();
-            }
+            $modal.find('.dfxprl-empty-retreat-forced').text(messages.emptyRetreatForced);
             $modal.find('.dfxprl-type-confirmation').text(messages.typeRetreatNameToEmpty);
             $modal.find('.dfxprl-empty-retreat-name').text(retreatName);
             $modal.find('#dfxprl-empty-retreat-confirm').attr('placeholder', messages.retreatNamePlaceholder);
@@ -446,6 +643,7 @@
                     action: 'dfxprl_empty_retreat',
                     retreat_id: retreatId,
                     retreat_name: retreatName,
+                    force: force ? 1 : 0,
                     nonce: dfxprlAdmin.nonce
                 }).done(function(response) {
                     if (response.success) {
@@ -463,6 +661,21 @@
                     alert(messages.statusChangeError);
                     $button.prop('disabled', false).text(messages.emptyRetreatButton);
                 });
+            });
+        }
+
+        // Return every pending letter of the withdrawn attendants of the retreat
+        $(document).on('click', '.dfxprl-return-pending-letters', function(e) {
+            e.preventDefault();
+            var $button = $(this);
+            var messages = dfxprlAdmin.messages;
+            dfxprlReturns.pendingDialog({
+                title: messages.returnAllLettersTitle,
+                intro: messages.returnPendingIntro.replace('%d', $button.data('returnable-count')),
+                fetchParams: { retreat_id: $button.data('retreat-id') },
+                onAllReturned: function() {
+                    window.location.reload();
+                }
             });
         });
 
@@ -1113,7 +1326,7 @@
         $(document).on('click', '.dfxprl-return-all-letters', function(e) {
             e.preventDefault();
             var letters = $('.dfxprl-return-letter').map(function() {
-                return { id: $(this).data('message-id'), email: $(this).data('email') };
+                return { id: $(this).data('message-id'), email: $(this).data('email'), attendant: $(this).data('attendant') || '' };
             }).get();
             if (!letters.length) {
                 return;
@@ -1127,28 +1340,15 @@
                 '</ul>';
 
             openReturnModal(messages.returnAllLettersTitle, body, messages.returnSendAllButton, function($modal) {
-                var returned = 0;
-                var failed = 0;
-                var next = function(index) {
-                    if (index >= letters.length) {
-                        $modal.remove();
-                        alert(messages.returnAllSummary.replace('%1$d', returned).replace('%2$d', failed));
-                        window.location.reload();
-                        return;
-                    }
-                    returnLetter(letters[index].id).done(function(result) {
-                        if (result.success) {
-                            returned++;
-                        } else {
-                            failed++;
-                        }
-                    }).fail(function() {
-                        failed++;
-                    }).always(function() {
-                        next(index + 1);
-                    });
-                };
-                next(0);
+                $modal.remove();
+                var $progress = dfxprlReturns.modal(messages.returnAllLettersTitle, '<p class="dfxprl-return-progress">' + escapeHtml(messages.returnSending) + '</p>', []);
+                dfxprlReturns.run(letters, function(current, total) {
+                    $progress.find('.dfxprl-return-progress').text(messages.returnProgress.replace('%1$d', current).replace('%2$d', total));
+                }).done(function(result) {
+                    dfxprlReturns.fill($progress, dfxprlReturns.resultHtml(result), [
+                        { text: messages.closeButton, className: 'button-primary', onClick: function() { window.location.reload(); } }
+                    ]);
+                });
             });
         });
     });

@@ -163,8 +163,8 @@ msgstr "Diese teilnehmende Person zusammen mit ihren Nachrichten, dem Kontaktpro
 #. translators: %d: number of letters that can still be returned by email
 #: includes/class-admin.php:1239
 #, php-format
-msgid "This attendant has %d letters that can still be returned to their senders by email. If you delete the attendant, they will be deleted without being returned."
-msgstr "Für diese teilnehmende Person gibt es %d Briefe, die noch per E-Mail an ihre Absender zurückgeschickt werden können. Wenn du die teilnehmende Person löschst, werden sie gelöscht, ohne zurückgeschickt zu werden."
+msgid "This attendant cannot be deleted yet. Letters still to be returned to their senders by email: %d. Return them first from the attendant's Messages page."
+msgstr "Diese teilnehmende Person kann noch nicht gelöscht werden. Briefe, die noch per E-Mail an ihre Absender zurückgeschickt werden müssen: %d. Schicke sie zuerst über die Nachrichten der Person zurück."
 
 #: includes/class-admin.php:1240
 msgid "Return letter by email"
@@ -315,8 +315,8 @@ msgstr "Ihre Briefe, Dateien, Druckverläufe, Kontaktprotokolle und Werte der in
 #. translators: %d: number of letters
 #: includes/class-admin.php:1280
 #, php-format
-msgid "Letters of withdrawn attendants that can still be returned to their senders by email: %d. If you empty the retreat, they will be deleted without being returned."
-msgstr "Briefe abgemeldeter Teilnehmender, die noch per E-Mail an ihre Absender zurückgeschickt werden können: %d. Wenn du die Einkehrtage leerst, werden sie gelöscht, ohne zurückgeschickt zu werden."
+msgid "The retreat cannot be emptied yet. Letters of withdrawn attendants still to be returned to their senders by email: %d. Return them first from the Messages page of each withdrawn attendant."
+msgstr "Die Einkehrtage können noch nicht geleert werden. Briefe abgemeldeter Teilnehmender, die noch per E-Mail an ihre Absender zurückgeschickt werden müssen: %d. Schicke sie zuerst über die Nachrichten jeder abgemeldeten Person zurück."
 
 #: includes/class-admin.php:1281
 msgid "To confirm, type the exact retreat name below:"
@@ -3528,3 +3528,71 @@ msgstr "(nach Vorname)"
 #: includes/class-admin.php
 msgid "(by surnames)"
 msgstr "(nach Nachnamen)"
+
+#: includes/class-admin.php
+msgid "Letters still to be returned"
+msgstr "Noch zurückzuschickende Briefe"
+
+#: includes/class-admin.php
+msgid "This attendant has letters still to be returned to their senders by email: %d. Return them before deleting the attendant."
+msgstr "Für diese teilnehmende Person gibt es noch Briefe, die per E-Mail an ihre Absender zurückgeschickt werden müssen: %d. Schicke sie zurück, bevor du die Person löschst."
+
+#: includes/class-admin.php
+msgid "Withdrawn attendants of this retreat have letters still to be returned to their senders by email: %d. Return them before emptying the retreat."
+msgstr "Abgemeldete Teilnehmende dieser Einkehrtage haben noch Briefe, die per E-Mail an ihre Absender zurückgeschickt werden müssen: %d. Schicke sie zurück, bevor du die Einkehrtage leerst."
+
+#: includes/class-admin.php
+msgid "Letters of withdrawn attendants still to be returned to their senders by email: %d. Each one is sent back with its attachments and then deleted from the system. Remember to destroy the printed copies."
+msgstr "Briefe abgemeldeter Teilnehmender, die noch per E-Mail an ihre Absender zurückgeschickt werden müssen: %d. Jeder Brief wird mit seinen Anhängen zurückgeschickt und danach aus dem System gelöscht. Denk daran, die gedruckten Exemplare zu vernichten."
+
+#: includes/class-admin.php
+msgid "Return the letters by email"
+msgstr "Briefe per E-Mail zurückschicken"
+
+#: includes/class-admin.php
+msgid "Delete without returning"
+msgstr "Löschen, ohne zurückzuschicken"
+
+#: includes/class-admin.php
+msgid "Returning letter %1$d of %2$d..."
+msgstr "Brief %1$d von %2$d wird zurückgeschickt..."
+
+#: includes/class-admin.php
+msgid "These letters have not been returned and are still in the system:"
+msgstr "Diese Briefe wurden nicht zurückgeschickt und sind noch im System:"
+
+#: includes/class-admin.php
+msgid "Letters still to be returned: %d. They will be deleted together with the attendant, and their senders will not get them back. This cannot be undone."
+msgstr "Noch zurückzuschickende Briefe: %d. Sie werden zusammen mit der teilnehmenden Person gelöscht, und ihre Absender bekommen sie nicht zurück. Dies kann nicht rückgängig gemacht werden."
+
+#: includes/class-admin.php
+msgid "Letters still to be returned: %d. They will be deleted when the retreat is emptied, and their senders will not get them back. This cannot be undone."
+msgstr "Noch zurückzuschickende Briefe: %d. Sie werden beim Leeren der Einkehrtage gelöscht, und ihre Absender bekommen sie nicht zurück. Dies kann nicht rückgängig gemacht werden."
+
+#: includes/class-admin.php
+msgid "I understand that these letters will be deleted without being returned"
+msgstr "Ich habe verstanden, dass diese Briefe gelöscht werden, ohne zurückgeschickt zu werden"
+
+#: includes/class-admin.php
+msgid "The letters still to be returned will also be deleted without being returned."
+msgstr "Die noch zurückzuschickenden Briefe werden ebenfalls gelöscht, ohne zurückgeschickt zu werden."
+
+#: includes/class-admin.php
+msgid "Continue"
+msgstr "Weiter"
+
+#: includes/class-admin.php
+msgid "Close"
+msgstr "Schließen"
+
+#: includes/class-letter-return.php
+msgid "Error: %s"
+msgstr "Fehler: %s"
+
+#: includes/class-admin.php
+msgid "Return pending letters by email (%d)"
+msgstr "Noch offene Briefe per E-Mail zurückschicken (%d)"
+
+#: includes/class-admin.php
+msgid "Letters can only be deleted without being returned after trying to return them has failed. Return the letters by email first."
+msgstr "Briefe können erst ohne Zurückschicken gelöscht werden, wenn das Zurückschicken versucht wurde und fehlgeschlagen ist. Schicke die Briefe zuerst per E-Mail zurück."

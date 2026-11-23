@@ -38,7 +38,7 @@ class DFXPRL_Database {
 	 * @since 1.0.0
 	 * @var string
 	 */
-	const DB_VERSION = '1.16.0';
+	const DB_VERSION = '1.17.0';
 
 	/**
 	 * The database version option name.
@@ -291,6 +291,7 @@ class DFXPRL_Database {
 			ip_hash varchar(255) DEFAULT NULL,
 			submitted_at datetime DEFAULT CURRENT_TIMESTAMP,
 			ip_anonymized_at datetime DEFAULT NULL,
+			return_failed_at datetime DEFAULT NULL,
 			PRIMARY KEY (id),
 			INDEX idx_attendant_id (attendant_id),
 			INDEX idx_submitted_at (submitted_at),

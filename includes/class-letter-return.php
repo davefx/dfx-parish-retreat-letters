@@ -127,6 +127,24 @@ class DFXPRL_LetterReturn {
 	 * @return array|WP_Error { to, print_count } or an error. On error, the letter is kept.
 	 */
 	public function send( $message_id ) {
+		$result = $this->send_email( $message_id );
+
+		// Remember the failed return, so the letter can then be deleted without returning it
+		if ( is_wp_error( $result ) && ! in_array( $result->get_error_code(), array( 'not_found', 'not_withdrawn' ), true ) ) {
+			$this->mark_return_failed( $message_id );
+		}
+
+		return $result;
+	}
+
+	/**
+	 * Send the letter back to its sender and, if the email was sent, delete the letter.
+	 *
+	 * @since 26.11.23 Split from send()
+	 * @param int $message_id Message ID.
+	 * @return array|WP_Error { to, print_count } or an error. On error, the letter is kept.
+	 */
+	private function send_email( $message_id ) {
 		$email = $this->build( $message_id );
 		if ( is_wp_error( $email ) ) {
 			return $email;
@@ -150,6 +168,13 @@ class DFXPRL_LetterReturn {
 			$paths[] = $path;
 		}
 
+		// Keep the reason the mail server gives when it refuses the email, to show it
+		$mail_error  = '';
+		$catch_error = function ( $error ) use ( &$mail_error ) {
+			$mail_error = $error->get_error_message();
+		};
+		add_action( 'wp_mail_failed', $catch_error );
+
 		$sent = wp_mail(
 			$email['to'],
 			$email['subject'],
@@ -158,10 +183,16 @@ class DFXPRL_LetterReturn {
 			$paths
 		);
 
+		remove_action( 'wp_mail_failed', $catch_error );
 		$this->remove_temp_files( $temp_dir, $paths );
 
 		if ( ! $sent ) {
-			return new WP_Error( 'mail_failed', __( 'The email could not be sent. The letter has not been deleted.', 'dfx-parish-retreat-letters' ) );
+			$text = __( 'The email could not be sent. The letter has not been deleted.', 'dfx-parish-retreat-letters' );
+			if ( '' !== $mail_error ) {
+				/* translators: %s: error given by the mail server */
+				$text .= ' ' . sprintf( __( 'Error: %s', 'dfx-parish-retreat-letters' ), $mail_error );
+			}
+			return new WP_Error( 'mail_failed', $text );
 		}
 
 		// The letter is back with its sender: destroy its digital record
@@ -173,6 +204,50 @@ class DFXPRL_LetterReturn {
 			'to'          => $email['to'],
 			'print_count' => $email['print_count'],
 		);
+	}
+
+	/**
+	 * Record that returning a letter has failed.
+	 *
+	 * @since 26.11.23
+	 * @param int $message_id Message ID.
+	 */
+	private function mark_return_failed( $message_id ) {
+		global $wpdb;
+		$wpdb->update(
+			DFXPRL_Database::get_instance()->get_messages_table(),
+			array( 'return_failed_at' => current_time( 'mysql', true ) ),
+			array( 'id' => absint( $message_id ) ),
+			array( '%s' ),
+			array( '%d' )
+		); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
+	}
+
+	/**
+	 * Count the letters that can be returned and have not failed to be returned yet.
+	 *
+	 * Letters can only be deleted without being returned once returning them has been tried and failed.
+	 *
+	 * @since 26.11.23
+	 * @param int $retreat_id   Retreat ID.
+	 * @param int $attendant_id Only the letters of this attendant (0: every withdrawn attendant).
+	 * @return int
+	 */
+	public function get_untried_count( $retreat_id, $attendant_id = 0 ) {
+		global $wpdb;
+
+		$database         = DFXPRL_Database::get_instance();
+		$messages_table   = $database->get_messages_table();
+		$attendants_table = $database->get_attendants_table();
+
+		$sql  = "SELECT COUNT(*) FROM {$messages_table} m INNER JOIN {$attendants_table} a ON a.id = m.attendant_id WHERE a.retreat_id = %d AND a.withdrawn_at IS NOT NULL AND m.encrypted_sender_email IS NOT NULL AND m.encrypted_sender_email <> '' AND m.return_failed_at IS NULL";
+		$args = array( absint( $retreat_id ) );
+		if ( $attendant_id ) {
+			$sql   .= ' AND a.id = %d';
+			$args[] = absint( $attendant_id );
+		}
+
+		return (int) $wpdb->get_var( $wpdb->prepare( $sql, $args ) ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
 	}
 
 	/**
@@ -202,6 +277,42 @@ class DFXPRL_LetterReturn {
 			$counts[ (int) $row->attendant_id ] = (int) $row->total;
 		}
 		return $counts;
+	}
+
+	/**
+	 * List the letters of the withdrawn attendants of a retreat that can still be returned.
+	 *
+	 * @since 26.11.23
+	 * @param int $retreat_id   Retreat ID.
+	 * @param int $attendant_id Only the letters of this attendant (0: every withdrawn attendant).
+	 * @return array List of { id, email, attendant }.
+	 */
+	public function get_returnable_letters( $retreat_id, $attendant_id = 0 ) {
+		global $wpdb;
+
+		$database         = DFXPRL_Database::get_instance();
+		$messages_table   = $database->get_messages_table();
+		$attendants_table = $database->get_attendants_table();
+
+		$sql  = "SELECT m.id, m.encrypted_sender_email, m.sender_email_salt, a.name, a.surnames FROM {$messages_table} m INNER JOIN {$attendants_table} a ON a.id = m.attendant_id WHERE a.retreat_id = %d AND a.withdrawn_at IS NOT NULL AND m.encrypted_sender_email IS NOT NULL AND m.encrypted_sender_email <> ''";
+		$args = array( absint( $retreat_id ) );
+		if ( $attendant_id ) {
+			$sql   .= ' AND a.id = %d';
+			$args[] = absint( $attendant_id );
+		}
+		$sql .= ' ORDER BY a.surnames, a.name, m.id';
+
+		$rows = $wpdb->get_results( $wpdb->prepare( $sql, $args ) ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
+
+		$letters = array();
+		foreach ( $rows as $row ) {
+			$letters[] = array(
+				'id'        => (int) $row->id,
+				'email'     => $this->message_model->get_sender_email( $row ),
+				'attendant' => trim( $row->name . ' ' . $row->surnames ),
+			);
+		}
+		return $letters;
 	}
 
 	/**
