@@ -413,6 +413,9 @@ So liegt der Schlüssel nicht am selben Ort wie die verschlüsselten Daten. Erle
 <h4>Beim Senden von Dateien erscheint ein Fehler wegen der Größe.</h4>
 <p>Das Limit legt der Server fest, und es wird im Formular angezeigt. Man muss kleinere Dateien oder weniger auf einmal senden. Wer das Hosting verwaltet, kann die PHP-Limits erhöhen (<code>upload_max_filesize</code> und <code>post_max_size</code>).</p>
 
+<h4>Beim Senden eines Briefes mit Dateien erscheint „Zugriff verweigert“.</h4>
+<p>Meist steckt eine Firewall wie Wordfence dahinter: Sie prüft jede hochgeladene Datei und hält manchmal zufällig ein Foto oder ein PDF für PHP-Code. Das Formular schickt die Briefe an die Adresse <code>/wp-json/dfxprl/v1/letters</code> der Website; wer die Website verwaltet, kann in der Firewall eine Ausnahme nur für diese Adresse anlegen. Das Plugin prüft selbst, dass jede Datei einen erlaubten Typ hat, und speichert sie verschlüsselt.</p>
+
 <h4>Ich sehe die Schaltfläche Einladungsnachricht nicht.</h4>
 <p>Sie erscheint nur, wenn die Einkehrtage ein <strong>Template für die Briefanfrage</strong> haben.</p>
 

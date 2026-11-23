@@ -413,6 +413,9 @@ Assim a chave não fica no mesmo sítio que os dados cifrados. Faça-o <strong>a
 <h4>Ao enviar ficheiros aparece um erro de tamanho.</h4>
 <p>O limite é definido pelo servidor e aparece no formulário. É preciso enviar ficheiros mais pequenos, ou menos de cada vez. Quem administra o alojamento pode aumentar os limites do PHP (<code>upload_max_filesize</code> e <code>post_max_size</code>).</p>
 
+<h4>Ao enviar uma carta com ficheiros aparece «Acesso negado».</h4>
+<p>Costuma ser causado por uma firewall como o Wordfence: analisa cada ficheiro enviado e, por vezes, confunde por acaso uma foto ou um PDF com código PHP. O formulário envia as cartas para o endereço <code>/wp-json/dfxprl/v1/letters</code> do site; quem administra o site pode acrescentar na firewall uma exceção só para esse endereço. O plugin verifica por si que cada ficheiro é de um tipo permitido e guarda-o cifrado.</p>
+
 <h4>Não me aparece o botão Mensagem de convite.</h4>
 <p>Só aparece se o retiro tiver um <strong>Modelo de pedido de mensagens</strong>.</p>
 

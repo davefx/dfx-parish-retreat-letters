@@ -413,6 +413,9 @@ Ainsi, la clé n’est pas au même endroit que les données chiffrées. Faites-
 <h4>Une erreur de taille apparaît à l’envoi de fichiers.</h4>
 <p>La limite est fixée par le serveur et indiquée dans le formulaire. Il faut envoyer des fichiers plus petits ou moins de fichiers à la fois. La personne qui administre l’hébergement peut augmenter les limites de PHP (<code>upload_max_filesize</code> et <code>post_max_size</code>).</p>
 
+<h4>L’envoi d’une lettre avec des fichiers affiche « Accès refusé ».</h4>
+<p>C’est en général dû à un pare-feu comme Wordfence : il examine chaque fichier envoyé et prend parfois, par hasard, une photo ou un PDF pour du code PHP. Le formulaire envoie les lettres à l’adresse <code>/wp-json/dfxprl/v1/letters</code> du site ; la personne qui administre le site peut ajouter dans le pare-feu une exception pour cette seule adresse. L’extension vérifie elle-même que chaque fichier est d’un type autorisé et l’enregistre chiffré.</p>
+
 <h4>Le bouton Message d’invitation n’apparaît pas.</h4>
 <p>Il n’apparaît que si la retraite a un <strong>Modèle de demande de messages</strong>.</p>
 

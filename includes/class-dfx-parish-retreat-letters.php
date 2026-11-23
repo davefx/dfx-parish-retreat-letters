@@ -338,6 +338,8 @@ class DFXPRL {
 		add_filter( 'body_class', array( $this, 'add_message_form_body_class' ) );
 		add_action( 'wp_ajax_nopriv_dfxprl_submit_message', array( $this, 'handle_message_submission' ) );
 		add_action( 'wp_ajax_dfxprl_submit_message', array( $this, 'handle_message_submission' ) );
+		// Letters are sent through a route of their own, so a firewall can make an exception just for it
+		add_action( 'rest_api_init', array( $this, 'register_rest_routes' ) );
 		add_action( 'wp_ajax_nopriv_dfxprl_form_strings', array( $this, 'ajax_get_form_strings' ) );
 		add_action( 'wp_ajax_dfxprl_form_strings', array( $this, 'ajax_get_form_strings' ) );
 
@@ -1132,10 +1134,12 @@ class DFXPRL {
 				'dfxprl-message-form',
 				'dfxprlMessageForm',
 				array(
-					'ajaxurl' => admin_url( 'admin-ajax.php' ),
-					'token'   => $matches[1] ?? '',
-					'sent'    => ! empty( $matches[2] ),
-					'i18n'    => $this->get_script_strings(),
+					'ajaxurl'   => admin_url( 'admin-ajax.php' ),
+					'resturl'   => self::get_letters_rest_url(),
+					'restNonce' => wp_create_nonce( 'wp_rest' ),
+					'token'     => $matches[1] ?? '',
+					'sent'      => ! empty( $matches[2] ),
+					'i18n'      => $this->get_script_strings(),
 				)
 			);
 		}
@@ -1225,7 +1229,49 @@ class DFXPRL {
 	}
 
 	/**
-	 * Handle AJAX message submission.
+	 * Register the REST route that receives the letters of the public form.
+	 *
+	 * Firewalls such as Wordfence inspect every uploaded file and sometimes take
+	 * a photo or a PDF for PHP code by chance. A route of its own lets the site
+	 * add an exception just for the letters, which the plugin checks itself.
+	 *
+	 * @since 26.11.23.1
+	 */
+	public function register_rest_routes() {
+		register_rest_route(
+			'dfxprl/v1',
+			'/letters',
+			array(
+				'methods'             => 'POST',
+				'callback'            => array( $this, 'rest_submit_message' ),
+				'permission_callback' => '__return_true', // Public form: the nonce, the CAPTCHA and the rate limit are checked by the handler
+			)
+		);
+	}
+
+	/**
+	 * Receive a letter through the REST route.
+	 *
+	 * The handler answers with the same JSON as the AJAX action and stops there.
+	 *
+	 * @since 26.11.23.1
+	 */
+	public function rest_submit_message() {
+		$this->handle_message_submission();
+	}
+
+	/**
+	 * Get the URL of the REST route that receives the letters.
+	 *
+	 * @since 26.11.23.1
+	 * @return string
+	 */
+	public static function get_letters_rest_url() {
+		return rest_url( 'dfxprl/v1/letters' );
+	}
+
+	/**
+	 * Handle the submission of a letter (AJAX action and REST route).
 	 *
 	 * @since 1.2.0
 	 */

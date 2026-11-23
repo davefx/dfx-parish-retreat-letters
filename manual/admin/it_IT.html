@@ -413,6 +413,9 @@ In questo modo la chiave non si trova nello stesso posto dei dati cifrati. Fallo
 <h4>Inviando dei file compare un errore di dimensione.</h4>
 <p>Il limite lo stabilisce il server e compare nel modulo. Bisogna inviare file più piccoli o meno file alla volta. Chi amministra l’hosting può aumentare i limiti di PHP (<code>upload_max_filesize</code> e <code>post_max_size</code>).</p>
 
+<h4>Inviando una lettera con file compare «Accesso negato».</h4>
+<p>Di solito è causato da un firewall come Wordfence: controlla ogni file caricato e a volte, per caso, scambia una foto o un PDF per codice PHP. Il modulo invia le lettere all’indirizzo <code>/wp-json/dfxprl/v1/letters</code> del sito; chi gestisce il sito può aggiungere nel firewall un’eccezione solo per quell’indirizzo. Il plugin controlla per conto suo che ogni file sia di un tipo consentito e lo salva cifrato.</p>
+
 <h4>Non mi compare il pulsante Messaggio di invito.</h4>
 <p>Compare solo se il ritiro ha un <strong>Template per la richiesta di messaggi</strong>.</p>
 

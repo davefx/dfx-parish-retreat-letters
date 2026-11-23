@@ -413,6 +413,9 @@ That way the key isn't kept in the same place as the encrypted data. Do this <st
 <h4>Uploading files gives a size error.</h4>
 <p>The limit is set by the server and shown on the form. Send smaller files, or fewer at a time. Whoever manages the hosting can raise the PHP limits (<code>upload_max_filesize</code> and <code>post_max_size</code>).</p>
 
+<h4>Sending a letter with files says "Access denied".</h4>
+<p>This is usually caused by a firewall such as Wordfence: it checks every uploaded file and sometimes takes a photo or a PDF for PHP code by chance. The form sends the letters to the site address <code>/wp-json/dfxprl/v1/letters</code>; whoever manages the site can add a firewall exception just for that address. The plugin checks by itself that each file is of an allowed type, and stores it encrypted.</p>
+
 <h4>I can't see the Invitation Message button.</h4>
 <p>It only appears if the retreat has a <strong>Message Request Template</strong>.</p>
 

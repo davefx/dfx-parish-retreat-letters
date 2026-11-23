@@ -413,6 +413,9 @@ Així la clau no és al mateix lloc que les dades xifrades. Feu-ho <strong>abans
 <h4>En enviar fitxers surt un error de mida.</h4>
 <p>El límit el posa el servidor i apareix al formulari. Cal enviar fitxers més petits o menys fitxers alhora. Qui administri l'allotjament pot augmentar els límits del PHP (<code>upload_max_filesize</code> i <code>post_max_size</code>).</p>
 
+<h4>En enviar una carta amb fitxers surt «Accés denegat».</h4>
+<p>Normalment ho causa un tallafoc com Wordfence: revisa cada fitxer pujat i, de vegades, confon per casualitat una foto o un PDF amb codi PHP. El formulari envia les cartes a l'adreça <code>/wp-json/dfxprl/v1/letters</code> del web; qui administri el web pot afegir al tallafoc una excepció només per a aquesta adreça. El connector comprova pel seu compte que cada fitxer sigui d'un tipus permès i el desa xifrat.</p>
+
 <h4>No em surt el botó Missatge d'invitació.</h4>
 <p>Només apareix si el recés té una <strong>Plantilla de sol·licitud de missatges</strong>.</p>
 

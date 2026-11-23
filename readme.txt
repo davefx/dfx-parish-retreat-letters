@@ -3,7 +3,7 @@ Contributors: davefx
 Tags: parish, retreat, letters, confidential, GDPR
 Requires at least: 5.0
 Tested up to: 7.1
-Stable tag: 26.11.23
+Stable tag: 26.11.23.1
 Requires PHP: 7.4
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
@@ -196,6 +196,11 @@ By default it is generated automatically and stored in the WordPress database (`
 Yes. The best place is [translate.wordpress.org](https://translate.wordpress.org/projects/wp-plugins/dfx-parish-retreat-letters/), so the translation reaches every site as a language pack. A `.pot` translation template is also included in the `languages/` directory.
 
 ## Changelog
+
+### 26.11.23.1
+
+- Change: the letters form sends the letters to a route of its own, `/wp-json/dfxprl/v1/letters`, so a firewall such as Wordfence can make an exception just for it. Wordfence sometimes takes a photo or a PDF for PHP code by chance and blocks the letter with "Access denied". The plugin still checks every file itself. If the site has the REST API turned off, the form sends the letters as before.
+- New: the administrator manual explains what to do when sending a letter with files says "Access denied".
 
 ### 26.11.23
 

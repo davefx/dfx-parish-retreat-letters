@@ -541,69 +541,52 @@
 			submitText.hide();
 			loadingSpinner.show();
 
-			$.ajax({
-				url: dfxprlMessageForm.ajaxurl,
-				type: 'POST',
-				data: formData,
-				processData: false,
-				contentType: false,
-				timeout: 60000, // 60 second timeout
-				success: function(response) {
-					if (response.success) {
-						// Go to the confirmation page, which shows no form
-						if (response.data && response.data.redirect) {
-							if (response.data.warning) {
-								alert(response.data.warning);
-							}
-							window.location.href = response.data.redirect;
+			// Letters go to the plugin's own REST route (so a firewall can make an exception just for it).
+			// If the site has the REST API turned off, they go through admin-ajax.php as before.
+			var useRest = !!dfxprlMessageForm.resturl;
+			var send = function() {
+				$.ajax({
+					url: useRest ? dfxprlMessageForm.resturl : dfxprlMessageForm.ajaxurl,
+					type: 'POST',
+					data: formData,
+					processData: false,
+					contentType: false,
+					headers: useRest && dfxprlMessageForm.restNonce ? { 'X-WP-Nonce': dfxprlMessageForm.restNonce } : {},
+					timeout: 60000, // 60 second timeout
+					success: onSuccess,
+					error: function(xhr, status, error) {
+						var restCode = xhr.responseJSON && typeof xhr.responseJSON.code === 'string' ? xhr.responseJSON.code : '';
+						if (useRest && (xhr.status === 404 || restCode.indexOf('rest_') === 0)) {
+							useRest = false;
+							send();
 							return;
 						}
-
-						// Fallback: show success message in place
-						var successHtml = '<div class="dfxprl-success-message">' + 
-							dfxprlMessageForm.i18n.successMessage + '</div>';
-						
-						// Replace form with success message
-						$('#dfxprl-message-form').replaceWith(successHtml);
-					} else {
-						// Show error message
-						var errorMessage = response.data && response.data.message ? 
-							response.data.message : dfxprlMessageForm.i18n.errorSendingMessage;
-						alert(errorMessage);
-
-						// Re-enable submit button
-						submitButton.prop('disabled', false);
-						submitText.show();
-						loadingSpinner.hide();
-
-						// Regenerate CAPTCHA on error
-						generateCaptcha();
+						onError(xhr, status, error);
 					}
-				},
-				error: function(xhr, status, error) {
-					console.error('AJAX error:', status, error, xhr);
+				});
+			};
 
-					var errorMessage;
-					if (status === 'timeout') {
-						errorMessage = dfxprlMessageForm.i18n.requestTimeout;
-					} else if (status === 'abort') {
-						errorMessage = dfxprlMessageForm.i18n.requestCancelled;
-					} else if (xhr.status === 0) {
-						errorMessage = dfxprlMessageForm.i18n.cannotConnectToServer;
-					} else if (xhr.status === 400) {
-						errorMessage = dfxprlMessageForm.i18n.problemWithRequest;
-					} else if (xhr.status === 403) {
-						errorMessage = dfxprlMessageForm.i18n.accessDenied;
-					} else if (xhr.status === 413) {
-						errorMessage = dfxprlMessageForm.i18n.uploadedFilesTooLarge;
-					} else if (xhr.status >= 500) {
-						errorMessage = dfxprlMessageForm.i18n.serverError;
-					} else if (status === 'parsererror') {
-						errorMessage = dfxprlMessageForm.i18n.problemProcessingResponse;
-					} else {
-						errorMessage = dfxprlMessageForm.i18n.networkError;
+			var onSuccess = function(response) {
+				if (response.success) {
+					// Go to the confirmation page, which shows no form
+					if (response.data && response.data.redirect) {
+						if (response.data.warning) {
+							alert(response.data.warning);
+						}
+						window.location.href = response.data.redirect;
+						return;
 					}
 
+					// Fallback: show success message in place
+					var successHtml = '<div class="dfxprl-success-message">' + 
+						dfxprlMessageForm.i18n.successMessage + '</div>';
+					
+					// Replace form with success message
+					$('#dfxprl-message-form').replaceWith(successHtml);
+				} else {
+					// Show error message
+					var errorMessage = response.data && response.data.message ? 
+						response.data.message : dfxprlMessageForm.i18n.errorSendingMessage;
 					alert(errorMessage);
 
 					// Re-enable submit button
@@ -614,7 +597,44 @@
 					// Regenerate CAPTCHA on error
 					generateCaptcha();
 				}
-			});
+			};
+
+			var onError = function(xhr, status, error) {
+				console.error('AJAX error:', status, error, xhr);
+
+				var errorMessage;
+				if (status === 'timeout') {
+					errorMessage = dfxprlMessageForm.i18n.requestTimeout;
+				} else if (status === 'abort') {
+					errorMessage = dfxprlMessageForm.i18n.requestCancelled;
+				} else if (xhr.status === 0) {
+					errorMessage = dfxprlMessageForm.i18n.cannotConnectToServer;
+				} else if (xhr.status === 400) {
+					errorMessage = dfxprlMessageForm.i18n.problemWithRequest;
+				} else if (xhr.status === 403) {
+					errorMessage = dfxprlMessageForm.i18n.accessDenied;
+				} else if (xhr.status === 413) {
+					errorMessage = dfxprlMessageForm.i18n.uploadedFilesTooLarge;
+				} else if (xhr.status >= 500) {
+					errorMessage = dfxprlMessageForm.i18n.serverError;
+				} else if (status === 'parsererror') {
+					errorMessage = dfxprlMessageForm.i18n.problemProcessingResponse;
+				} else {
+					errorMessage = dfxprlMessageForm.i18n.networkError;
+				}
+
+				alert(errorMessage);
+
+				// Re-enable submit button
+				submitButton.prop('disabled', false);
+				submitText.show();
+				loadingSpinner.hide();
+
+				// Regenerate CAPTCHA on error
+				generateCaptcha();
+			};
+
+			send();
 		}
 	});
 
